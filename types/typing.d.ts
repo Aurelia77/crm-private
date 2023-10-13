@@ -1,0 +1,18 @@
+type Contact = {
+    id : number,
+    businessName : string,
+    businessPhone : string,
+    businessEmail : string,
+    businessAddress : string,
+    businessCity : string,
+    contactName : string,
+    contactPhone : string,
+    contactEmail : string,
+    contactPosition : string,
+    tag : string[],
+    interestGauge : number, // Marche ps ???1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, 
+    dateOfFirstCall : Date,
+    dateOfLastCall : Date,
+    dateOfNextCall : Date,
+    comments : string,
+}
