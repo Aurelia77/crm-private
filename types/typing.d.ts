@@ -1,6 +1,7 @@
 type Contact = {
     id : number,
     businessName : string,
+    activity : string,
     businessPhone : string,
     businessEmail : string,
     businessAddress : string,
@@ -16,3 +17,15 @@ type Contact = {
     dateOfNextCall : Date,
     comments : string,
 }
+
+type Query = {
+    name: string,
+    siret: string     // number | null, Pas un nombre car on veut garder si y'a un 0 devant 
+    city: string,
+    CP: string,
+}
+
+type CodeNaf = {
+    id: string;
+    label: string;
+  };

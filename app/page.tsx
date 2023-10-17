@@ -1,4 +1,4 @@
-'use client'
+'use client'  // pour utiliser STYLE dans le BOUTON
 
 import * as React from 'react';
 import Container from '@mui/material/Container';
@@ -7,43 +7,7 @@ import Button, { ButtonProps } from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { purple } from '@mui/material/colors';
 
-const BootstrapButton = styled(Button)({
-  boxShadow: 'none',
-  textTransform: 'none',
-  fontSize: 16,
-  padding: '6px 12px',
-  border: '1px solid',
-  lineHeight: 1.5,
-  backgroundColor: '#0063cc',
-  borderColor: '#0063cc',
-  fontFamily: [
-    '-apple-system',
-    'BlinkMacSystemFont',
-    '"Segoe UI"',
-    'Roboto',
-    '"Helvetica Neue"',
-    'Arial',
-    'sans-serif',
-    '"Apple Color Emoji"',
-    '"Segoe UI Emoji"',
-    '"Segoe UI Symbol"',
-  ].join(','),
-  '&:hover': {
-    backgroundColor: '#0069d9',
-    borderColor: '#0062cc',
-    boxShadow: 'none',
-  },
-  '&:active': {
-    boxShadow: 'none',
-    backgroundColor: '#0062cc',
-    borderColor: '#005cbf',
-  },
-  '&:focus': {
-    boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
-  },
-});
-
-const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
+const PurpleButton = styled(Button)<ButtonProps>(({ theme }) => ({
   color: theme.palette.getContrastText(purple[500]),
   backgroundColor: purple[500],
   '&:hover': {
@@ -53,32 +17,15 @@ const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
 
 export default function Home() {
   return (
-    <Container maxWidth="sm">
-      <Stack 
-        spacing={2} direction="row" 
-        justifyContent="center" className=' mt-28'>
-        <ColorButton 
+      <Stack spacing={2} direction="row" justifyContent="center" className=' mt-28' mt={20} >
+        <PurpleButton 
           variant="contained"
           href= '/contacts'>
           Contacts
-        </ColorButton>
-        <BootstrapButton 
-          variant="contained" 
-          disableRipple
-          className=' mr-0'>
-          CRM
-        </BootstrapButton>
-        <ColorButton 
-          variant="contained"
-          href= '/testPages/testUseEffectPage'>
-          Test Page
-        </ColorButton>
-        <ColorButton 
-          variant="contained"
-          href= '/testPages/testAutocompletePage'>
-          autocomplete
-        </ColorButton>
+        </PurpleButton>
+        <Button variant="contained" href= '/'>CRM</Button>
+        <Button variant="contained" color="secondary"  href= '/testPages/testUseEffectPage' >Test Page</Button>
+        <Button variant="contained" color="ochre" href= '/testPages/testAutocompletePage'>Autocomplete</Button> 
       </Stack>      
-    </Container>
   )
 }

@@ -1,4 +1,7 @@
+'use client'
+
 import * as React from 'react';
+
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -22,6 +25,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 
 
 import ContactEditForm from '../Components/ContactEditForm';
+import ContactCard from '../Components/ContactCard';
 
 import contactsData from '../contacts'
 
@@ -39,10 +43,10 @@ export default function Contacts() {
                 <Button variant="contained">Nouveau Contact</Button>
                 <Button variant="outlined">Outlined</Button>
             </Stack> */}
+                    <ContactEditForm />                    
             
-            <ContactEditForm />
 
-            {/* <Accordion sx={{ my: 2 }}>
+            <Accordion sx={{ my: 2 }}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1a-content"
@@ -52,8 +56,8 @@ export default function Contacts() {
                 </AccordionSummary>
                 <AccordionDetails>
                     <Typography>Informations du contact</Typography>
-                    
-                    
+
+
                 </AccordionDetails>
             </Accordion>
 
@@ -63,50 +67,10 @@ export default function Contacts() {
                 direction="row" flexWrap="wrap" justifyContent="center"
             //alignItems="center"
             >
-
-                {contacts.map((contact) => (
-
-                    <Card key={contact.id}
-                    //className=' my-2'
-                    //sx={{ my: 2 }}        // my = 0.5rem (donc 1/2 taille de la police de la racine (em pour l'élément))
-                    >
-                        <Box sx={{ p: 2, display: 'flex' }} >
-                            <Image
-                                alt="Random image"
-                                src="https://source.unsplash.com/random"
-                                width={50}
-                                height={50}
-                                style={{
-                                    //maxWidth: '100%',
-                                    //height: '200px',
-                                    objectFit: 'cover',
-                                }}
-                            />
-                            <Avatar variant="rounded" src="avatar1.jpg" />
-                            <Stack spacing={0.5}>
-                                <Typography fontWeight={700}>{contact.businessName}</Typography>
-                                <Typography fontWeight={700}>{contact.businessCity}</Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    <LocationOn sx={{ color: grey[500] }} />{contact.businessAddress}
-                                </Typography>
-                            </Stack>
-                            <IconButton>
-                                <Edit sx={{ fontSize: 14 }} />
-                            </IconButton>
-                        </Box>
-                        <Divider />
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            justifyContent="space-between"
-                            sx={{ px: 2, py: 1, bgcolor: 'background.default' }}
-                        >
-                            <Chip></Chip>
-                            <Switch />
-                        </Stack>
-                    </Card>
+                {contacts.map((contact: Contact) => (
+                    <ContactCard key={contact.id} contact={contact} />                   
                 ))}
-            </Stack> */}
+            </Stack>
 
         </div>
     )

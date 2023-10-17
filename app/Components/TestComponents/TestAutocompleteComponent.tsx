@@ -11,11 +11,49 @@ export default function TestAutocompleteComponent({}) {
 
     const token = 'b7745aa5-1ae3-30ec-885f-b73276a1a02c'
    
-    const [resultSearch, setResultSearch] = React.useState<any>([])     
+    const [resultSearch, setResultSearch] = React.useState<any>([])  
+     //const [searchContact, setSearchContact] = React.useState<string>('denominationUniteLegale:xxxxxxxxxxxxxx')
+    //const [searchContact, setSearchContact] = React.useState<string>(`denominationUniteLegale:prox AND siren:058812397`)  // PROX-HYDRO 
+    //      ***denominationUniteLegale - PROX-HYDRO - ***denominationUsuelle1UniteLegale - - ***denominationUsuelleEtablissement - - ***enseigne1Etablissement - -)
+    //const [searchContact, setSearchContact] = React.useState<string>(`siret:81149311300013`) // camping les palmiers à SAINT-PHILIBERT
+    //      ***denominationUniteLegale - F B *** denominationUsuelle1UniteLegale : - - *** denominationUsuelleEtablissement - CAMPING LES PALMIERS - ***enseigne1Etablissement - CAMPING LES PALMIERS
+    //const [searchContact, setSearchContact] = React.useState<string>(`siret:44029161500027`) // camping les palmiers à Hyères
+    //      ***denominationUniteLegale - SARL LES PALMIERS - ***denominationUsuelle1UniteLegale : - ENSEIGNE : CAMPING LES PALMIERS - ***denominationUsuelleEtablissement - - ***enseigne1Etablissement - -
+    //const [searchContact, setSearchContact] = React.useState<string>(`siret:83055140400015`) // FREYA
+    //      ***denominationUniteLegale - - ***denominationUsuelle1UniteLegale : - - ***denominationUsuelleEtablissement - LES TRESORS DE FREYA - ***enseigne1Etablissement - -)
+    //const [searchContact, setSearchContact] = React.useState<string>(`siren:830551404`) // FREYA (idem)
+    //const [searchContact, setSearchContact] = React.useState<string>(`siren:058812397`)  // PROX (idem)
+    //const [searchContact, setSearchContact] = React.useState<string>(`denominationUniteLegale:"camping les palmiers"`)  // A carqueiranne (ne trouve pas l'autre !)
+    //      ***denominationUniteLegale - SCI CAMPING LES PALMIERS - ***denominationUsuelle1UniteLegale : - - ***denominationUsuelleEtablissement - - enseigne1Etablissement - -
+    //const [searchContact, setSearchContact] = React.useState<string>(`denominationUniteLegale:"prox-hydro"`)   // PROX-HYDRO
+    // const [searchContact, setSearchContact] = React.useState<string>(`denominationUniteLegale:"*prox-hydro*"`)   // PROX-HYDRO
+    //const [searchContact, setSearchContact] = React.useState<string>(`denominationUniteLegale:"*prox-hydr*"`)   // RIEN !!!!!!!!!!!!!
+    //const [searchContact, setSearchContact] = React.useState<string>(`denominationUniteLegale:"*prox*"`)   // PLEIN DE CHOSES avec PROX (WE-PROX, PROX'IMM, WATT PROX...)
+    //const [searchContact, setSearchContact] = React.useState<string>(`denominationUniteLegale:"camping les palmier*"`)  // RIEN !!!
+    //const [searchContact, setSearchContact] = React.useState<string>(`denominationUniteLegale:*rox* AND libelleCommuneEtablissement:marseille`)  // ROX en plein milieu ok !!! => ne pas mettre les "" 
+    //const [searchContact, setSearchContact] = React.useState<string>(`denominationUniteLegale:prxoh~ AND libelleCommuneEtablissement:marseille`)  // on peut mettre un chiffre après ~ (2 = val par def)
+    //const [searchContact, setSearchContact] = React.useState<string>(`denominationUsuelleEtablissement:freya`)  // on peut pas chercher avec ça !!!
+    //const [searchContact, setSearchContact] = React.useState<string>(`denominationUniteLegale:freya OR denominationUsuelleEtablissement:freya`)  
+   
 
     console.log("resultSearch", resultSearch)
 
     const apiFetch = (search:string) => {
+         //fetch(`https://api.insee.fr/entreprises/sirene/V3/siret?q=${searchContact}`, {
+            //fetch(`https://api.insee.fr/entreprises/sirene/V3/siret?${search}`, {
+                //fetch(`https://api.insee.fr/entreprises/sirene/V3/siret?q=denominationUniteLegale:*a* AND denominationUniteLegale:*a*`, {
+                //url: 'https://api.insee.fr/entreprises/sirene/V3/siret?q…iteLegale:*a*%20AND%20denominationUniteLegale:*a*'
+                //https://api.insee.fr/entreprises/sirene/V3/siret?q=denominationUniteLegale:*a*%20AND%20denominationUniteLegale:*a*
+                //'https://api.insee.fr/entreprises/sirene/V3/siret?q…eLegale:*a*%20AND%20q=denominationUniteLegale:*a*'
+                // https://api.insee.fr/entreprises/sirene/V3/siret?q=denominationUniteLegale:*a*%20AND%20q=denominationUniteLegale:*a*
+    
+                //(searchContact !== '') && fetch(`https://api.insee.fr/entreprises/sirene/V3/siret?q=denominationUniteLegale:"*${searchContact}*"`, {        // entre "" pour prendre en compte l'espace
+    
+                //(searchContact !== '') && fetch(`https://api.insee.fr/entreprises/sirene/V3/siret?q=denominationUniteLegale:"*prox-h*"`, {        
+                // entre "" pour prendre en compte l'espace
+                // * pour remplacer une chaîne de caractères de taille quelconque
+    
+                //(searchContact !== '') && fetch(`https://api.insee.fr/entreprises/sirene/V3/siret?q=denominationUniteLegale:"${searchContact}~1"`, {
             fetch(`https://api.insee.fr/entreprises/sirene/V3/siret?${search}`, {
             method: 'GET',
             headers: {
@@ -67,6 +105,7 @@ export default function TestAutocompleteComponent({}) {
                     freeSolo        // pour qu'on puisse mettre autre chose que ce qui est proposé
                     getOptionLabel={(option) => option.uniteLegale.denominationUniteLegale}   // ce qui s'affiche qd on sélectionne
                     onInputChange={handleChangeAutocomplete}
+                    //autoComplete={false}      // Je comprends pas à quoi ça sert !
                     renderOption={(props:any, option:any) => {  // options qui s'affichent 
                         return <li {...props} key={option.siret}>{option.uniteLegale.denominationUniteLegale}</li>
                     }}
