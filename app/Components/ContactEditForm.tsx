@@ -138,12 +138,18 @@ export default function ContactEditForm({
             }).catch(error => console.log('error', error))
 
             console.log("resultSearch", resultSearch)        
-    }, [query])
+    }, 
+    /*eslint-disable-next-line react-hooks/exhaustive-deps*/
+    [query])
+    //[query, isFormEmpty, isSearchOnSiret])    // Boucle infinie dès le départ !!! Pourquoi ??? ces fonctions ne change pourtant pas...
 
     React.useEffect(() => {
         console.log(resultSearch.length)
         resultSearch.length === 1 ? fillUpContactWithResult(resultSearch[0]) : setInfosContact(emptyContact)
-    }, [resultSearch])
+    },
+    /*eslint-disable-next-line react-hooks/exhaustive-deps*/
+    [resultSearch])
+    //[resultSearch, fillUpContactWithResult, emptyContact])  // Boucle infinie dès le départ !!! Pourquoi ??? ces fonctions ne change pourtant pas...
 
     
 
