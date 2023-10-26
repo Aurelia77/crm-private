@@ -1,15 +1,22 @@
 type Contact = {
-    id : number,
+    id : string,
+    logo : string,
     businessName : string,
-    activity : string,
+    denominationUsuelleEtablissement  : string[],
+    businessActivity : string,
+    businessAddress : string,
+    businessWebsite : string,
     businessPhone : string,
     businessEmail : string,
-    businessAddress : string,
     businessCity : string,
     contactName : string,
     contactPhone : string,
     contactEmail : string,
     contactPosition : string,
+    hasBeenCalled: boolean,
+    hasBeenSentEmail: boolean,
+    hasReceivedEmail: boolean,
+    fileSent: boolean,
     tag : string[],
     interestGauge : number, // Marche ps ???1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, 
     dateOfFirstCall : Date,
@@ -23,6 +30,7 @@ type Query = {
     siret: string     // number | null, Pas un nombre car on veut garder si y'a un 0 devant 
     city: string,
     CP: string,
+    businessActivity: string,
 }
 
 type CodeNaf = {

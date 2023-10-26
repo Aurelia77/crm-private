@@ -1,5 +1,10 @@
 {
   // "extends": "next/core-web-vitals"
   // Ligne ci-dessus remplacée par la ligne ci-dessous pour éviter l'erreur dans contacts.js
-  "extends": ["next/babel","next/core-web-vitals"]
+  "extends": ["next/babel","next/core-web-vitals"],
+  // Pour ne pas avoir les erreurs ESLINT : https://nextjs.org/docs/pages/building-your-application/configuring/eslint#disabling-rules
+  "rules": {
+    "react/no-unescaped-entities": "off",
+    "@next/next/no-page-custom-font": "off"
+  }
 }

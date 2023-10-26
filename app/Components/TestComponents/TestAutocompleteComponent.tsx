@@ -127,7 +127,7 @@ export default function TestAutocompleteComponent({}) {
                     renderOption={(props:any, option:any) => {  // options qui s'affichent 
                         return <li {...props} key={option.id}>{option.title}</li>
                     }}
-                    // Pas utilie en fait ???
+                    // Pas utile en fait ???
                     // renderTags={(tagValue, getTagProps) => {
                     //     return tagValue.map((option, index) => <Chip {...getTagProps({ index })} key={option.id}  label={option.id} />)
                     // }}                    

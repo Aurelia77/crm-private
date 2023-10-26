@@ -24,14 +24,39 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 
 
-import ContactEditForm from '../Components/ContactEditForm';
+import ContactForm from '../Components/ContactForm';
 import ContactCard from '../Components/ContactCard';
+import ContactsTable from '../Components/ContactsTable';
 
 import contactsData from '../contacts'
 
 export default function Contacts() {
 
     const [contacts, setContacts] = React.useState<Contact[]>(contactsData)
+    //const [selectedContact, setSelectedContact] = React.useState<Contact | undefined>()   
+    const [selectedContact, setSelectedContact] = React.useState<Contact | {id: string}>({id: "0"}) 
+    
+    console.log(selectedContact)
+
+    const handleUpdateContact = (updatingContact: Contact) => {     // ou selectedContact
+        // if (movieEdited.name === '') {
+        //     alert("Ajouter un nom de film")
+        // }
+        // else if (movieEdited.category === '') {
+        //     alert("Ajouter une catégorie de film")
+        // }
+        // else if (movieEdited.year === 0) {
+        //     alert("Ajouter une année de visionnage")
+        // }
+        // else {
+            // On met à jour le tableau en remplaçant le film qui a le même id que celui qu'on a sélectionné par le film sélectionné
+            let updatedContacts = contacts.map(contact => contact.id === updatingContact.id ? updatingContact : contact)
+            //setmoviesList(sortArrayBy(updatedMovies, orderedBy))
+            setContacts(updatedContacts)
+        // }
+    }
+
+   
 
     return (
         <div>
@@ -43,25 +68,22 @@ export default function Contacts() {
                 <Button variant="contained">Nouveau Contact</Button>
                 <Button variant="outlined">Outlined</Button>
             </Stack> */}
-                    <ContactEditForm />                    
             
 
             <Accordion sx={{ my: 2 }}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1a-content"
-                    id="panel1a-header"
-                >
+                    id="panel1a-header" >
                     <Typography>Nouveau Contact</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <Typography>Informations du contact</Typography>
-
-
+                    <ContactForm />                
                 </AccordionDetails>
             </Accordion>
 
-            <Stack
+            {/* <Stack
                 //spacing={2} 
                 gap={2}
                 direction="row" flexWrap="wrap" justifyContent="center"
@@ -70,7 +92,16 @@ export default function Contacts() {
                 {contacts.map((contact: Contact) => (
                     <ContactCard key={contact.id} contact={contact} />                   
                 ))}
-            </Stack>
+            </Stack> */}
+            <ContactsTable 
+                contacts={contacts} 
+                selectedContactId={selectedContact.id} 
+                setSelectedContact={setSelectedContact}
+                //handleUpdateContact={handleUpdateContact}
+                //setContacts={setContacts}
+            //orderedBy={orderedBy} 
+            />
+
 
         </div>
     )
