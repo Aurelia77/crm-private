@@ -12,11 +12,11 @@ export default function TestComponentUseEffect() {
 
   React.useEffect(() => {
     console.log(`Synchronize: ${counter}`)
-    setItems(prevItems => [...prevItems, {count: counter, type: 'synchronize'}])
+    //setItems(prevItems => [...prevItems, {count: counter, type: 'synchronize'}])
 
     return () => {
       console.log(`%cCleanup: ${counter}`, 'color: blue')
-      setItems(prevItems => [...prevItems, {count: counter, type: 'cleanup'}])
+      //setItems(prevItems => [...prevItems, {count: counter, type: 'cleanup'}])
     } 
   }
   , [counter])
@@ -27,7 +27,7 @@ export default function TestComponentUseEffect() {
       <input type='button' onClick={incrementCounter} value="Increment counter" />
       <h3>Items</h3>
       <ul>
-        {items.map((item, index) => <li key={index}>{item.count} - {item.type}</li>)}
+        {/* {items.map((item, index) => <li key={index}>{item.count} - {item.type}</li>)} */}
       </ul>
 
     </div>

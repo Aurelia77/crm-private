@@ -26,7 +26,6 @@ export default function Home() {
         <Button variant="contained" href= '/'>CRM</Button>
         <Button variant="contained" color="secondary"  href= '/testPages/testUseEffectPage' >Test Page</Button>
         <Button variant="contained" color="ochre" href= '/testPages/testAutocompletePage'>Autocomplete</Button> 
-        <Button variant="contained" color="primary" href= '/testPages/TestFetchx2'>TestFetchx2</Button> 
       </Stack>      
   )
 }
