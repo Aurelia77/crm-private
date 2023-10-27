@@ -4,46 +4,94 @@
 import './globals.css'
 
 import { ThemeProvider, createTheme, PaletteOptions } from "@mui/material/styles";
-import { cyan, pink } from "@mui/material/colors";
+import { cyan, pink, yellow } from "@mui/material/colors";
+
+//import { makeStyles } from '@mui/styles';     // npm install @mui/styles
+
+
 
 // Pour ajouter une nouvelle couleur à la palette
 // Augment the palette to include an ochre color
 declare module '@mui/material/styles' {
   interface Palette {
     ochre: Palette['primary'];
+    gray: Palette['primary'];
   }
   interface PaletteOptions {
     ochre?: PaletteOptions['primary'];
+    gray?: PaletteOptions['primary'];
   }
 }
 // Update the Button's color options to include an ochre option
 declare module '@mui/material/Button' {
   interface ButtonPropsColorOverrides {
     ochre: true;
+    gray: true;
   }
 }
 
+
+
+
 const muiTheme = createTheme({    // Tout ce qu'on ne redéfinit pas reste par défaut
   palette: {
-    // primary: {
-    //   main: cyan[700], // A partir de 700 la couleur du text devient blanche
-    // },
-    // secondary: {
-    //   main: pink[700] 
-    // },
+    // Généralement PRIMARY = bleu et SECONDARY = rose
+    primary: {
+      main: cyan[500], // A partir de 700 la couleur du texte devient blanche pour les boutons MUI sur CYAN...
+      //main: pink[700], // A partir de 700 la couleur du texte devient blanche pour les boutons MUI sur CYAN...
+    },
+    secondary: {
+      main: yellow[800]
+    },
     ochre: {
       main: '#E3D026',
       light: '#E9DB5D',
       dark: '#A29415',
       contrastText: '#242105',
     },
-  },  
+    gray: {
+      main: '#CCC',
+      light: '#EEE',
+      dark: '#999',
+      contrastText: '#242105',
+    },
+  },
   typography: {
     fontFamily: 'comic sans ms, Roboto, Arial',
     //fontSize: 20,
     //fontFamily: 'Roboto, Arial',
     // fontFamily: 'Raleway, Arial',
-    
+
+  },
+  components: {
+    // Name of the component
+    MuiTableRow: {
+      defaultProps: {
+        // The props to change the default for.
+        //style: { backgroundColor: "blue" }, 
+      },
+      styleOverrides: {
+        "root": {
+          "&:nth-of-type(odd)": {          
+            //"backgroundColor": "#EEE", // Pas possible car écrase la couleur de fond de la ligne sélectionnée !
+            //"backgroundColor": "gray.light",
+            //opacity: 0.5,
+          },
+          "&:hover": {
+             "backgroundColor": "#DDD",
+            //"backgroundColor": "gray.main",   // Marche pas
+            //"color": "#242105"
+          },          
+          "&.Mui-selected": {
+            "backgroundColor": "secondary.main",    // Marche pas, utilise tout le temps la couleur primaire très claire
+            "color": "#CCC",                         // Marche pas non plus
+            "border": "2px solid #CCC",
+            "&:hover": {"backgroundColor": "secondary.dark", },
+            //"&.Mui-focusVisible": { background: "orange" }     // Marche pas non plus !
+          },
+        },
+      }
+    },
   },
   // components: {
   //   MuiCssBaseline: {
@@ -69,16 +117,16 @@ muiTheme.typography.h3 = {
   // },
   // J'arrive pas à l'ajouter à muiTheme à cause de la donnée muiTheme, quoi mettre à la place ???
   [muiTheme.breakpoints.up('xs')]: {    // xs = 0px
-    fontSize: '1.8rem',   
+    fontSize: '1.8rem',
     display: 'none'
   },
   [muiTheme.breakpoints.up('sm')]: {   // sm = 600px
-    fontSize: '2rem',   
+    fontSize: '2rem',
     overflow: 'auto',   // ajoute un scroll si on voit pas tout
     display: 'inline'
   },
   [muiTheme.breakpoints.up('md')]: {      // md = 900px
-    fontSize: '2.4rem',   
+    fontSize: '2.4rem',
   },
   // [muiTheme.breakpoints.up('lg')]: {
   //   fontSize: '3rem',
@@ -86,12 +134,21 @@ muiTheme.typography.h3 = {
 };
 
 
-const primary = {
-  main: '#1976d2',
-  light: '#42a5f5',
-  dark: '#1565c0',
-  contrastText: '#fff',
-};
+// Pour ça : import { makeStyles }
+// const useStyles = makeStyles((muiTheme: any) => ({
+//   // your other styles
+//   tableRowRoot: {
+//     "&$tableRowSelected, &$tableRowSelected:hover": {
+//       backgroundColor: muiTheme.palette.primary.main
+//     }
+//   },
+//   tableRowSelected: {
+//     backgroundColor: muiTheme.palette.primary.main
+//   }
+// }));
+// => Et mettre ça sur le component voulu :   // classes={{ root: classes.tableRowRoot,  selected: classes. tableRowSelected,   }}
+
+
 
 
 export default function RootLayout({
@@ -101,7 +158,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body 
+      <body
       //</html>className={inter.className}
       >
         <ThemeProvider theme={muiTheme}>

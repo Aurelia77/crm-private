@@ -7,9 +7,15 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
+import { darken } from '@mui/material/styles';
+import { lighten } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
+
 
 import {StyledTableCell} from './StyledComponents';
 import ContactRow from './ContactRow';
+import { Box, Typography } from '@mui/material';
 
 // ???
 interface Column {
@@ -21,26 +27,44 @@ interface Column {
 }
 
 const columns : readonly Column[] = [               // ???
-  { id: 'businessName', label: 'Entreprise', minWidth: 170 },
-  { id: 'contactPhone', label: 'Téléphone', minWidth: 100 },
-  { id: 'contactName', label: 'Contact (responsalbe/directeur)', minWidth: 170,
+  { id: 'businessName', label: 'Entreprise'
+  //, minWidth: 170 
+},
+  { id: 'contactPhone', label: 'Téléphone'
+  //, minWidth: 100 
+},
+  { id: 'contactName', label: 'Contact (responsalbe/directeur)', 
+  //minWidth: 170,
     //align: 'right', 
     //format: (value: number) => value.toLocaleString('en-US'),
   },
-  { id: 'contactEmail', label: 'Email', minWidth: 170,
+  { id: 'contactEmail', label: 'Email', 
+  //minWidth: 170,
     //align: 'right', 
     //format: (value: number) => value.toLocaleString('en-US'),
   },
-  { id: 'hasBeenCalled', label: 'Appel (prospection)', minWidth: 170,
+  { id: 'hasBeenCalled', label: 'Appel (prospection)', 
+  //minWidth: 170,
     //align: 'right', 
     //format: (value: number) => value.toFixed(2),
   },
- { id: 'hasBeenSentEmail', label: 'Mail envoyé', minWidth: 170 },
- { id: 'hasReceivedEmail', label: 'Mail reçu', minWidth: 170 },
- { id: 'dateOfNextCall', label: 'Relance (date)', minWidth: 170 },
- { id: 'comments', label: 'Commentaires', minWidth: 170 },
- { id: 'fileSent', label: 'Document(s) envoyé(s)', minWidth: 170 },
- { id: 'interestGauge', label: 'Intéressés', minWidth: 170 },
+ { id: 'hasBeenSentEmail', label: 'Mail envoyé', 
+ //minWidth: 170
+ },
+ { id: 'hasReceivedEmail', label: 'Mail reçu', 
+ minWidth: 170 
+},
+ { id: 'dateOfNextCall', label: 'Relance (date)', 
+ minWidth: 170 },
+ { id: 'comments', label: 'Commentaires', 
+ minWidth: 270 
+},
+ { id: 'fileSent', label: 'Document(s) envoyé(s)', 
+ minWidth: 170 
+},
+ { id: 'interestGauge', label: 'Intéressés', 
+ minWidth: 170
+ },
 ];
 
 // interface Data {
@@ -80,21 +104,17 @@ const columns : readonly Column[] = [               // ???
 // ];
 
 
-
-
-
 type ContactsTableProps = { 
     contacts: Contact[] ,
     //selectedContact: Contact,
     selectedContactId: string,
     setSelectedContact: (contact: Contact) => void
-    //handleUpdateContact: (updatingContact: Contact) => void
+    handleUpdateContact: (updatingContact: Contact) => void
     //setSelectedContactId: (id: string) => void
     //setContacts: (contacts: Contact[]) => void
 }
 
-export default function ContactsTable({ contacts, selectedContactId,  setSelectedContact
-    //handleUpdateContact,
+export default function ContactsTable({ contacts, selectedContactId, setSelectedContact, handleUpdateContact,
     //setContacts
  }: ContactsTableProps) {
 
@@ -115,12 +135,36 @@ export default function ContactsTable({ contacts, selectedContactId,  setSelecte
         //}
     }
 
+    const muiTheme = useTheme();
+
     
 
     return (
         <Paper sx={{ width: '100%', 
         //overflow: 'hidden' 
-        }}>
+        }}
+        elevation={3}
+        >            
+            {/* <Typography  color='text.main' >Coucou</Typography>
+            <Typography  color='secondary.main' >Coucou</Typography> 
+            <Typography  //color='secondary.main'
+                sx={{ color: darken(muiTheme.palette.secondary.main, 0.2)  }}
+            >Coucou</Typography>
+            <Typography  //color='secondary.main'
+                sx={{ color: muiTheme.palette.secondary.main }}
+            >Coucou</Typography>
+            <Typography  //color='secondary.main'
+                sx={{ color: lighten(muiTheme.palette.secondary.main, 0.2)  }}
+            >Coucou</Typography> */}
+
+            {/* <div className=' bg-red-500' >Coucou</div>
+            <div style={{ backgroundColor: "red" }} >Coucou</div>
+            <Box sx={{ bgcolor: 'primary.main' }}>Coucou</Box>
+            <Box sx={{ bgcolor: 'secondary.main' }}>Coucou</Box>
+            <Box color="secondary.main" bgcolor="primary.main" >Coucou</Box>
+            <Button variant="contained" color="ochre" href= '/testPages/testAutocompletePage'>Coucou !!</Button> 
+            <Button variant="contained" color="primary" href= '/testPages/testAutocompletePage'>Coucou !!</Button> 
+            <Button variant="contained" color="secondary" href= '/testPages/testAutocompletePage'>Coucou !!</Button>  */}
             <TableContainer sx={{ maxHeight: document.documentElement.clientHeight * 0.88 }}>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
@@ -141,7 +185,7 @@ export default function ContactsTable({ contacts, selectedContactId,  setSelecte
                             {columns.map((column) => (
                                 <StyledTableCell
                                     key={column.id}
-                                    //align={column.align}
+                                    align="center"
                                     style={{ minWidth: column.minWidth }}
                                 >
                                     {column.label}
@@ -155,7 +199,7 @@ export default function ContactsTable({ contacts, selectedContactId,  setSelecte
                                 contact={contact} 
                                 selectedContactId={selectedContactId} 
                                 setSelectedContact={setSelectedContact}
-                               // handleUpdateContact={handleUpdateContact} 
+                                handleUpdateContact={handleUpdateContact} 
                                 //setContacts={setContacts} 
                                 />                 
                         ))}

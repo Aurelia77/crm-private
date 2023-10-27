@@ -29,6 +29,7 @@ import ContactCard from '../Components/ContactCard';
 import ContactsTable from '../Components/ContactsTable';
 
 import contactsData from '../contacts'
+import { Container } from '@mui/material';
 
 export default function Contacts() {
 
@@ -39,6 +40,7 @@ export default function Contacts() {
     console.log(selectedContact)
 
     const handleUpdateContact = (updatingContact: Contact) => {     // ou selectedContact
+        console.log("updatingContact", updatingContact)
         // if (movieEdited.name === '') {
         //     alert("Ajouter un nom de film")
         // }
@@ -59,7 +61,10 @@ export default function Contacts() {
    
 
     return (
-        <div>
+        <Container maxWidth="xl"         // Si on veut des marges
+        //sx={{ mt: 4, mb: 4 }}
+        >
+        {/* <div> */}
             {/* <Stack spacing={2} direction="row"
                 // ajouter marge bottom
                 sx={{ my: 2 }}
@@ -97,12 +102,12 @@ export default function Contacts() {
                 contacts={contacts} 
                 selectedContactId={selectedContact.id} 
                 setSelectedContact={setSelectedContact}
-                //handleUpdateContact={handleUpdateContact}
+                handleUpdateContact={handleUpdateContact}
                 //setContacts={setContacts}
             //orderedBy={orderedBy} 
             />
 
-
-        </div>
+        {/* </div> */}
+        </Container> 
     )
 }

@@ -1,8 +1,8 @@
 /* 3 lignes à supprimer si on veut notre propre style ! car sinon par ex les boutons sont transparents !!! */
 
-/* @tailwind base;
+@tailwind base;
 @tailwind components;
-@tailwind utilities; */
+@tailwind utilities;
 
 /* :root {
   --foreground-rgb: 0, 0, 0;
