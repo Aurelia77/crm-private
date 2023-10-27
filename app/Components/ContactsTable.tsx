@@ -165,7 +165,9 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
             <Button variant="contained" color="ochre" href= '/testPages/testAutocompletePage'>Coucou !!</Button> 
             <Button variant="contained" color="primary" href= '/testPages/testAutocompletePage'>Coucou !!</Button> 
             <Button variant="contained" color="secondary" href= '/testPages/testAutocompletePage'>Coucou !!</Button>  */}
-            <TableContainer sx={{ maxHeight: document.documentElement.clientHeight * 0.88 }}>
+            <TableContainer 
+                //sx={{ maxHeight: document.documentElement.clientHeight * 0.88 }}
+                >
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         {/* <TableRow>
