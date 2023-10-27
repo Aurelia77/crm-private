@@ -248,7 +248,7 @@ export default function ContactForm({
                 hasBeenCalled: false,
                 hasBeenSentEmail: false,
                 hasReceivedEmail: false,
-                fileSent: false,
+                fileSent: null,
                 tag : [],
                 interestGauge : 0, // Marche ps ???1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, 
                 dateOfFirstCall : new Date("2021-05-01"),
