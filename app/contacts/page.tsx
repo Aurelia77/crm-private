@@ -37,7 +37,7 @@ export default function Contacts() {
     //const [selectedContact, setSelectedContact] = React.useState<Contact | undefined>()   
     const [selectedContact, setSelectedContact] = React.useState<Contact | {id: string}>({id: "0"}) 
     
-    console.log(selectedContact)
+    //console.log(selectedContact)
 
     const handleUpdateContact = (updatingContact: Contact) => {     // ou selectedContact
         console.log("updatingContact", updatingContact)

@@ -16,11 +16,14 @@ declare module '@mui/material/styles' {
   interface Palette {
     ochre: Palette['primary'];
     gray: Palette['primary'];
+    pink: Palette['primary'];
   }
   interface PaletteOptions {
     ochre?: PaletteOptions['primary'];
     gray?: PaletteOptions['primary'];
+    pink?: PaletteOptions['primary'];
   }
+
 }
 // Update the Button's color options to include an ochre option
 declare module '@mui/material/Button' {
@@ -55,7 +58,11 @@ const muiTheme = createTheme({    // Tout ce qu'on ne redéfinit pas reste par d
       dark: '#999',
       contrastText: '#242105',
     },
+    pink: {
+      main: pink[700],
+    },
   },
+
   typography: {
     fontFamily: 'comic sans ms, Roboto, Arial',
     //fontSize: 20,
@@ -63,8 +70,25 @@ const muiTheme = createTheme({    // Tout ce qu'on ne redéfinit pas reste par d
     // fontFamily: 'Raleway, Arial',
 
   },
+
   components: {
-    // Name of the component
+    // Demande d'ajouter 3 petits points à la fin du texte si il est trop long
+    MuiTextField: {
+      // defaultProps: {
+      //   variant:"standard"
+      // },
+      styleOverrides: {
+        "root": {
+          //variant:"standard",        
+          "& .MuiInputBase-input": {
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            //textAlign: "center",
+          },
+        },
+      }
+    },
+
     MuiTableRow: {
       defaultProps: {
         // The props to change the default for.

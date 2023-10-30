@@ -28,18 +28,18 @@ interface Column {
 
 const columns : readonly Column[] = [               // ???
   { id: 'businessName', label: 'Entreprise'
-  //, minWidth: 170 
+  , minWidth: 170 
 },
   { id: 'contactPhone', label: 'Téléphone'
-  //, minWidth: 100 
+  , minWidth: 100 
 },
   { id: 'contactName', label: 'Contact (responsalbe/directeur)', 
-  //minWidth: 170,
+  minWidth: 170,
     //align: 'right', 
     //format: (value: number) => value.toLocaleString('en-US'),
   },
   { id: 'contactEmail', label: 'Email', 
-  //minWidth: 170,
+  minWidth: 170,
     //align: 'right', 
     //format: (value: number) => value.toLocaleString('en-US'),
   },
@@ -55,12 +55,13 @@ const columns : readonly Column[] = [               // ???
  minWidth: 170 
 },
  { id: 'dateOfNextCall', label: 'Relance (date)', 
- minWidth: 170 },
+ minWidth: 300 
+},
  { id: 'comments', label: 'Commentaires', 
  minWidth: 270 
 },
  { id: 'fileSent', label: 'Document(s) envoyé(s)', 
- minWidth: 170 
+ minWidth: 270 
 },
  { id: 'interestGauge', label: 'Intéressés', 
  minWidth: 170

@@ -9,6 +9,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { MuiFileInput } from 'mui-file-input'
 import { pink } from '@mui/material/colors';
 import MailOutlineOutlinedIcon from '@mui/icons-material/MailOutlineOutlined';
@@ -33,9 +34,17 @@ import { lighten } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
 import GaugeComponent from 'react-gauge-component'  // npm install react-gauge-component --save
 // ??? GaugeChart => npm install react-gauge-chart + dependency : npm i d3 (marche pas !!!)
+import Container from '@mui/material/Container';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import TextsmsTwoToneIcon from '@mui/icons-material/TextsmsTwoTone';
+import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 
 
+const COMMENT_DISPLAY_LENGTH = 60
 
+// For the FILE INPUT Button
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     clipPath: 'inset(50%)',
@@ -77,12 +86,14 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     //     console.log("newFile", newFiles)
     //     newFiles && handleUpdateContact({...contact, fileSent: newFiles})
     // }
-    const handleChangeFile = (newFile: File | null) => {
-        console.log("newFile", newFile)
-        newFile && handleUpdateContact({ ...contact, fileSent: newFile })
+    const handleChangeFile = (files: File[] | null) => {
+        console.log("files", files)
+        files && handleUpdateContact({ ...contact, filesSent: [...contact.filesSent, ...files] })  
+        //newFile && handleUpdateContact({ ...contact, fileSent: [...contact.fileSent, newFile] })   
+        //  newFile && handleUpdateContact({ ...contact, fileSent: newFile })
     }
     const handleChangeText = (attribut: keyof Contact) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log("event.target.value", event.target.value)
+        //console.log("event.target.value", event.target.value)
         handleUpdateContact({ ...contact, [attribut]: event.target.value })
     }
 
@@ -104,24 +115,61 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     };
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
-
+ 
 
     return (
 
         <StyledTableRow
             //hover 
-            key={contact.id}
-            selected={selectedContactId === contact.id ? true : false}
+            key={contact.id}  selected={selectedContactId === contact.id ? true : false}
             //className={selectedContactId === contact.id ? 'tableRowSelected bg-cyan-400 ' : 'bg-yellow-200'}      // CYAN ne s'affiche pas, mais jaune oui
             onClick={() => setSelectedContact(contact)}
         >
             {/* <p>{contact.id}</p> */}
-            <StyledTableCell component="th" scope="row">{contact.businessName}</StyledTableCell>
-            <StyledTableCell align="right">{contact.businessPhone}</StyledTableCell>
-            <StyledTableCell align="right">{contact.contactName}</StyledTableCell>
-            <StyledTableCell align="right">
-                <MailOutlineOutlinedIcon /> {contact.contactEmail}
+            <StyledTableCell component="th" scope="row" >
+                <TextField id="standard-basic" //label="Nom de l'entreprise"                     
+                    value={contact.businessName}  onChange={handleChangeText('businessName')}
+                    variant="standard"
+                    InputProps={{
+                        startAdornment: <AccountCircle />, 
+                        disableUnderline: true,
+                    }} 
+                    // sx={{ textAlign: 'left' }}                 
+                />    
             </StyledTableCell>
+
+            <StyledTableCell>
+                <TextField id="standard-basic" //label="Téléphone" 
+                    value={contact.businessPhone}  onChange={handleChangeText('businessPhone')}  variant="standard"
+                    InputProps={{
+                        disableUnderline: true,
+                    }}                  
+                />
+            </StyledTableCell>
+
+            <StyledTableCell>
+                <TextField id="standard-basic" //label="Nom du contact" 
+                    value={contact.contactName}  onChange={handleChangeText('contactName')} variant="standard"
+                    InputProps={{
+                        disableUnderline: true,
+                    }}                  
+                />
+            </StyledTableCell>
+
+            <StyledTableCell 
+                //align="right"
+            >
+                <Box sx={{ display:"flex", gap:2 }}>
+                    <MailOutlineOutlinedIcon />
+                    <TextField id="standard-basic" //label="Email du contact" 
+                        value={contact.contactEmail}  onChange={handleChangeText('contactEmail')} variant="standard"
+                        InputProps={{
+                            disableUnderline: true, 
+                        }}                  
+                />
+                </Box>
+            </StyledTableCell>
+
             <StyledTableCell align="center">
                 <Checkbox checked={contact.hasBeenCalled}       // Par défaut quand checked = true, la couleur est la primary (.light ?)
                     //color='primary'           // Si on met la couleur ici => quand non coché c'est gris !
@@ -136,6 +184,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     inputProps={{ 'aria-label': 'controlled' }} />
                 {/* {contact.hasBeenCalled} */}
             </StyledTableCell>
+
             <StyledTableCell align="center">
                 <Checkbox checked={contact.hasBeenSentEmail}
                     icon={<RadioButtonUncheckedIcon />}
@@ -155,6 +204,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     inputProps={{ 'aria-label': 'controlled' }}
                 />
             </StyledTableCell>
+
             <StyledTableCell align="center">
                 <Checkbox checked={contact.hasReceivedEmail}
                     icon={<StarUnchecked />}
@@ -170,34 +220,48 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     onChange={() => handleChangeCheckbox(contact, "hasReceivedEmail")}
                     inputProps={{ 'aria-label': 'controlled' }} />
             </StyledTableCell>
-            <StyledTableCell align="right">
+
+            {/* The general recommendation is to declare the LocalizationProvider once, wrapping your entire application. Then, you don't need to repeat the boilerplate code for every Date and Time Picker in your application. */}
+            <StyledTableCell align="left">
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer components={['DatePicker', 'DatePicker']}>
-                        <NotificationsNoneOutlinedIcon />
-                        <DatePicker
+                    <Container 
+                    //components={['DateTimePicker']}
+                    >
+                        <NotificationsNoneOutlinedIcon //color="pink" 
+                         sx={{ color: pink[800] }}    />
+                        <DateTimePicker
+                            //label="Date de relance"
+                            ampm= {false}
                             format="DD/MM/YYYY HH:mm"
-                            label="Date de relance"
+                            viewRenderers={{
+                                hours: renderTimeViewClock,
+                                minutes: renderTimeViewClock,
+                                seconds: renderTimeViewClock,
+                            }}
                             value={dayjs(contact.dateOfNextCall)}
-                            // Ok aussi :
-                            // value={dayjs('2022-04-17T15:30')}
-                            // value={dayjs(new Date("2023-10-31T14:33"))}
-                            //onChange={(newValue) => setValue(newValue)}
                             onChange={(newDate) => handleChangeDate(newDate, "dateOfNextCall")}
-                        />
-                    </DemoContainer>
+                            slotProps={{ textField: { variant: 'standard', } }}     
+                        />                                             
+                    </ Container>
                 </LocalizationProvider>
                 {/* {contact.dateOfNextCall.toLocaleDateString()} {contact.dateOfNextCall.getHours().toString().padStart(2, '0')}:{contact.dateOfNextCall.getMinutes().toString().padStart(2, '0')} */}
             </StyledTableCell>
-            <StyledTableCell align="right"
-            //onClick={}
-            >
-                <ModeEditOutlineOutlinedIcon />
-                {contact.comments.substring(0, 30)}...
-                {/* Fonction presque identique : {contact.comments.slice(0, 10)}...*/}
-                <Typography>{contact.comments.substring(0, 30)}...  </Typography>
 
+            <StyledTableCell align="center"
+            //onClick={}
+            > 
+                {/* <Button variant="outlined" onClick={handleClickOpen}>Modifier</Button> */}
+                <IconButton aria-label="comment" color="primary" onClick={handleClickOpen}>
+                    {/* <TextsmsTwoToneIcon onClick={handleClickOpen} /> */}
+                    <ModeEditOutlineOutlinedIcon />
+                </IconButton>
+                 {/* Fonction presque identique : {contact.comments.slice(0, 10)}...*/}               
+                <Typography
+                    sx={{overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    fontSize: 14,}}
+                >{contact.comments.length < COMMENT_DISPLAY_LENGTH ? contact.comments : contact.comments.substring(0, COMMENT_DISPLAY_LENGTH) + "..."}</Typography>
                 {/* Dialog pour modifier */}
-                <Button variant="outlined" onClick={handleClickOpen}>Modifier</Button>
                 <Dialog open={openDialogue} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="lg" fullWidth
                     disableRestoreFocus // sinon le focus ne se fait pas sur le TextField
                 >
@@ -211,6 +275,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             multiline
                             value={contact.comments}
                             onChange={handleChangeText('comments')}
+                            sx={{ textAlign: 'left' }}
                         />
                     </DialogContent>
                     <DialogActions>
@@ -220,30 +285,41 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 </Dialog>
 
                 {/* Popover pour voir */}
-                <Button aria-describedby={id} variant="contained" onClick={handleClick}>Voir</Button>
+                {/* <Button aria-describedby={id} variant="contained" onClick={handleClick}>Voir</Button>
                 <Popover id={id} open={open} anchorEl={anchorEl} onClose={handleClosePop} anchorOrigin={{ vertical: 'bottom', horizontal: 'left', }} >
                     <Typography sx={{ p: 2 }}>
                         {contact.comments.split('\n').map((line, index) => (
                             <React.Fragment key={index}>{line}<br /></React.Fragment>       // On remplace /n par <br /> car sinon Typography ne le prend pas en compte le retour à la ligne
                         ))}
                     </Typography>
-                </Popover>
-
-
+                </Popover> */}
             </StyledTableCell>
+
             <StyledTableCell align="right">
-                <MuiFileInput value={contact.fileSent}
-                    label="Document(s) envoyé(s)"
-                    //multiple={true}
+                <MuiFileInput 
+                    value={contact.filesSent}
+                    multiple={true}
                     //onChange={ (file) => handleChangeFile(file)} />
                     onChange={handleChangeFile} />
-                <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
+                {/* <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
                     Upload file
                     <VisuallyHiddenInput type="file" />
-                </Button>
+                </Button> */}
+                <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                    {contact.filesSent.length} fichier(s)<br />
+                    {contact.filesSent.map((file, index) => (
+                        <React.Fragment key={index}>
+                            {file.name}<br />
+                        </React.Fragment>
+                    ))}
+                </Typography>
             </StyledTableCell>
 
-            <StyledTableCell align="right">               
+{/* https://bernii.github.io/gauge.js/#! ??? Avec CANVAS ??? */}
+            <StyledTableCell align="center"> 
+                <Box sx={{ width: contact.interestGauge * 10 + "px", bgcolor:"primary.light" }}>
+                    {contact.interestGauge} 
+                </Box>
                 {/* <GaugeComponent
                     arc={{
                         subArcs: [
@@ -271,7 +347,6 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     }}
                     value={50}
                 /> */}
-                {contact.interestGauge}
             </StyledTableCell>
         </StyledTableRow>
     )
