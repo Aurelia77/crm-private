@@ -56,6 +56,7 @@ export default function Contacts() {
     //console.log(selectedContact)
     console.log(contacts)
 
+    
 
 
     // 1-REALTIME DB
