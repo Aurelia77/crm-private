@@ -55,7 +55,6 @@ export default function Contacts() {
 
     //console.log(selectedContact)
     console.log(contacts)
-    console.log(document.documentElement.clientHeight)
 
 
 
@@ -109,6 +108,10 @@ export default function Contacts() {
 
 
     // 2-FIRESTORE DB
+
+    // Quand on ajoute / supprime un contact => on le fait dans le BDD firebase + on recharche la page.
+    // Mais quand on modifie un contact => on le fait dans le BDD firebase + on modifie le state contacts (pour pas recharger la page)  (bien ???)
+
     //Write  
     const addData = () => {
         contactsData.map((contact: Contact) => {
@@ -121,6 +124,19 @@ export default function Contacts() {
         })
         window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
     }
+
+    const addContact = (contact: Contact) => {
+
+        console.log("add contact", contact)
+
+        console.log({ ...contact, id: uid() })
+        addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid() })
+            //addDoc(collection(fireStoreDb, "contacts"), {contact})
+            .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
+            .catch((error) => { console.error("Error adding document: ", error); });
+        window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
+    }
+
 
     const deleteAllDatas = () => {
         const q = query(collection(fireStoreDb, "contacts"));
@@ -301,7 +317,7 @@ export default function Contacts() {
                         </AccordionSummary>
                         <AccordionDetails>
                             <Typography>Informations du contact</Typography>
-                            <ContactForm />
+                            <ContactForm addContact={addContact} />
                         </AccordionDetails>
                     </Accordion>
 

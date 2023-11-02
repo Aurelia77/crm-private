@@ -185,7 +185,15 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         startAdornment: <AccountCircle />, 
                         disableUnderline: true,
                     }} 
-                    // sx={{ textAlign: 'left' }}                 
+                /> 
+                <TextField id="standard-basic" 
+                    value={contact.businessCity}
+                    onChange={handleChangeText('businessCity')}
+                    variant="standard"
+                    InputProps={{
+                        disableUnderline: true,
+                    }}  
+                    inputProps = {{ style: {fontSize: "0.8em", color: "gray" } }}                     
                 /> 
             </StyledTableCell>
 
