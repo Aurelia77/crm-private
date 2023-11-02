@@ -20,9 +20,9 @@ type Contact = {
     //fileSent: File | null,
     tag : string[],
     interestGauge : number, // Marche ps ???1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, 
-    dateOfFirstCall : Date,
-    dateOfLastCall : Date,
-    dateOfNextCall : Date,
+    dateOfFirstCall : timestamp,
+    dateOfLastCall : timestamp,
+    dateOfNextCall : timestamp,
     comments : string,
 }
 

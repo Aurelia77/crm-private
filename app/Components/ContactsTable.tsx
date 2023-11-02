@@ -11,98 +11,63 @@ import Button from '@mui/material/Button';
 import { darken } from '@mui/material/styles';
 import { lighten } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
+import { Dayjs } from 'dayjs';       // npm install dayjs
+
 
 
 import {StyledTableCell} from './StyledComponents';
 import ContactRow from './ContactRow';
 import { Box, Typography } from '@mui/material';
+import { Timestamp } from 'firebase/firestore';
+
 
 // ???
 interface Column {
-  id: 'businessName' | 'contactPhone' | 'contactName' | 'contactEmail' | 'hasBeenCalled' | 'hasBeenSentEmail' | 'hasReceivedEmail' | 'dateOfNextCall' | 'comments' | 'fileSent' | 'interestGauge'
+  id: 'logo' | 'businessName' | 'contactPhone' | 'contactName' | 'contactEmail' | 'hasBeenCalled' | 'hasBeenSentEmail' | 'hasReceivedEmail' | 'dateOfNextCall' | 'comments' | 'fileSent' | 'interestGauge'
   label: string
-  minWidth?: number
+  minWidth?: number | string
   //align?: 'right'
   format?: (value: number) => string
 }
 
-const columns : readonly Column[] = [               // ???
-  { id: 'businessName', label: 'Entreprise'
-  , minWidth: 170 
+const NB_COL = 12
+const colWidth = 100 / (NB_COL + 2) + "vw"
+
+const columns : readonly Column[] = [               // readonly ???
+   
+  { id: 'logo', label: '', minWidth: "5em",
 },
-  { id: 'contactPhone', label: 'Téléphone'
-  , minWidth: 100 
+  { id: 'businessName', label: 'Entreprise', minWidth: "15em",
 },
-  { id: 'contactName', label: 'Contact (responsalbe/directeur)', 
-  minWidth: 170,
+  { id: 'contactPhone', label: 'Téléphone', minWidth: "15em",
+},
+  { id: 'contactName', label: 'Contact' // (responsalbe/directeur)'
+  , minWidth: "15em",
     //align: 'right', 
     //format: (value: number) => value.toLocaleString('en-US'),
   },
-  { id: 'contactEmail', label: 'Email', 
-  minWidth: 170,
+  { id: 'contactEmail', label: 'Email', minWidth: "15em",
     //align: 'right', 
     //format: (value: number) => value.toLocaleString('en-US'),
   },
-  { id: 'hasBeenCalled', label: 'Appel (prospection)', 
-  //minWidth: 170,
+  { id: 'hasBeenCalled', label: 'Appel ?'// (prospection)'
+  , minWidth: "5em",
     //align: 'right', 
     //format: (value: number) => value.toFixed(2),
   },
- { id: 'hasBeenSentEmail', label: 'Mail envoyé', 
- //minWidth: 170
+ { id: 'hasBeenSentEmail', label: 'Mail envoyé ?', minWidth: "5em",
  },
- { id: 'hasReceivedEmail', label: 'Mail reçu', 
- minWidth: 170 
+ { id: 'hasReceivedEmail', label: 'Mail reçu ?', minWidth: "5em",
 },
- { id: 'dateOfNextCall', label: 'Relance (date)', 
- minWidth: 300 
+ { id: 'dateOfNextCall', label: 'Relance (date)', minWidth: "18em",
 },
- { id: 'comments', label: 'Commentaires', 
- minWidth: 270 
+ { id: 'comments', label: 'Commentaires', minWidth: "10em",
 },
- { id: 'fileSent', label: 'Document(s) envoyé(s)', 
- minWidth: 270 
+ { id: 'fileSent', label: 'Document(s) envoyé(s)', minWidth: "10em",
 },
- { id: 'interestGauge', label: 'Intéressés', 
- minWidth: 170
+ { id: 'interestGauge', label: 'Intéressés', minWidth: "5em",
  },
 ];
-
-// interface Data {
-//   name: string;
-//   code: string;
-//   population: number;
-//   size: number;
-//   density: number;
-// }
-
-// function createData(
-//   name: string,
-//   code: string,
-//   population: number,
-//   size: number,
-// ): Data {
-//   const density = population / size;
-//   return { name, code, population, size, density };
-// }
-
-// const rows = [
-//   createData('India', 'IN', 1324171354, 3287263),
-//   createData('China', 'CN', 1403500365, 9596961),
-//   createData('Italy', 'IT', 60483973, 301340),
-//   createData('United States', 'US', 327167434, 9833520),
-//   createData('Canada', 'CA', 37602103, 9984670),
-//   createData('Australia', 'AU', 25475400, 7692024),
-//   createData('Germany', 'DE', 83019200, 357578),
-//   createData('Ireland', 'IE', 4857000, 70273),
-//   createData('Mexico', 'MX', 126577691, 1972550),
-//   createData('Japan', 'JP', 126317000, 377973),
-//   createData('France', 'FR', 67022000, 640679),
-//   createData('United Kingdom', 'GB', 67545757, 242495),
-//   createData('Russia', 'RU', 146793744, 17098246),
-//   createData('Nigeria', 'NG', 200962417, 923768),
-//   createData('Brazil', 'BR', 210147125, 8515767),
-// ];
 
 
 type ContactsTableProps = { 
@@ -110,7 +75,9 @@ type ContactsTableProps = {
     //selectedContact: Contact,
     selectedContactId: string,
     setSelectedContact: (contact: Contact) => void
-    handleUpdateContact: (updatingContact: Contact) => void
+    handleUpdateContact: (id: string, keyAndValue: {key: string, value: string | boolean | File[] | Timestamp   }) => void   // obligé de mettre NULL pour la date ! (???)
+    // handleUpdateContact: (updatingContact: Contact) => void
+
     //setSelectedContactId: (id: string) => void
     //setContacts: (contacts: Contact[]) => void
 }
@@ -167,10 +134,11 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
             <Button variant="contained" color="primary" href= '/testPages/testAutocompletePage'>Coucou !!</Button> 
             <Button variant="contained" color="secondary" href= '/testPages/testAutocompletePage'>Coucou !!</Button>  */}
             <TableContainer 
-                //sx={{ maxHeight: document.documentElement.clientHeight * 0.88 }}
-                // max height = 100px
-                sx={{ maxHeight: "calc(100vh - 100px)" }}
-                     //"1200px" }}
+                //sx={{ maxHeight: document.documentElement.clientHeight * 0.88 }}   //vh = 1% de la hauteur du viewport (la zone d'affichage).// Ok mais problème avec Vercel !!!
+                // sx={{ maxHeight: "calc(100vh - 185px)" }}   //vh = 1% de la hauteur du viewport (la zone d'affichage).
+                //sx={{ maxHeight: "88vh" }}   //vh = 1% de la hauteur du viewport (la zone d'affichage).
+                sx={{ maxHeight:  819-300 + "px" }} 
+                // sx={{ maxHeight:  819-185 + "px" }} 
                 >
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
@@ -192,7 +160,10 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
                                 <StyledTableCell
                                     key={column.id}
                                     align="center"
-                                    style={{ minWidth: column.minWidth }}
+                                    style={{ 
+                                        minWidth: column.minWidth 
+                                        //minWidth: colWidth,
+                                    }}
                                 >
                                     {column.label}
                                 </StyledTableCell>
