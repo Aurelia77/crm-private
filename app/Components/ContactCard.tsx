@@ -24,7 +24,7 @@ export default function ContactCard({ contact, addContact }: ContactCardProps) {
 
     const [contactToAdd, setContactToAdd] = React.useState<Contact>(contact)
 
-    //console.log(contactToAdd)
+    console.log(contactToAdd)
 
     const handleChangeText = (attribut: keyof Contact) => (event: React.ChangeEvent<HTMLInputElement>) => {
         //console.log("event.target.value", event.target.value)

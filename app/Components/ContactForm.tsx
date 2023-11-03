@@ -93,7 +93,7 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
     // console.log("*123////////////////resultInsee/////////////////",resultInseeSearch)
     // console.log("*123////////////////resultInseeSearchDomainAndLogo/////////////////",resultInseeSearchDomainAndLogo)
     // console.log("*123////////////////resultInseeSearchToKeep/////////////////",resultInseeSearchToKeep)   
-    // console.log("*123////////////////infosContact/////////////////",infosContact)  
+    console.log("*123////////////////infosContact/////////////////",infosContact)  
     //console.log("resultInseeSearchToKeepPlusDomainAndLogo", resultInseeSearchToKeepPlusDomainAndLogo) 
 
     //console.log("***1***-resultInseeSearch", resultInseeSearch)
@@ -103,6 +103,11 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
     const isFormEmpty = () => JSON.stringify(query) === JSON.stringify(emptyQuery)
     const isSearchOnSiret = () => query.siret !== ''
     const thereIsListToDisplay = () => !isSearchOnSiret() && resultInseeSearch.length > 0
+    // Pk je peux pas mettre BOOLEAN ????
+    // const isFormEmpty boolean = () => JSON.stringify(query) === JSON.stringify(emptyQuery)
+    // const isSearchOnSiret: boolean = () => query.siret !== ''
+    // const thereIsListToDisplay: boolean = () => !isSearchOnSiret() && resultInseeSearch.length > 0
+
 
     // const emptyContact: Contact = {     // existe-t-il un moyen de créer un objet avec toutes les valeurs à '' ou 0 sans tout réécrire ???
     //     id : 0,
@@ -409,12 +414,12 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
 
 
     return (
-        <Container>    
+        <React.Fragment>    
             <Typography variant="h3" gutterBottom>Recherche de contact</Typography>
-            <Stack sx={{ border: 3, borderColor: 'primary.main' }}
+            <Stack //sx={{ border: 3, borderColor: 'primary.main' }}
                 //sx={{ justifyContent:"space-around" }} 
                 justifyContent="flex-start" direction="row"
-                color='primary'   // marche pas !!!
+                //color='primary'   // marche pas !!!
             >
                 {/* {loading
              ? <p>Chargement...</p> 
@@ -423,10 +428,10 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
                     variant='filled'
                     sx={{
                         width: thereIsListToDisplay() ? "33.33%" : "50%",
-                        backgroundColor: "primary.light",
+                        backgroundColor: "#ccc", //"primary.light",
                         padding: 2,
                     }} >
-                    <p>La recherche se fait sur le siret OU sur le reste (enlever le SIRET pour qu'elle se fasse sur le reste)</p>
+                    <p>La recherche se fait sur le siret OU sur le reste (enlever le SIRET pour qu'elle se fasse sur le reste) <br/> Je sais que tu m'as dit que tu faisais pas de recherche par SIRET, on changera !!! :)</p>
                     <Box my={6} sx={{ display: 'flex', alignItems: 'flex-end' }}>
                         <DialpadRoundedIcon id='siret' sx={{ color: 'action.active', mr: 1, mb: 2 }} />
                         {/* {withLabelAndOnchangeTexfield("SIRET", `e => setQuery({ ...query, siret: e.target.value.trim().replaceAll(" ", "") })`)} */}
@@ -475,7 +480,10 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
 {/* Faire une fonction pour  Object.entries(infosContact).length > 0 => utilisée 2 fois !!!  */}
                 {thereIsListToDisplay() &&
                     <Box sx={{ width: Object.entries(infosContact).length > 0 ? "33.33%" : "66.66%", }}
-                        border={2} color='primary.dark' borderColor={'secondary.main'} bgcolor={'secondary.light'} >
+                        //border={2} color='primary.dark' 
+                        //borderColor={'secondary.main'} 
+                        bgcolor={'ochre.light'} // bgcolor="#ddd"
+                         >
                         <List>
                             {resultInseeSearchToKeepPlusDomainAndLogo.map((business: any, index: number) => (
                                 <ListItem key={business.id} disablePadding onClick={() => handleOnClickBusiness(business)}>
@@ -546,6 +554,6 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
 
             </Stack>
 
-        </ Container>
+        </ React.Fragment>
     )
 }

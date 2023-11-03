@@ -383,8 +383,8 @@ export default function Contacts() {
 
 
                     {/* <FormControl sx={{ my: 2 }}> */}
-                    <Typography component="div">Pour version d'essai : Pour remettre comme au début cliquer sur ces 2 boutons : (mais ne marche pas tout le temps :)</Typography>
                     <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+                        <Typography component="div" style={{ display:"block", width:"500px" }} >Pour version d'essai : Pour remettre comme au début cliquer sur ces 2 boutons : (mais ne marche pas tout le temps :)</Typography>
                         <Button variant="contained" color='warning' onClick={deleteAllDatas}>Supprimer tout !!!</Button>
                         <Button variant="contained" color='ochre' onClick={addData}>Ajouter Contacts du fichier (comme au début)</Button>
                     </Box>
