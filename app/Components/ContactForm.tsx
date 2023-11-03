@@ -27,7 +27,7 @@ HOC ??? (pour TEXTFIELD ???)
 // pas obligé de mettre USE CLIENT !!! Car c'est dans une page qui l'est déjà ???
 
 import React, { ChangeEvent } from 'react'
-import { TextField, Stack, Button, FormControl, InputLabel, Select, MenuItem, Autocomplete, Chip, ListItem, List } from '@mui/material'
+import { TextField, Stack, Button, FormControl, InputLabel, Select, MenuItem, Autocomplete, Chip, ListItem, List, Container } from '@mui/material'
 import { ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import Box from '@mui/material/Box';
 import AccountCircle from '@mui/icons-material/AccountCircle';
@@ -55,10 +55,12 @@ const CustomedTextField = ({ contactInfo, value, setValue }: { contactInfo: Cont
 }
 
 type ContactForm = {
+    emptyContact: Contact,
     addContact: (contact: Contact) => void
 }
 
 export default function ContactForm({    //contacts, setContacts }: { contacts: Contact[], setContacts: Function
+    emptyContact,
     addContact }: ContactForm) {
     const token = '613dca81-d71e-3b02-ac1a-b2170d2084c6'
     const apiAccessUrl = "https://api.insee.fr/entreprises/sirene/V3/siret?q="
@@ -92,7 +94,7 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
     // console.log("*123////////////////resultInseeSearchDomainAndLogo/////////////////",resultInseeSearchDomainAndLogo)
     // console.log("*123////////////////resultInseeSearchToKeep/////////////////",resultInseeSearchToKeep)   
     // console.log("*123////////////////infosContact/////////////////",infosContact)  
-    console.log("resultInseeSearchToKeepPlusDomainAndLogo", resultInseeSearchToKeepPlusDomainAndLogo) 
+    //console.log("resultInseeSearchToKeepPlusDomainAndLogo", resultInseeSearchToKeepPlusDomainAndLogo) 
 
     //console.log("***1***-resultInseeSearch", resultInseeSearch)
     //console.log("*********resultInseeSearchToKeep", resultInseeSearchToKeep)
@@ -227,12 +229,14 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
             //     }).catch(error => console.log('error', error)) 
 
             //console.log("123-----------------------------------tempTabResultInseeSearchToKeepLogoAndDomain", tempTabResultInseeSearchToKeepLogoAndDomain) // tjs vide (car après le fetch qui est asynchrone ???) => attendre la sorti du map pour retrouver les données dans resultInseeSearchDomainAndLogo (où on les a enregistrées)
+            
 
             tempTabResultInseeSearchToKeep.push({
+                ...emptyContact,
                 id: business.siret.toString(),
                 logo: '', //TESTgetLogoAndDomainTEST(business.uniteLegale.denominationUniteLegale).test,
                 businessName: business.uniteLegale.denominationUniteLegale,
-                denominationUsuelleEtablissement: [],
+                //denominationUsuelleEtablissement: [],
                 //business.periodesEtablissement.map((periode: any, index: number) => (periode.denominationUsuelleEtablissement)),
 
                 //             <p>{index+1} - denominationUsuelleEtablissement :  --- {periode.denominationUsuelleEtablissement} -</p>
@@ -241,25 +245,26 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
                 //             <p>enseigne2Etablissement :  --- {periode.enseigne2Etablissement} -</p>
                 //             <p>enseigne3Etablissement :  --- {periode.enseigne3Etablissement} -</p>
                 businessActivity: business.uniteLegale.activitePrincipaleUniteLegale,
-                businessAddress: business.adresseEtablissement.numeroVoieEtablissement + " " + business.adresseEtablissement.typeVoieEtablissement + " " + business.adresseEtablissement.libelleVoieEtablissement + " " + business.adresseEtablissement.codePostalEtablissement + " " + business.adresseEtablissement.libelleCommuneEtablissement,
-                businessWebsite: "",
-                businessPhone: "",
-                businessEmail: "",
+                // On concatène les différents champs de l'adresse, s'ils existent
+                businessAddress: ''.concat(business.adresseEtablissement.numeroVoieEtablissement ?? '', ' ', business.adresseEtablissement.typeVoieEtablissement ?? '', ' ', business.adresseEtablissement.libelleVoieEtablissement ?? '', ' ', business.adresseEtablissement.codePostalEtablissement ?? '', ' ', business.adresseEtablissement.libelleCommuneEtablissement ?? ''),
+                // businessWebsite: "",
+                // businessPhone: "",
+                // businessEmail: "",
                 businessCity: business.adresseEtablissement.libelleCommuneEtablissement,
-                contactName: "",
-                contactPhone: "",
-                contactEmail: "",
-                contactPosition: "",
-                hasBeenCalled: false,
-                hasBeenSentEmail: false,
-                hasReceivedEmail: false,
-                filesSent: [],
-                tag: [],
-                interestGauge: 0, // Marche ps ???1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, 
-                dateOfFirstCall: new Date("2021-05-01"),
-                dateOfLastCall: new Date("2021-05-01"),
-                dateOfNextCall: new Date("2021-05-01"),
-                comments: "",
+                // contactName: "",
+                // contactPhone: "",
+                // contactEmail: "",
+                // contactPosition: "",
+                // hasBeenCalled: false,
+                // hasBeenSentEmail: false,
+                // hasReceivedEmail: false,
+                // filesSent: [],
+                // tag: [],
+                // interestGauge: null, // Marche ps ???1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, 
+                // dateOfFirstCall: null,
+                // dateOfLastCall: null,
+                // dateOfNextCall: null,
+                // comments: "",
             })
 
             //console.log("123-----------------------------------tempTabResultInseeSearchToKeep", tempTabResultInseeSearchToKeep) 
@@ -404,27 +409,7 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
 
 
     return (
-        <React.Fragment>
-            {/* <Box sx={{
-                width: '50%',
-                border: 1,
-                borderColor: 'primary.main',
-                bgcolor: 'primary.light',	    // OU backgroundColor :"blue" (en entier) ms par ex dans FormControle, obligé de le mettre en entier (car ce n’est pas un props???)
-            }}
-                width={1 / 3}
-                border={2}
-                color='primary'
-                borderColor={'secondary.main'}
-                bgcolor={'secondary.light'}
-            >COUCOU</Box> */}
-
-            {/* <p>Query Name : {query.name} </p>
-            <p>Query City : {query.city} </p>
-            <p>Query Dep : {query.CP} </p> */}
-            <div>
-                <Button variant="contained" color="ochre" href='/testPages/testAutocompletePage'>Coucou ma Lauriane !!</Button>
-            </div>
-
+        <Container>    
             <Typography variant="h3" gutterBottom>Recherche de contact</Typography>
             <Stack sx={{ border: 3, borderColor: 'primary.main' }}
                 //sx={{ justifyContent:"space-around" }} 
@@ -487,6 +472,7 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
                 </FormControl>
                 {/* } */}
 
+{/* Faire une fonction pour  Object.entries(infosContact).length > 0 => utilisée 2 fois !!!  */}
                 {thereIsListToDisplay() &&
                     <Box sx={{ width: Object.entries(infosContact).length > 0 ? "33.33%" : "66.66%", }}
                         border={2} color='primary.dark' borderColor={'secondary.main'} bgcolor={'secondary.light'} >
@@ -520,6 +506,7 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
                 {Object.entries(infosContact).length > 0 &&
                     <Box width={thereIsListToDisplay() ? "33.33%" : "50%"} >
                         {/* Est-ce bien de faire ça ci-dessous ? Car sans le "as Contact", memê si je mets ci-dessus la condition "Object.entries(infosContact).length > 0" (ifosContact n'est pas un objet vide, donc selon comme il est typé (Contact | {}) il est forcement de type Contact) => me met un erreur Impossible d'assigner le type '{} | Contact' au type 'Contact'.   */}
+                        <Typography variant="h6" sx={{ p: 2, bgcolor: 'background.default' }}>Modifier/ajouter des infos si besoin :</Typography>
                         <ContactCard contact={infosContact as Contact} addContact={addContact} />
                         {
                             //(searchContactName !== '') && resultInseeSearch && 
@@ -559,6 +546,6 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
 
             </Stack>
 
-        </React.Fragment >
+        </ Container>
     )
 }

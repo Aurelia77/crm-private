@@ -23,7 +23,7 @@ import { Timestamp } from 'firebase/firestore';
 
 // ???
 interface Column {
-  id: 'logo' | 'businessName' | 'contactPhone' | 'contactName' | 'contactEmail' | 'hasBeenCalled' | 'hasBeenSentEmail' | 'hasReceivedEmail' | 'dateOfNextCall' | 'comments' | 'fileSent' | 'interestGauge'
+  id: 'logo' | 'businessName' | 'contactPhone' | 'contactName' | 'contactEmail' | 'hasBeenCalled' | 'hasBeenSentEmail' | 'hasReceivedEmail' | 'dateOfNextCall' | 'comments' | 'fileSent' | 'interestGauge' | 'supprimer'
   label: string
   minWidth?: number | string
   //align?: 'right'
@@ -67,6 +67,8 @@ const columns : readonly Column[] = [               // readonly ???
 },
  { id: 'interestGauge', label: 'Intéressés', minWidth: "5em",
  },
+ { id: 'supprimer', label: 'Supprimer ?', minWidth: "5em",
+ },
 ];
 
 
@@ -75,14 +77,15 @@ type ContactsTableProps = {
     //selectedContact: Contact,
     selectedContactId: string,
     setSelectedContact: (contact: Contact) => void
-    handleUpdateContact: (id: string, keyAndValue: {key: string, value: string | boolean | File[] | Timestamp   }) => void   // obligé de mettre NULL pour la date ! (???)
+    handleUpdateContact: (id: string, keyAndValue: {key: string, value: string | number | boolean | File[] | Timestamp | null   }) => void   // obligé de mettre NULL pour la date ! (???)
     // handleUpdateContact: (updatingContact: Contact) => void
+    handleDeleteContact: (id: string) => void
 
     //setSelectedContactId: (id: string) => void
     //setContacts: (contacts: Contact[]) => void
 }
 
-export default function ContactsTable({ contacts, selectedContactId, setSelectedContact, handleUpdateContact,
+export default function ContactsTable({ contacts, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact
     //setContacts
  }: ContactsTableProps) {
 
@@ -133,13 +136,12 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
             <Button variant="contained" color="ochre" href= '/testPages/testAutocompletePage'>Coucou !!</Button> 
             <Button variant="contained" color="primary" href= '/testPages/testAutocompletePage'>Coucou !!</Button> 
             <Button variant="contained" color="secondary" href= '/testPages/testAutocompletePage'>Coucou !!</Button>  */}
+
+            <Typography variant="h5" component="div" sx={{ p: 2 }}>Liste des contacts ({contacts.length})</Typography>
             <TableContainer 
-                //sx={{ maxHeight: document.documentElement.clientHeight * 0.88 }}   //vh = 1% de la hauteur du viewport (la zone d'affichage).// Ok mais problème avec Vercel !!!
-                // sx={{ maxHeight: "calc(100vh - 185px)" }}   //vh = 1% de la hauteur du viewport (la zone d'affichage).
-                //sx={{ maxHeight: "88vh" }}   //vh = 1% de la hauteur du viewport (la zone d'affichage).
-                //sx={{ maxHeight:  819-300 + "px" }} 
-                //sx={{ maxHeight:  819-185 + "px" }} 
-                sx={{ maxHeight:  "calc(100vh - 185px)" }} 
+                //sx={{ maxHeight: document.documentElement.clientHeight * 0.88 }}   //vh = 1% de la hauteur du viewport (la zone d'affichage).// Ok mais problème avec Vercel !!!               
+                sx={{ maxHeight:  "calc(100vh - 300px)" }} 
+                // sx={{ maxHeight:  "calc(100vh - 185px)" }} 
                 >
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
@@ -162,7 +164,8 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
                                     key={column.id}
                                     align="center"
                                     style={{ 
-                                        minWidth: column.minWidth 
+                                        minWidth: column.minWidth,
+                                        padding: 0 
                                         //minWidth: colWidth,
                                     }}
                                 >
@@ -178,6 +181,7 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
                                 selectedContactId={selectedContactId} 
                                 setSelectedContact={setSelectedContact}
                                 handleUpdateContact={handleUpdateContact} 
+                                handleDeleteContact={() => handleDeleteContact(contact.id)}
                                 //setContacts={setContacts} 
                                 />                 
                         ))}

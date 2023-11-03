@@ -24,6 +24,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import FormControl from '@mui/material/FormControl';
 import { Container } from '@mui/material';
+import { TextField, Select, MenuItem, Autocomplete, ListItem, List, InputLabel, Tabs, Tab, Box as CustomBox } from '@mui/material'
 
 
 import ContactForm from '../Components/ContactForm';
@@ -43,6 +44,36 @@ import { Dayjs } from 'dayjs';       // npm install dayjs
 import { Timestamp } from 'firebase/firestore';
 
 
+interface TabPanelProps {
+    children?: React.ReactNode;
+    index: number;
+    value: number;
+}
+function a11yProps(index: number) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
+function CustomTabPanel(props: TabPanelProps) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box sx={{ p: 3 }}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
+    );
+}
 
 
 export default function Contacts() {
@@ -52,11 +83,37 @@ export default function Contacts() {
     const [selectedContact, setSelectedContact] = React.useState<Contact | { id: string }>({ id: "0" })
     const [loading, setLoading] = React.useState(true)
 
+    const emptyContact: Contact = {
+        id: '',
+        logo: '', 
+        businessName: '',
+        denominationUsuelleEtablissement: [],      
+        businessActivity: '',
+        businessAddress: '',
+        businessWebsite: '',
+        businessPhone: '',
+        businessEmail: '',
+        businessCity: '',
+        contactName: '',
+        contactPhone: '',
+        contactEmail: '',
+        contactPosition: '',
+        hasBeenCalled: false,
+        hasBeenSentEmail: false,
+        hasReceivedEmail: false,
+        filesSent: [],
+        tag: [],
+        interestGauge: null, // Marche ps ???1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, 
+        dateOfFirstCall: null,
+        dateOfLastCall: null,
+        dateOfNextCall: null,
+        comments: '',
+    }
 
     //console.log(selectedContact)
-    console.log(contacts)
+    //console.log(contacts)
 
-    
+
 
 
     // 1-REALTIME DB
@@ -110,8 +167,8 @@ export default function Contacts() {
 
     // 2-FIRESTORE DB
 
-    // Quand on ajoute / supprime un contact => on le fait dans le BDD firebase + on recharche la page.
-    // Mais quand on modifie un contact => on le fait dans le BDD firebase + on modifie le state contacts (pour pas recharger la page)  (bien ???)
+    // Quand on ajoute / supprime un contact => on le fait dans la BDD firebase + on recharche la page.
+    // Mais quand on modifie un contact (dans ContactsTable) => on le fait dans le BDD firebase + on modifie le state contacts (pour pas recharger la page) 
 
     //Write  
     const addData = () => {
@@ -121,9 +178,10 @@ export default function Contacts() {
             addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid() })
                 //addDoc(collection(fireStoreDb, "contacts"), {contact})
                 .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
+                .then(() => { window.location.reload() })                                           // bien ici ??? Va pas recharcger à chaque fois ???
                 .catch((error) => { console.error("Error adding document: ", error); });
         })
-        window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
+        //window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données        // n'enregistre pas les données à chaque fois si je le mets ici !!!
     }
 
     const addContact = (contact: Contact) => {
@@ -134,12 +192,15 @@ export default function Contacts() {
         addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid() })
             //addDoc(collection(fireStoreDb, "contacts"), {contact})
             .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
+            // Ici ou après ?????
+            .then(() => { window.location.reload() })    // On rafraichit => re-render => useEffect avec la lecture des données            
             .catch((error) => { console.error("Error adding document: ", error); });
-        window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
+        //window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
     }
 
 
     const deleteAllDatas = () => {
+        console.log("DELETING !")
         const q = query(collection(fireStoreDb, "contacts"));
         getDocs(q).then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
@@ -166,6 +227,22 @@ export default function Contacts() {
         //     });
         // });
     }
+
+
+    const deleteContact = (contactId: string) => {
+        const q = query(collection(fireStoreDb, "contacts"), where("id", "==", contactId));
+        getDocs(q).then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(doc.data())
+                console.log(doc.ref)
+                deleteDoc(doc.ref)
+            })
+        }).then(() => {
+            window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
+        })
+    }
+
+
 
 
     // Read  
@@ -235,14 +312,14 @@ export default function Contacts() {
     //     })   
     // }
 
-    const updatingLocalContacts = (id: string, keyAndValue: { key: string, value: string | boolean | File[] | Timestamp }) => {
+    const updatingLocalContacts = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
         let tempUpdatedContacts = contacts.map(contact => {
             return contact.id === id ? { ...contact, [keyAndValue.key]: keyAndValue.value } : contact
         })
         //setmoviesList(sortArrayBy(updatedMovies, orderedBy))
         setContacts(tempUpdatedContacts)
     }
-    const updatingRemoteContacts = (id: string, keyAndValue: { key: string, value: string | boolean | File[] | Timestamp }) => {
+    const updatingRemoteContacts = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
 
         // const contactToUpdateRef = doc(fireStoreDb, "contacts", id);
         // console.log(contactToUpdateRef)
@@ -254,23 +331,23 @@ export default function Contacts() {
 
         const q = query(collection(fireStoreDb, "contacts"), where("id", "==", id));
 
-        getDocs(q).then((querySnapshot) => {         
+        getDocs(q).then((querySnapshot) => {
             querySnapshot.forEach((doc) => {        // besoin du FOREACH alors qu'il n'y en a qu'un ???
-                    //console.log(doc.data())
-                    //console.log(doc.ref)
-                    //console.log(doc.id)
-                    console.log(keyAndValue.key, keyAndValue.value)
+                //console.log(doc.data())
+                //console.log(doc.ref)
+                //console.log(doc.id)
+                console.log(keyAndValue.key, keyAndValue.value)
                 //docID = doc.id;
                 updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
                     [keyAndValue.key]: keyAndValue.value
                 });
                 //set(doc.ref, updatingContact)
-            })          
-        })     
+            })
+        })
     }
 
     //const updateContactInContactsAndDB = (updatingContact: Contact) => {     // ou selectedContact
-    const updateContactInContactsAndDB = (id: string, keyAndValue: { key: string, value: string | boolean | File[] | Timestamp }) => { 
+    const updateContactInContactsAndDB = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
         // 1-On met à jour le tableau en remplaçant l'attribut voulu dans le contact qui a le même id que celui qu'on a sélectionné
         updatingLocalContacts(id, keyAndValue)
         // 2-On met à jour le contact dans la BDD fireStore : firestoreDB
@@ -279,8 +356,14 @@ export default function Contacts() {
 
 
 
+    const [value, setValue] = React.useState(0);
 
-    return (
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+        setValue(newValue);
+    };
+
+
+    return (   
         <React.Fragment>
             {loading
                 ? null //<Container>Chargement...</Container>
@@ -298,27 +381,69 @@ export default function Contacts() {
                     <Button variant="outlined">Outlined</Button>
                 </Stack> */}
 
-                    <FormControl sx={{ my: 2 }}>
-                        <Button variant="contained" onClick={deleteAllDatas}>Supprimer tout !!!</Button>
-                        <Button variant="contained" onClick={addData}>Ajouter Contacts du fichier</Button>
-                    </FormControl>
+
+                    {/* <FormControl sx={{ my: 2 }}> */}
+                    <Typography component="div">Pour version d'essai : Pour remettre comme au début cliquer sur ces 2 boutons : (mais ne marche pas tout le temps :)</Typography>
+                    <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+                        <Button variant="contained" color='warning' onClick={deleteAllDatas}>Supprimer tout !!!</Button>
+                        <Button variant="contained" color='ochre' onClick={addData}>Ajouter Contacts du fichier (comme au début)</Button>
+                    </Box>
+                    {/* </FormControl> */}
                     {/* <FormControl sx={{ my: 2 }}>
                     <input type="text" value={todo} onChange={handleTodoChange} />
                     <Button variant="contained" onClick={writeContactData2}>Ajouter dans REALTIME DB</Button>
                 </FormControl> */}
 
 
+  {/* Impossible mettre ce qu'on veut dans les TAB car => ERROR => app-index.js:31 Warning: validateDOMNesting(...): <p> cannot appear as a descendant of <p>.*/} 
+                    {/* <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                            <Tab label="Item One" {...a11yProps(0)} />
+                            <Tab label="Item Two" {...a11yProps(1)} />
+                        </Tabs>
+                    </Box>
+                    <CustomTabPanel value={value} index={0}>
+                        <FormControl sx={{ my: 2 }}>
+                            <TextField id="outlined-basic" label="Nom de l'entreprise à ajouter aux contacts" variant="outlined" value="coucou" />
+                        </FormControl>
+                    </CustomTabPanel>
+                    <CustomTabPanel value={value} index={1}>
+                        <FormControl sx={{ my: 2 }}>
+                            <TextField id="outlined-basic" label="Nom de l'entreprise à ajouter aux contacts" variant="outlined" value="coucou2" />
+                        </FormControl>
+                    </CustomTabPanel> */}
 
+
+
+                    <Accordion sx={{ 
+                        //my: 2
+                     }}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1a-content"
+                            id="panel1a-header" >
+                            <Typography
+                                color="secondary.light"
+                                sx={{ bgcolor: 'primary.main', p: 2, borderRadius: 1 }}
+                            >Nouveau Contact avec recherche (cliquer pour ouvrir et pour fermer)</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                           <ContactForm emptyContact={emptyContact} addContact={addContact} />
+                            {/*  <ContactCard addContact={addContact} contact={emptyContact} /> */}
+                        </AccordionDetails>
+                    </Accordion>
                     <Accordion sx={{ my: 2 }}>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
                             aria-controls="panel1a-content"
                             id="panel1a-header" >
-                            <Typography>Nouveau Contact</Typography>
+                            <Typography
+                                color="secondary.light"
+                                sx={{ bgcolor: 'primary.main', p: 2, borderRadius: 1 }}
+                            >Nouveau Contact en partant de zéro (cliquer pour ouvrir et pour fermer)</Typography>
                         </AccordionSummary>
                         <AccordionDetails>
-                            <Typography>Informations du contact</Typography>
-                            <ContactForm addContact={addContact} />
+                             <ContactCard addContact={addContact} contact={emptyContact} />
                         </AccordionDetails>
                     </Accordion>
 
@@ -337,6 +462,7 @@ export default function Contacts() {
                         selectedContactId={selectedContact.id}
                         setSelectedContact={setSelectedContact}
                         handleUpdateContact={updateContactInContactsAndDB}
+                        handleDeleteContact={deleteContact}
                     //setContacts={setContacts}
                     //orderedBy={orderedBy} 
                     />
