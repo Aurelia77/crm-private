@@ -8,11 +8,12 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     //backgroundColor: theme.palette.common.black,
     backgroundColor: theme.palette.primary.dark,
     color: theme.palette.common.white,
-    fontWeight: 700,
-    fontSize: 15,
+    //fontWeight: 700,
+    fontSize: 16,
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
+    border: 1,
     //alignContent: 'center',   // Marche pas 
   },
 }));

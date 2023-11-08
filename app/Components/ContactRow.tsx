@@ -130,6 +130,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 }: ContactRowProps) {
 
     //console.log(contact)
+    console.log("xxxhandleUpdateContact", handleUpdateContact)
 
     const muiTheme = useTheme();
 

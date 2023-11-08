@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -12,82 +13,259 @@ import { darken } from '@mui/material/styles';
 import { lighten } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
 import { Dayjs } from 'dayjs';       // npm install dayjs
+import TableSortLabel from '@mui/material/TableSortLabel';
+import { visuallyHidden } from '@mui/utils';    // pnpm install @mui/utils
 
 
 
-import {StyledTableCell} from './StyledComponents';
+
+
+import { StyledTableCell } from './StyledComponents';
 import ContactRow from './ContactRow';
 import { Box, Typography } from '@mui/material';
 import { Timestamp } from 'firebase/firestore';
 
 
-// ???
 interface Column {
-  id: 'logo' | 'businessName' | 'contactPhone' | 'contactName' | 'contactEmail' | 'hasBeenCalled' | 'hasBeenSentEmail' | 'hasReceivedEmail' | 'dateOfNextCall' | 'comments' | 'fileSent' | 'interestGauge' | 'supprimer'
-  label: string
-  minWidth?: number | string
-  //align?: 'right'
-  format?: (value: number) => string
+    id: 'logo' | 'businessName' | 'contactPhone' | 'contactName' | 'contactEmail' | 'hasBeenCalled' | 'hasBeenSentEmail' | 'hasReceivedEmail' | 'dateOfNextCall' | 'comments' | 'fileSent' | 'interestGauge' | 'supprimer'
+    label: string
+    minWidth?: number | string
+    //align?: 'right'
+    format?: (value: number) => string
 }
 
-const NB_COL = 12
-const colWidth = 100 / (NB_COL + 2) + "vw"
+//const NB_COL = 12
+//const colWidth = 100 / (NB_COL + 2) + "vw"
 
-const columns : readonly Column[] = [               // readonly ???
-   
-  { id: 'logo', label: '', minWidth: "5em",
-},
-  { id: 'businessName', label: 'Entreprise', minWidth: "15em",
-},
-  { id: 'contactPhone', label: 'Téléphone', minWidth: "15em",
-},
-  { id: 'contactName', label: 'Contact' // (responsalbe/directeur)'
-  , minWidth: "15em",
-    //align: 'right', 
-    //format: (value: number) => value.toLocaleString('en-US'),
-  },
-  { id: 'contactEmail', label: 'Email', minWidth: "15em",
-    //align: 'right', 
-    //format: (value: number) => value.toLocaleString('en-US'),
-  },
-  { id: 'hasBeenCalled', label: 'Appel ?'// (prospection)'
-  , minWidth: "5em",
-    //align: 'right', 
-    //format: (value: number) => value.toFixed(2),
-  },
- { id: 'hasBeenSentEmail', label: 'Mail envoyé ?', minWidth: "5em",
- },
- { id: 'hasReceivedEmail', label: 'Mail reçu ?', minWidth: "5em",
-},
- { id: 'dateOfNextCall', label: 'Relance (date)', minWidth: "18em",
-},
- { id: 'comments', label: 'Commentaires', minWidth: "10em",
-},
- { id: 'fileSent', label: 'Document(s) envoyé(s)', minWidth: "10em",
-},
- { id: 'interestGauge', label: 'Intéressés', minWidth: "5em",
- },
- { id: 'supprimer', label: 'Supprimer ?', minWidth: "5em",
- },
+const headCells: readonly Column[] = [               // readonly ???
+
+    {
+        id: 'logo', label: '', minWidth: "5em",
+    },
+    {
+        id: 'businessName', label: 'Entreprise', minWidth: "15em",
+    },
+    {
+        id: 'contactPhone', label: 'Téléphone', minWidth: "15em",
+    },
+    {
+        id: 'contactName', label: 'Contact' // (responsalbe/directeur)'
+        , minWidth: "15em",
+        //align: 'right', 
+        //format: (value: number) => value.toLocaleString('en-US'),
+    },
+    {
+        id: 'contactEmail', label: 'Email', minWidth: "15em",
+        //align: 'right', 
+        //format: (value: number) => value.toLocaleString('en-US'),
+    },
+    {
+        id: 'hasBeenCalled', label: 'Appel ?'// (prospection)'
+        , minWidth: "5em",
+        //align: 'right', 
+        //format: (value: number) => value.toFixed(2),
+    },
+    {
+        id: 'hasBeenSentEmail', label: 'Mail envoyé ?', minWidth: "5em",
+    },
+    {
+        id: 'hasReceivedEmail', label: 'Mail reçu ?', minWidth: "5em",
+    },
+    {
+        id: 'dateOfNextCall', label: 'Relance (date)', minWidth: "18em",
+    },
+    {
+        id: 'comments', label: 'Commentaires', minWidth: "10em",
+    },
+    {
+        id: 'fileSent', label: 'Document(s) envoyé(s)', minWidth: "10em",
+    },
+    {
+        id: 'interestGauge', label: 'Intéressés', minWidth: "5em",
+    },
+    {
+        id: 'supprimer', label: 'Supprimer ?', minWidth: "5em",
+    },
 ];
 
+function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+    if (b[orderBy] < a[orderBy]) {
+        return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+        return 1;
+    }
+    return 0;
+}
 
-type ContactsTableProps = { 
-    contacts: Contact[] ,
+type Order = 'asc' | 'desc';
+
+function getComparator<Key extends keyof any>(
+    order: Order,
+    orderBy: Key,
+): (
+    a: { [key in Key]: number | string },
+    b: { [key in Key]: number | string },
+) => number {
+    return order === 'desc'
+        ? (a, b) => descendingComparator(a, b, orderBy)
+        : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+// Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
+// stableSort() brings sort stability to non-modern browsers (notably IE11). If you
+// only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
+// with exampleArray.slice().sort(exampleComparator)
+function stableSort(array: Contact[], comparator: (a: any, b: any) => number) {   // j'ai enlevé T sinon erreur !!!
+    // function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
+    const stabilizedThis = array.map((el, index) => [el, index] as [any, number]);
+    // const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
+    stabilizedThis.sort((a, b) => {
+        const order = comparator(a[0], b[0]);
+        if (order !== 0) {
+            return order;
+        }
+        return a[1] - b[1];
+    });
+    return stabilizedThis.map((el) => el[0]);
+}
+
+interface Data {    // ??????????????
+    logo: string;
+    businessName: string;
+    contactPhone: string;
+    contactName: string;
+    contactEmail: string;
+    hasBeenCalled: boolean;
+    hasBeenSentEmail: boolean;
+    hasReceivedEmail: boolean;
+    dateOfNextCall: string;
+    comments: string;
+    fileSent: string;
+    interestGauge: number;
+    supprimer: string;
+}
+
+interface EnhancedTableProps {
+    numSelected: number;
+    onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
+    //onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    order: Order;
+    orderBy: string;
+    //rowCount: number;
+}
+function EnhancedTableHead(props: EnhancedTableProps) {
+    const {
+        //onSelectAllClick,
+        order, orderBy, numSelected,
+        //rowCount,
+        onRequestSort } = props;
+    const createSortHandler =
+        (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
+            onRequestSort(event, property);
+        };
+
+    return (
+        <TableHead>
+            <TableRow>
+                {/*<TableCell padding="checkbox">
+          <Checkbox
+              color="primary"
+              indeterminate={numSelected > 0 && numSelected < rowCount}
+              checked={rowCount > 0 && numSelected === rowCount}
+              onChange={onSelectAllClick}
+              inputProps={{
+                'aria-label': 'select all desserts',
+              }}
+            />
+          </TableCell> */}
+                {headCells.map((headCell) => (
+                    <StyledTableCell
+                        key={headCell.id}
+                        //align={headCell.numeric ? 'right' : 'left'}
+                        //padding={headCell.disablePadding ? 'none' : 'normal'}
+                        align="center"
+                        style={{
+                            minWidth: headCell.minWidth,
+                            padding: 0
+                            //minWidth: colWidth,
+                        }}
+                        sortDirection={orderBy === headCell.id ? order : false}
+                    >
+                        <TableSortLabel
+                            active={orderBy === headCell.id}
+                            direction={orderBy === headCell.id ? order : 'asc'}
+                            onClick={createSortHandler(headCell.id)}
+                        >
+                            {headCell.label}
+                            {orderBy === headCell.id ? (
+                                <Box component="span" sx={visuallyHidden}>
+                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                </Box>
+                            ) : null}
+                        </TableSortLabel>
+                    </StyledTableCell>
+                ))}
+                {/* {headCells.map((headCell) => (
+                    <TableCell
+                        key={headCell.id}
+                        //align={headCell.numeric ? 'right' : 'left'}
+                        //padding={headCell.disablePadding ? 'none' : 'normal'}
+                        sortDirection={orderBy === headCell.id ? order : false}
+                    >
+                        <TableSortLabel
+                            active={orderBy === headCell.id}
+                            direction={orderBy === headCell.id ? order : 'asc'}
+                            onClick={createSortHandler(headCell.id)}
+                        >
+                            {headCell.label}
+                            {orderBy === headCell.id ? (
+                                <Box component="span" sx={visuallyHidden}>
+                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                </Box>
+                            ) : null}
+                        </TableSortLabel>
+                    </TableCell>
+                ))} */}
+            </TableRow>
+        </TableHead>
+    );
+}
+
+
+type ContactsTableProps = {
+    contacts: Contact[],
     //selectedContact: Contact,
     selectedContactId: string,
     setSelectedContact: (contact: Contact) => void
-    handleUpdateContact: (id: string, keyAndValue: {key: string, value: string | number | boolean | File[] | Timestamp | null   }) => void   // obligé de mettre NULL pour la date ! (???)
+    handleUpdateContact: (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => void   // obligé de mettre NULL pour la date ! (???)
     // handleUpdateContact: (updatingContact: Contact) => void
     handleDeleteContact: (id: string) => void
 
     //setSelectedContactId: (id: string) => void
     //setContacts: (contacts: Contact[]) => void
 }
-
 export default function ContactsTable({ contacts, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact
     //setContacts
- }: ContactsTableProps) {
+}: ContactsTableProps) {
+
+    console.log("xxxContacts = ", contacts)
+
+    const [order, setOrder] = React.useState<Order>('asc');
+    const [orderBy, setOrderBy] = React.useState<keyof Data>('businessName');
+    const [selected, setSelected] = React.useState<readonly number[]>([]);
+    //const [page, setPage] = React.useState(0);
+    const [dense, setDense] = React.useState(false);
+    //const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+    const handleRequestSort = (
+        event: React.MouseEvent<unknown>,
+        property: keyof Data,
+    ) => {
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
+    };
 
     //console.log(document.documentElement.clientHeight)
 
@@ -98,24 +276,37 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
         // console.log(a)
 
         //setContacts([...contacts, contacts[selectedContactId].hasBeenCalled = !contacts[selectedContactId].hasBeenCalled])
-        
+
         //setSelectedContact({...selectedContact, hasBeenCalled: !selectedContact.hasBeenCalled})
 
-         //dispatch({type : 'inputsChanging', payload : {...state.editingMovie, name: event.target.value}})
-         //setEditingMovie({...editingMovie, hasBeenCalled: !editingMovie.hasBeenCalled})
+        //dispatch({type : 'inputsChanging', payload : {...state.editingMovie, name: event.target.value}})
+        //setEditingMovie({...editingMovie, hasBeenCalled: !editingMovie.hasBeenCalled})
         //}
     }
 
     const muiTheme = useTheme();
 
-    
+    const visibleRows = React.useMemo(
+        () =>
+            stableSort(contacts, getComparator(order, orderBy))
+        //.slice(
+        //page * rowsPerPage,
+        //page * rowsPerPage + rowsPerPage,
+        //)
+        ,
+        [order, orderBy, contacts
+            //page, rowsPerPage
+        ],
+    );
+
 
     return (
-        <Paper sx={{ width: '100%', 
-        //overflow: 'hidden' 
+        <Paper sx={{
+            width: '100%',
+            //overflow: 'hidden' 
         }}
-        elevation={3}
-        >            
+            elevation={3}
+        >
             {/* <Typography  color='text.main' >Coucou</Typography>
             <Typography  color='secondary.main' >Coucou</Typography> 
             <Typography  //color='secondary.main'
@@ -138,28 +329,23 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
             <Button variant="contained" color="secondary" href= '/testPages/testAutocompletePage'>Coucou !!</Button>  */}
 
             <Typography variant="h5" component="div" sx={{ p: 2 }}>Liste des contacts ({contacts.length})</Typography>
-            <TableContainer 
+            <TableContainer
                 //sx={{ maxHeight: document.documentElement.clientHeight * 0.88 }}   //vh = 1% de la hauteur du viewport (la zone d'affichage).// Ok mais problème avec Vercel !!!               
-                sx={{ maxHeight:  "calc(100vh - 320px)" }} 
-                // sx={{ maxHeight:  "calc(100vh - 185px)" }} 
-                >
+                sx={{ maxHeight: "calc(100vh - 320px)" }}
+            // sx={{ maxHeight:  "calc(100vh - 185px)" }} 
+            >
                 <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                        {/* <TableRow>
-                            <StyledTableCell>Entreprise</StyledTableCell>
-                            <StyledTableCell align="right">Téléphone</StyledTableCell>
-                            <StyledTableCell align="right">Contact (responsalbe/directeur)</StyledTableCell>
-                            <StyledTableCell align="right">Email</StyledTableCell>
-                            <StyledTableCell align="right">Appel (prospection)</StyledTableCell>
-                            <StyledTableCell align="right">Mail envoyé</StyledTableCell>
-                            <StyledTableCell align="right">Mail reçu</StyledTableCell>
-                            <StyledTableCell align="right">Relance (date)</StyledTableCell>
-                            <StyledTableCell align="right">Commentaire</StyledTableCell>
-                            <StyledTableCell align="right">Document envoyé</StyledTableCell>
-                            <StyledTableCell align="right">Intéressés ?</StyledTableCell>
-                        </TableRow> */}
+                    <EnhancedTableHead
+                        numSelected={selected.length}
+                        order={order}
+                        orderBy={orderBy}
+                        //onSelectAllClick={handleSelectAllClick}
+                        onRequestSort={handleRequestSort}
+                    //rowCount={rows.length}
+                    />
+                    {/* <TableHead>                      
                         <TableRow>
-                            {columns.map((column) => (
+                            {headCells.map((column) => (
                                 <StyledTableCell
                                     key={column.id}
                                     align="center"
@@ -172,19 +358,25 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
                                     {column.label}
                                 </StyledTableCell>
                             ))}
-                        </TableRow>
-                    </TableHead>               
+                        </TableRow> 
+                    </TableHead>     */}
                     <TableBody>
-                        {contacts && contacts.map((contact: Contact) => (
-                            <ContactRow key={contact.id} 
-                                contact={contact} 
-                                selectedContactId={selectedContactId} 
-                                setSelectedContact={setSelectedContact}
-                                handleUpdateContact={handleUpdateContact} 
-                                handleDeleteContact={() => handleDeleteContact(contact.id)}
+                        {visibleRows.map((row, index) => {
+                            //const isItemSelected = isSelected(row.id);
+                            const labelId = `enhanced-table-checkbox-${index}`;
+                            console.log(row)
+
+                            return (
+                                <ContactRow key={row.id}
+                                    contact={row}
+                                    selectedContactId={selectedContactId}
+                                    setSelectedContact={setSelectedContact}
+                                    handleUpdateContact={handleUpdateContact}
+                                    handleDeleteContact={() => handleDeleteContact(row.id)}
                                 //setContacts={setContacts} 
-                                />                 
-                        ))}
+                                />
+                            );
+                        })}
                     </TableBody>
                     {/* <TableBody>
                         {contacts.map((contact) => {

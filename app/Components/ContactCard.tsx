@@ -24,6 +24,10 @@ export default function ContactCard({ contact, addContact }: ContactCardProps) {
 
     const [contactToAdd, setContactToAdd] = React.useState<Contact>(contact)
 
+    React.useEffect(() => {
+        setContactToAdd(contact)    // Sinon quand on clic ne change rien !
+    }, [contact])
+
     console.log(contactToAdd)
 
     const handleChangeText = (attribut: keyof Contact) => (event: React.ChangeEvent<HTMLInputElement>) => {

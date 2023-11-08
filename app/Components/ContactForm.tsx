@@ -405,6 +405,7 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
     //////////////////////////////////////////////////////
 
     const handleOnClickBusiness = (business: Contact) => {
+        console.log("setInfo", business)
         setInfosContact(business)
     }
 

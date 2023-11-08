@@ -30,6 +30,7 @@ import { TextField, Select, MenuItem, Autocomplete, ListItem, List, InputLabel, 
 import ContactForm from '../Components/ContactForm';
 import ContactCard from '../Components/ContactCard';
 import ContactsTable from '../Components/ContactsTable';
+import ContactsTable0 from '../Components/ContactsTable0';
 
 import contactsData from '../utils/contacts'
 //import getContacts from '../utils/firebase'
@@ -42,6 +43,7 @@ import { onValue, ref, set } from "firebase/database";
 import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, deleteDoc, updateDoc, doc } from "firebase/firestore";
 import { Dayjs } from 'dayjs';       // npm install dayjs
 import { Timestamp } from 'firebase/firestore';
+import TestTableSortLabel2 from '../Components/TestComponents/TestTableSortLabel2';
 
 
 interface TabPanelProps {
@@ -83,11 +85,13 @@ export default function Contacts() {
     const [selectedContact, setSelectedContact] = React.useState<Contact | { id: string }>({ id: "0" })
     const [loading, setLoading] = React.useState(true)
 
+    console.log("xxxContacts",contacts)
+
     const emptyContact: Contact = {
         id: '',
-        logo: '', 
+        logo: '',
         businessName: '',
-        denominationUsuelleEtablissement: [],      
+        denominationUsuelleEtablissement: [],
         businessActivity: '',
         businessAddress: '',
         businessWebsite: '',
@@ -209,6 +213,7 @@ export default function Contacts() {
                 deleteDoc(doc.ref)
             })
         }).then(() => {
+            console.log("fin de la suppression")
             window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
         })
 
@@ -313,6 +318,8 @@ export default function Contacts() {
     // }
 
     const updatingLocalContacts = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
+        console.log("xxxLOCAL",keyAndValue.key, keyAndValue.value)
+
         let tempUpdatedContacts = contacts.map(contact => {
             return contact.id === id ? { ...contact, [keyAndValue.key]: keyAndValue.value } : contact
         })
@@ -336,7 +343,7 @@ export default function Contacts() {
                 //console.log(doc.data())
                 //console.log(doc.ref)
                 //console.log(doc.id)
-                console.log(keyAndValue.key, keyAndValue.value)
+                console.log("FIREBASE",keyAndValue.key, keyAndValue.value)
                 //docID = doc.id;
                 updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
                     [keyAndValue.key]: keyAndValue.value
@@ -348,6 +355,7 @@ export default function Contacts() {
 
     //const updateContactInContactsAndDB = (updatingContact: Contact) => {     // ou selectedContact
     const updateContactInContactsAndDB = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
+        console.log("updatingContact", id, keyAndValue)
         // 1-On met à jour le tableau en remplaçant l'attribut voulu dans le contact qui a le même id que celui qu'on a sélectionné
         updatingLocalContacts(id, keyAndValue)
         // 2-On met à jour le contact dans la BDD fireStore : firestoreDB
@@ -356,14 +364,11 @@ export default function Contacts() {
 
 
 
-    const [value, setValue] = React.useState(0);
-
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-        setValue(newValue);
-    };
+    // const [value, setValue] = React.useState(0);
+    // const handleChange = (event: React.SyntheticEvent, newValue: number) => { setValue(newValue);  };
 
 
-    return (   
+    return (
         <React.Fragment>
             {loading
                 ? null //<Container>Chargement...</Container>
@@ -384,7 +389,7 @@ export default function Contacts() {
 
                     {/* <FormControl sx={{ my: 2 }}> */}
                     <Box sx={{ display: "flex", justifyContent: "space-around" }}>
-                        <Typography component="div" style={{ display:"block", width:"500px" }} >Pour version d'essai : Pour remettre comme au début cliquer sur ces 2 boutons : (mais ne marche pas tout le temps :)</Typography>
+                        <Typography component="div" style={{ display: "block", width: "500px" }} >Pour version d'essai : Pour remettre comme au début cliquer sur ces 2 boutons : (mais ne marche pas tout le temps :)</Typography>
                         <Button variant="contained" color='warning' onClick={deleteAllDatas}>Supprimer tout !!!</Button>
                         <Button variant="contained" color='ochre' onClick={addData}>Ajouter Contacts du fichier (comme au début)</Button>
                     </Box>
@@ -395,7 +400,7 @@ export default function Contacts() {
                 </FormControl> */}
 
 
-  {/* Impossible mettre ce qu'on veut dans les TAB car => ERROR => app-index.js:31 Warning: validateDOMNesting(...): <p> cannot appear as a descendant of <p>.*/} 
+                    {/* Impossible mettre ce qu'on veut dans les TAB car => ERROR => app-index.js:31 Warning: validateDOMNesting(...): <p> cannot appear as a descendant of <p>.*/}
                     {/* <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                             <Tab label="Item One" {...a11yProps(0)} />
@@ -415,9 +420,9 @@ export default function Contacts() {
 
 
 
-                    <Accordion sx={{ 
+                    <Accordion sx={{
                         //my: 2
-                     }}>
+                    }}>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
                             aria-controls="panel1a-content"
@@ -428,7 +433,7 @@ export default function Contacts() {
                             >Nouveau Contact avec recherche (cliquer pour ouvrir et pour fermer)</Typography>
                         </AccordionSummary>
                         <AccordionDetails>
-                           <ContactForm emptyContact={emptyContact} addContact={addContact} />
+                            <ContactForm emptyContact={emptyContact} addContact={addContact} />
                             {/*  <ContactCard addContact={addContact} contact={emptyContact} /> */}
                         </AccordionDetails>
                     </Accordion>
@@ -443,7 +448,7 @@ export default function Contacts() {
                             >Nouveau Contact en partant de zéro (cliquer pour ouvrir et pour fermer)</Typography>
                         </AccordionSummary>
                         <AccordionDetails>
-                             <ContactCard addContact={addContact} contact={emptyContact} />
+                            <ContactCard addContact={addContact} contact={emptyContact} />
                         </AccordionDetails>
                     </Accordion>
 
@@ -466,8 +471,16 @@ export default function Contacts() {
                     //setContacts={setContacts}
                     //orderedBy={orderedBy} 
                     />
-
-                    {/* </div> */}
+                    <ContactsTable0
+                        contacts={contacts}
+                        selectedContactId={selectedContact.id}
+                        setSelectedContact={setSelectedContact}
+                        handleUpdateContact={updateContactInContactsAndDB}
+                        handleDeleteContact={deleteContact}
+                    //setContacts={setContacts}
+                    //orderedBy={orderedBy} 
+                    />
+                    <TestTableSortLabel2 contacts={contacts} selectedContactId={selectedContact.id} setSelectedContact={setSelectedContact} handleUpdateContact={updateContactInContactsAndDB} handleDeleteContact={deleteContact} />
                 </Box>
             }
         </React.Fragment>
