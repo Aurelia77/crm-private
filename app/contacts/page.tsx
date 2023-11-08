@@ -471,7 +471,7 @@ export default function Contacts() {
                     //setContacts={setContacts}
                     //orderedBy={orderedBy} 
                     />
-                    <ContactsTable0
+                    {/* <ContactsTable0
                         contacts={contacts}
                         selectedContactId={selectedContact.id}
                         setSelectedContact={setSelectedContact}
@@ -480,7 +480,7 @@ export default function Contacts() {
                     //setContacts={setContacts}
                     //orderedBy={orderedBy} 
                     />
-                    <TestTableSortLabel2 contacts={contacts} selectedContactId={selectedContact.id} setSelectedContact={setSelectedContact} handleUpdateContact={updateContactInContactsAndDB} handleDeleteContact={deleteContact} />
+                    <TestTableSortLabel2 contacts={contacts} selectedContactId={selectedContact.id} setSelectedContact={setSelectedContact} handleUpdateContact={updateContactInContactsAndDB} handleDeleteContact={deleteContact} /> */}
                 </Box>
             }
         </React.Fragment>
