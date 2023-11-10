@@ -8,6 +8,8 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set } from "firebase/database";
 import { getFirestore } from 'firebase/firestore';
+import { getAuth } from "firebase/auth";
+
 
 
 // import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
@@ -39,6 +41,13 @@ export const realtimeDb = getDatabase(app);
 
 // Ou avec FireStore
 export const fireStoreDb = getFirestore(app);
+
+// Initialize Firebase Authentication and get a reference to the service
+export const auth = getAuth(app);
+
+
+
+
 
 // function writeContactData(contactId: string, name: string, email: string, imageUrl: string) {
 //   const db = getDatabase()

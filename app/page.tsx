@@ -27,7 +27,6 @@ export default function Home() {
         <Button variant="contained" color="secondary"  href= '/testPages/testUseEffectPage' >Test Page</Button>
         <Button variant="contained" color="ochre" href= '/testPages/testAutocompletePage'>Autocomplete</Button> 
         <Button variant="contained" color="primary" href= '/testPages/testTableSortLabel'>TestTableSortLabel OK</Button> 
-        <Button variant="contained" color="ochre" href= '/testPages/testTableSortLabel2'>TestTableSortLabel ???</Button> 
       </Stack>      
   )
 }

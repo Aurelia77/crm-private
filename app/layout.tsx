@@ -4,7 +4,7 @@
 import './globals.css'
 
 import { ThemeProvider, createTheme, PaletteOptions } from "@mui/material/styles";
-import { cyan, pink, yellow } from "@mui/material/colors";
+import { cyan, grey, pink, yellow, deepOrange, lightGreen, green, teal, lime } from "@mui/material/colors";
 
 //import { makeStyles } from '@mui/styles';     // npm install @mui/styles
 
@@ -13,16 +13,18 @@ import { cyan, pink, yellow } from "@mui/material/colors";
 // Pour ajouter une nouvelle couleur à la palette
 // Augment the palette to include an ochre color
 declare module '@mui/material/styles' {
-  interface Palette {
+  interface Palette {    // Pour pouvoir récupérer ces couleurs dans les composants en faisant par exemple : color=muiTheme.palette.ochre.main
     ochre: Palette['primary'];
     gray: Palette['primary'];
     pink: Palette['primary'];
+    lightCyan: Palette['primary'];
   }
   interface PaletteOptions {
-    ochre?: PaletteOptions['primary'];
-    gray?: PaletteOptions['primary'];
-    pink?: PaletteOptions['primary'];
-  }
+     ochre?: PaletteOptions['primary'];  
+     gray?: PaletteOptions['primary'];
+     pink?: PaletteOptions['primary'];
+     lightCyan?: PaletteOptions['primary'];
+ }
 
 }
 // Update the Button's color options to include an ochre option
@@ -30,22 +32,24 @@ declare module '@mui/material/Button' {
   interface ButtonPropsColorOverrides {
     ochre: true;
     gray: true;
+    pink: true;
+    lightCyan: true;
   }
 }
-
-
-
 
 const muiTheme = createTheme({    // Tout ce qu'on ne redéfinit pas reste par défaut
   palette: {
     // Généralement PRIMARY = bleu et SECONDARY = rose
-    primary: {
-      main: cyan[500], // A partir de 700 la couleur du texte devient blanche pour les boutons MUI sur CYAN...
-      //main: pink[700], // A partir de 700 la couleur du texte devient blanche pour les boutons MUI sur CYAN...
-    },
-    secondary: {
-      main: yellow[800]
-    },
+    primary: cyan,
+    secondary: deepOrange,
+    // primary: {
+    //   main: cyan[500], // A partir de 700 la couleur du texte devient blanche pour les boutons MUI sur CYAN...
+    //   //main: pink[700], 
+    // },
+    // secondary: {
+    //   main: yellow[800]
+    // },
+    success: green,  //lime, // teal,
     ochre: {
       main: '#E3D026',
       light: '#E9DB5D',
@@ -61,8 +65,11 @@ const muiTheme = createTheme({    // Tout ce qu'on ne redéfinit pas reste par d
     pink: {
       main: pink[700],
     },
+    lightCyan: {
+      light: cyan[50],
+      main: cyan[100],
+    },
   },
-
   typography: {
     fontFamily: 'comic sans ms, Roboto, Arial',
     //fontSize: 20,
@@ -70,13 +77,15 @@ const muiTheme = createTheme({    // Tout ce qu'on ne redéfinit pas reste par d
     // fontFamily: 'Raleway, Arial',
 
   },
-
   components: {
     // Demande d'ajouter 3 petits points à la fin du texte si il est trop long
     MuiTextField: {
-      // defaultProps: {
-      //   variant:"standard"
-      // },
+      defaultProps: {
+        variant:"standard",        
+        InputProps: {
+          //disableUnderline: true,
+        },
+      },
       styleOverrides: {
         "root": {
           //variant:"standard",        
@@ -88,7 +97,6 @@ const muiTheme = createTheme({    // Tout ce qu'on ne redéfinit pas reste par d
         },
       }
     },
-
     MuiTableRow: {
       defaultProps: {
         // The props to change the default for.
@@ -102,15 +110,16 @@ const muiTheme = createTheme({    // Tout ce qu'on ne redéfinit pas reste par d
             //opacity: 0.5,
           },
           "&:hover": {
-             "backgroundColor": "#DDD",
-            //"backgroundColor": "gray.main",   // Marche pas
+             //"backgroundColor": "#DDD",
+            "backgroundColor": "muiTheme.gray.main",   // Marche pas
             //"color": "#242105"
           },          
           "&.Mui-selected": {
-            "backgroundColor": "secondary.main",    // Marche pas, utilise tout le temps la couleur primaire très claire
-            "color": "#CCC",                         // Marche pas non plus
-            "border": "2px solid #CCC",
-            "&:hover": {"backgroundColor": "secondary.dark", },
+           // "backgroundColor": "blue",    // Marche pas, utilise tout le temps la couleur primaire très claire
+           // "backgroundColor": "secondary.main",    // Marche pas, utilise tout le temps la couleur primaire très claire
+           // "color": "#CCC",                         // Marche pas non plus
+           // "border": "2px solid #CCC",
+           // "&:hover": {"backgroundColor": "secondary.dark", },
             //"&.Mui-focusVisible": { background: "orange" }     // Marche pas non plus !
           },
         },

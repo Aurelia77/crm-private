@@ -15,8 +15,16 @@ import { useTheme } from '@mui/material/styles';
 import { Dayjs } from 'dayjs';       // npm install dayjs
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { visuallyHidden } from '@mui/utils';    // pnpm install @mui/utils
-
-
+import CallRoundedIcon from '@mui/icons-material/CallRounded';
+import MailIcon from '@mui/icons-material/Mail';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
+import AccessAlarmRoundedIcon from '@mui/icons-material/AccessAlarmRounded';
+import CommentRoundedIcon from '@mui/icons-material/CommentRounded';
+import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
+import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
+import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
+import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
 
 
 
@@ -27,65 +35,36 @@ import { Timestamp } from 'firebase/firestore';
 
 
 interface Column {
-    id: 'logo' | 'businessName' | 'contactPhone' | 'contactName' | 'contactEmail' | 'hasBeenCalled' | 'hasBeenSentEmail' | 'hasReceivedEmail' | 'dateOfNextCall' | 'comments' | 'fileSent' | 'interestGauge' | 'supprimer'
-    label: string
+    id: keyof Contact   // | "supprimer"
+    label: string | JSX.Element
     minWidth?: number | string
     //align?: 'right'
     format?: (value: number) => string
 }
 
-//const NB_COL = 12
-//const colWidth = 100 / (NB_COL + 2) + "vw"
 
 const headCells: readonly Column[] = [               // readonly ???
-
+    { id: 'isClient', label: 'Client ?', minWidth: "5em", },
+    { id: 'logo', label: '', minWidth: "5em", },
+    { id: 'businessName', label: 'Entreprise', minWidth: "15em", },
+    { id: 'businessCity', label: 'Ville', minWidth: "10em", },
+    { id: 'contactPhone', label: <CallRoundedIcon fontSize='large' />, minWidth: "15em", },
     {
-        id: 'logo', label: '', minWidth: "5em",
-    },
-    {
-        id: 'businessName', label: 'Entreprise', minWidth: "15em",
-    },
-    {
-        id: 'contactPhone', label: 'Téléphone', minWidth: "15em",
-    },
-    {
-        id: 'contactName', label: 'Contact' // (responsalbe/directeur)'
-        , minWidth: "15em",
+        id: 'contactName', label: <AccountCircleRoundedIcon fontSize='large' />, minWidth: "15em",
         //align: 'right', 
         //format: (value: number) => value.toLocaleString('en-US'),
     },
+    { id: 'contactEmail', label: <MailIcon fontSize='large' />, minWidth: "15em", },
     {
-        id: 'contactEmail', label: 'Email', minWidth: "15em",
-        //align: 'right', 
-        //format: (value: number) => value.toLocaleString('en-US'),
-    },
-    {
-        id: 'hasBeenCalled', label: 'Appel ?'// (prospection)'
+        id: 'hasBeenCalled', label: <Box><CallRoundedIcon fontSize='large' /><QuestionMarkIcon /></Box>
         , minWidth: "5em",
-        //align: 'right', 
-        //format: (value: number) => value.toFixed(2),
     },
-    {
-        id: 'hasBeenSentEmail', label: 'Mail envoyé ?', minWidth: "5em",
-    },
-    {
-        id: 'hasReceivedEmail', label: 'Mail reçu ?', minWidth: "5em",
-    },
-    {
-        id: 'dateOfNextCall', label: 'Relance (date)', minWidth: "18em",
-    },
-    {
-        id: 'comments', label: 'Commentaires', minWidth: "10em",
-    },
-    {
-        id: 'fileSent', label: 'Document(s) envoyé(s)', minWidth: "10em",
-    },
-    {
-        id: 'interestGauge', label: 'Intéressés', minWidth: "5em",
-    },
-    {
-        id: 'supprimer', label: 'Supprimer ?', minWidth: "5em",
-    },
+    { id: 'hasBeenSentEmail', label: <Box><MailIcon fontSize='large' /><QuestionMarkIcon /></Box>, minWidth: "5em", },
+    { id: 'dateOfNextCall', label: <AccessAlarmRoundedIcon fontSize='large' />, minWidth: "18em", },
+    { id: 'comments', label: <CommentRoundedIcon fontSize='large' />, minWidth: "10em", },
+    { id: 'filesSent', label: <AttachFileRoundedIcon fontSize='large' />, minWidth: "10em", },
+    { id: 'interestGauge', label: <FavoriteRoundedIcon fontSize='large' />, minWidth: "5em", },
+    // { id: 'supprimer', label: 'Supprimer ?', minWidth: "5em", },
 ];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -97,9 +76,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     }
     return 0;
 }
-
 type Order = 'asc' | 'desc';
-
 function getComparator<Key extends keyof any>(
     order: Order,
     orderBy: Key,
@@ -111,7 +88,6 @@ function getComparator<Key extends keyof any>(
         ? (a, b) => descendingComparator(a, b, orderBy)
         : (a, b) => -descendingComparator(a, b, orderBy);
 }
-
 // Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
 // stableSort() brings sort stability to non-modern browsers (notably IE11). If you
 // only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
@@ -129,26 +105,9 @@ function stableSort(array: Contact[], comparator: (a: any, b: any) => number) { 
     });
     return stabilizedThis.map((el) => el[0]);
 }
-
-interface Data {    // ??????????????
-    logo: string;
-    businessName: string;
-    contactPhone: string;
-    contactName: string;
-    contactEmail: string;
-    hasBeenCalled: boolean;
-    hasBeenSentEmail: boolean;
-    hasReceivedEmail: boolean;
-    dateOfNextCall: string;
-    comments: string;
-    fileSent: string;
-    interestGauge: number;
-    supprimer: string;
-}
-
 interface EnhancedTableProps {
     numSelected: number;
-    onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
+    onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Contact) => void;
     //onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
     order: Order;
     orderBy: string;
@@ -161,10 +120,9 @@ function EnhancedTableHead(props: EnhancedTableProps) {
         //rowCount,
         onRequestSort } = props;
     const createSortHandler =
-        (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
+        (property: keyof Contact) => (event: React.MouseEvent<unknown>) => {
             onRequestSort(event, property);
         };
-
     return (
         <TableHead>
             <TableRow>
@@ -184,7 +142,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
                         key={headCell.id}
                         //align={headCell.numeric ? 'right' : 'left'}
                         //padding={headCell.disablePadding ? 'none' : 'normal'}
-                        align="center"
+                        //align="center"
                         style={{
                             minWidth: headCell.minWidth,
                             padding: 0
@@ -206,6 +164,19 @@ function EnhancedTableHead(props: EnhancedTableProps) {
                         </TableSortLabel>
                     </StyledTableCell>
                 ))}
+                <StyledTableCell
+                    key="supprimer"
+                    //align={headCell.numeric ? 'right' : 'left'}
+                    //padding={headCell.disablePadding ? 'none' : 'normal'}
+                    align="center"
+                // style={{
+                //     minWidth: headCell.minWidth,
+                //     padding: 0
+                //     //minWidth: colWidth,
+                // }}
+                // sortDirection={orderBy === headCell.id ? order : false}
+                ><Box><DeleteForeverRoundedIcon /><QuestionMarkIcon /></Box>
+                </StyledTableCell>
                 {/* {headCells.map((headCell) => (
                     <TableCell
                         key={headCell.id}
@@ -252,7 +223,7 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
     console.log("xxxContacts = ", contacts)
 
     const [order, setOrder] = React.useState<Order>('asc');
-    const [orderBy, setOrderBy] = React.useState<keyof Data>('businessName');
+    const [orderBy, setOrderBy] = React.useState<keyof Contact>('businessName');
     const [selected, setSelected] = React.useState<readonly number[]>([]);
     //const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
@@ -260,7 +231,7 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
 
     const handleRequestSort = (
         event: React.MouseEvent<unknown>,
-        property: keyof Data,
+        property: keyof Contact,
     ) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -299,6 +270,24 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
         ],
     );
 
+    // // Pour tester les Grilles (Data Grid) car possibilité de filtrer, mais pas avec options ! Et on pt pas mettre d'icones dans les titres de colonnes je crois. Et puis je veux pas tout refaire donc je vais filtrer sur le tableau :)
+    // const rows: GridRowsProp = contacts
+    // const columns: GridColDef[] = [
+    //     { field: 'isClient', headerName: 'Client ?', width: 150 },
+    //     { field: 'logo', headerName: '', width: 150 },
+    //     { field: 'businessName', headerName: 'Entreprise', },
+    //     { field: 'businessCity', headerName: 'Ville', },
+    //     { field: 'contactPhone', headerName: 'contactPhone', },
+    //     { field: 'contactName', headerName: 'contactName', },
+    //     { field: 'contactEmail', headerName: 'contactEmail', },
+    //     { field: 'hasBeenCalled', headerName: 'hasBeenCalled', },
+    //     { field: 'hasBeenSentEmail', headerName: 'hasBeenSentEmail', },
+    //     { field: 'dateOfNextCall', headerName: 'dateOfNextCall', },
+    //     { field: 'comments', headerName: 'comments', },
+    //     { field: 'filesSent', headerName: 'filesSent', },
+    //     { field: 'interestGauge', headerName: 'interestGauge', },
+    // ];
+
 
     return (
         <Paper sx={{
@@ -307,6 +296,10 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
         }}
             elevation={3}
         >
+            {/* <div style={{ height: 400, width: '100%' }}>
+                <DataGrid rows={rows} columns={columns} />
+            </div> */}
+            
             {/* <Typography  color='text.main' >Coucou</Typography>
             <Typography  color='secondary.main' >Coucou</Typography> 
             <Typography  //color='secondary.main'
@@ -364,7 +357,7 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
                         {visibleRows.map((row, index) => {
                             //const isItemSelected = isSelected(row.id);
                             const labelId = `enhanced-table-checkbox-${index}`;
-                            console.log(row)
+                            //console.log(row)
 
                             return (
                                 <ContactRow key={row.id}

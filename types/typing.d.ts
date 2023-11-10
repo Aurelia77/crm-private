@@ -1,5 +1,6 @@
 type Contact = {
     id : string,
+    isClient : boolean,
     logo : string,
     businessName : string,
     denominationUsuelleEtablissement  : string[],
@@ -13,9 +14,8 @@ type Contact = {
     contactPhone : string,
     contactEmail : string,
     contactPosition : string,
-    hasBeenCalled: boolean,
-    hasBeenSentEmail: boolean,
-    hasReceivedEmail: boolean,
+    hasBeenCalled: 0 | 1 | 2,       // "no" | "yes but no answer" | "yes and answered",
+    hasBeenSentEmail: 0 | 1 | 2,       // "no" | "yes" | "yes and received",
     filesSent: File[] | [],
     //fileSent: File | null,
     tag : string[],

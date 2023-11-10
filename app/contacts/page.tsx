@@ -30,7 +30,10 @@ import { TextField, Select, MenuItem, Autocomplete, ListItem, List, InputLabel, 
 import ContactForm from '../Components/ContactForm';
 import ContactCard from '../Components/ContactCard';
 import ContactsTable from '../Components/ContactsTable';
-import ContactsTable0 from '../Components/ContactsTable0';
+import ContactsTable0 from '../Components/ContactsTableSansTri';
+import SignIn from '../Components/auth/SignIn';
+import SignUp from '../Components/auth/SignUp';
+import AuthDetails from '../Components/AuthDetails';
 
 import contactsData from '../utils/contacts'
 //import getContacts from '../utils/firebase'
@@ -89,6 +92,7 @@ export default function Contacts() {
 
     const emptyContact: Contact = {
         id: '',
+        isClient : false,
         logo: '',
         businessName: '',
         denominationUsuelleEtablissement: [],
@@ -102,9 +106,8 @@ export default function Contacts() {
         contactPhone: '',
         contactEmail: '',
         contactPosition: '',
-        hasBeenCalled: false,
-        hasBeenSentEmail: false,
-        hasReceivedEmail: false,
+        hasBeenCalled: 0,
+        hasBeenSentEmail: 0,
         filesSent: [],
         tag: [],
         interestGauge: null, // Marche ps ???1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, 
@@ -116,7 +119,6 @@ export default function Contacts() {
 
     //console.log(selectedContact)
     //console.log(contacts)
-
 
 
 
@@ -189,7 +191,6 @@ export default function Contacts() {
     }
 
     const addContact = (contact: Contact) => {
-
         console.log("add contact", contact)
 
         console.log({ ...contact, id: uid() })
@@ -202,16 +203,21 @@ export default function Contacts() {
         //window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
     }
 
-
     const deleteAllDatas = () => {
         console.log("DELETING !")
         const q = query(collection(fireStoreDb, "contacts"));
+        
         getDocs(q).then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                console.log(doc.data())
-                console.log(doc.ref)
-                deleteDoc(doc.ref)
-            })
+            
+            const deletePromises = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
+            return Promise.all(deletePromises);
+            
+            // 2 lignes ci-dessus au lieu de ça => a l'air de fonctionné à chaque fois... Sinon pas tjs ! (donné par GitCopilot)
+            // querySnapshot.forEach((doc) => {
+            //     console.log(doc.data())
+            //     console.log(doc.ref)
+            //     deleteDoc(doc.ref)
+            // })
         }).then(() => {
             console.log("fin de la suppression")
             window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
@@ -233,24 +239,24 @@ export default function Contacts() {
         // });
     }
 
-
     const deleteContact = (contactId: string) => {
         const q = query(collection(fireStoreDb, "contacts"), where("id", "==", contactId));
         getDocs(q).then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                console.log(doc.data())
-                console.log(doc.ref)
-                deleteDoc(doc.ref)
-            })
+            const deletePromises = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
+            return Promise.all(deletePromises);
+
+            // 2 lignes ci-dessus au lieu de ça => a l'air de fonctionné à chaque fois... Sinon pas tjs ! (donné par GitCopilot) => Pourtant qu'un seul doc à supprimer donc nécessaire d'avoir Promise.all ????
+            // querySnapshot.forEach((doc) => {
+            //     console.log(doc.data())
+            //     console.log(doc.ref)
+            //     deleteDoc(doc.ref)
+            // })
         }).then(() => {
             window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
         })
     }
 
-
-
-
-    // Read  
+    // Read the data from firestoreDB + SetContacts 
     React.useEffect(() => {
         // DOC Firebase : https://firebase.google.com/docs/firestore/query-data/get-data?hl=fr
         // const querySnapshot = await getDocs(collection(db, "cities"));
@@ -317,6 +323,7 @@ export default function Contacts() {
     //     })   
     // }
 
+    // 2 fonctions pour mettre à jour le contact dans le tableau contacts et dans la BDD fireStore : firestoreDB
     const updatingLocalContacts = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
         console.log("xxxLOCAL",keyAndValue.key, keyAndValue.value)
 
@@ -352,7 +359,6 @@ export default function Contacts() {
             })
         })
     }
-
     //const updateContactInContactsAndDB = (updatingContact: Contact) => {     // ou selectedContact
     const updateContactInContactsAndDB = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
         console.log("updatingContact", id, keyAndValue)
@@ -387,9 +393,15 @@ export default function Contacts() {
                 </Stack> */}
 
 
+
+                    {/* <SignIn />
+                    <SignUp />
+                    <AuthDetails /> */}
+
+
                     {/* <FormControl sx={{ my: 2 }}> */}
                     <Box sx={{ display: "flex", justifyContent: "space-around" }}>
-                        <Typography component="div" style={{ display: "block", width: "500px" }} >Pour version d'essai : Pour remettre comme au début cliquer sur ces 2 boutons : (mais ne marche pas tout le temps :)</Typography>
+                        <Typography component="div" style={{ display: "block", width: "500px" }} >Pour version d'essai : Pour remettre comme au début cliquer sur ces 2 boutons à droite : </Typography>
                         <Button variant="contained" color='warning' onClick={deleteAllDatas}>Supprimer tout !!!</Button>
                         <Button variant="contained" color='ochre' onClick={addData}>Ajouter Contacts du fichier (comme au début)</Button>
                     </Box>
@@ -470,17 +482,8 @@ export default function Contacts() {
                         handleDeleteContact={deleteContact}
                     //setContacts={setContacts}
                     //orderedBy={orderedBy} 
-                    />
-                    {/* <ContactsTable0
-                        contacts={contacts}
-                        selectedContactId={selectedContact.id}
-                        setSelectedContact={setSelectedContact}
-                        handleUpdateContact={updateContactInContactsAndDB}
-                        handleDeleteContact={deleteContact}
-                    //setContacts={setContacts}
-                    //orderedBy={orderedBy} 
-                    />
-                    <TestTableSortLabel2 contacts={contacts} selectedContactId={selectedContact.id} setSelectedContact={setSelectedContact} handleUpdateContact={updateContactInContactsAndDB} handleDeleteContact={deleteContact} /> */}
+                    />              
+                    {/* <TestTableSortLabel2 contacts={contacts} selectedContactId={selectedContact.id} setSelectedContact={setSelectedContact} handleUpdateContact={updateContactInContactsAndDB} handleDeleteContact={deleteContact} /> */}
                 </Box>
             }
         </React.Fragment>

@@ -46,6 +46,17 @@ import ClearIcon from '@mui/icons-material/Clear';
 import Modal from '@mui/material/Modal';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import CallIcon from '@mui/icons-material/Call';
+import CallRoundedIcon from '@mui/icons-material/CallRounded';
+import Switch from '@mui/material/Switch';
+import HandshakeIcon from '@mui/icons-material/Handshake';
+import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
+import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
+import Avatar from '@mui/material/Avatar';
+import MailIcon from '@mui/icons-material/Mail';
+import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+
 
 
 import { StyledTableRow, StyledTableCell } from './StyledComponents';
@@ -57,45 +68,55 @@ import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied
 import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAltOutlined';
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
+import { colors } from '@mui/material';
 
+
+// Pour les smileys du RATING 
+// => (dans le composant car besoin de connaitre la donnée pour ajuster la taille en fonction)  NON car sinon il faut cliquer 2 fois pour que ça valide !!!  
 const StyledRating = styled(Rating)(({ theme }) => ({
-  '& .MuiRating-iconEmpty .MuiSvgIcon-root': {
-    color: theme.palette.action.disabled,
-  },
-}));
-
+    '& .MuiRating-iconEmpty .MuiSvgIcon-root': {
+        color: theme.palette.action.disabled,
+    },
+}))
 const customIcons: {
-  [index: string]: {
-    icon: React.ReactElement;
-    label: string;
-  };
+    [index: string]: { icon: React.ReactElement; label: string;};
 } = {
-  1: {
-    icon: <SentimentVeryDissatisfiedIcon color="error" />,
-    label: 'Very Dissatisfied',
-  },
-  2: {
-    icon: <SentimentDissatisfiedIcon color="error" />,
-    label: 'Dissatisfied',
-  },
-  3: {
-    icon: <SentimentSatisfiedIcon color="warning" />,
-    label: 'Neutral',
-  },
-  4: {
-    icon: <SentimentSatisfiedAltIcon color="success" />,
-    label: 'Satisfied',
-  },
-  5: {
-    icon: <SentimentVerySatisfiedIcon color="success" />,
-    label: 'Very Satisfied',
-  },
+    1: {
+        icon: <SentimentVeryDissatisfiedIcon color="error" 
+            //fontSize={contact.interestGauge === 1 ? 'large' : 'small'} 
+            />,
+        label: 'Very Dissatisfied',
+    },
+    2: {
+        icon: <SentimentDissatisfiedIcon color="warning" 
+            //fontSize={contact.interestGauge === 2 ? 'large' : 'small'} 
+            />,
+        label: 'Dissatisfied',
+    },
+    3: {
+        icon: <SentimentSatisfiedIcon color="secondary" 
+            //fontSize={contact.interestGauge === 3 ? 'large' : 'small'} 
+            />,
+        label: 'Neutral',
+    },
+    4: {
+        icon: <SentimentSatisfiedAltIcon color="primary" 
+        //fontSize={contact.interestGauge === 4 ? 'large' : 'small'} 
+        />,
+        label: 'Satisfied',
+    },
+    5: {
+        icon: <SentimentVerySatisfiedIcon color="success" 
+        //fontSize={contact.interestGauge === 5 ? 'large' : 'small'} 
+        />,
+        label: 'Very Satisfied',
+    },
 };
-
 function IconContainer(props: IconContainerProps) {
-  const { value, ...other } = props;
-  return <span {...other}>{customIcons[value].icon}</span>;
+    const { value, ...other } = props;
+    return <span {...other}>{customIcons[value].icon}</span>;
 }
+
 
 
 
@@ -123,16 +144,77 @@ type ContactRowProps = {
     //handleUpdateContact: (contact: Contact) => void
     handleDeleteContact: () => void
 }
-
-
-
 export default function ContactRow({ contact, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact
 }: ContactRowProps) {
 
-    //console.log(contact)
-    console.log("xxxhandleUpdateContact", handleUpdateContact)
-
     const muiTheme = useTheme();
+
+    
+    //console.log(contact)
+    //console.log("xxxhandleUpdateContact", handleUpdateContact)
+
+    // Renvoie la bonne icone selon l'état de hasBeenCalled (non envoyé, envoyé, lu...)
+    const RightMailIcon = ({ hasBeenSentEmail }: { hasBeenSentEmail: 0 | 1 | 2 }) => {
+        switch (hasBeenSentEmail) {
+            case 1: return <MarkEmailReadIcon color='success' />
+            case 2: return <MailIcon sx={{ color: muiTheme.palette.ochre.main }} />
+            default: return <MailOutlineIcon sx={{ color: muiTheme.palette.gray.main }} />
+        }
+    }
+
+    const getIconStyle = (hasBeenDone: 0 | 1 | 2) => {
+        //console.log("xxxusePhoneIconStyle")
+        switch (hasBeenDone) {
+            case 1:
+                return muiTheme.palette.success.main;
+            case 2:
+                return muiTheme.palette.ochre.main;
+            default:
+                return muiTheme.palette.gray.main;
+        }
+    };
+
+    // Pour utiliser un icon différent selon hasBeenCalled = 0, 1 ou 2
+    // const RightPhoneIcon = ({ hasBeenCalled }: { hasBeenCalled: 0 | 1 | 2 }) => {
+    //     switch (hasBeenCalled) {
+    //         case 2:
+    //             return <Avatar sx={{
+    //                 bgcolor: "white",
+    //                 border: `3px solid ${muiTheme.palette.success.main}`,
+    //             }} >
+    //                 <CallRoundedIcon //color='gray'      // fonctionne mais me souligne en rouge !!!
+    //                     sx={{
+    //                         color: muiTheme.palette.success.main,
+    //                     }}
+    //                 />
+    //             </Avatar>
+    //         case 1:
+    //             return <Avatar sx={{
+    //                 //bgcolor: deepOrange[500] 
+    //                 border: `3px solid ${muiTheme.palette.ochre.main}`,
+    //             }} >
+    //                 <CallRoundedIcon  //color='gray'      // fonctionne mais me souligne en rouge !!!
+    //                     sx={{
+    //                         color: muiTheme.palette.ochre.main,
+    //                     }}
+    //                 />
+    //             </Avatar>
+    //         case 0:
+    //             return <Avatar sx={{
+    //                 //bgcolor: deepOrange[500] 
+    //                 border: "1px solid gray",
+    //             }} >
+    //                 <CallRoundedIcon //color='gray'      // fonctionne mais me souligne en rouge !!!
+    //                     sx={{
+    //                         color: muiTheme.palette.gray.main,
+    //                     }}
+    //                 />
+    //             </Avatar>
+    //         // default:     // Pas besoin car seulement 3 cas possibles !
+
+    //     }
+    // }
+
 
     const handleChangeText = (attribut: keyof Contact) => (event: React.ChangeEvent<HTMLInputElement>) => {
         //console.log("event.target.value", event.target.value)
@@ -185,11 +267,12 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     // };
 
     const handleChangeInterestGauge = (newGauge: number | null) => {
+        console.log(newGauge);      // Obligé de mettre ; sinon erreur !!! (Uncaught TypeError: console.log(...) is not a function)
         //newGauge && console.log(newGauge)
 
         (newGauge && (newGauge > 5 || newGauge < 0))
-            ?  alert("Doit être entre 0 et 5 !")
-            :  handleUpdateContact(contact.id, { key: "interestGauge", value: newGauge })
+            ? alert("Doit être entre 0 et 5 !")
+            : handleUpdateContact(contact.id, { key: "interestGauge", value: newGauge })
     }
     // const handleChangeInterestGauge2 = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     //     console.log(event.target.value)
@@ -225,8 +308,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         border: '2px solid #000',
         boxShadow: 24,
         p: 4,
-      };
-      
+    };
+
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
     const handleOpenDeleteModal = () => setOpenDeleteModal(true);
     const handleCloseDeleteModal = () => setOpenDeleteModal(false);
@@ -236,15 +319,40 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         handleCloseCommentDialog()
     }
 
+    const handleClickHasBeenCalled = () => {
+        handleUpdateContact(contact.id, { key: "hasBeenCalled", value: contact.hasBeenCalled === 0 ? 1 : contact.hasBeenCalled === 1 ? 2 : 0 })
+    }
+    const handleClickHasBeenSentEmail = () => {
+        handleUpdateContact(contact.id, { key: "hasBeenSentEmail", value: contact.hasBeenSentEmail === 0 ? 1 : contact.hasBeenSentEmail === 1 ? 2 : 0 })
+    }
+
 
     return (
 
         <StyledTableRow
+            // className= "tableRowSelected"
             //hover 
             key={contact.id} selected={selectedContactId === contact.id ? true : false}
             //className={selectedContactId === contact.id ? 'tableRowSelected bg-cyan-400 ' : 'bg-yellow-200'}      // CYAN ne s'affiche pas, mais jaune oui
             onClick={() => setSelectedContact(contact)}
+            style={{
+                //backgroundColor: contact.isClient ? muiTheme.palette.primary.light : muiTheme.palette.ochre.light 
+                //color: "blue" //contact.isClient ? "primary.main" : "secondary.main"
+            }}
+        //className='demo'
         >
+
+
+            {/* Client ? */}
+            <StyledTableCell component="th" scope="row" >
+                <Switch
+                    checked={contact.isClient}
+                    onChange={() => handleUpdateContact(contact.id, { key: "isClient", value: !contact.isClient })}
+                    color="success"
+                    inputProps={{ 'aria-label': 'controlled' }}
+                />
+            </StyledTableCell>
+
             {/* LOGO */}
             <StyledTableCell component="th" scope="row" >
                 {/* <TextField type="file" onChange={handleChangeLogo2} /> */}
@@ -260,29 +368,47 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 <TextField id="standard-basic" //label="Nom de l'entreprise"    
                     value={contact.businessName}
                     onChange={handleChangeText('businessName')}
-                    variant="standard"
                     InputProps={{
-                        startAdornment: <AccountCircle />,
-                        disableUnderline: true,
+                        startAdornment: contact.isClient ? <HandshakeOutlinedIcon color='success' fontSize='large' /> : <PsychologyAltIcon
+                            //color='gray'      // foncitonne mais me souligne en rouge !!!
+                            sx={{
+                                color: muiTheme.palette.gray.main,
+                            }}
+                            fontSize='large' />,
+                        disableUnderline: contact.businessName.length > 0,
                     }}
                 />
-                <TextField id="standard-basic"
+                {/* <TextField id="standard-basic"
                     value={contact.businessCity}
                     onChange={handleChangeText('businessCity')}
-                    variant="standard"
                     InputProps={{
                         disableUnderline: true,
                     }}
                     inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
+                /> */}
+            </StyledTableCell>
+
+            {/* businessCity */}
+            <StyledTableCell component="th" scope="row" >               
+                <TextField id="standard-basic"
+                    value={contact.businessCity}
+                    onChange={handleChangeText('businessCity')}
+                    InputProps={{
+                        disableUnderline: contact.businessCity.length > 0
+                    }}
+                    inputProps={{ style: { 
+                        //fontSize: "0.8em", 
+                        color: "gray" } }}
                 />
             </StyledTableCell>
 
             {/* businessPhone */}
             <StyledTableCell align="center">
                 <TextField id="standard-basic" //label="Téléphone" 
-                    value={contact.businessPhone} onChange={handleChangeText('businessPhone')} variant="standard"
+                    value={contact.businessPhone}
+                   onChange={handleChangeText('businessPhone')}
                     InputProps={{
-                        disableUnderline: true,
+                        disableUnderline: contact.businessPhone.length > 0
                     }}
                     inputProps={{ style: { textAlign: 'center' } }}
                 />
@@ -291,15 +417,15 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             {/* ContactName */}
             <StyledTableCell>
                 <TextField id="standard-basic" //label="Nom du contact" 
-                    value={contact.contactName} onChange={handleChangeText('contactName')} variant="standard"
+                    value={contact.contactName} onChange={handleChangeText('contactName')}
                     InputProps={{
-                        disableUnderline: true,
+                        disableUnderline: contact.contactName.length > 0
                     }}
                 />
                 <TextField id="standard-basic" //label="Nom du contact" 
-                    value={contact.contactPosition} onChange={handleChangeText('contactPosition')} variant="standard"
+                    value={contact.contactPosition} onChange={handleChangeText('contactPosition')}
                     InputProps={{
-                        disableUnderline: true,
+                        disableUnderline: contact.contactPosition.length > 0
                     }}
                     inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
                 />
@@ -312,17 +438,30 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 <Box sx={{ display: "flex", gap: 2 }}>
                     <MailOutlineOutlinedIcon />
                     <TextField id="standard-basic" //label="Email du contact" 
-                        value={contact.contactEmail} onChange={handleChangeText('contactEmail')} variant="standard"
+                        value={contact.contactEmail} onChange={handleChangeText('contactEmail')}
                         InputProps={{
-                            disableUnderline: true,
+                            disableUnderline: contact.contactEmail.length > 0
                         }}
                     />
                 </Box>
             </StyledTableCell>
 
-            {/* hasBeenSentEmail */}
+            {/* hasBeenCalled */}
             <StyledTableCell align="center">
-                <Checkbox checked={contact.hasBeenCalled}       // Par défaut quand checked = true, la couleur est la primary (.light ?)
+                <Avatar
+                    sx={{ bgcolor: "white", border: `4px solid ${getIconStyle(contact.hasBeenCalled)}`, }}
+                //className={classes.avatar}
+                >
+                    <IconButton color="primary" onClick={handleClickHasBeenCalled}>
+                        <CallRoundedIcon
+                            sx={{ color: getIconStyle(contact.hasBeenCalled), }}
+                        // color={usePhoneIconStyle(contact.hasBeenCalled)}
+                        />
+                        {/* hasBeenCalled={contact.hasBeenCalled} /> */}
+                        {/* {contact.hasBeenCalled === false ? <CallIcon /> : <CallRoundedIcon />}  */}
+                    </IconButton>
+                </Avatar>
+                {/* <Checkbox checked={contact.hasBeenCalled}       // Par défaut quand checked = true, la couleur est la primary (.light ?)
                     //color='primary'           // Si on met la couleur ici => quand non coché c'est gris !
                     sx={{
                         color: "primary.main",     // Alors qu'ici ça prend la couleur qu'on lui donne si coché ou non !
@@ -332,13 +471,34 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     }}
                     disabled={contact.hasBeenSentEmail ? true : false}
                     onChange={() => handleChangeCheckbox(contact, "hasBeenCalled")} // onChange={handleChangeCheckbox(contact, "hasBeenCalled")} ???
-                    inputProps={{ 'aria-label': 'controlled' }} />
+                    inputProps={{ 'aria-label': 'controlled' }} /> */}
+
                 {/* {contact.hasBeenCalled} */}
             </StyledTableCell>
 
             {/* hasBeenSentEmail */}
             <StyledTableCell align="center">
-                <Checkbox checked={contact.hasBeenSentEmail}
+                {/* <Avatar 
+                    sx={{  bgcolor:"white", border: `4px solid ${getIconStyle(contact.hasBeenSentEmail)}`,  }}
+                //className={classes.avatar}
+                >
+                    <IconButton color="primary" onClick={handleClickHasBeenSentEmail}>
+                        <MailIcon 
+                         sx={{  color: getIconStyle(contact.hasBeenSentEmail),  }}
+                       // color={usePhoneIconStyle(contact.hasBeenCalled)}
+                        />
+                    </IconButton>                  
+                </Avatar> */}
+                <Avatar
+                    sx={{ bgcolor: "white", border: `4px solid ${getIconStyle(contact.hasBeenSentEmail)}`, }}
+                //className={classes.avatar}
+                >
+                    <IconButton color="primary" onClick={handleClickHasBeenSentEmail}>
+                        <RightMailIcon hasBeenSentEmail={contact.hasBeenSentEmail} />
+                    </IconButton>
+                </Avatar>
+
+                {/* <Checkbox checked={contact.hasBeenSentEmail}
                     icon={<RadioButtonUncheckedIcon />}
                     //checkedIcon={<RadioButtonCheckedIcon />}
                     checkedIcon={<TaskAltIcon />}
@@ -354,11 +514,11 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     // disabled={(contact.hasBeenCalled || contact.hasBeenSentEmail === false) ? false : true}
                     onChange={() => handleChangeCheckbox(contact, "hasBeenSentEmail")}
                     inputProps={{ 'aria-label': 'controlled' }}
-                />
+                /> */}
             </StyledTableCell>
 
-            {/* hasBeenSentEmail */}
-            <StyledTableCell align="center">
+            {/* hasReceivedEmail */}
+            {/* <StyledTableCell align="center">
                 <Checkbox checked={contact.hasReceivedEmail}
                     icon={<StarUnchecked />}
                     checkedIcon={<StarCheckedFilled />}
@@ -372,7 +532,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     disabled={(!contact.hasBeenSentEmail) ? true : false}
                     onChange={() => handleChangeCheckbox(contact, "hasReceivedEmail")}
                     inputProps={{ 'aria-label': 'controlled' }} />
-            </StyledTableCell>
+            </StyledTableCell> */}
 
             {/* dateOfNextCall */}
             {/* The general recommendation is to declare the LocalizationProvider once, wrapping your entire application. Then, you don't need to repeat the boilerplate code for every Date and Time Picker in your application. */}
@@ -381,11 +541,11 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     <Container
                     //components={['DateTimePicker']}       // ???
                     >
-                        <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom:"10px" }}> {/* Sinon on pouvait mettre un float:right sur le bouton ci-dessous */}
+                        <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}> {/* Sinon on pouvait mettre un float:right sur le bouton ci-dessous */}
                             <NotificationsNoneOutlinedIcon //color="pink" 
-                                sx={{ color: pink[800]  }} />
-                            <IconButton aria-label="comment" color="primary" sx = {{ padding: 0 }}       // Car les boutons ont automatiquement un padding
-                            onClick={() => handleChangeDate(null, "dateOfNextCall")} >
+                                sx={{ color: pink[800] }} />
+                            <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
+                                onClick={() => handleChangeDate(null, "dateOfNextCall")} >
                                 <ClearIcon color='warning' />
                             </IconButton>
                         </Box>
@@ -393,7 +553,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             //defaultValue={null}
                             //label="Date de relance"
                             ampm={false}
-                            format="DD/MM/YYYY HH:mm"                            
+                            format="DD/MM/YYYY HH:mm"
                             minDate={dayjs(new Date())}
                             viewRenderers={{
                                 hours: renderTimeViewClock,
@@ -408,7 +568,9 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             //value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : dayjs(new Date("01/01/2023"))}
                             value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : null}
                             onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfNextCall")}
-                            slotProps={{ textField: { variant: 'standard', } }}
+                            slotProps={{ 
+                                //textField: { variant: 'standard', }       // Fait quoi ?
+                            }}
                         />
                     </ Container>
                 </LocalizationProvider>
@@ -423,17 +585,16 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 <IconButton aria-label="comment" color="primary" onClick={handleClickOpenCommentDialog}>
                     {/* <TextsmsTwoToneIcon onClick={handleClickOpen} /> */}
                     <ModeEditOutlineOutlinedIcon />
+                    <Typography
+                    // sx={{ overflow: "hidden", textOverflow: "ellipsis", fontSize: 14, }}
+                >
+                    {contact.comments.length > 0 ? "..." : "x"}
+                    {/* Pour tronquer */}
+                    {/* {contact.comments.length < COMMENT_DISPLAY_LENGTH ? contact.comments : contact.comments.substring(0, COMMENT_DISPLAY_LENGTH) + "..."} */}
+                </Typography>
                 </IconButton>
                 {/* Fonction presque identique : {contact.comments.slice(0, 10)}...*/}
-                <Typography
-                    sx={{
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        fontSize: 14,
-                    }}
-                >
-                    {contact.comments.length < COMMENT_DISPLAY_LENGTH ? contact.comments : contact.comments.substring(0, COMMENT_DISPLAY_LENGTH) + "..."}
-                </Typography>
+               
                 {/* Dialog pour modifier */}
                 <Dialog open={openCommentDialogue} onClose={handleCloseCommentDialog} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="lg" fullWidth
                     disableRestoreFocus // sinon le focus ne se fait pas sur le TextField
@@ -493,13 +654,13 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             {/* interestGauge */}
             {/* https://bernii.github.io/gauge.js/#! ??? Avec CANVAS ??? */}
             <StyledTableCell align="center">
-                <IconButton aria-label="comment" color="primary" sx={{ padding: 0, float: "right" }}       // Car les boutons ont automatiquement un padding
+                {/* <IconButton aria-label="comment" color="primary" sx={{ padding: 0, float: "right" }}       // Car les boutons ont automatiquement un padding
                     onClick={() => handleChangeInterestGauge(null)} >
                     <ClearIcon color='warning' />
                 </IconButton>
                 <TextField id="standard-basic" 
                     type="number"                    
-                    value={contact.interestGauge ?? ""} onChange={(newGauge) => handleChangeInterestGauge(parseFloat(newGauge.target.value))} variant="standard"
+                    value={contact.interestGauge ?? ""} onChange={(newGauge) => handleChangeInterestGauge(parseFloat(newGauge.target.value))} 
                     InputProps={{
                         disableUnderline: true,
                         inputProps: { min: 0, max: 5, step: 0.5 },                        
@@ -516,10 +677,11 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         //color="primary"
                      />}
                     emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}
-                />
+                /> */}
                 <StyledRating
                     name="highlight-selected-only"
                     //defaultValue={2}
+                    sx={{ alignItems: 'center' }}
                     value={contact.interestGauge}
                     onChange={(event, newValue) => handleChangeInterestGauge(newValue)}
                     IconContainerComponent={IconContainer}
@@ -542,8 +704,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             {/* Supprimer contact ? */}
             <StyledTableCell align="center" >
 
-                <IconButton aria-label="comment" color="primary"  onClick={handleOpenDeleteModal}>
-                    <DeleteForeverIcon color='warning' />
+                <IconButton onClick={handleOpenDeleteModal}>
+                    <DeleteForeverIcon color='error' />
                 </IconButton>
                 <Modal
                     open={openDeleteModal}
@@ -553,13 +715,13 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 >
                     <Box sx={style}>
                         <Typography id="modal-modal-title" variant="h6" component="h2">
-                            Supprimer le contact {contact.businessName} ?
+                            Supprimer le contact : <br /> <span style={{ fontWeight: "bold" }}>{contact.businessName}</span> ?
                         </Typography>
                         {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
-                        <Button variant="contained" color='warning' onClick={handleClickDeleteContact} >Oui !</Button>
+                        <Button variant="contained" color='warning' onClick={handleClickDeleteContact} sx={{ marginRight: "15px"}} >Oui !</Button>
                         <Button variant="contained" color='primary' onClick={handleCloseDeleteModal} >Non</Button>
                     </Box>
-                </Modal>           
+                </Modal>
             </StyledTableCell>
         </StyledTableRow>
     )
