@@ -2,14 +2,14 @@ import React from 'react'
 import { auth } from './../utils/firebase'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { Sign } from 'crypto'
-import { Button } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 
 export default function AuthDetails() {
-    const [authUser, setAuthUser] = React.useState<any>(null)
+    const [authUserInfo, setAuthUserInfo] = React.useState<any>(null)
 
     React.useEffect(() => {
         const listen = onAuthStateChanged(auth, (user) => {
-            user ? setAuthUser(user) : setAuthUser(null)
+            user ? setAuthUserInfo(user) : setAuthUserInfo(null)
         })
         return () => listen()
     }, [])
@@ -25,13 +25,14 @@ export default function AuthDetails() {
     }
 
     return (
-        <div>{authUser
-            ? <p>
-                Connecté : {authUser.email}
-                {/* <Button variant="contained" color="primary" onClick={() => auth.signOut()}>Déconnexion</Button> Marche aussi !!!*/}
-                <Button variant="contained" color="primary" onClick={userSignOut}>Déconnexion</Button>
-            </p>
-
-            : <p>Déconnecté</p>}</div>
+        <Box>
+            {authUserInfo
+            ? <React.Fragment>
+                    <Typography variant="h6" color="primary">{authUserInfo.email}</Typography>
+                    {/* <Button variant="contained" color="primary" onClick={() => auth.signOut()}>Déconnexion</Button> Marche aussi !!!*/}
+                    <Button variant="contained" color="warning" onClick={userSignOut}>Déconnexion</Button>  
+                </React.Fragment>          
+            : <Typography variant="h6" color="warning">Déconnecté</Typography>}
+        </Box>
     )
 }

@@ -5,6 +5,8 @@ import './globals.css'
 
 import { ThemeProvider, createTheme, PaletteOptions } from "@mui/material/styles";
 import { cyan, grey, pink, yellow, deepOrange, lightGreen, green, teal, lime } from "@mui/material/colors";
+import UserAuthContextProvider from './context/UseAuthContext';
+
 
 //import { makeStyles } from '@mui/styles';     // npm install @mui/styles
 
@@ -195,7 +197,9 @@ export default function RootLayout({
       //</html>className={inter.className}
       >
         <ThemeProvider theme={muiTheme}>
-          {children}
+          <UserAuthContextProvider>
+            {children}
+          </UserAuthContextProvider>
         </ThemeProvider>
       </body>
     </html>

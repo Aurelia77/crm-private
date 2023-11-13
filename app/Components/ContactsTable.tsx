@@ -44,7 +44,7 @@ interface Column {
 
 
 const headCells: readonly Column[] = [               // readonly ???
-    { id: 'isClient', label: 'Client ?', minWidth: "5em", },
+    { id: 'isClient', label: 'Client ?', minWidth: "7em", },
     { id: 'logo', label: '', minWidth: "5em", },
     { id: 'businessName', label: 'Entreprise', minWidth: "15em", },
     { id: 'businessCity', label: 'Ville', minWidth: "10em", },
@@ -220,7 +220,7 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
     //setContacts
 }: ContactsTableProps) {
 
-    console.log("xxxContacts = ", contacts)
+    //console.log("xxxContacts = ", contacts)
 
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof Contact>('businessName');
@@ -321,7 +321,7 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
             <Button variant="contained" color="primary" href= '/testPages/testAutocompletePage'>Coucou !!</Button> 
             <Button variant="contained" color="secondary" href= '/testPages/testAutocompletePage'>Coucou !!</Button>  */}
 
-            <Typography variant="h5" component="div" sx={{ p: 2 }}>Liste des contacts ({contacts.length})</Typography>
+            {/* <Typography variant="h5" component="div" sx={{ p: 2 }}>Liste des contacts ({contacts.length})</Typography> */}
             <TableContainer
                 //sx={{ maxHeight: document.documentElement.clientHeight * 0.88 }}   //vh = 1% de la hauteur du viewport (la zone d'affichage).// Ok mais problème avec Vercel !!!               
                 sx={{ maxHeight: "calc(100vh - 320px)" }}

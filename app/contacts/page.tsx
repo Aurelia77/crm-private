@@ -1,3 +1,4 @@
+// Authentification aide de : https://www.youtube.com/watch?v=f3Whk3hfd7I&ab_channel=LikeWD
 'use client'
 
 import * as React from 'react';
@@ -23,7 +24,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import FormControl from '@mui/material/FormControl';
-import { Container } from '@mui/material';
+import { Container, Tooltip } from '@mui/material';
 import { TextField, Select, MenuItem, Autocomplete, ListItem, List, InputLabel, Tabs, Tab, Box as CustomBox } from '@mui/material'
 
 
@@ -35,7 +36,7 @@ import SignIn from '../Components/auth/SignIn';
 import SignUp from '../Components/auth/SignUp';
 import AuthDetails from '../Components/AuthDetails';
 
-import contactsData from '../utils/contacts'
+import fakeContactsData from '../utils/contacts'
 //import getContacts from '../utils/firebase'
 //import writeContactData from '../utils/firebase'
 //import firebase from 'firebase/app'
@@ -47,6 +48,16 @@ import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, d
 import { Dayjs } from 'dayjs';       // npm install dayjs
 import { Timestamp } from 'firebase/firestore';
 import TestTableSortLabel2 from '../Components/TestComponents/TestTableSortLabel2';
+
+import { useAuthUserContext } from '../context/UseAuthContext'
+import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
+import PersonSearchRoundedIcon from '@mui/icons-material/PersonSearchRounded';
+import AddIcon from '@mui/icons-material/Add';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+
+import Fade from '@mui/material';
+import Collapse from '@mui/material';
+
 
 
 interface TabPanelProps {
@@ -88,11 +99,11 @@ export default function Contacts() {
     const [selectedContact, setSelectedContact] = React.useState<Contact | { id: string }>({ id: "0" })
     const [loading, setLoading] = React.useState(true)
 
-    console.log("xxxContacts",contacts)
+    //console.log("xxxContacts",contacts)
 
     const emptyContact: Contact = {
         id: '',
-        isClient : false,
+        isClient: false,
         logo: '',
         businessName: '',
         denominationUsuelleEtablissement: [],
@@ -115,10 +126,17 @@ export default function Contacts() {
         dateOfLastCall: null,
         dateOfNextCall: null,
         comments: '',
+        userId: ''
     }
+
+    const [displayNewContactForms, setDisplayNewContactForms] = React.useState(false)
 
     //console.log(selectedContact)
     //console.log(contacts)
+
+    const { currentUser } = useAuthUserContext()
+    console.log(currentUser)
+    console.log(currentUser?.uid)
 
 
 
@@ -177,11 +195,12 @@ export default function Contacts() {
     // Mais quand on modifie un contact (dans ContactsTable) => on le fait dans le BDD firebase + on modifie le state contacts (pour pas recharger la page) 
 
     //Write  
-    const addData = () => {
-        contactsData.map((contact: Contact) => {
+    const addFakeData = () => {
+        fakeContactsData.map((contact: Contact) => {
             console.log(contact)
-            console.log({ ...contact, id: uid() })
-            addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid() })
+            console.log({ ...contact, id: uid(), userId: currentUser?.uid
+             })
+            addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid(), userId: currentUser?.uid })
                 //addDoc(collection(fireStoreDb, "contacts"), {contact})
                 .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
                 .then(() => { window.location.reload() })                                           // bien ici ??? Va pas recharcger à chaque fois ???
@@ -194,7 +213,7 @@ export default function Contacts() {
         console.log("add contact", contact)
 
         console.log({ ...contact, id: uid() })
-        addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid() })
+        addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid(), userId: currentUser?.uid })
             //addDoc(collection(fireStoreDb, "contacts"), {contact})
             .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
             // Ici ou après ?????
@@ -203,15 +222,24 @@ export default function Contacts() {
         //window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
     }
 
-    const deleteAllDatas = () => {
-        console.log("DELETING !")
-        const q = query(collection(fireStoreDb, "contacts"));
-        
+    const deleteAllDatas = (allAndNotonlyFromConnectedUser: boolean) => {
+
+        // (onlyFromConnectedUser && currentUser)
+        // ? q = query(collection(fireStoreDb, "contacts"), where("userId", "==", currentUser.uid)): q = query(collection(fireStoreDb, "contacts"));
+
+        const contactsCollection = collection(fireStoreDb, "contacts");        
+        const q =  (!allAndNotonlyFromConnectedUser && currentUser)
+        ? query(contactsCollection, where("userId", "==", currentUser.uid))
+        : query(contactsCollection);
+
+        // const q = onlyFromConnectedUser ? query(collection(fireStoreDb, "contacts"), where("userId", "==", currentUser?.uid ?? ""))
+        //             : query(collection(fireStoreDb, "contacts"));
+
         getDocs(q).then((querySnapshot) => {
-            
+
             const deletePromises = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
             return Promise.all(deletePromises);
-            
+
             // 2 lignes ci-dessus au lieu de ça => a l'air de fonctionné à chaque fois... Sinon pas tjs ! (donné par GitCopilot)
             // querySnapshot.forEach((doc) => {
             //     console.log(doc.data())
@@ -238,6 +266,8 @@ export default function Contacts() {
         //     });
         // });
     }
+
+   
 
     const deleteContact = (contactId: string) => {
         const q = query(collection(fireStoreDb, "contacts"), where("id", "==", contactId));
@@ -267,7 +297,10 @@ export default function Contacts() {
 
         let contactsArr: Contact[] = []
 
-        getDocs(collection(fireStoreDb, "contacts")).then((querySnapshot) => {
+        const q = query(collection(fireStoreDb, "contacts"), where("userId", "==", currentUser?.uid ?? ""));
+
+        getDocs(q).then((querySnapshot) => {
+        //getDocs(collection(fireStoreDb, "contacts")).then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 //console.log(doc.data())
                 contactsArr.push({ ...doc.data() as Contact })  // On indique que doc.data() est de type Contact           
@@ -277,7 +310,7 @@ export default function Contacts() {
             setLoading(false)
             setContacts(contactsArr)
         });
-    }, [])
+    }, [currentUser?.uid])
 
 
 
@@ -325,7 +358,7 @@ export default function Contacts() {
 
     // 2 fonctions pour mettre à jour le contact dans le tableau contacts et dans la BDD fireStore : firestoreDB
     const updatingLocalContacts = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
-        console.log("xxxLOCAL",keyAndValue.key, keyAndValue.value)
+        console.log("xxxLOCAL", keyAndValue.key, keyAndValue.value)
 
         let tempUpdatedContacts = contacts.map(contact => {
             return contact.id === id ? { ...contact, [keyAndValue.key]: keyAndValue.value } : contact
@@ -350,7 +383,7 @@ export default function Contacts() {
                 //console.log(doc.data())
                 //console.log(doc.ref)
                 //console.log(doc.id)
-                console.log("FIREBASE",keyAndValue.key, keyAndValue.value)
+                console.log("FIREBASE", keyAndValue.key, keyAndValue.value)
                 //docID = doc.id;
                 updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
                     [keyAndValue.key]: keyAndValue.value
@@ -374,118 +407,143 @@ export default function Contacts() {
     // const handleChange = (event: React.SyntheticEvent, newValue: number) => { setValue(newValue);  };
 
 
+
+
     return (
-        <React.Fragment>
+        <Box sx={{ position:"relative", margin:"2em" }}>
+        {/* <React.Fragment sx={{ position:"absolute" }}> */}
+            <Typography variant="h3" component="h1" sx={{ 
+                //margin:"50px" 
+            }} >Application de gestion de contacts</Typography>
+
+            <Box sx={{ position:"absolute", right:0, top:0  }} >
+                <AuthDetails />
+            </Box>
+
             {loading
-                ? null //<Container>Chargement...</Container>
-                :
-                <Box //maxWidth="xl"         // Si on veut des marges
-                //sx={{ mt: 4, mb: 4 }}
-                >
-                    {/* <div> */}
-                    {/* <Stack spacing={2} direction="row"
-                    // ajouter marge bottom
-                    sx={{ my: 2 }}
-                >
-                    <Button variant="text">Text</Button>
-                    <Button variant="contained">Nouveau Contact</Button>
-                    <Button variant="outlined">Outlined</Button>
-                </Stack> */}
+                ? <Container>Chargement...</Container>
+                : currentUser
+                    ? <Box sx={{ marginTop:"50px" }} >
+                        {/* On affiche le nom de l'utilisateur */}
+                        {/* <Typography variant="h3" component="div" gutterBottom>User Auth = {currentUser?.email}</Typography> */}
+
+                        {/* <FormControl sx={{ my: 2 }}> */}
+                        <Box sx={{ display: "flex", justifyContent: "space-around", padding: "20px", border: "solid 3px blue", borderRadius: "10px" }}>
+                            <Typography component="div" style={{ display: "block", width: "500px" }} >Pour version d'essai : Pour remettre comme au début cliquer sur ces 2 boutons à droite : </Typography>
+                            <Button variant="contained" color='primary' sx={{ width:"300px" }} onClick={() => deleteAllDatas(false)}>Supprimer tout (juste mes données)</Button>
+                            {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatas(true)}>Supprimer toutes les données !!!</Button> */}
+                            <Button variant="contained" color='ochre' onClick={addFakeData}>Ajouter Contacts Test</Button>
+                        </Box>
+                        {/* </FormControl> */}
+                        {/* <FormControl sx={{ my: 2 }}>
+                        <input type="text" value={todo} onChange={handleTodoChange} />
+                        <Button variant="contained" onClick={writeContactData2}>Ajouter dans REALTIME DB</Button>
+                    </FormControl> */}
+
+
+                        {/* Impossible mettre ce qu'on veut dans les TAB car => ERROR => app-index.js:31 Warning: validateDOMNesting(...): <p> cannot appear as a descendant of <p>.*/}
+                        {/* <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                            <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                                <Tab label="Item One" {...a11yProps(0)} />
+                                <Tab label="Item Two" {...a11yProps(1)} />
+                            </Tabs>
+                        </Box>
+                        <CustomTabPanel value={value} index={0}>
+                            <FormControl sx={{ my: 2 }}>
+                                <TextField id="outlined-basic" label="Nom de l'entreprise à ajouter aux contacts" variant="outlined" value="coucou" />
+                            </FormControl>
+                        </CustomTabPanel>
+                        <CustomTabPanel value={value} index={1}>
+                            <FormControl sx={{ my: 2 }}>
+                                <TextField id="outlined-basic" label="Nom de l'entreprise à ajouter aux contacts" variant="outlined" value="coucou2" />
+                            </FormControl>
+                        </CustomTabPanel> */}
 
 
 
-                    {/* <SignIn />
-                    <SignUp />
-                    <AuthDetails /> */}
+                        {displayNewContactForms
+                        ? <Box>              
+                            <Accordion sx={{
+                                //my: 2
+                            }}>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header" >
+                                    <Typography
+                                        color="secondary.light"
+                                        sx={{ bgcolor: 'primary.main', p: 2, borderRadius: 1 }}
+                                    >Nouveau Contact avec recherche (cliquer pour ouvrir et pour fermer)</Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <ContactForm emptyContact={emptyContact} addContact={addContact} />
+                                </AccordionDetails>
+                            </Accordion>
 
+                            <Accordion sx={{ my: 2 }}>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header" >
+                                    <Typography
+                                        color="secondary.light"
+                                        sx={{ bgcolor: 'primary.main', p: 2, borderRadius: 1 }}
+                                    >Nouveau Contact en partant de zéro (cliquer pour ouvrir et pour fermer)</Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <ContactCard addContact={addContact} contact={emptyContact} />
+                                </AccordionDetails>
+                            </Accordion>
+                            <Button variant="contained" color="secondary" onClick={() => setDisplayNewContactForms(!displayNewContactForms)}>Tableau des contacts</Button>
+                        </Box>
 
-                    {/* <FormControl sx={{ my: 2 }}> */}
-                    <Box sx={{ display: "flex", justifyContent: "space-around" }}>
-                        <Typography component="div" style={{ display: "block", width: "500px" }} >Pour version d'essai : Pour remettre comme au début cliquer sur ces 2 boutons à droite : </Typography>
-                        <Button variant="contained" color='warning' onClick={deleteAllDatas}>Supprimer tout !!!</Button>
-                        <Button variant="contained" color='ochre' onClick={addData}>Ajouter Contacts du fichier (comme au début)</Button>
+                        : 
+                        <Box sx={{ marginTop:"40px", position:"relative"}} >
+                            {/* <Fade component="p" in={!displayNewContactForms}>
+                                <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
+                            </Fade>
+                            <Collapse orientation="horizontal" in={!displayNewContactForms}>
+                                <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
+                            </Collapse> */}
+                            <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
+                            <Box sx={{ position:"absolute", right:0, top:0  }} >
+                                <Tooltip title="Ajouter un contact (avec ou sans recherche)" placement="left">
+                                    <IconButton aria-label="edit" color="primary" onClick={() => setDisplayNewContactForms(!displayNewContactForms)}>
+                                        {/* <Typography>A voir quel icon on garde : </Typography>
+                                        <PersonAddRoundedIcon fontSize="large" />                             
+                                        <PersonSearchRoundedIcon fontSize="large" />
+                                        <AddIcon fontSize="large" /> */}
+                                        <AddCircleOutlineIcon fontSize="large" />
+                                    </IconButton>
+                                </Tooltip>
+                            </Box>
+                            <ContactsTable
+                                contacts={contacts}
+                                selectedContactId={selectedContact.id}
+                                setSelectedContact={setSelectedContact}
+                                handleUpdateContact={updateContactInContactsAndDB}
+                                handleDeleteContact={deleteContact}
+                            //setContacts={setContacts}
+                            //orderedBy={orderedBy} 
+                            />
+                            {/* <TestTableSortLabel2 contacts={contacts} selectedContactId={selectedContact.id} setSelectedContact={setSelectedContact} handleUpdateContact={updateContactInContactsAndDB} handleDeleteContact={deleteContact} /> */}
+                        </Box>
+                        }
                     </Box>
-                    {/* </FormControl> */}
-                    {/* <FormControl sx={{ my: 2 }}>
-                    <input type="text" value={todo} onChange={handleTodoChange} />
-                    <Button variant="contained" onClick={writeContactData2}>Ajouter dans REALTIME DB</Button>
-                </FormControl> */}
 
-
-                    {/* Impossible mettre ce qu'on veut dans les TAB car => ERROR => app-index.js:31 Warning: validateDOMNesting(...): <p> cannot appear as a descendant of <p>.*/}
-                    {/* <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                            <Tab label="Item One" {...a11yProps(0)} />
-                            <Tab label="Item Two" {...a11yProps(1)} />
-                        </Tabs>
-                    </Box>
-                    <CustomTabPanel value={value} index={0}>
-                        <FormControl sx={{ my: 2 }}>
-                            <TextField id="outlined-basic" label="Nom de l'entreprise à ajouter aux contacts" variant="outlined" value="coucou" />
-                        </FormControl>
-                    </CustomTabPanel>
-                    <CustomTabPanel value={value} index={1}>
-                        <FormControl sx={{ my: 2 }}>
-                            <TextField id="outlined-basic" label="Nom de l'entreprise à ajouter aux contacts" variant="outlined" value="coucou2" />
-                        </FormControl>
-                    </CustomTabPanel> */}
-
-
-
-                    <Accordion sx={{
-                        //my: 2
+                    : <Box sx={{ display: "flex", justifyContent: "space-around", margin: "20px", padding: "20px", 
+                    //border: "solid 3px blue", borderRadius: "10px" 
                     }}>
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel1a-content"
-                            id="panel1a-header" >
-                            <Typography
-                                color="secondary.light"
-                                sx={{ bgcolor: 'primary.main', p: 2, borderRadius: 1 }}
-                            >Nouveau Contact avec recherche (cliquer pour ouvrir et pour fermer)</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <ContactForm emptyContact={emptyContact} addContact={addContact} />
-                            {/*  <ContactCard addContact={addContact} contact={emptyContact} /> */}
-                        </AccordionDetails>
-                    </Accordion>
-                    <Accordion sx={{ my: 2 }}>
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel1a-content"
-                            id="panel1a-header" >
-                            <Typography
-                                color="secondary.light"
-                                sx={{ bgcolor: 'primary.main', p: 2, borderRadius: 1 }}
-                            >Nouveau Contact en partant de zéro (cliquer pour ouvrir et pour fermer)</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <ContactCard addContact={addContact} contact={emptyContact} />
-                        </AccordionDetails>
-                    </Accordion>
-
-                    {/* <Stack
-                    //spacing={2} 
-                    gap={2}
-                    direction="row" flexWrap="wrap" justifyContent="center"
-                //alignItems="center"
-                >
-                    {contacts.map((contact: Contact) => (
-                        <ContactCard key={contact.id} contact={contact} />                   
-                    ))}
-                </Stack> */}
-                    <ContactsTable
-                        contacts={contacts}
-                        selectedContactId={selectedContact.id}
-                        setSelectedContact={setSelectedContact}
-                        handleUpdateContact={updateContactInContactsAndDB}
-                        handleDeleteContact={deleteContact}
-                    //setContacts={setContacts}
-                    //orderedBy={orderedBy} 
-                    />              
-                    {/* <TestTableSortLabel2 contacts={contacts} selectedContactId={selectedContact.id} setSelectedContact={setSelectedContact} handleUpdateContact={updateContactInContactsAndDB} handleDeleteContact={deleteContact} /> */}
-                </Box>
+                        {/* https://www.youtube.com/watch?v=f3Whk3hfd7I&ab_channel=LikeWD */}
+                        {/* Connexion */}
+                        <SignIn />
+                        {/* Inscription */}
+                        {/* <UserAuthContextProvider> */}
+                        <SignUp />
+                        {/* </UserAuthContextProvider> */}
+                    </Box>
             }
-        </React.Fragment>
+
+        </Box>
     )
 }

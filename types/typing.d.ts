@@ -24,6 +24,7 @@ type Contact = {
     dateOfLastCall : timestamp,
     dateOfNextCall : timestamp,
     comments : string,
+    userId: string,
 }
 
 type Query = {
@@ -37,4 +38,14 @@ type Query = {
 type CodeNaf = {
     id: string;
     label: string;
+  };
+
+type UserInfos = {
+    //id: string;
+    name: string;
+    email: string;
+    password: string;
+    //picture: string;
+    //provider: string;
+    //isAdmin: boolean;
   };

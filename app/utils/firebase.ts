@@ -11,7 +11,6 @@ import { getFirestore } from 'firebase/firestore';
 import { getAuth } from "firebase/auth";
 
 
-
 // import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 // import { Firestore } from "firebase/firestore";
 
@@ -29,23 +28,24 @@ const firebaseConfig = {
   appId: "1:882348983292:web:80587c355b2aae72702879"
 };
 
-//export default firebaseConfig
-
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig); 
 // console.log(app)
 
-// Avec RealTime Database
-export const realtimeDb = getDatabase(app);
+// Avec FireStore
+const fireStoreDb = getFirestore(app);
 
-// Ou avec FireStore
-export const fireStoreDb = getFirestore(app);
+// Ou Avec RealTime Database(pas utilisée ici => car me mettait tous les contacts 2 fois !!!)
+const realtimeDb = getDatabase(app);
 
 // Initialize Firebase Authentication and get a reference to the service
-export const auth = getAuth(app);
+const auth = getAuth(app);
 
-
+export {
+  fireStoreDb,
+  realtimeDb,
+  auth
+}
 
 
 

@@ -92,8 +92,10 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
     // console.log('%c    *123 - RACINE', 'color: MediumTurquoise')
     // console.log("*123////////////////resultInsee/////////////////",resultInseeSearch)
     // console.log("*123////////////////resultInseeSearchDomainAndLogo/////////////////",resultInseeSearchDomainAndLogo)
-    // console.log("*123////////////////resultInseeSearchToKeep/////////////////",resultInseeSearchToKeep)   
-    console.log("*123////////////////infosContact/////////////////",infosContact)  
+    // console.log("*123////////////////resultInseeSearchToKeep/////////////////",resultInseeSearchToKeep) 
+
+    //console.log("*123////////////////infosContact/////////////////",infosContact)  
+    
     //console.log("resultInseeSearchToKeepPlusDomainAndLogo", resultInseeSearchToKeepPlusDomainAndLogo) 
 
     //console.log("***1***-resultInseeSearch", resultInseeSearch)

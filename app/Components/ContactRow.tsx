@@ -68,7 +68,8 @@ import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied
 import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAltOutlined';
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
-import { colors } from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
+
 
 
 // Pour les smileys du RATING 
@@ -171,6 +172,26 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 return muiTheme.palette.ochre.main;
             default:
                 return muiTheme.palette.gray.main;
+        }
+    };
+    const getPhoneIconText = (hasBeenCalled: 0 | 1 | 2) => {
+        switch (hasBeenCalled) {
+            case 1:
+                return "J'ai parlé à quelqu'un"
+            case 2:
+                return "J'ai appélé mais pas de réponse"
+            default:
+                return "Pas appelé"
+        }
+    };
+    const getEmailIconText = (hasBeenSentEmail: 0 | 1 | 2) => {
+        switch (hasBeenSentEmail) {
+            case 1:
+                return "Mail reçu"
+            case 2:
+                return "Mail envoyé"
+            default:
+                return "Mail non envoyé"
         }
     };
 
@@ -452,14 +473,16 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     sx={{ bgcolor: "white", border: `4px solid ${getIconStyle(contact.hasBeenCalled)}`, }}
                 //className={classes.avatar}
                 >
-                    <IconButton color="primary" onClick={handleClickHasBeenCalled}>
-                        <CallRoundedIcon
-                            sx={{ color: getIconStyle(contact.hasBeenCalled), }}
-                        // color={usePhoneIconStyle(contact.hasBeenCalled)}
-                        />
-                        {/* hasBeenCalled={contact.hasBeenCalled} /> */}
-                        {/* {contact.hasBeenCalled === false ? <CallIcon /> : <CallRoundedIcon />}  */}
-                    </IconButton>
+                    <Tooltip title={getPhoneIconText(contact.hasBeenCalled)}>
+                        <IconButton color="primary" onClick={handleClickHasBeenCalled}>
+                            <CallRoundedIcon
+                                sx={{ color: getIconStyle(contact.hasBeenCalled), }}
+                            // color={usePhoneIconStyle(contact.hasBeenCalled)}
+                            />
+                            {/* hasBeenCalled={contact.hasBeenCalled} /> */}
+                            {/* {contact.hasBeenCalled === false ? <CallIcon /> : <CallRoundedIcon />}  */}
+                        </IconButton>
+                    </Tooltip>
                 </Avatar>
                 {/* <Checkbox checked={contact.hasBeenCalled}       // Par défaut quand checked = true, la couleur est la primary (.light ?)
                     //color='primary'           // Si on met la couleur ici => quand non coché c'est gris !
@@ -493,9 +516,11 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     sx={{ bgcolor: "white", border: `4px solid ${getIconStyle(contact.hasBeenSentEmail)}`, }}
                 //className={classes.avatar}
                 >
-                    <IconButton color="primary" onClick={handleClickHasBeenSentEmail}>
-                        <RightMailIcon hasBeenSentEmail={contact.hasBeenSentEmail} />
-                    </IconButton>
+                    <Tooltip title={getEmailIconText(contact.hasBeenSentEmail)}>
+                        <IconButton color="primary" onClick={handleClickHasBeenSentEmail}>
+                            <RightMailIcon hasBeenSentEmail={contact.hasBeenSentEmail} />
+                        </IconButton>
+                    </Tooltip>
                 </Avatar>
 
                 {/* <Checkbox checked={contact.hasBeenSentEmail}
@@ -703,10 +728,13 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
             {/* Supprimer contact ? */}
             <StyledTableCell align="center" >
-
-                <IconButton onClick={handleOpenDeleteModal}>
-                    <DeleteForeverIcon color='error' />
-                </IconButton>
+                <Tooltip title="Supprimer le contact"
+                // placement="top"
+                >
+                    <IconButton onClick={handleOpenDeleteModal}>
+                        <DeleteForeverIcon color='error' />
+                    </IconButton>
+                </Tooltip>
                 <Modal
                     open={openDeleteModal}
                     onClose={handleCloseDeleteModal}
