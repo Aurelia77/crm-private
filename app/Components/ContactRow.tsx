@@ -56,6 +56,7 @@ import Avatar from '@mui/material/Avatar';
 import MailIcon from '@mui/icons-material/Mail';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
 
 
 
@@ -80,34 +81,34 @@ const StyledRating = styled(Rating)(({ theme }) => ({
     },
 }))
 const customIcons: {
-    [index: string]: { icon: React.ReactElement; label: string;};
+    [index: string]: { icon: React.ReactElement; label: string; };
 } = {
     1: {
-        icon: <SentimentVeryDissatisfiedIcon color="error" 
-            //fontSize={contact.interestGauge === 1 ? 'large' : 'small'} 
-            />,
+        icon: <SentimentVeryDissatisfiedIcon color="error"
+        //fontSize={contact.interestGauge === 1 ? 'large' : 'small'} 
+        />,
         label: 'Very Dissatisfied',
     },
     2: {
-        icon: <SentimentDissatisfiedIcon color="warning" 
-            //fontSize={contact.interestGauge === 2 ? 'large' : 'small'} 
-            />,
+        icon: <SentimentDissatisfiedIcon color="warning"
+        //fontSize={contact.interestGauge === 2 ? 'large' : 'small'} 
+        />,
         label: 'Dissatisfied',
     },
     3: {
-        icon: <SentimentSatisfiedIcon color="secondary" 
-            //fontSize={contact.interestGauge === 3 ? 'large' : 'small'} 
-            />,
+        icon: <SentimentSatisfiedIcon color="secondary"
+        //fontSize={contact.interestGauge === 3 ? 'large' : 'small'} 
+        />,
         label: 'Neutral',
     },
     4: {
-        icon: <SentimentSatisfiedAltIcon color="primary" 
+        icon: <SentimentSatisfiedAltIcon color="primary"
         //fontSize={contact.interestGauge === 4 ? 'large' : 'small'} 
         />,
         label: 'Satisfied',
     },
     5: {
-        icon: <SentimentVerySatisfiedIcon color="success" 
+        icon: <SentimentVerySatisfiedIcon color="success"
         //fontSize={contact.interestGauge === 5 ? 'large' : 'small'} 
         />,
         label: 'Very Satisfied',
@@ -150,28 +151,65 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
     const muiTheme = useTheme();
 
-    
+
     //console.log(contact)
     //console.log("xxxhandleUpdateContact", handleUpdateContact)
 
+    // GESTION DES ICONES MAIL ET TELEPHONE
+    // hasBeenCalled => 0="no" | 1="yes but no answer" | 2="yes and answered",
+    // hasBeenSentEmailorMeetUp =>  0="nothing" | 1="email sent" | 2="email sent and received" | 3="met up",
+    const handleClickHasBeenCalled = () => {
+        handleUpdateContact(contact.id, {
+            key: "hasBeenCalled", value: contact.hasBeenCalled === 0
+                ? 1
+                : contact.hasBeenCalled === 1
+                    ? 2
+                    : 0
+        })
+    }
+    const handleClickhasBeenSentEmailorMeetUp = () => {
+        handleUpdateContact(contact.id, {
+            key: "hasBeenSentEmailorMeetUp", value: contact.hasBeenSentEmailorMeetUp === 0
+                ? 1
+                : contact.hasBeenSentEmailorMeetUp === 1
+                    ? 2
+                    : contact.hasBeenSentEmailorMeetUp === 2
+                        ? 3
+                        : 0
+        })
+    }
     // Renvoie la bonne icone selon l'état de hasBeenCalled (non envoyé, envoyé, lu...)
-    const RightMailIcon = ({ hasBeenSentEmail }: { hasBeenSentEmail: 0 | 1 | 2 }) => {
-        switch (hasBeenSentEmail) {
-            case 1: return <MarkEmailReadIcon color='success' />
-            case 2: return <MailIcon sx={{ color: muiTheme.palette.ochre.main }} />
-            default: return <MailOutlineIcon sx={{ color: muiTheme.palette.gray.main }} />
+    const RightMailIcon = ({ hasBeenSentEmailorMeetUp }: { hasBeenSentEmailorMeetUp: 0 | 1 | 2 | 3 }) => {
+        switch (hasBeenSentEmailorMeetUp) {
+            case 1: return <MailIcon sx={{ color: muiTheme.palette.ochre.main }} />
+            case 2: return <MarkEmailReadIcon color='success' />
+            case 3: return <HandshakeTwoToneIcon color="success" />
+            default: return <MailOutlineIcon sx={{
+                color: "black" //muiTheme.palette.gray.main 
+            }} />
         }
     }
-
-    const getIconStyle = (hasBeenDone: 0 | 1 | 2) => {
+    const getPhoneIconColor = (hasBeenCalled: 0 | 1 | 2) => {
         //console.log("xxxusePhoneIconStyle")
-        switch (hasBeenDone) {
+        switch (hasBeenCalled) {
             case 1:
                 return muiTheme.palette.success.main;
             case 2:
                 return muiTheme.palette.ochre.main;
             default:
-                return muiTheme.palette.gray.main;
+                return "black"    //muiTheme.palette.gray.main;
+        }
+    };
+    const getEmailIconColor = (hasBeenSentEmailorMeetUp: 0 | 1 | 2 | 3) => {
+        //console.log("xxxusePhoneIconStyle")
+        switch (hasBeenSentEmailorMeetUp) {
+            case 2:
+            case 3:
+                return muiTheme.palette.success.main;
+            case 1:
+                return muiTheme.palette.ochre.main;
+            default:
+                return "black"    //muiTheme.palette.gray.main;
         }
     };
     const getPhoneIconText = (hasBeenCalled: 0 | 1 | 2) => {
@@ -184,12 +222,14 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 return "Pas appelé"
         }
     };
-    const getEmailIconText = (hasBeenSentEmail: 0 | 1 | 2) => {
-        switch (hasBeenSentEmail) {
+    const getEmailIconText = (hasBeenSentEmailorMeetUp: 0 | 1 | 2 | 3) => {
+        switch (hasBeenSentEmailorMeetUp) {
             case 1:
-                return "Mail reçu"
-            case 2:
                 return "Mail envoyé"
+            case 2:
+                return "Mail reçu"
+            case 3:
+                return "Rencontre physique"
             default:
                 return "Mail non envoyé"
         }
@@ -340,16 +380,10 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         handleCloseCommentDialog()
     }
 
-    const handleClickHasBeenCalled = () => {
-        handleUpdateContact(contact.id, { key: "hasBeenCalled", value: contact.hasBeenCalled === 0 ? 1 : contact.hasBeenCalled === 1 ? 2 : 0 })
-    }
-    const handleClickHasBeenSentEmail = () => {
-        handleUpdateContact(contact.id, { key: "hasBeenSentEmail", value: contact.hasBeenSentEmail === 0 ? 1 : contact.hasBeenSentEmail === 1 ? 2 : 0 })
-    }
+
 
 
     return (
-
         <StyledTableRow
             // className= "tableRowSelected"
             //hover 
@@ -362,8 +396,6 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             }}
         //className='demo'
         >
-
-
             {/* Client ? */}
             <StyledTableCell component="th" scope="row" >
                 <Switch
@@ -372,6 +404,49 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     color="success"
                     inputProps={{ 'aria-label': 'controlled' }}
                 />
+            </StyledTableCell>
+
+            {/* dateOfNextCall */}
+            {/* The general recommendation is to declare the LocalizationProvider once, wrapping your entire application. Then, you don't need to repeat the boilerplate code for every Date and Time Picker in your application. */}
+            <StyledTableCell align="left">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <Container
+                    //components={['DateTimePicker']}       // ???
+                    >
+                        <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}> {/* Sinon on pouvait mettre un float:right sur le bouton ci-dessous */}
+                            <NotificationsNoneOutlinedIcon //color="pink" 
+                                sx={{ color: pink[800] }} />
+                            <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
+                                onClick={() => handleChangeDate(null, "dateOfNextCall")} >
+                                <ClearIcon color='warning' />
+                            </IconButton>
+                        </Box>
+                        <DateTimePicker
+                            //defaultValue={null}
+                            //label="Date de relance"
+                            ampm={false}
+                            format="DD/MM/YYYY HH:mm"
+                            minDate={dayjs(new Date())}
+                            viewRenderers={{
+                                hours: renderTimeViewClock,
+                                minutes: renderTimeViewClock,
+                                seconds: renderTimeViewClock,
+                            }}
+                            //value={dayjs(contact.dateOfNextCall)}   // => Avant FIREBASE ça fonctionnait avec ça (car FIREBASE transforme les dates en objet Timestamp(?))
+                            //{dayjs(new Date("01/01/2000"))}
+                            //value={dayjs(contact.dateOfNextCall.toDate())}        // Erreur si date = null
+                            //value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : undefined}  // Si on met UNDEFINED =>  A component is changing the uncontrolled value of a picker to be controlled. Elements should not switch from uncontrolled to controlled (or vice versa). It's considered controlled if the value is not `undefined`.
+                            // Impossible de mettre une date vide ???
+                            //value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : dayjs(new Date("01/01/2023"))}
+                            value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : null}
+                            onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfNextCall")}
+                            slotProps={{
+                                //textField: { variant: 'standard', }       // Fait quoi ?
+                            }}
+                        />
+                    </ Container>
+                </LocalizationProvider>
+                {/* {contact.dateOfNextCall.toLocaleDateString()} {contact.dateOfNextCall.getHours().toString().padStart(2, '0')}:{contact.dateOfNextCall.getMinutes().toString().padStart(2, '0')} */}
             </StyledTableCell>
 
             {/* LOGO */}
@@ -409,29 +484,28 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 /> */}
             </StyledTableCell>
 
-            {/* businessCity */}
-            <StyledTableCell component="th" scope="row" >               
-                <TextField id="standard-basic"
-                    value={contact.businessCity}
-                    onChange={handleChangeText('businessCity')}
-                    InputProps={{
-                        disableUnderline: contact.businessCity.length > 0
-                    }}
-                    inputProps={{ style: { 
-                        //fontSize: "0.8em", 
-                        color: "gray" } }}
-                />
-            </StyledTableCell>
-
             {/* businessPhone */}
             <StyledTableCell align="center">
                 <TextField id="standard-basic" //label="Téléphone" 
-                    value={contact.businessPhone}
-                   onChange={handleChangeText('businessPhone')}
+                    value={contact.contactPhone}
+                    onChange={handleChangeText('businessPhone')}
                     InputProps={{
+                        startAdornment: "Direct ",
                         disableUnderline: contact.businessPhone.length > 0
                     }}
                     inputProps={{ style: { textAlign: 'center' } }}
+                />
+                <TextField id="standard-basic" //label="Téléphone" 
+                    value={contact.businessPhone}
+                    onChange={handleChangeText('businessPhone')}
+                    color="secondary"
+                    size='small'
+                    InputProps={{
+                        // startAdornment: "Standard: ",
+                        startAdornment: <span style={{ color: 'gray', fontSize: "0.8em" }}>Standard </span>,
+                        disableUnderline: contact.businessPhone.length > 0
+                    }}
+                    inputProps={{ style: { textAlign: 'center', color: "gray", fontSize: "0.8em" } }}
                 />
             </StyledTableCell>
 
@@ -456,34 +530,90 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             <StyledTableCell
             //align="right"
             >
-                <Box sx={{ display: "flex", gap: 2 }}>
-                    <MailOutlineOutlinedIcon />
+                {/* <Box sx={{ display: "flex", gap: 2 }}> */}
+                {/* <MailOutlineOutlinedIcon /> */}
+                <Tooltip title="Contact direct">
                     <TextField id="standard-basic" //label="Email du contact" 
                         value={contact.contactEmail} onChange={handleChangeText('contactEmail')}
                         InputProps={{
                             disableUnderline: contact.contactEmail.length > 0
                         }}
                     />
-                </Box>
+                </Tooltip>
+                {/* </Box> */}
+                <Tooltip title="Contact entreprise">
+                    <TextField id="standard-basic"
+                        value={contact.businessEmail} onChange={handleChangeText('businessEmail')}
+                        InputProps={{
+                            startAdornment: contact.businessEmail.length === 0 && "...",
+                            disableUnderline: true//contact.businessEmail.length > 0
+                        }}
+                        inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
+                    />
+                </Tooltip>
+                <Tooltip title="Site Web de l'entreprise">
+                    <TextField id="standard-basic"
+                        value={contact.businessWebsite} onChange={handleChangeText('businessWebsite')}
+                        InputProps={{
+                            startAdornment: contact.businessWebsite.length === 0 && "...",
+                            disableUnderline: true//contact.businessWebsite.length > 0
+                        }}
+                        inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
+                    />
+                </Tooltip>
+            </StyledTableCell>
+
+            {/* businessCity */}
+            <StyledTableCell component="th" scope="row" >
+                <TextField id="standard-basic"
+                    value={contact.businessCity}
+                    onChange={handleChangeText('businessCity')}
+                    InputProps={{
+                        disableUnderline: contact.businessCity.length > 0
+                    }}
+                    inputProps={{
+                        style: {
+                            //fontSize: "0.8em", 
+                            //color: "gray"
+                        }
+                    }}
+                />
+                <TextField id="standard-basic"
+                    value={contact.businessAddress} onChange={handleChangeText('businessAddress')}
+                    InputProps={{
+                        disableUnderline: contact.businessAddress.length > 0
+                    }}
+                    inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
+                />
             </StyledTableCell>
 
             {/* hasBeenCalled */}
-            <StyledTableCell align="center">
-                <Avatar
-                    sx={{ bgcolor: "white", border: `4px solid ${getIconStyle(contact.hasBeenCalled)}`, }}
-                //className={classes.avatar}
+            <StyledTableCell align="center">                
+                {/* Obligé de mettre dans une BOX pour centrer */}
+                <Box display="flex" 
+                    // alignItems="center" 
+                    justifyContent="center"
                 >
-                    <Tooltip title={getPhoneIconText(contact.hasBeenCalled)}>
-                        <IconButton color="primary" onClick={handleClickHasBeenCalled}>
-                            <CallRoundedIcon
-                                sx={{ color: getIconStyle(contact.hasBeenCalled), }}
-                            // color={usePhoneIconStyle(contact.hasBeenCalled)}
-                            />
-                            {/* hasBeenCalled={contact.hasBeenCalled} /> */}
-                            {/* {contact.hasBeenCalled === false ? <CallIcon /> : <CallRoundedIcon />}  */}
-                        </IconButton>
-                    </Tooltip>
-                </Avatar>
+                    <Avatar
+                        sx={{ bgcolor: getPhoneIconColor(contact.hasBeenCalled), border: `4px solid ${getPhoneIconColor(contact.hasBeenCalled)}`, }}
+                    // sx={{ bgcolor: "white", border: `4px solid ${getIconStyle(contact.hasBeenCalled)}`, }}
+                    //className={classes.avatar}
+                    >
+                        <Tooltip title={getPhoneIconText(contact.hasBeenCalled)}>
+                            <IconButton color="primary" onClick={handleClickHasBeenCalled}>
+                                <CallRoundedIcon fontSize="large"
+                                    sx={{
+                                        color: "white",
+                                        //backgroundColor:getIconStyle(contact.hasBeenCalled), 
+                                    }}
+                                // color={usePhoneIconStyle(contact.hasBeenCalled)}
+                                />
+                                {/* hasBeenCalled={contact.hasBeenCalled} /> */}
+                                {/* {contact.hasBeenCalled === false ? <CallIcon /> : <CallRoundedIcon />}  */}
+                            </IconButton>
+                        </Tooltip>
+                    </Avatar>
+                </Box>
                 {/* <Checkbox checked={contact.hasBeenCalled}       // Par défaut quand checked = true, la couleur est la primary (.light ?)
                     //color='primary'           // Si on met la couleur ici => quand non coché c'est gris !
                     sx={{
@@ -492,38 +622,39 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             color: lighten(muiTheme.palette.primary.main, 0.5)
                         },
                     }}
-                    disabled={contact.hasBeenSentEmail ? true : false}
+                    disabled={contact.hasBeenSentEmailorMeetUp ? true : false}
                     onChange={() => handleChangeCheckbox(contact, "hasBeenCalled")} // onChange={handleChangeCheckbox(contact, "hasBeenCalled")} ???
                     inputProps={{ 'aria-label': 'controlled' }} /> */}
 
                 {/* {contact.hasBeenCalled} */}
             </StyledTableCell>
 
-            {/* hasBeenSentEmail */}
-            <StyledTableCell align="center">
-                {/* <Avatar 
-                    sx={{  bgcolor:"white", border: `4px solid ${getIconStyle(contact.hasBeenSentEmail)}`,  }}
-                //className={classes.avatar}
+            {/* hasBeenSentEmailorMeetUp */}
+            {/* <StyledTableCell align="center"> */}           
+            <StyledTableCell>
+                {/* Obligé de mettre dans une BOX pour centrer */}
+                <Box display="flex" 
+                    // alignItems="center" 
+                    justifyContent="center"
                 >
-                    <IconButton color="primary" onClick={handleClickHasBeenSentEmail}>
-                        <MailIcon 
-                         sx={{  color: getIconStyle(contact.hasBeenSentEmail),  }}
-                       // color={usePhoneIconStyle(contact.hasBeenCalled)}
-                        />
-                    </IconButton>                  
-                </Avatar> */}
-                <Avatar
-                    sx={{ bgcolor: "white", border: `4px solid ${getIconStyle(contact.hasBeenSentEmail)}`, }}
-                //className={classes.avatar}
-                >
-                    <Tooltip title={getEmailIconText(contact.hasBeenSentEmail)}>
-                        <IconButton color="primary" onClick={handleClickHasBeenSentEmail}>
-                            <RightMailIcon hasBeenSentEmail={contact.hasBeenSentEmail} />
-                        </IconButton>
-                    </Tooltip>
-                </Avatar>
+                    <Avatar
+                        sx={{
+                            bgcolor: "white",
+                            //bgcolor: getEmailIconColor(contact.hasBeenSentEmailorMeetUp),     //"white", 
+                            border: `4px solid ${getEmailIconColor(contact.hasBeenSentEmailorMeetUp)}`,
+                        }}
+                    //className={classes.avatar}
+                    >
+                        <Tooltip title={getEmailIconText(contact.hasBeenSentEmailorMeetUp)}>
+                            <IconButton color="primary" onClick={handleClickhasBeenSentEmailorMeetUp}>
+                                <RightMailIcon hasBeenSentEmailorMeetUp={contact.hasBeenSentEmailorMeetUp} />
+                                {/* <MailOutlineIcon fontSize="large" sx={{ color: "white" }} /> */}
+                            </IconButton>
+                        </Tooltip>
+                    </Avatar>
+                </Box>
 
-                {/* <Checkbox checked={contact.hasBeenSentEmail}
+                {/* <Checkbox checked={contact.hasBeenSentEmailorMeetUp}
                     icon={<RadioButtonUncheckedIcon />}
                     //checkedIcon={<RadioButtonCheckedIcon />}
                     checkedIcon={<TaskAltIcon />}
@@ -536,8 +667,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     }}
                     disabled={(contact.hasReceivedEmail || !contact.hasBeenCalled) ? true : false}
                     //disabled={!contact.hasBeenCalled ? true : false}
-                    // disabled={(contact.hasBeenCalled || contact.hasBeenSentEmail === false) ? false : true}
-                    onChange={() => handleChangeCheckbox(contact, "hasBeenSentEmail")}
+                    // disabled={(contact.hasBeenCalled || contact.hasBeenSentEmailorMeetUp === false) ? false : true}
+                    onChange={() => handleChangeCheckbox(contact, "hasBeenSentEmailorMeetUp")}
                     inputProps={{ 'aria-label': 'controlled' }}
                 /> */}
             </StyledTableCell>
@@ -553,54 +684,11 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             color: lighten(pink[800], 0.5)
                         },
                     }}
-                    // disabled={(contact.hasBeenSentEmail && contact.hasBeenCalled) ? false : true}
-                    disabled={(!contact.hasBeenSentEmail) ? true : false}
+                    // disabled={(contact.hasBeenSentEmailorMeetUp && contact.hasBeenCalled) ? false : true}
+                    disabled={(!contact.hasBeenSentEmailorMeetUp) ? true : false}
                     onChange={() => handleChangeCheckbox(contact, "hasReceivedEmail")}
                     inputProps={{ 'aria-label': 'controlled' }} />
             </StyledTableCell> */}
-
-            {/* dateOfNextCall */}
-            {/* The general recommendation is to declare the LocalizationProvider once, wrapping your entire application. Then, you don't need to repeat the boilerplate code for every Date and Time Picker in your application. */}
-            <StyledTableCell align="left">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <Container
-                    //components={['DateTimePicker']}       // ???
-                    >
-                        <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}> {/* Sinon on pouvait mettre un float:right sur le bouton ci-dessous */}
-                            <NotificationsNoneOutlinedIcon //color="pink" 
-                                sx={{ color: pink[800] }} />
-                            <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
-                                onClick={() => handleChangeDate(null, "dateOfNextCall")} >
-                                <ClearIcon color='warning' />
-                            </IconButton>
-                        </Box>
-                        <DateTimePicker
-                            //defaultValue={null}
-                            //label="Date de relance"
-                            ampm={false}
-                            format="DD/MM/YYYY HH:mm"
-                            minDate={dayjs(new Date())}
-                            viewRenderers={{
-                                hours: renderTimeViewClock,
-                                minutes: renderTimeViewClock,
-                                seconds: renderTimeViewClock,
-                            }}
-                            //value={dayjs(contact.dateOfNextCall)}   // => Avant FIREBASE ça fonctionnait avec ça (car FIREBASE transforme les dates en objet Timestamp(?))
-                            //{dayjs(new Date("01/01/2000"))}
-                            //value={dayjs(contact.dateOfNextCall.toDate())}        // Erreur si date = null
-                            //value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : undefined}  // Si on met UNDEFINED =>  A component is changing the uncontrolled value of a picker to be controlled. Elements should not switch from uncontrolled to controlled (or vice versa). It's considered controlled if the value is not `undefined`.
-                            // Impossible de mettre une date vide ???
-                            //value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : dayjs(new Date("01/01/2023"))}
-                            value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : null}
-                            onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfNextCall")}
-                            slotProps={{ 
-                                //textField: { variant: 'standard', }       // Fait quoi ?
-                            }}
-                        />
-                    </ Container>
-                </LocalizationProvider>
-                {/* {contact.dateOfNextCall.toLocaleDateString()} {contact.dateOfNextCall.getHours().toString().padStart(2, '0')}:{contact.dateOfNextCall.getMinutes().toString().padStart(2, '0')} */}
-            </StyledTableCell>
 
             {/* comments */}
             <StyledTableCell align="center"
@@ -612,14 +700,14 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     <ModeEditOutlineOutlinedIcon />
                     <Typography
                     // sx={{ overflow: "hidden", textOverflow: "ellipsis", fontSize: 14, }}
-                >
-                    {contact.comments.length > 0 ? "..." : "x"}
-                    {/* Pour tronquer */}
-                    {/* {contact.comments.length < COMMENT_DISPLAY_LENGTH ? contact.comments : contact.comments.substring(0, COMMENT_DISPLAY_LENGTH) + "..."} */}
-                </Typography>
+                    >
+                        {contact.comments.length > 0 ? "..." : "x"}
+                        {/* Pour tronquer */}
+                        {/* {contact.comments.length < COMMENT_DISPLAY_LENGTH ? contact.comments : contact.comments.substring(0, COMMENT_DISPLAY_LENGTH) + "..."} */}
+                    </Typography>
                 </IconButton>
                 {/* Fonction presque identique : {contact.comments.slice(0, 10)}...*/}
-               
+
                 {/* Dialog pour modifier */}
                 <Dialog open={openCommentDialogue} onClose={handleCloseCommentDialog} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="lg" fullWidth
                     disableRestoreFocus // sinon le focus ne se fait pas sur le TextField
@@ -652,28 +740,6 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         ))}
                     </Typography>
                 </Popover> */}
-            </StyledTableCell>
-
-            {/* filesSent */}
-            <StyledTableCell align="right">
-                <MuiFileInput
-                    value={contact.filesSent}
-                    multiple={true}
-                    onChange={(files) => handleChangeFile(files, "filesSent")}
-                //onChange={handleChangeFile} 
-                />
-                {/* <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
-                    Upload file
-                    <VisuallyHiddenInput type="file" />
-                </Button> */}
-                <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                    {contact.filesSent.length} fichier(s)<br />
-                    {contact.filesSent.map((file, index) => (
-                        <React.Fragment key={index}>
-                            {file.name}<br />
-                        </React.Fragment>
-                    ))}
-                </Typography>
             </StyledTableCell>
 
             {/* interestGauge */}
@@ -726,6 +792,28 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 /> */}
             </StyledTableCell>
 
+            {/* filesSent */}
+            <StyledTableCell align="right">
+                <MuiFileInput
+                    value={contact.filesSent}
+                    multiple={true}
+                    onChange={(files) => handleChangeFile(files, "filesSent")}
+                //onChange={handleChangeFile} 
+                />
+                {/* <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
+        Upload file
+        <VisuallyHiddenInput type="file" />
+    </Button> */}
+                <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                    {contact.filesSent.length} fichier(s)<br />
+                    {contact.filesSent.map((file, index) => (
+                        <React.Fragment key={index}>
+                            {file.name}<br />
+                        </React.Fragment>
+                    ))}
+                </Typography>
+            </StyledTableCell>
+
             {/* Supprimer contact ? */}
             <StyledTableCell align="center" >
                 <Tooltip title="Supprimer le contact"
@@ -746,7 +834,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             Supprimer le contact : <br /> <span style={{ fontWeight: "bold" }}>{contact.businessName}</span> ?
                         </Typography>
                         {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
-                        <Button variant="contained" color='warning' onClick={handleClickDeleteContact} sx={{ marginRight: "15px"}} >Oui !</Button>
+                        <Button variant="contained" color='warning' onClick={handleClickDeleteContact} sx={{ marginRight: "15px" }} >Oui !</Button>
                         <Button variant="contained" color='primary' onClick={handleCloseDeleteModal} >Non</Button>
                     </Box>
                 </Modal>

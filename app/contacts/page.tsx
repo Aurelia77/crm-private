@@ -118,7 +118,7 @@ export default function Contacts() {
         contactEmail: '',
         contactPosition: '',
         hasBeenCalled: 0,
-        hasBeenSentEmail: 0,
+        hasBeenSentEmailorMeetUp: 0,
         filesSent: [],
         tag: [],
         interestGauge: null, // Marche ps ???1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, 
@@ -410,7 +410,7 @@ export default function Contacts() {
 
 
     return (
-        <Box sx={{ position:"relative", margin:"2em" }}>
+        <Box sx={{ position:"relative", marginTop:"2em" }}>
         {/* <React.Fragment sx={{ position:"absolute" }}> */}
             <Typography variant="h3" component="h1" sx={{ 
                 //margin:"50px" 
@@ -428,11 +428,11 @@ export default function Contacts() {
                         {/* <Typography variant="h3" component="div" gutterBottom>User Auth = {currentUser?.email}</Typography> */}
 
                         {/* <FormControl sx={{ my: 2 }}> */}
-                        <Box sx={{ display: "flex", justifyContent: "space-around", padding: "20px", border: "solid 3px blue", borderRadius: "10px" }}>
-                            <Typography component="div" style={{ display: "block", width: "500px" }} >Pour version d'essai : Pour remettre comme au début cliquer sur ces 2 boutons à droite : </Typography>
-                            <Button variant="contained" color='primary' sx={{ width:"300px" }} onClick={() => deleteAllDatas(false)}>Supprimer tout (juste mes données)</Button>
-                            {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatas(true)}>Supprimer toutes les données !!!</Button> */}
+                        <Box sx={{ display: "flex", justifyContent: "space-around", padding: "10px", border: "solid 3px blue", borderRadius: "10px" }}>
+                            <Typography component="div" style={{ display: "block", width: "500px" }} >Pour version d'essai : Pour ajouter des contacts TEST ou tout supprimer : </Typography>
                             <Button variant="contained" color='ochre' onClick={addFakeData}>Ajouter Contacts Test</Button>
+                            <Button variant="contained" color='primary' sx={{ width:"300px" }} onClick={() => deleteAllDatas(false)}>Supprimer tout mes contacts</Button>
+                            {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatas(true)}>Supprimer toutes les données !!!</Button> */}
                         </Box>
                         {/* </FormControl> */}
                         {/* <FormControl sx={{ my: 2 }}>
@@ -498,7 +498,9 @@ export default function Contacts() {
                         </Box>
 
                         : 
-                        <Box sx={{ marginTop:"40px", position:"relative"}} >
+                        <Box sx={{ 
+                            marginTop:"40px", 
+                            position:"relative"}} >
                             {/* <Fade component="p" in={!displayNewContactForms}>
                                 <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
                             </Fade>

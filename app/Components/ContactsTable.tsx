@@ -25,6 +25,7 @@ import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
+import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
 
 
 
@@ -44,26 +45,26 @@ interface Column {
 
 
 const headCells: readonly Column[] = [               // readonly ???
-    { id: 'isClient', label: 'Client ?', minWidth: "7em", },
+    { id: 'isClient', label: 'Client ?', minWidth: "7em", },    
+    { id: 'dateOfNextCall', label: <AccessAlarmRoundedIcon fontSize='large' />, minWidth: "18em", },
     { id: 'logo', label: '', minWidth: "5em", },
     { id: 'businessName', label: 'Entreprise', minWidth: "15em", },
-    { id: 'businessCity', label: 'Ville', minWidth: "10em", },
     { id: 'contactPhone', label: <CallRoundedIcon fontSize='large' />, minWidth: "15em", },
-    {
-        id: 'contactName', label: <AccountCircleRoundedIcon fontSize='large' />, minWidth: "15em",
+    { id: 'contactName', label: <AccountCircleRoundedIcon fontSize='large' />, minWidth: "15em",
         //align: 'right', 
         //format: (value: number) => value.toLocaleString('en-US'),
     },
-    { id: 'contactEmail', label: <MailIcon fontSize='large' />, minWidth: "15em", },
-    {
-        id: 'hasBeenCalled', label: <Box><CallRoundedIcon fontSize='large' /><QuestionMarkIcon /></Box>
-        , minWidth: "5em",
-    },
-    { id: 'hasBeenSentEmail', label: <Box><MailIcon fontSize='large' /><QuestionMarkIcon /></Box>, minWidth: "5em", },
-    { id: 'dateOfNextCall', label: <AccessAlarmRoundedIcon fontSize='large' />, minWidth: "18em", },
-    { id: 'comments', label: <CommentRoundedIcon fontSize='large' />, minWidth: "10em", },
-    { id: 'filesSent', label: <AttachFileRoundedIcon fontSize='large' />, minWidth: "10em", },
+    { id: 'contactEmail', label: <MailIcon fontSize='large' />, minWidth: "15em", },    
+    { id: 'businessCity', label: 'Ville', minWidth: "10em", },
+    { id: 'hasBeenCalled', label: <Box><CallRoundedIcon fontSize='large' /><QuestionMarkIcon /></Box>
+        , minWidth: "5em", },
+    { id: 'hasBeenSentEmailorMeetUp', label: 
+    //'mail/rencontre ?',
+    <Box><MailIcon /><HandshakeTwoToneIcon /><QuestionMarkIcon /></Box>,
+     minWidth: "6em", },
+    { id: 'comments', label: <CommentRoundedIcon fontSize='large' />, minWidth: "5em", },
     { id: 'interestGauge', label: <FavoriteRoundedIcon fontSize='large' />, minWidth: "5em", },
+    { id: 'filesSent', label: <AttachFileRoundedIcon fontSize='large' />, minWidth: "10em", },
     // { id: 'supprimer', label: 'Supprimer ?', minWidth: "5em", },
 ];
 
