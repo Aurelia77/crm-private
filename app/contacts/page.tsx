@@ -31,7 +31,6 @@ import { TextField, Select, MenuItem, Autocomplete, ListItem, List, InputLabel, 
 import ContactForm from '../Components/ContactForm';
 import ContactCard from '../Components/ContactCard';
 import ContactsTable from '../Components/ContactsTable';
-import ContactsTable0 from '../Components/ContactsTableSansTri';
 import SignIn from '../Components/auth/SignIn';
 import SignUp from '../Components/auth/SignUp';
 import AuthDetails from '../Components/AuthDetails';
@@ -394,8 +393,9 @@ export default function Contacts() {
         updatingRemoteContacts(id, keyAndValue)
     }  
 
-    // const filter = (searchText: string) => {
-    // }
+    const filter = (searchText: string) => {
+        console.log(searchText)
+    }
 
     const storageRef = ref(storage);
     //console.log(storageRef)
@@ -493,9 +493,8 @@ export default function Contacts() {
                         </Box>
 
                         : 
-                        <Box sx={{ 
-                            marginTop:"40px", 
-                            position:"relative"}} >
+                        <Box sx={{ marginTop:"40px", position:"relative"}} >
+                            {/* <FilterContacts onTextChange={filter}  /> */}
                             {/* <Fade component="p" in={!displayNewContactForms}>
                                 <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
                             </Fade>
