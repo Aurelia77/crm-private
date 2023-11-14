@@ -35,15 +35,16 @@ import ContactsTable0 from '../Components/ContactsTableSansTri';
 import SignIn from '../Components/auth/SignIn';
 import SignUp from '../Components/auth/SignUp';
 import AuthDetails from '../Components/AuthDetails';
+import FilterContacts from '../Components/FilterContacts';
 
 import fakeContactsData from '../utils/contacts'
 //import getContacts from '../utils/firebase'
 //import writeContactData from '../utils/firebase'
 //import firebase from 'firebase/app'
 //import firebaseConfig from '../utils/firebaseConfig'
-import { realtimeDb, fireStoreDb } from '../utils/firebase'
+import { realtimeDb, fireStoreDb, storage } from '../utils/firebase'
 import { uid } from 'uid';
-import { onValue, ref, set } from "firebase/database";
+//import { onValue, ref, set } from "firebase/database";
 import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, deleteDoc, updateDoc, doc } from "firebase/firestore";
 import { Dayjs } from 'dayjs';       // npm install dayjs
 import { Timestamp } from 'firebase/firestore';
@@ -57,6 +58,8 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 import Fade from '@mui/material';
 import Collapse from '@mui/material';
+
+import { getStorage, ref } from "firebase/storage";
 
 
 
@@ -107,6 +110,7 @@ export default function Contacts() {
         logo: '',
         businessName: '',
         denominationUsuelleEtablissement: [],
+        businessType: '',
         businessActivity: '',
         businessAddress: '',
         businessWebsite: '',
@@ -118,7 +122,7 @@ export default function Contacts() {
         contactEmail: '',
         contactPosition: '',
         hasBeenCalled: 0,
-        hasBeenSentEmailorMeetUp: 0,
+        hasBeenSentEmailOrMeetUp: 0,
         filesSent: [],
         tag: [],
         interestGauge: null, // Marche ps ???1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, 
@@ -135,8 +139,8 @@ export default function Contacts() {
     //console.log(contacts)
 
     const { currentUser } = useAuthUserContext()
-    console.log(currentUser)
-    console.log(currentUser?.uid)
+    // console.log(currentUser)
+    // console.log(currentUser?.uid)
 
 
 
@@ -208,7 +212,6 @@ export default function Contacts() {
         })
         //window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données        // n'enregistre pas les données à chaque fois si je le mets ici !!!
     }
-
     const addContact = (contact: Contact) => {
         console.log("add contact", contact)
 
@@ -221,7 +224,6 @@ export default function Contacts() {
             .catch((error) => { console.error("Error adding document: ", error); });
         //window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
     }
-
     const deleteAllDatas = (allAndNotonlyFromConnectedUser: boolean) => {
 
         // (onlyFromConnectedUser && currentUser)
@@ -266,9 +268,6 @@ export default function Contacts() {
         //     });
         // });
     }
-
-   
-
     const deleteContact = (contactId: string) => {
         const q = query(collection(fireStoreDb, "contacts"), where("id", "==", contactId));
         getDocs(q).then((querySnapshot) => {
@@ -294,9 +293,7 @@ export default function Contacts() {
         //     // doc.data() is never undefined for query doc snapshots
         //     console.log(doc.id, " => ", doc.data());
         // });
-
         let contactsArr: Contact[] = []
-
         const q = query(collection(fireStoreDb, "contacts"), where("userId", "==", currentUser?.uid ?? ""));
 
         getDocs(q).then((querySnapshot) => {
@@ -311,8 +308,6 @@ export default function Contacts() {
             setContacts(contactsArr)
         });
     }, [currentUser?.uid])
-
-
 
 
     // const updateContactInContactsAndDB = (updatingContact: Contact) => {     // ou selectedContact
@@ -367,7 +362,6 @@ export default function Contacts() {
         setContacts(tempUpdatedContacts)
     }
     const updatingRemoteContacts = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
-
         // const contactToUpdateRef = doc(fireStoreDb, "contacts", id);
         // console.log(contactToUpdateRef)
 
@@ -375,7 +369,6 @@ export default function Contacts() {
         // updateDoc(contactToUpdateRef, {
         //     [keyAndValue.key]: keyAndValue.value
         // });
-
         const q = query(collection(fireStoreDb, "contacts"), where("id", "==", id));
 
         getDocs(q).then((querySnapshot) => {
@@ -399,19 +392,21 @@ export default function Contacts() {
         updatingLocalContacts(id, keyAndValue)
         // 2-On met à jour le contact dans la BDD fireStore : firestoreDB
         updatingRemoteContacts(id, keyAndValue)
-    }
+    }  
 
+    // const filter = (searchText: string) => {
+    // }
 
-
-    // const [value, setValue] = React.useState(0);
-    // const handleChange = (event: React.SyntheticEvent, newValue: number) => { setValue(newValue);  };
-
+    const storageRef = ref(storage);
+    //console.log(storageRef)
 
 
 
     return (
         <Box sx={{ position:"relative", marginTop:"2em" }}>
         {/* <React.Fragment sx={{ position:"absolute" }}> */}
+
+            {/* <Image */}
             <Typography variant="h3" component="h1" sx={{ 
                 //margin:"50px" 
             }} >Application de gestion de contacts</Typography>

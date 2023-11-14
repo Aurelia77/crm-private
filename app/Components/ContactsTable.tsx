@@ -58,13 +58,14 @@ const headCells: readonly Column[] = [               // readonly ???
     { id: 'businessCity', label: 'Ville', minWidth: "10em", },
     { id: 'hasBeenCalled', label: <Box><CallRoundedIcon fontSize='large' /><QuestionMarkIcon /></Box>
         , minWidth: "5em", },
-    { id: 'hasBeenSentEmailorMeetUp', label: 
+    { id: 'hasBeenSentEmailOrMeetUp', label: 
     //'mail/rencontre ?',
     <Box><MailIcon /><HandshakeTwoToneIcon /><QuestionMarkIcon /></Box>,
      minWidth: "6em", },
     { id: 'comments', label: <CommentRoundedIcon fontSize='large' />, minWidth: "5em", },
     { id: 'interestGauge', label: <FavoriteRoundedIcon fontSize='large' />, minWidth: "5em", },
     { id: 'filesSent', label: <AttachFileRoundedIcon fontSize='large' />, minWidth: "10em", },
+    { id: 'businessType', label: 'Type', minWidth: "10em", },
     // { id: 'supprimer', label: 'Supprimer ?', minWidth: "5em", },
 ];
 
@@ -221,6 +222,8 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
     //setContacts
 }: ContactsTableProps) {
 
+    //console.log("CONTACT TABLE")
+
     //console.log("xxxContacts = ", contacts)
 
     const [order, setOrder] = React.useState<Order>('asc');
@@ -230,6 +233,13 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
     const [dense, setDense] = React.useState(false);
     //const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
+    const [alerts, setAlerts] = React.useState({
+        missed: 0,
+        soon: 0,
+    });
+
+    //console.log(alerts)
+
     const handleRequestSort = (
         event: React.MouseEvent<unknown>,
         property: keyof Contact,
@@ -238,23 +248,6 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
-
-    //console.log(document.documentElement.clientHeight)
-
-    const handleChangeHasBeenCalledCheckbox = () => {
-        // console.log(contacts)
-
-        // const a = [...contacts, contacts[selectedContactId].hasBeenCalled = !contacts[selectedContactId].hasBeenCalled]
-        // console.log(a)
-
-        //setContacts([...contacts, contacts[selectedContactId].hasBeenCalled = !contacts[selectedContactId].hasBeenCalled])
-
-        //setSelectedContact({...selectedContact, hasBeenCalled: !selectedContact.hasBeenCalled})
-
-        //dispatch({type : 'inputsChanging', payload : {...state.editingMovie, name: event.target.value}})
-        //setEditingMovie({...editingMovie, hasBeenCalled: !editingMovie.hasBeenCalled})
-        //}
-    }
 
     const muiTheme = useTheme();
 
@@ -288,15 +281,10 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
     //     { field: 'filesSent', headerName: 'filesSent', },
     //     { field: 'interestGauge', headerName: 'interestGauge', },
     // ];
-
-
+   
     return (
-        <Paper sx={{
-            width: '100%',
-            //overflow: 'hidden' 
-        }}
-            elevation={3}
-        >
+        <Paper sx={{ width: '100%',  }}  elevation={3} >
+            <Typography sx={{ p: 2 }}>{alerts?.missed} relances passées. {alerts?.soon} relances dans les 7 jours.</Typography>
             {/* <div style={{ height: 400, width: '100%' }}>
                 <DataGrid rows={rows} columns={columns} />
             </div> */}
@@ -361,12 +349,17 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
                             //console.log(row)
 
                             return (
-                                <ContactRow key={row.id}
+                                <ContactRow
+                                    key={row.id}
                                     contact={row}
                                     selectedContactId={selectedContactId}
                                     setSelectedContact={setSelectedContact}
                                     handleUpdateContact={handleUpdateContact}
                                     handleDeleteContact={() => handleDeleteContact(row.id)}
+                                    alerts ={{
+                                        alerts: alerts,
+                                        setAlerts: setAlerts
+                                    }}
                                 //setContacts={setContacts} 
                                 />
                             );

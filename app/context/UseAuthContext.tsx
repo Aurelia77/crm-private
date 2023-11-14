@@ -30,7 +30,7 @@ export default function UserAuthContextProvider({ children }: { children: React.
     //////////////////////// UTIL ?????????? Si modif de compte ??? Deconnexion ?????????????
     React.useEffect(() => {
         onAuthStateChanged(auth, (user) => {
-            console.log(user)
+            //console.log(user)
             if (user) {
                 setCurrentUser(user);
                // console.log('Logging !!!')

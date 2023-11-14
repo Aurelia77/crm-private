@@ -70,6 +70,7 @@ import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAltOutlined';
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
 import Tooltip from '@mui/material/Tooltip';
+import { timeStamp } from 'console';
 
 
 
@@ -145,11 +146,54 @@ type ContactRowProps = {
     handleUpdateContact: (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => void   // obligé de mettre NULL pour la date ! (???)
     //handleUpdateContact: (contact: Contact) => void
     handleDeleteContact: () => void
+    alerts: {
+        alerts: any
+        // {
+        //     missed: number,
+        //     soon: number
+        // }
+        setAlerts: (alerts: any) => void
+        // setAlerts: (alerts: {missed: number, soon: number}) => void
+    }
 }
-export default function ContactRow({ contact, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact
+export default function ContactRow({ contact, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, alerts,
 }: ContactRowProps) {
 
+    //console.log("CONTACT ROW")
+    //console.log(alerts.alerts)
+
+
     const muiTheme = useTheme();
+
+    const isDatePassed = (timeStampObj: Timestamp | null) => {
+        if (timeStampObj) {
+            const date = timeStampObj?.toDate().toString()
+            const timeStamp = Date.parse(date)
+            const nowTimestamp = Date.parse(new Date().toString())
+
+            return timeStamp < nowTimestamp
+            // return timeStampObj && (Date.parse(timeStampObj.toDate().toString()) < Date.parse(new Date().toString()))
+        }
+    }
+    const isDateSoon = (timeStampObj: Timestamp | null) => {
+        if (timeStampObj) {
+            const date = timeStampObj?.toDate().toString()
+            const timeStamp = Date.parse(date)
+            const nowTimestamp = Date.parse(new Date().toString())
+            const inAWeekTimeStamp = new Date().setDate(new Date().getDate() + 7)//.toString()           
+
+            return (timeStamp > nowTimestamp) && (timeStamp < inAWeekTimeStamp)
+        }
+    }
+
+    React.useEffect(() => {
+        console.log("USE EFFECT")
+
+        isDatePassed(contact.dateOfNextCall) && alerts.setAlerts((prev: any) => ({ ...prev, missed: prev.missed + 1 }))
+        isDateSoon(contact.dateOfNextCall) && alerts.setAlerts((prev: any) => ({ ...prev, soon: prev.soon + 1 }))
+    }, [contact.dateOfNextCall])        // ne pas mettre la dép ALERTS sinon boucle infinie !
+
+
 
 
     //console.log(contact)
@@ -157,7 +201,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
     // GESTION DES ICONES MAIL ET TELEPHONE
     // hasBeenCalled => 0="no" | 1="yes but no answer" | 2="yes and answered",
-    // hasBeenSentEmailorMeetUp =>  0="nothing" | 1="email sent" | 2="email sent and received" | 3="met up",
+    // hasBeenSentEmailOrMeetUp =>  0="nothing" | 1="email sent" | 2="email sent and received" | 3="met up",
     const handleClickHasBeenCalled = () => {
         handleUpdateContact(contact.id, {
             key: "hasBeenCalled", value: contact.hasBeenCalled === 0
@@ -167,20 +211,20 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     : 0
         })
     }
-    const handleClickhasBeenSentEmailorMeetUp = () => {
+    const handleClickhasBeenSentEmailOrMeetUp = () => {
         handleUpdateContact(contact.id, {
-            key: "hasBeenSentEmailorMeetUp", value: contact.hasBeenSentEmailorMeetUp === 0
+            key: "hasBeenSentEmailOrMeetUp", value: contact.hasBeenSentEmailOrMeetUp === 0
                 ? 1
-                : contact.hasBeenSentEmailorMeetUp === 1
+                : contact.hasBeenSentEmailOrMeetUp === 1
                     ? 2
-                    : contact.hasBeenSentEmailorMeetUp === 2
+                    : contact.hasBeenSentEmailOrMeetUp === 2
                         ? 3
                         : 0
         })
     }
     // Renvoie la bonne icone selon l'état de hasBeenCalled (non envoyé, envoyé, lu...)
-    const RightMailIcon = ({ hasBeenSentEmailorMeetUp }: { hasBeenSentEmailorMeetUp: 0 | 1 | 2 | 3 }) => {
-        switch (hasBeenSentEmailorMeetUp) {
+    const RightMailIcon = ({ hasBeenSentEmailOrMeetUp }: { hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3 }) => {
+        switch (hasBeenSentEmailOrMeetUp) {
             case 1: return <MailIcon sx={{ color: muiTheme.palette.ochre.main }} />
             case 2: return <MarkEmailReadIcon color='success' />
             case 3: return <HandshakeTwoToneIcon color="success" />
@@ -200,9 +244,9 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 return "black"    //muiTheme.palette.gray.main;
         }
     };
-    const getEmailIconColor = (hasBeenSentEmailorMeetUp: 0 | 1 | 2 | 3) => {
+    const getEmailIconColor = (hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3) => {
         //console.log("xxxusePhoneIconStyle")
-        switch (hasBeenSentEmailorMeetUp) {
+        switch (hasBeenSentEmailOrMeetUp) {
             case 2:
             case 3:
                 return muiTheme.palette.success.main;
@@ -222,8 +266,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 return "Pas appelé"
         }
     };
-    const getEmailIconText = (hasBeenSentEmailorMeetUp: 0 | 1 | 2 | 3) => {
-        switch (hasBeenSentEmailorMeetUp) {
+    const getEmailIconText = (hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3) => {
+        switch (hasBeenSentEmailOrMeetUp) {
             case 1:
                 return "Mail envoyé"
             case 2:
@@ -288,14 +332,18 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         //handleUpdateContact({ ...contact, [attribut]: !contact[attribut] })
     }
     const handleChangeDate = (newDate: Dayjs | null, attribut: keyof Contact) => {      // Obligé de mettre NULL ???        // On pt faire comme handleChangeText qui renvoie un EVENT ??? et ne pas avoir à passer l'arg ???
-        console.log(contact.dateOfNextCall)     // Timestamp {seconds: 1700147570, nanoseconds: 377000000}
-        contact.dateOfNextCall && console.log(contact.dateOfNextCall.toDate())    // Thu Nov 16 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale)
-        contact.dateOfNextCall && console.log(dayjs(contact.dateOfNextCall.toDate())) // M {$L: 'en', $u: undefined, $d: Thu Nov 16 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale), $y: 2023, $M: 10, …}
-        // On revient en arrière :
-        console.log("newDate", newDate) // M {$L: 'en', $u: undefined, $d: Wed Nov 01 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale), $y: 2023, $M: 10, …}
-        console.log(newDate?.toDate()) // Wed Nov 01 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale)
-        // console.log((newDate?.toDate())?.getTime())      // Non car c'est un TIMESTAMP mais pas l'objet Timestamp de firebase
-        newDate && console.log(Timestamp.fromDate(newDate.toDate()))
+        // console.log(contact.dateOfNextCall)     // Timestamp {seconds: 1700147570, nanoseconds: 377000000}
+        // contact.dateOfNextCall && console.log(contact.dateOfNextCall.toDate())    // Thu Nov 16 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale)
+        // console.log(Date.parse(contact.dateOfNextCall.toDate().toString()))     //1698710400000 (timestamp)
+        // console.log(Date.parse(contact.dateOfNextCall.toDate()))                //1698710400000
+        // console.log(Date.parse(new Date().toString()))      // TimeStamp Now
+        // console.log(Date.parse(contact.dateOfNextCall.toDate()) > Date.parse(new Date().toString()))
+        // contact.dateOfNextCall && console.log(dayjs(contact.dateOfNextCall.toDate())) // M {$L: 'en', $u: undefined, $d: Thu Nov 16 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale), $y: 2023, $M: 10, …}
+        // // On revient en arrière :
+        // console.log("newDate", newDate) // M {$L: 'en', $u: undefined, $d: Wed Nov 01 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale), $y: 2023, $M: 10, …}
+        // console.log(newDate?.toDate()) // Wed Nov 01 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale)
+        // // console.log((newDate?.toDate())?.getTime())      // Non car c'est un TIMESTAMP mais pas l'objet Timestamp de firebase
+        // newDate && console.log(Timestamp.fromDate(newDate.toDate()))
         //console.log("parse ?", Date.parse(newDate))
         // Si on ne veut pas de date => newDate = null
         handleUpdateContact(contact.id, { key: attribut, value: newDate === null ? newDate : Timestamp.fromDate(newDate.toDate()) })
@@ -340,6 +388,11 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     //     handleUpdateContact(contact.id, {key: "interestGauge", value: event.target.value } )
     // }
 
+
+
+
+
+
     const [openCommentDialogue, setOpenCommentDialogue] = React.useState(false);
     const handleClickOpenCommentDialog = () => {
         setOpenCommentDialogue(true);
@@ -347,7 +400,6 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     const handleCloseCommentDialog = () => {
         setOpenCommentDialogue(false);
     };
-
 
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -380,9 +432,6 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         handleCloseCommentDialog()
     }
 
-
-
-
     return (
         <StyledTableRow
             // className= "tableRowSelected"
@@ -397,7 +446,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         //className='demo'
         >
             {/* Client ? */}
-            <StyledTableCell component="th" scope="row" >
+            <StyledTableCell component="td" scope="row" >
                 <Switch
                     checked={contact.isClient}
                     onChange={() => handleUpdateContact(contact.id, { key: "isClient", value: !contact.isClient })}
@@ -408,30 +457,52 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
             {/* dateOfNextCall */}
             {/* The general recommendation is to declare the LocalizationProvider once, wrapping your entire application. Then, you don't need to repeat the boilerplate code for every Date and Time Picker in your application. */}
-            <StyledTableCell align="left">
+            <StyledTableCell
+                style={{
+                    backgroundColor: isDatePassed(contact.dateOfNextCall)
+                        ? muiTheme.palette.warning.light
+                        : isDateSoon(contact.dateOfNextCall)
+                            ? muiTheme.palette.ochre.light
+                            : ""
+                }}
+            >
+                {/* {contact.dateOfNextCall && <Typography variant="caption" display="block" gutterBottom>{Date.parse(contact.dateOfNextCall.toDate())}</Typography>}
+                {contact.dateOfNextCall && <Typography variant="caption" display="block" gutterBottom>{Date.parse(new Date().toString())}</Typography> } */}
+
+                {isDatePassed(contact.dateOfNextCall) && <NotificationsNoneOutlinedIcon color="error"
+                    //sx={{ color: pink[800] }} 
+                    fontSize='large' />}
+
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <Container
                     //components={['DateTimePicker']}       // ???
                     >
-                        <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}> {/* Sinon on pouvait mettre un float:right sur le bouton ci-dessous */}
-                            <NotificationsNoneOutlinedIcon //color="pink" 
-                                sx={{ color: pink[800] }} />
-                            <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
-                                onClick={() => handleChangeDate(null, "dateOfNextCall")} >
-                                <ClearIcon color='warning' />
-                            </IconButton>
+                        <Box sx={{
+                            display: "flex",
+                            justifyContent: "end",           //"space-between", 
+                            marginBottom: "10px"
+                        }}> {/* Sinon on pouvait mettre un float:right sur le bouton ci-dessous */}
+                            {/* <NotificationsNoneOutlinedIcon sx={{ color: pink[800] }} /> */}
+                            <Tooltip title="Supprimer la date">
+                                <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
+                                    onClick={() => handleChangeDate(null, "dateOfNextCall")} >
+                                    <ClearIcon
+                                    //color='warning'
+                                    />
+                                </IconButton>
+                            </Tooltip>
                         </Box>
-                        <DateTimePicker
+                        <DatePicker
+                            // <DateTimePicker
                             //defaultValue={null}
                             //label="Date de relance"
-                            ampm={false}
-                            format="DD/MM/YYYY HH:mm"
+                            //ampm={false}          // Si on met TIME aussi
+                            // format="DD/MM/YYYY HH:mm"
+                            format="DD/MM/YYYY"
                             minDate={dayjs(new Date())}
-                            viewRenderers={{
-                                hours: renderTimeViewClock,
-                                minutes: renderTimeViewClock,
-                                seconds: renderTimeViewClock,
-                            }}
+                            // viewRenderers={{  hours: renderTimeViewClock,
+                            //     minutes: renderTimeViewClock,
+                            //     seconds: renderTimeViewClock, }}
                             //value={dayjs(contact.dateOfNextCall)}   // => Avant FIREBASE ça fonctionnait avec ça (car FIREBASE transforme les dates en objet Timestamp(?))
                             //{dayjs(new Date("01/01/2000"))}
                             //value={dayjs(contact.dateOfNextCall.toDate())}        // Erreur si date = null
@@ -450,7 +521,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             </StyledTableCell>
 
             {/* LOGO */}
-            <StyledTableCell component="th" scope="row" >
+            <StyledTableCell component="td" scope="row" >
                 {/* <TextField type="file" onChange={handleChangeLogo2} /> */}
                 {contact.logo && <Image src={contact.logo} alt={contact.businessName} width={50} height={50} />}
                 {/* <MuiFileInput
@@ -460,7 +531,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             </StyledTableCell>
 
             {/* businessName */}
-            <StyledTableCell component="th" scope="row" >
+            <StyledTableCell component="td" scope="row" >
                 <TextField id="standard-basic" //label="Nom de l'entreprise"    
                     value={contact.businessName}
                     onChange={handleChangeText('businessName')}
@@ -564,7 +635,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             </StyledTableCell>
 
             {/* businessCity */}
-            <StyledTableCell component="th" scope="row" >
+            <StyledTableCell component="td" scope="row" >
                 <TextField id="standard-basic"
                     value={contact.businessCity}
                     onChange={handleChangeText('businessCity')}
@@ -588,9 +659,9 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             </StyledTableCell>
 
             {/* hasBeenCalled */}
-            <StyledTableCell align="center">                
+            <StyledTableCell align="center">
                 {/* Obligé de mettre dans une BOX pour centrer */}
-                <Box display="flex" 
+                <Box display="flex"
                     // alignItems="center" 
                     justifyContent="center"
                 >
@@ -622,39 +693,39 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             color: lighten(muiTheme.palette.primary.main, 0.5)
                         },
                     }}
-                    disabled={contact.hasBeenSentEmailorMeetUp ? true : false}
+                    disabled={contact.hasBeenSentEmailOrMeetUp ? true : false}
                     onChange={() => handleChangeCheckbox(contact, "hasBeenCalled")} // onChange={handleChangeCheckbox(contact, "hasBeenCalled")} ???
                     inputProps={{ 'aria-label': 'controlled' }} /> */}
 
                 {/* {contact.hasBeenCalled} */}
             </StyledTableCell>
 
-            {/* hasBeenSentEmailorMeetUp */}
-            {/* <StyledTableCell align="center"> */}           
+            {/* hasBeenSentEmailOrMeetUp */}
+            {/* <StyledTableCell align="center"> */}
             <StyledTableCell>
                 {/* Obligé de mettre dans une BOX pour centrer */}
-                <Box display="flex" 
+                <Box display="flex"
                     // alignItems="center" 
                     justifyContent="center"
                 >
                     <Avatar
                         sx={{
                             bgcolor: "white",
-                            //bgcolor: getEmailIconColor(contact.hasBeenSentEmailorMeetUp),     //"white", 
-                            border: `4px solid ${getEmailIconColor(contact.hasBeenSentEmailorMeetUp)}`,
+                            //bgcolor: getEmailIconColor(contact.hasBeenSentEmailOrMeetUp),     //"white", 
+                            border: `4px solid ${getEmailIconColor(contact.hasBeenSentEmailOrMeetUp)}`,
                         }}
                     //className={classes.avatar}
                     >
-                        <Tooltip title={getEmailIconText(contact.hasBeenSentEmailorMeetUp)}>
-                            <IconButton color="primary" onClick={handleClickhasBeenSentEmailorMeetUp}>
-                                <RightMailIcon hasBeenSentEmailorMeetUp={contact.hasBeenSentEmailorMeetUp} />
+                        <Tooltip title={getEmailIconText(contact.hasBeenSentEmailOrMeetUp)}>
+                            <IconButton color="primary" onClick={handleClickhasBeenSentEmailOrMeetUp}>
+                                <RightMailIcon hasBeenSentEmailOrMeetUp={contact.hasBeenSentEmailOrMeetUp} />
                                 {/* <MailOutlineIcon fontSize="large" sx={{ color: "white" }} /> */}
                             </IconButton>
                         </Tooltip>
                     </Avatar>
                 </Box>
 
-                {/* <Checkbox checked={contact.hasBeenSentEmailorMeetUp}
+                {/* <Checkbox checked={contact.hasBeenSentEmailOrMeetUp}
                     icon={<RadioButtonUncheckedIcon />}
                     //checkedIcon={<RadioButtonCheckedIcon />}
                     checkedIcon={<TaskAltIcon />}
@@ -667,8 +738,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     }}
                     disabled={(contact.hasReceivedEmail || !contact.hasBeenCalled) ? true : false}
                     //disabled={!contact.hasBeenCalled ? true : false}
-                    // disabled={(contact.hasBeenCalled || contact.hasBeenSentEmailorMeetUp === false) ? false : true}
-                    onChange={() => handleChangeCheckbox(contact, "hasBeenSentEmailorMeetUp")}
+                    // disabled={(contact.hasBeenCalled || contact.hasBeenSentEmailOrMeetUp === false) ? false : true}
+                    onChange={() => handleChangeCheckbox(contact, "hasBeenSentEmailOrMeetUp")}
                     inputProps={{ 'aria-label': 'controlled' }}
                 /> */}
             </StyledTableCell>
@@ -684,8 +755,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             color: lighten(pink[800], 0.5)
                         },
                     }}
-                    // disabled={(contact.hasBeenSentEmailorMeetUp && contact.hasBeenCalled) ? false : true}
-                    disabled={(!contact.hasBeenSentEmailorMeetUp) ? true : false}
+                    // disabled={(contact.hasBeenSentEmailOrMeetUp && contact.hasBeenCalled) ? false : true}
+                    disabled={(!contact.hasBeenSentEmailOrMeetUp) ? true : false}
                     onChange={() => handleChangeCheckbox(contact, "hasReceivedEmail")}
                     inputProps={{ 'aria-label': 'controlled' }} />
             </StyledTableCell> */}
@@ -812,6 +883,18 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         </React.Fragment>
                     ))}
                 </Typography>
+            </StyledTableCell>
+
+            {/* type */}
+            <StyledTableCell component="td" scope="row" >
+                <TextField id="standard-basic"   
+                    value={contact.businessType}
+                    onChange={handleChangeText('businessType')}
+                    InputProps={{
+                        startAdornment: contact.businessType.length === 0 && "...",
+                        disableUnderline: true
+                    }}
+                />               
             </StyledTableCell>
 
             {/* Supprimer contact ? */}

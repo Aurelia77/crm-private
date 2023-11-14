@@ -9,6 +9,7 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set } from "firebase/database";
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
 
 // import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
@@ -25,7 +26,7 @@ const firebaseConfig = {
   projectId: "crm-lauriane-c8084",
   storageBucket: "crm-lauriane-c8084.appspot.com",
   messagingSenderId: "882348983292",
-  appId: "1:882348983292:web:80587c355b2aae72702879"
+  appId: "1:882348983292:web:80587c355b2aae72702879",
 };
 
 // Initialize Firebase
@@ -41,10 +42,14 @@ const realtimeDb = getDatabase(app);
 // Initialize Firebase Authentication and get a reference to the service
 const auth = getAuth(app);
 
+// Initialize Cloud Storage and get a reference to the service
+const storage = getStorage(app);
+
 export {
   fireStoreDb,
   realtimeDb,
-  auth
+  auth,
+  storage
 }
 
 
