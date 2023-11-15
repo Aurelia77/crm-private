@@ -47,7 +47,7 @@ interface Column {
 const headCells: readonly Column[] = [               // readonly ???
     { id: 'isClient', label: 'Client ?', minWidth: "7em", },    
     { id: 'dateOfNextCall', label: <Box sx={{ display: 'flex', alignItems: 'center', }}
-    ><AccessAlarmRoundedIcon fontSize='large' sx={{ marginRight: "20px" }} />Relance</Box>, minWidth: "18em", },
+    ><AccessAlarmRoundedIcon fontSize='large' sx={{ marginRight: "20px" }} />Relance</Box>, minWidth: "13em", },
     { id: 'logo', label: '', minWidth: "5em", },
     { id: 'businessName', label: 'Entreprise', minWidth: "15em", },
     { id: 'contactPhone', label: <CallRoundedIcon fontSize='large' />, minWidth: "15em", },
@@ -219,9 +219,8 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
     //setContacts
 }: ContactsTableProps) {
 
-    //console.log("CONTACT TABLE")
-
-    //console.log("xxxContacts = ", contacts)
+    console.log("CONTACT TABLE")
+    console.log("TABLE Contacts = ", contacts)
 
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof Contact>('businessName');

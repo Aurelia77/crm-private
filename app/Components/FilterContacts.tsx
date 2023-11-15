@@ -1,16 +1,17 @@
 import React from 'react'
+import { FormControl, FormHelperText, Input, InputLabel, TextField, Typography } from '@mui/material'
 
-export default function FilterContacts({onTextChange}: {onTextChange: (text: string) => void}) {
+export default function FilterContacts({ onTextChange }: { onTextChange: (text: string) => void }) {
 
     const handleChange = (text: any) => {
         onTextChange(text.target.value)     // on remonte la val au niveau suppérieur
     }
 
     return (
-        <div className="component-search-input">
-            <h2>********************** Recherche de Trackers **********************</h2>
-            <div>
-                <input type='text' placeholder='Recherche' onChange={handleChange} />
-            </div>
-        </div>)
+        <FormControl>
+            <Typography variant="h6" gutterBottom component="div">Recherche</Typography>
+            <TextField id="standard-basic" label="Nom" onChange={handleChange} />
+            {/* <FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText> */}
+        </FormControl>
+    )
 }

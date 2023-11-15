@@ -100,6 +100,7 @@ function CustomTabPanel(props: TabPanelProps) {
 
 export default function Contacts() {
     const [contacts, setContacts] = React.useState<Contact[]>([])
+    const [filteredContacts, setFilteredContacts] = React.useState<Contact[]>(contacts)
     //const [selectedContact, setSelectedContact] = React.useState<Contact | undefined>()   
     const [selectedContact, setSelectedContact] = React.useState<Contact | { id: string }>({ id: "0" })
     const [loading, setLoading] = React.useState(true)
@@ -135,7 +136,7 @@ export default function Contacts() {
         userId: ''
     }
 
-    //console.log("xxxContacts",contacts)
+    console.log("PAGE Contacts",contacts)
 
     const [displayNewContactForms, setDisplayNewContactForms] = React.useState(false)
 
@@ -167,18 +168,24 @@ export default function Contacts() {
         console.log("updatingContact", id, keyAndValue)
         setContacts(updateContactsInLocalList(contacts, id, keyAndValue))
         //setmoviesList(sortArrayBy(updatedMovies, orderedBy))    
-    
         updatDataOnFirebase(id, keyAndValue)
     }  
 
 
+  
 
+    React.useEffect(() => {
+        console.log(filterName)
 
-    const filter = (searchText: string) => {
-        console.log(searchText)
-
-        setFilterName(searchText)
-    }
+        if (filterName !== '') {        
+            const searchedContacts: Contact[] = contacts.filter((contact) => {
+                return contact.businessName.toLowerCase().includes(filterName.toLowerCase())
+            })
+            setFilteredContacts(searchedContacts)
+        } else {
+            setFilteredContacts(contacts)
+        }
+    }, [filterName, contacts])
 
 
 
@@ -280,7 +287,7 @@ export default function Contacts() {
                         : 
                         <Box sx={{ marginTop:"40px", position:"relative"}} >
 
-                            {/* <FilterContacts onTextChange={filter}  /> */}
+                            <FilterContacts onTextChange={setFilterName}  />
 
                             {/* <Fade component="p" in={!displayNewContactForms}>
                                 <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
@@ -289,6 +296,7 @@ export default function Contacts() {
                                 <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
                             </Collapse> */}
                             <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
+                            {filterName !== "" && <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({filteredContacts.length}) contacts dans la recherche.</Typography>}
                             <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez {alerts.nbContactWithDatePassed} relance(s) passée(s) et {alerts.nbContactWithDateSoon} relance(s) à faire dans les 7 jour(s).</Typography>
                             <Box sx={{ position:"absolute", right:0, top:0  }} >
                                 <Tooltip title="Ajouter un contact (avec ou sans recherche)" placement="left">
@@ -302,7 +310,7 @@ export default function Contacts() {
                                 </Tooltip>
                             </Box>
                             <ContactsTable
-                                contacts={contacts}
+                                contacts={filteredContacts}
                                 selectedContactId={selectedContact.id}
                                 setSelectedContact={setSelectedContact}
                                 handleUpdateContact={updateContactInContactsAndDB}
