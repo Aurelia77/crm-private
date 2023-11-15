@@ -146,15 +146,16 @@ type ContactRowProps = {
     handleUpdateContact: (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => void   // obligé de mettre NULL pour la date ! (???)
     //handleUpdateContact: (contact: Contact) => void
     handleDeleteContact: () => void
-    alerts: {
-        alerts: any
-        // {
-        //     missed: number,
-        //     soon: number
-        // }
-        setAlerts: (alerts: any) => void
-        // setAlerts: (alerts: {missed: number, soon: number}) => void
-    }
+    alerts: any
+    // alerts: {
+    //     alerts: any
+    //     // {
+    //     //     missed: number,
+    //     //     soon: number
+    //     // }
+    //     setAlerts: (alerts: any) => void
+    //     // setAlerts: (alerts: {missed: number, soon: number}) => void
+    // }
 }
 export default function ContactRow({ contact, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, alerts,
 }: ContactRowProps) {
