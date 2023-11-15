@@ -72,6 +72,7 @@ import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfi
 import Tooltip from '@mui/material/Tooltip';
 import { timeStamp } from 'console';
 
+import { timeStampObjToTimeStamp } from '../utils/functionsToolbox';
 
 
 // Pour les smileys du RATING 
@@ -146,19 +147,8 @@ type ContactRowProps = {
     handleUpdateContact: (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => void   // obligé de mettre NULL pour la date ! (???)
     //handleUpdateContact: (contact: Contact) => void
     handleDeleteContact: () => void
-    alerts: any
-    // alerts: {
-    //     alerts: any
-    //     // {
-    //     //     missed: number,
-    //     //     soon: number
-    //     // }
-    //     setAlerts: (alerts: any) => void
-    //     // setAlerts: (alerts: {missed: number, soon: number}) => void
-    // }
 }
-export default function ContactRow({ contact, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, alerts,
-}: ContactRowProps) {
+export default function ContactRow({ contact, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, }: ContactRowProps) {
 
     //console.log("CONTACT ROW")
     //console.log(alerts.alerts)
@@ -166,15 +156,9 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
     const muiTheme = useTheme();
 
-    const isDatePassed = (timeStampObj: Timestamp | null) => {
-        if (timeStampObj) {
-            const date = timeStampObj?.toDate().toString()
-            const timeStamp = Date.parse(date)
-            const nowTimestamp = Date.parse(new Date().toString())
-
-            return timeStamp < nowTimestamp
-            // return timeStampObj && (Date.parse(timeStampObj.toDate().toString()) < Date.parse(new Date().toString()))
-        }
+    const isDatePassed = (timeStampObj: Timestamp) => {
+        const nowTimestamp = new Date().getTime()
+        return timeStampObj && timeStampObjToTimeStamp(timeStampObj) < nowTimestamp
     }
     const isDateSoon = (timeStampObj: Timestamp | null) => {
         if (timeStampObj) {
@@ -186,15 +170,6 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             return (timeStamp > nowTimestamp) && (timeStamp < inAWeekTimeStamp)
         }
     }
-
-    React.useEffect(() => {
-        console.log("USE EFFECT")
-
-        isDatePassed(contact.dateOfNextCall) && alerts.setAlerts((prev: any) => ({ ...prev, missed: prev.missed + 1 }))
-        isDateSoon(contact.dateOfNextCall) && alerts.setAlerts((prev: any) => ({ ...prev, soon: prev.soon + 1 }))
-    }, [contact.dateOfNextCall])        // ne pas mettre la dép ALERTS sinon boucle infinie !
-
-
 
 
     //console.log(contact)
@@ -333,16 +308,10 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         //handleUpdateContact({ ...contact, [attribut]: !contact[attribut] })
     }
     const handleChangeDate = (newDate: Dayjs | null, attribut: keyof Contact) => {      // Obligé de mettre NULL ???        // On pt faire comme handleChangeText qui renvoie un EVENT ??? et ne pas avoir à passer l'arg ???
-        // console.log(contact.dateOfNextCall)     // Timestamp {seconds: 1700147570, nanoseconds: 377000000}
-        // contact.dateOfNextCall && console.log(contact.dateOfNextCall.toDate())    // Thu Nov 16 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale)
-        // console.log(Date.parse(contact.dateOfNextCall.toDate().toString()))     //1698710400000 (timestamp)
-        // console.log(Date.parse(contact.dateOfNextCall.toDate()))                //1698710400000
-        // console.log(Date.parse(new Date().toString()))      // TimeStamp Now
-        // console.log(Date.parse(contact.dateOfNextCall.toDate()) > Date.parse(new Date().toString()))
-        // contact.dateOfNextCall && console.log(dayjs(contact.dateOfNextCall.toDate())) // M {$L: 'en', $u: undefined, $d: Thu Nov 16 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale), $y: 2023, $M: 10, …}
-        // // On revient en arrière :
-        // console.log("newDate", newDate) // M {$L: 'en', $u: undefined, $d: Wed Nov 01 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale), $y: 2023, $M: 10, …}
-        // console.log(newDate?.toDate()) // Wed Nov 01 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale)
+       
+        console.log("newDate", newDate) // M {$L: 'en', $u: undefined, $d: Wed Nov 01 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale), $y: 2023, $M: 10, …}
+        console.log(typeof newDate) // object
+        console.log(newDate?.toDate()) // Wed Nov 01 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale)
         // // console.log((newDate?.toDate())?.getTime())      // Non car c'est un TIMESTAMP mais pas l'objet Timestamp de firebase
         // newDate && console.log(Timestamp.fromDate(newDate.toDate()))
         //console.log("parse ?", Date.parse(newDate))
@@ -500,7 +469,9 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             //ampm={false}          // Si on met TIME aussi
                             // format="DD/MM/YYYY HH:mm"
                             format="DD/MM/YYYY"
-                            minDate={dayjs(new Date())}
+
+                            //minDate={dayjs(new Date())}   // à remettre !!!!!!!!!!!
+
                             // viewRenderers={{  hours: renderTimeViewClock,
                             //     minutes: renderTimeViewClock,
                             //     seconds: renderTimeViewClock, }}

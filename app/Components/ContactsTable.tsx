@@ -228,12 +228,7 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
     const [selected, setSelected] = React.useState<readonly number[]>([]);
     //const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
-    //const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-    const [alerts, setAlerts] = React.useState({
-        missed: 0,
-        soon: 0,
-    });
+    //const [rowsPerPage, setRowsPerPage] = React.useState(5);   
 
     //console.log(alerts)
 
@@ -281,7 +276,6 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
    
     return (
         <Paper sx={{ width: '100%',  }}  elevation={3} >
-            <Typography sx={{ p: 2 }}>{alerts?.missed} relances passées. {alerts?.soon} relances dans les 7 jours.</Typography>
             {/* <div style={{ height: 400, width: '100%' }}>
                 <DataGrid rows={rows} columns={columns} />
             </div> */}
@@ -352,11 +346,7 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
                                     selectedContactId={selectedContactId}
                                     setSelectedContact={setSelectedContact}
                                     handleUpdateContact={handleUpdateContact}
-                                    handleDeleteContact={() => handleDeleteContact(row.id)}
-                                    alerts ={{
-                                        alerts: alerts,
-                                        setAlerts: setAlerts
-                                    }}
+                                    handleDeleteContact={() => handleDeleteContact(row.id)}                                   
                                 //setContacts={setContacts} 
                                 />
                             );

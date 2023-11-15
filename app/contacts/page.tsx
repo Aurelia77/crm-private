@@ -60,6 +60,7 @@ import Collapse from '@mui/material';
 
 import { unsubscribe } from 'diagnostics_channel';
 
+import { countContactsByAlertDates, updateContactsInLocalList } from '../utils/functionsToolbox';
 
 
 interface TabPanelProps {
@@ -94,13 +95,16 @@ function CustomTabPanel(props: TabPanelProps) {
 }
 
 
+
+
+
 export default function Contacts() {
     const [contacts, setContacts] = React.useState<Contact[]>([])
     //const [selectedContact, setSelectedContact] = React.useState<Contact | undefined>()   
     const [selectedContact, setSelectedContact] = React.useState<Contact | { id: string }>({ id: "0" })
     const [loading, setLoading] = React.useState(true)
+    const [alerts, setAlerts] = React.useState<Alerts>({ nbContactWithDatePassed: 0, nbContactWithDateSoon: 0})
 
-    //console.log("xxxContacts",contacts)
 
     const emptyContact: Contact = {
         id: '',
@@ -131,6 +135,8 @@ export default function Contacts() {
         userId: ''
     }
 
+    //console.log("xxxContacts",contacts)
+
     const [displayNewContactForms, setDisplayNewContactForms] = React.useState(false)
 
     const [filterName, setFilterName] = React.useState('')
@@ -149,24 +155,19 @@ export default function Contacts() {
     }, [currentUser])
     // }, [currentUser?.uid])
 
-
  
-    
-    const updatingLocalContacts = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
-        console.log("xxxLOCAL", keyAndValue.key, keyAndValue.value)
 
-        let tempUpdatedContacts = contacts.map(contact => {
-            return contact.id === id ? { ...contact, [keyAndValue.key]: keyAndValue.value } : contact
-        })
-        //setmoviesList(sortArrayBy(updatedMovies, orderedBy))
-        setContacts(tempUpdatedContacts)
-    }
+    React.useEffect(() => {
+        setAlerts(countContactsByAlertDates(contacts))
+    }, [contacts]) 
+    
+    
     //const updateContactInContactsAndDB = (updatingContact: Contact) => {     // ou selectedContact
     const updateContactInContactsAndDB = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
         console.log("updatingContact", id, keyAndValue)
-        // 1-On met à jour le tableau en remplaçant l'attribut voulu dans le contact qui a le même id que celui qu'on a sélectionné
-        updatingLocalContacts(id, keyAndValue)
-        // 2-On met à jour le contact dans la BDD fireStore : firestoreDB
+        setContacts(updateContactsInLocalList(contacts, id, keyAndValue))
+        //setmoviesList(sortArrayBy(updatedMovies, orderedBy))    
+    
         updatDataOnFirebase(id, keyAndValue)
     }  
 
@@ -288,6 +289,7 @@ export default function Contacts() {
                                 <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
                             </Collapse> */}
                             <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
+                            <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez {alerts.nbContactWithDatePassed} relance(s) passée(s) et {alerts.nbContactWithDateSoon} relance(s) à faire dans les 7 jour(s).</Typography>
                             <Box sx={{ position:"absolute", right:0, top:0  }} >
                                 <Tooltip title="Ajouter un contact (avec ou sans recherche)" placement="left">
                                     <IconButton aria-label="edit" color="primary" onClick={() => setDisplayNewContactForms(!displayNewContactForms)}>
