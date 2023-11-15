@@ -46,7 +46,8 @@ interface Column {
 
 const headCells: readonly Column[] = [               // readonly ???
     { id: 'isClient', label: 'Client ?', minWidth: "7em", },    
-    { id: 'dateOfNextCall', label: <AccessAlarmRoundedIcon fontSize='large' />, minWidth: "18em", },
+    { id: 'dateOfNextCall', label: <Box sx={{ display: 'flex', alignItems: 'center', }}
+    ><AccessAlarmRoundedIcon fontSize='large' sx={{ marginRight: "20px" }} />Relance</Box>, minWidth: "18em", },
     { id: 'logo', label: '', minWidth: "5em", },
     { id: 'businessName', label: 'Entreprise', minWidth: "15em", },
     { id: 'contactPhone', label: <CallRoundedIcon fontSize='large' />, minWidth: "15em", },
@@ -56,12 +57,10 @@ const headCells: readonly Column[] = [               // readonly ???
     },
     { id: 'contactEmail', label: <MailIcon fontSize='large' />, minWidth: "15em", },    
     { id: 'businessCity', label: 'Ville', minWidth: "10em", },
-    { id: 'hasBeenCalled', label: <Box><CallRoundedIcon fontSize='large' /><QuestionMarkIcon /></Box>
-        , minWidth: "5em", },
+    { id: 'hasBeenCalled', label: <Box><CallRoundedIcon fontSize='large' /><QuestionMarkIcon /></Box>, minWidth: "5em", },
     { id: 'hasBeenSentEmailOrMeetUp', label: 
     //'mail/rencontre ?',
-    <Box><MailIcon /><HandshakeTwoToneIcon /><QuestionMarkIcon /></Box>,
-     minWidth: "6em", },
+    <Box><MailIcon /><HandshakeTwoToneIcon /><QuestionMarkIcon /></Box>,  minWidth: "6em", },
     { id: 'comments', label: <CommentRoundedIcon fontSize='large' />, minWidth: "5em", },
     { id: 'interestGauge', label: <FavoriteRoundedIcon fontSize='large' />, minWidth: "5em", },
     { id: 'filesSent', label: <AttachFileRoundedIcon fontSize='large' />, minWidth: "10em", },
@@ -91,9 +90,7 @@ function getComparator<Key extends keyof any>(
         : (a, b) => -descendingComparator(a, b, orderBy);
 }
 // Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
-// stableSort() brings sort stability to non-modern browsers (notably IE11). If you
-// only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
-// with exampleArray.slice().sort(exampleComparator)
+// stableSort() brings sort stability to non-modern browsers (notably IE11). If you only support modern browsers you can replace stableSort(exampleArray, exampleComparator) with exampleArray.slice().sort(exampleComparator)
 function stableSort(array: Contact[], comparator: (a: any, b: any) => number) {   // j'ai enlevé T sinon erreur !!!
     // function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
     const stabilizedThis = array.map((el, index) => [el, index] as [any, number]);
