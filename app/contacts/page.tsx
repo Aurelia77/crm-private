@@ -41,12 +41,13 @@ import fakeContactsData from '../utils/contacts'
 //import writeContactData from '../utils/firebase'
 //import firebase from 'firebase/app'
 //import firebaseConfig from '../utils/firebaseConfig'
-import { realtimeDb, fireStoreDb, storage } from '../utils/firebase'
-import { uid } from 'uid';
-//import { onValue, ref, set } from "firebase/database";
-import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, deleteDoc, updateDoc, doc } from "firebase/firestore";
-import { Dayjs } from 'dayjs';       // npm install dayjs
+import { storage, readDataFromFirebaseAndSetContact, addFakeDataOnFirebaseAndReload, addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, deleteDataOnFirebaseAndReload } from '../utils/firebase'
 import { Timestamp } from 'firebase/firestore';
+import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, deleteDoc, updateDoc, doc } from "firebase/firestore";
+import { getStorage, ref } from "firebase/storage";
+
+import { uid } from 'uid';
+import { Dayjs } from 'dayjs';       // npm install dayjs
 import TestTableSortLabel2 from '../Components/TestComponents/TestTableSortLabel2';
 
 import { useAuthUserContext } from '../context/UseAuthContext'
@@ -58,7 +59,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Fade from '@mui/material';
 import Collapse from '@mui/material';
 
-import { getStorage, ref } from "firebase/storage";
+import { unsubscribe } from 'diagnostics_channel';
 
 
 
@@ -95,7 +96,6 @@ function CustomTabPanel(props: TabPanelProps) {
 
 
 export default function Contacts() {
-    // const [contacts, setContacts] = React.useState<Contact[]>(contactsData)
     const [contacts, setContacts] = React.useState<Contact[]>([])
     //const [selectedContact, setSelectedContact] = React.useState<Contact | undefined>()   
     const [selectedContact, setSelectedContact] = React.useState<Contact | { id: string }>({ id: "0" })
@@ -134,223 +134,25 @@ export default function Contacts() {
 
     const [displayNewContactForms, setDisplayNewContactForms] = React.useState(false)
 
+    const [filterName, setFilterName] = React.useState('')
+
+
     //console.log(selectedContact)
     //console.log(contacts)
 
     const { currentUser } = useAuthUserContext()
     // console.log(currentUser)
     // console.log(currentUser?.uid)
+   
+
+    React.useEffect(() => { 
+        readDataFromFirebaseAndSetContact(currentUser, setLoading, setContacts)
+    }, [currentUser])
+    // }, [currentUser?.uid])
 
 
-
-    // 1-REALTIME DB
-    //const [todo, setTodo] = React.useState<string>('')
-    // Read
-    // React.useEffect(() => {
-    //     console.log("**UseEffect**")
-
-    //     // const contactRef = ref(realtimeDb, 'contacts/');
-    //     const contactRef = ref(realtimeDb);
-    //     onValue(contactRef, (snapshot) => {
-    //         const data = snapshot.val();
-    //         //console.log("data", data)
-    //         console.log(typeof data)
-
-    //         Object.values(data).map((contact: any) => {     // mettre type Contact
-    //             console.log(contact)
-    //             setContacts(prev => [...prev, contact])   // Pour pas avoir l'erreur : missing dependency: 'contacts'
-    //             //setContacts([...contacts, contact])      // Ne met que le dernier !!!
-    //             setLoading(false)
-    //         })
-    //         // const contacts = Object.values(data)
-    //         // console.log("contacts", contacts)
-    //         // setContacts(contacts)
-    //     });       
-    // }, [])
-    // => !!! Warning: Encountered two children with the same key, `1`. !!!
-
-    // const handleTodoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     setTodo(event.target.value)
-    // }
-    // // Write
-    // function writeContactData2(
-    //     //contactId: string, name: string, email: string, imageUrl: string
-    // ) {
-    //     const id = uid()
-    //     // set(ref(db, 'contacts/' + uuid), { todo, uuid });
-    //     set(ref(realtimeDb, `/${id}`), { todo, id });
-    //     setTodo('')
-    // }
-    // function writeContactData(contact: any) {       // mettre type Contact !!!!!!
-    //     const id = contact.id
-    //     const businessName = contact.businessName
-    //     console.log("id", id)
-    //     console.log("businessName", businessName)
-    //     set(ref(realtimeDb, `/${id}`), { id, businessName });
-    // }
-    //writeContactData("andrew", "Andrew", "and@eee.fr", "https://blabla.com")
-
-
-
-    // 2-FIRESTORE DB
-
-    // Quand on ajoute / supprime un contact => on le fait dans la BDD firebase + on recharche la page.
-    // Mais quand on modifie un contact (dans ContactsTable) => on le fait dans le BDD firebase + on modifie le state contacts (pour pas recharger la page) 
-
-    //Write  
-    const addFakeData = () => {
-        fakeContactsData.map((contact: Contact) => {
-            console.log(contact)
-            console.log({ ...contact, id: uid(), userId: currentUser?.uid
-             })
-            addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid(), userId: currentUser?.uid })
-                //addDoc(collection(fireStoreDb, "contacts"), {contact})
-                .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
-                .then(() => { window.location.reload() })                                           // bien ici ??? Va pas recharcger à chaque fois ???
-                .catch((error) => { console.error("Error adding document: ", error); });
-        })
-        //window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données        // n'enregistre pas les données à chaque fois si je le mets ici !!!
-    }
-    const addContact = (contact: Contact) => {
-        console.log("add contact", contact)
-
-        console.log({ ...contact, id: uid() })
-        addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid(), userId: currentUser?.uid })
-            //addDoc(collection(fireStoreDb, "contacts"), {contact})
-            .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
-            // Ici ou après ?????
-            .then(() => { window.location.reload() })    // On rafraichit => re-render => useEffect avec la lecture des données            
-            .catch((error) => { console.error("Error adding document: ", error); });
-        //window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
-    }
-    const deleteAllDatas = (allAndNotonlyFromConnectedUser: boolean) => {
-
-        // (onlyFromConnectedUser && currentUser)
-        // ? q = query(collection(fireStoreDb, "contacts"), where("userId", "==", currentUser.uid)): q = query(collection(fireStoreDb, "contacts"));
-
-        const contactsCollection = collection(fireStoreDb, "contacts");        
-        const q =  (!allAndNotonlyFromConnectedUser && currentUser)
-        ? query(contactsCollection, where("userId", "==", currentUser.uid))
-        : query(contactsCollection);
-
-        // const q = onlyFromConnectedUser ? query(collection(fireStoreDb, "contacts"), where("userId", "==", currentUser?.uid ?? ""))
-        //             : query(collection(fireStoreDb, "contacts"));
-
-        getDocs(q).then((querySnapshot) => {
-
-            const deletePromises = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
-            return Promise.all(deletePromises);
-
-            // 2 lignes ci-dessus au lieu de ça => a l'air de fonctionné à chaque fois... Sinon pas tjs ! (donné par GitCopilot)
-            // querySnapshot.forEach((doc) => {
-            //     console.log(doc.data())
-            //     console.log(doc.ref)
-            //     deleteDoc(doc.ref)
-            // })
-        }).then(() => {
-            console.log("fin de la suppression")
-            window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
-        })
-
-        //Marche pas !!!
-        // fireStoreDb.collection("contacts").document("DC").delete() { err in
-        //     if let err = err {
-        //         print("Error removing document: \(err)")
-        //     } else {
-        //         print("Document successfully removed!")
-        //     }
-        // }
-
-        // collection(fireStoreDb, "contacts").get().then((querySnapshot) => {
-        //     querySnapshot.forEach((doc) => {
-        //         deleteDoc(doc.ref)
-        //     });
-        // });
-    }
-    const deleteContact = (contactId: string) => {
-        const q = query(collection(fireStoreDb, "contacts"), where("id", "==", contactId));
-        getDocs(q).then((querySnapshot) => {
-            const deletePromises = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
-            return Promise.all(deletePromises);
-
-            // 2 lignes ci-dessus au lieu de ça => a l'air de fonctionné à chaque fois... Sinon pas tjs ! (donné par GitCopilot) => Pourtant qu'un seul doc à supprimer donc nécessaire d'avoir Promise.all ????
-            // querySnapshot.forEach((doc) => {
-            //     console.log(doc.data())
-            //     console.log(doc.ref)
-            //     deleteDoc(doc.ref)
-            // })
-        }).then(() => {
-            window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
-        })
-    }
-
-    // Read the data from firestoreDB + SetContacts 
-    React.useEffect(() => {
-        // DOC Firebase : https://firebase.google.com/docs/firestore/query-data/get-data?hl=fr
-        // const querySnapshot = await getDocs(collection(db, "cities"));
-        // querySnapshot.forEach((doc) => {
-        //     // doc.data() is never undefined for query doc snapshots
-        //     console.log(doc.id, " => ", doc.data());
-        // });
-        let contactsArr: Contact[] = []
-        const q = query(collection(fireStoreDb, "contacts"), where("userId", "==", currentUser?.uid ?? ""));
-
-        getDocs(q).then((querySnapshot) => {
-        //getDocs(collection(fireStoreDb, "contacts")).then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                //console.log(doc.data())
-                contactsArr.push({ ...doc.data() as Contact })  // On indique que doc.data() est de type Contact           
-                //setContacts([...contacts, doc.data()])        // Non
-                //setContacts(prev => [...prev, doc.data()])    // Non
-            })
-            setLoading(false)
-            setContacts(contactsArr)
-        });
-    }, [currentUser?.uid])
-
-
-    // const updateContactInContactsAndDB = (updatingContact: Contact) => {     // ou selectedContact
-    //     console.log("updatingContact", updatingContact)
-    //
-    //     // if (movieEdited.name === '') {
-    //     //     alert("Ajouter un nom de film")
-    //     // }
-    //     // else if (movieEdited.category === '') {
-    //     //     alert("Ajouter une catégorie de film")
-    //     // }
-    //     // else if (movieEdited.year === 0) {
-    //     //     alert("Ajouter une année de visionnage")
-    //     // }
-    //     // else {
-    //
-    //     // On met à jour le tableau en remplaçant le contact qui a le même id que celui qu'on a sélectionné par le film sélectionné
-    //     let updatedContacts = contacts.map(contact => contact.id === updatingContact.id ? updatingContact : contact)
-    //     //setmoviesList(sortArrayBy(updatedMovies, orderedBy))
-    //     setContacts(updatedContacts)
-
-    //     //writeContactData(updatingContact)
-    //     // On met à jour le contact dans la BDD fireStore : firestoreDB
-    //     const q = query(collection(fireStoreDb, "contacts"), where("id", "==", updatingContact.id));
-    //     let docID = '';
-    //
-    //     getDocs(q).then((querySnapshot) => {
-    //         querySnapshot.forEach((doc) => {
-    //             console.log(doc.data())
-    //             console.log(doc.ref)
-    //
-    //             docID = doc.id;
-    //             //set(doc.ref, updatingContact)
-    //         })
-    //         const contact = doc(fireStoreDb, "contacts", docID);
-    //
-    //         // Set the "capital" field of the city 'DC'
-    //         updateDoc(contact, {
-    //             ...updatingContact
-    //         });
-    //     })   
-    // }
-
-    // 2 fonctions pour mettre à jour le contact dans le tableau contacts et dans la BDD fireStore : firestoreDB
+ 
+    
     const updatingLocalContacts = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
         console.log("xxxLOCAL", keyAndValue.key, keyAndValue.value)
 
@@ -360,42 +162,25 @@ export default function Contacts() {
         //setmoviesList(sortArrayBy(updatedMovies, orderedBy))
         setContacts(tempUpdatedContacts)
     }
-    const updatingRemoteContacts = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
-        // const contactToUpdateRef = doc(fireStoreDb, "contacts", id);
-        // console.log(contactToUpdateRef)
-
-        // // Set the "capital" field of the city 'DC'
-        // updateDoc(contactToUpdateRef, {
-        //     [keyAndValue.key]: keyAndValue.value
-        // });
-        const q = query(collection(fireStoreDb, "contacts"), where("id", "==", id));
-
-        getDocs(q).then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {        // besoin du FOREACH alors qu'il n'y en a qu'un ???
-                //console.log(doc.data())
-                //console.log(doc.ref)
-                //console.log(doc.id)
-                console.log("FIREBASE", keyAndValue.key, keyAndValue.value)
-                //docID = doc.id;
-                updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
-                    [keyAndValue.key]: keyAndValue.value
-                });
-                //set(doc.ref, updatingContact)
-            })
-        })
-    }
     //const updateContactInContactsAndDB = (updatingContact: Contact) => {     // ou selectedContact
     const updateContactInContactsAndDB = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
         console.log("updatingContact", id, keyAndValue)
         // 1-On met à jour le tableau en remplaçant l'attribut voulu dans le contact qui a le même id que celui qu'on a sélectionné
         updatingLocalContacts(id, keyAndValue)
         // 2-On met à jour le contact dans la BDD fireStore : firestoreDB
-        updatingRemoteContacts(id, keyAndValue)
+        updatDataOnFirebase(id, keyAndValue)
     }  
+
+
+
 
     const filter = (searchText: string) => {
         console.log(searchText)
+
+        setFilterName(searchText)
     }
+
+
 
     const storageRef = ref(storage);
     //console.log(storageRef)
@@ -425,8 +210,8 @@ export default function Contacts() {
                         {/* <FormControl sx={{ my: 2 }}> */}
                         <Box sx={{ display: "flex", justifyContent: "space-around", padding: "10px", border: "solid 3px blue", borderRadius: "10px" }}>
                             <Typography component="div" style={{ display: "block", width: "500px" }} >Pour version d'essai : Pour ajouter des contacts TEST ou tout supprimer : </Typography>
-                            <Button variant="contained" color='ochre' onClick={addFakeData}>Ajouter Contacts Test</Button>
-                            <Button variant="contained" color='primary' sx={{ width:"300px" }} onClick={() => deleteAllDatas(false)}>Supprimer tout mes contacts</Button>
+                            <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>Ajouter Contacts Test</Button>
+                            <Button variant="contained" color='primary' sx={{ width:"300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUser, false)}>Supprimer tout mes contacts</Button>
                             {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatas(true)}>Supprimer toutes les données !!!</Button> */}
                         </Box>
                         {/* </FormControl> */}
@@ -471,7 +256,7 @@ export default function Contacts() {
                                     >Nouveau Contact avec recherche (cliquer pour ouvrir et pour fermer)</Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    <ContactForm emptyContact={emptyContact} addContact={addContact} />
+                                    <ContactForm emptyContact={emptyContact} addContact={(e) => addContactOnFirebaseAndReload (currentUser, e)} />
                                 </AccordionDetails>
                             </Accordion>
 
@@ -486,7 +271,7 @@ export default function Contacts() {
                                     >Nouveau Contact en partant de zéro (cliquer pour ouvrir et pour fermer)</Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    <ContactCard addContact={addContact} contact={emptyContact} />
+                                    <ContactCard addContact={(e) => addContactOnFirebaseAndReload (currentUser, e)} contact={emptyContact} />
                                 </AccordionDetails>
                             </Accordion>
                             <Button variant="contained" color="secondary" onClick={() => setDisplayNewContactForms(!displayNewContactForms)}>Tableau des contacts</Button>
@@ -494,7 +279,9 @@ export default function Contacts() {
 
                         : 
                         <Box sx={{ marginTop:"40px", position:"relative"}} >
+                            
                             {/* <FilterContacts onTextChange={filter}  /> */}
+
                             {/* <Fade component="p" in={!displayNewContactForms}>
                                 <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
                             </Fade>
@@ -518,7 +305,7 @@ export default function Contacts() {
                                 selectedContactId={selectedContact.id}
                                 setSelectedContact={setSelectedContact}
                                 handleUpdateContact={updateContactInContactsAndDB}
-                                handleDeleteContact={deleteContact}
+                                handleDeleteContact={deleteDataOnFirebaseAndReload}
                             //setContacts={setContacts}
                             //orderedBy={orderedBy} 
                             />
