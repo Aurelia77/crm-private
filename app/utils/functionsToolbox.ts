@@ -54,11 +54,28 @@ const countContactsByAlertDates = (contactsTab: Contact[]) => {
 const updateContactsInLocalList = (contacts: Contact[], id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }): Contact[] => {
     console.log("xxxLOCAL", keyAndValue.key, keyAndValue.value)
 
-    let tempUpdatedContacts = contacts.map(contact => {
+    let tempUpdatedContacts: Contact[] = contacts.map(contact => {
         return contact.id === id ? { ...contact, [keyAndValue.key]: keyAndValue.value } : contact
     })
-    
+
     return tempUpdatedContacts
+}
+
+const getUniqueSortedValues = (contacts: Contact[], key: keyof Contact) => {
+
+    const allValues = contacts.map(contact => contact[key])
+
+    // On élimine les doublons
+    const uniqueValues = allValues.filter((value, index, self) => self.indexOf(value) === index);
+
+    // On les classe par ordre alphabétique
+    uniqueValues.sort((a, b) => {
+        if (a < b) return -1
+        if (a > b) return 1
+        return 0;
+    })
+
+    return uniqueValues
 }
 
 
@@ -68,5 +85,6 @@ export {
     isDateTimeStampObjPassed,
     isDateTimeStampObjBeforeAWeek,
     countContactsByAlertDates,
-    updateContactsInLocalList
+    updateContactsInLocalList,
+    getUniqueSortedValues
  }

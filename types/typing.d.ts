@@ -59,3 +59,9 @@ type Alerts = {
   nbContactWithDatePassed: number,
   nbContactWithDateSoon: number,
 }
+
+type SearchContact = {
+  businessName: string,
+  businessCity: string,
+  businessType: string[],
+}

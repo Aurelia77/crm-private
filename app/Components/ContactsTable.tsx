@@ -139,6 +139,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
                 {headCells.map((headCell) => (
                     <StyledTableCell
                         key={headCell.id}
+                        scope="col"
                         //align={headCell.numeric ? 'right' : 'left'}
                         //padding={headCell.disablePadding ? 'none' : 'normal'}
                         //align="center"
@@ -219,8 +220,8 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
     //setContacts
 }: ContactsTableProps) {
 
-    console.log("CONTACT TABLE")
-    console.log("TABLE Contacts = ", contacts)
+    //console.log("CONTACT TABLE")
+    //console.log("TABLE Contacts = ", contacts)
 
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof Contact>('businessName');
@@ -277,28 +278,7 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
         <Paper sx={{ width: '100%',  }}  elevation={3} >
             {/* <div style={{ height: 400, width: '100%' }}>
                 <DataGrid rows={rows} columns={columns} />
-            </div> */}
-            
-            {/* <Typography  color='text.main' >Coucou</Typography>
-            <Typography  color='secondary.main' >Coucou</Typography> 
-            <Typography  //color='secondary.main'
-                sx={{ color: darken(muiTheme.palette.secondary.main, 0.2)  }}
-            >Coucou</Typography>
-            <Typography  //color='secondary.main'
-                sx={{ color: muiTheme.palette.secondary.main }}
-            >Coucou</Typography>
-            <Typography  //color='secondary.main'
-                sx={{ color: lighten(muiTheme.palette.secondary.main, 0.2)  }}
-            >Coucou</Typography> */}
-
-            {/* <div className=' bg-red-500' >Coucou</div>
-            <div style={{ backgroundColor: "red" }} >Coucou</div>
-            <Box sx={{ bgcolor: 'primary.main' }}>Coucou</Box>
-            <Box sx={{ bgcolor: 'secondary.main' }}>Coucou</Box>
-            <Box color="secondary.main" bgcolor="primary.main" >Coucou</Box>
-            <Button variant="contained" color="ochre" href= '/testPages/testAutocompletePage'>Coucou !!</Button> 
-            <Button variant="contained" color="primary" href= '/testPages/testAutocompletePage'>Coucou !!</Button> 
-            <Button variant="contained" color="secondary" href= '/testPages/testAutocompletePage'>Coucou !!</Button>  */}
+            </div> */}     
 
             {/* <Typography variant="h5" component="div" sx={{ p: 2 }}>Liste des contacts ({contacts.length})</Typography> */}
             <TableContainer

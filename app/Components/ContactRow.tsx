@@ -171,6 +171,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         }
     }
 
+    
 
     //console.log(contact)
     //console.log("xxxhandleUpdateContact", handleUpdateContact)
@@ -178,28 +179,9 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     // GESTION DES ICONES MAIL ET TELEPHONE
     // hasBeenCalled => 0="no" | 1="yes but no answer" | 2="yes and answered",
     // hasBeenSentEmailOrMeetUp =>  0="nothing" | 1="email sent" | 2="email sent and received" | 3="met up",
-    const handleClickHasBeenCalled = () => {
-        handleUpdateContact(contact.id, {
-            key: "hasBeenCalled", value: contact.hasBeenCalled === 0
-                ? 1
-                : contact.hasBeenCalled === 1
-                    ? 2
-                    : 0
-        })
-    }
-    const handleClickhasBeenSentEmailOrMeetUp = () => {
-        handleUpdateContact(contact.id, {
-            key: "hasBeenSentEmailOrMeetUp", value: contact.hasBeenSentEmailOrMeetUp === 0
-                ? 1
-                : contact.hasBeenSentEmailOrMeetUp === 1
-                    ? 2
-                    : contact.hasBeenSentEmailOrMeetUp === 2
-                        ? 3
-                        : 0
-        })
-    }
-    // Renvoie la bonne icone selon l'état de hasBeenCalled (non envoyé, envoyé, lu...)
-    const RightMailIcon = ({ hasBeenSentEmailOrMeetUp }: { hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3 }) => {
+
+      // Renvoie la bonne icone selon l'état de hasBeenCalled (non envoyé, envoyé, lu...)
+      const RightMailIcon = ({ hasBeenSentEmailOrMeetUp }: { hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3 }) => {
         switch (hasBeenSentEmailOrMeetUp) {
             case 1: return <MailIcon sx={{ color: muiTheme.palette.ochre.main }} />
             case 2: return <MarkEmailReadIcon color='success' />
@@ -296,6 +278,27 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     //     }
     // }
 
+    const handleClickHasBeenCalled = () => {
+        handleUpdateContact(contact.id, {
+            key: "hasBeenCalled", value: contact.hasBeenCalled === 0
+                ? 1
+                : contact.hasBeenCalled === 1
+                    ? 2
+                    : 0
+        })
+    }
+    const handleClickhasBeenSentEmailOrMeetUp = () => {
+        handleUpdateContact(contact.id, {
+            key: "hasBeenSentEmailOrMeetUp", value: contact.hasBeenSentEmailOrMeetUp === 0
+                ? 1
+                : contact.hasBeenSentEmailOrMeetUp === 1
+                    ? 2
+                    : contact.hasBeenSentEmailOrMeetUp === 2
+                        ? 3
+                        : 0
+        })
+    }
+  
 
     const handleChangeText = (attribut: keyof Contact) => (event: React.ChangeEvent<HTMLInputElement>) => {
         //console.log("event.target.value", event.target.value)
@@ -402,6 +405,41 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         handleCloseCommentDialog()
     }
 
+    // interface CustomTextFieldProps {
+    //     label: string;
+    //     value: string;
+    //     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    //   }
+      
+    //   const CustomTextField: React.FC<CustomTextFieldProps> = ({ label, value, onChange }) => {
+    //     return (
+    //       <TextField
+    //         label={label}
+    //         value={value}
+    //         onChange={onChange}
+    //       />
+    //     );
+    //   };
+    type CustomTextFieldProps = {
+        attribut: keyof Contact
+        startAdornment: any
+        inputProps?: any
+    }
+    const CustomTextField = ({attribut, startAdornment, inputProps='' }: CustomTextFieldProps) => {
+        return <TextField  //label="Nom de l'entreprise"    
+            value={contact[attribut]}
+            onChange={handleChangeText(attribut)}
+            InputProps={{
+                startAdornment:startAdornment,
+                disableUnderline: contact[attribut].length > 0,
+                inputProps: inputProps,
+            }}
+        />
+    }
+
+    
+
+
     return (
         <StyledTableRow
             // className= "tableRowSelected"
@@ -502,9 +540,11 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     onChange={handleChangeLogo} />                 */}
             </StyledTableCell>
 
+{/* FAIRE textfild custom avec nom du field.................... pour tous les input text !!!!!!!!!!!! */}
+
             {/* businessName */}
             <StyledTableCell component="td" scope="row" >
-                <TextField id="standard-basic" //label="Nom de l'entreprise"    
+                {/*   <TextField  //label="Nom de l'entreprise"    
                     value={contact.businessName}
                     onChange={handleChangeText('businessName')}
                     InputProps={{
@@ -516,7 +556,16 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             fontSize='large' />,
                         disableUnderline: contact.businessName.length > 0,
                     }}
+                /> */}
+                <CustomTextField 
+                    attribut="businessName" 
+                    startAdornment={contact.isClient 
+                        ? <HandshakeOutlinedIcon color='success' fontSize='large' /> 
+                        : <PsychologyAltIcon sx={{ color: muiTheme.palette.gray.main, }} fontSize='large' />} 
                 />
+               
+
+
                 {/* <TextField id="standard-basic"
                     value={contact.businessCity}
                     onChange={handleChangeText('businessCity')}
@@ -527,17 +576,23 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 /> */}
             </StyledTableCell>
 
-            {/* businessPhone */}
+            {/* contactPhone + businessPhone */}
             <StyledTableCell align="center">
-                <TextField id="standard-basic" //label="Téléphone" 
+                {/* <TextField id="standard-basic" //label="Téléphone" 
                     value={contact.contactPhone}
-                    onChange={handleChangeText('businessPhone')}
+                    onChange={handleChangeText('contactPhone')}
                     InputProps={{
                         startAdornment: "Direct ",
                         disableUnderline: contact.businessPhone.length > 0
                     }}
                     inputProps={{ style: { textAlign: 'center' } }}
+                /> */}
+                <CustomTextField 
+                    attribut="contactPhone" 
+                    startAdornment="Direct"
+                    inputProps={{ style: { textAlign: 'center' } }}
                 />
+               
                 <TextField id="standard-basic" //label="Téléphone" 
                     value={contact.businessPhone}
                     onChange={handleChangeText('businessPhone')}
@@ -549,6 +604,10 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         disableUnderline: contact.businessPhone.length > 0
                     }}
                     inputProps={{ style: { textAlign: 'center', color: "gray", fontSize: "0.8em" } }}
+                />
+                 <CustomTextField 
+                    attribut="businessPhone" 
+                    startAdornment= {<span style={{ color: 'gray', fontSize: "0.8em" }}>Standard </span>}
                 />
             </StyledTableCell>
 

@@ -24,7 +24,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import FormControl from '@mui/material/FormControl';
-import { Container, Tooltip } from '@mui/material';
+import { Container, Tooltip, Paper } from '@mui/material';
 import { TextField, Select, MenuItem, Autocomplete, ListItem, List, InputLabel, Tabs, Tab, Box as CustomBox } from '@mui/material'
 
 
@@ -34,7 +34,7 @@ import ContactsTable from '../Components/ContactsTable';
 import SignIn from '../Components/auth/SignIn';
 import SignUp from '../Components/auth/SignUp';
 import AuthDetails from '../Components/AuthDetails';
-import FilterContacts from '../Components/FilterContacts';
+import SearchContactsForm from '../Components/SearchContactsForm';
 
 import fakeContactsData from '../utils/contacts'
 //import getContacts from '../utils/firebase'
@@ -100,12 +100,11 @@ function CustomTabPanel(props: TabPanelProps) {
 
 export default function Contacts() {
     const [contacts, setContacts] = React.useState<Contact[]>([])
-    const [filteredContacts, setFilteredContacts] = React.useState<Contact[]>(contacts)
+    const [filteredContactsTab, setFilteredContactsTab] = React.useState<Contact[]>(contacts)
     //const [selectedContact, setSelectedContact] = React.useState<Contact | undefined>()   
     const [selectedContact, setSelectedContact] = React.useState<Contact | { id: string }>({ id: "0" })
     const [loading, setLoading] = React.useState(true)
     const [alerts, setAlerts] = React.useState<Alerts>({ nbContactWithDatePassed: 0, nbContactWithDateSoon: 0})
-
 
     const emptyContact: Contact = {
         id: '',
@@ -136,15 +135,21 @@ export default function Contacts() {
         userId: ''
     }
 
-    console.log("PAGE Contacts",contacts)
-
     const [displayNewContactForms, setDisplayNewContactForms] = React.useState(false)
+    
+    const emptySearchCriteria: SearchContact = {
+        businessName: '',
+        businessCity: '',
+        businessType: []
+    }
+    const [contactsSearchCriteria, setContactsSearchCriteria] = React.useState<SearchContact>(emptySearchCriteria)
+    //const [contactsSearchCriteria, setContactsSearchCriteria] = React.useState({})
 
-    const [filterName, setFilterName] = React.useState('')
 
-
+    //console.log("PAGE Contacts",contacts)
     //console.log(selectedContact)
     //console.log(contacts)
+    console.log(contactsSearchCriteria)
 
     const { currentUser } = useAuthUserContext()
     // console.log(currentUser)
@@ -175,17 +180,30 @@ export default function Contacts() {
   
 
     React.useEffect(() => {
-        console.log(filterName)
+        if (contactsSearchCriteria && (contactsSearchCriteria?.businessName !== '' || contactsSearchCriteria.businessCity !== '' || contactsSearchCriteria.businessType.length > 0)) {      // metre diff de empty !!!!!!!!!!
+            console.log(contactsSearchCriteria)
 
-        if (filterName !== '') {        
+            const searchOnType = contactsSearchCriteria.businessType.length > 0 ? contactsSearchCriteria.businessType : ['']
+
             const searchedContacts: Contact[] = contacts.filter((contact) => {
-                return contact.businessName.toLowerCase().includes(filterName.toLowerCase())
+                return (contact.businessName.toLowerCase().includes(contactsSearchCriteria.businessName.toLowerCase()) 
+                    && contact.businessCity.toLowerCase().includes(contactsSearchCriteria.businessCity.toLowerCase()) 
+                    // SOME() => au moins une des valeurs du tableau doit être vraie
+                    && searchOnType.some((type) => contact.businessType.toLowerCase().includes(type.toLowerCase())
+                        // {
+                        //     console.log(type)
+                        //     console.log(contact.businessType)
+                        //     return contact.businessType.toLowerCase().includes(type.toLowerCase())
+                        // }
+                    )
+                    )
             })
-            setFilteredContacts(searchedContacts)
+            console.log(searchedContacts)
+            setFilteredContactsTab(searchedContacts)
         } else {
-            setFilteredContacts(contacts)
-        }
-    }, [filterName, contacts])
+            setFilteredContactsTab(contacts)
+        }      
+    }, [contactsSearchCriteria, contacts])
 
 
 
@@ -203,100 +221,121 @@ export default function Contacts() {
                 //margin:"50px" 
             }} >Application de gestion de contacts</Typography>
 
-            <Box sx={{ position:"absolute", right:0, top:0  }} >
-                <AuthDetails />
-            </Box>
+            {/* /////////////////////// Info USER /////////////////////// */}
+            <Box sx={{ position:"absolute", right:0, top:0  }} ><AuthDetails /></Box>            
+            {/* On affiche le nom de l'utilisateur */}
+            {/* <Typography variant="h3" component="div" gutterBottom>User Auth = {currentUser?.email}</Typography> */}
 
             {loading
-                ? <Container>Chargement...</Container>
-                : currentUser
-                    ? <Box sx={{ marginTop:"50px" }} >
-                        {/* On affiche le nom de l'utilisateur */}
-                        {/* <Typography variant="h3" component="div" gutterBottom>User Auth = {currentUser?.email}</Typography> */}
+            ? <Container>Chargement...</Container>
+            : currentUser
+                ? <Box sx={{ marginTop:"50px" }} >
+                    
+                    {/* /////////////////////// Pour Version ESSAI /////////////////////// */}
+                    <Box sx={{ display: "flex", justifyContent: "space-around", padding: "10px", border: "solid 3px blue", borderRadius: "10px" }}>
+                        <Typography component="div" style={{ display: "block", width: "500px" }} >Pour version d'essai : Pour ajouter des contacts TEST ou tout supprimer : </Typography>
+                        <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>Ajouter Contacts Test</Button>
+                        <Button variant="contained" color='primary' sx={{ width:"300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUser, false)}>Supprimer tout mes contacts</Button>
+                        {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatas(true)}>Supprimer toutes les données !!!</Button> */}
+                    </Box>
 
-                        {/* <FormControl sx={{ my: 2 }}> */}
-                        <Box sx={{ display: "flex", justifyContent: "space-around", padding: "10px", border: "solid 3px blue", borderRadius: "10px" }}>
-                            <Typography component="div" style={{ display: "block", width: "500px" }} >Pour version d'essai : Pour ajouter des contacts TEST ou tout supprimer : </Typography>
-                            <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>Ajouter Contacts Test</Button>
-                            <Button variant="contained" color='primary' sx={{ width:"300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUser, false)}>Supprimer tout mes contacts</Button>
-                            {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatas(true)}>Supprimer toutes les données !!!</Button> */}
-                        </Box>
-                        {/* </FormControl> */}
-                        {/* <FormControl sx={{ my: 2 }}>
-                        <input type="text" value={todo} onChange={handleTodoChange} />
-                        <Button variant="contained" onClick={writeContactData2}>Ajouter dans REALTIME DB</Button>
-                    </FormControl> */}
+                    {/* /////////////////////// Pour REALTIME DB /////////////////////// */}
+                    {/* <input type="text" value={todo} onChange={handleTodoChange} />
+                    <Button variant="contained" onClick={writeContactData2}>Ajouter dans REALTIME DB</Button> */}
 
-
-                        {/* Impossible mettre ce qu'on veut dans les TAB car => ERROR => app-index.js:31 Warning: validateDOMNesting(...): <p> cannot appear as a descendant of <p>.*/}
-                        {/* <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                            <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                                <Tab label="Item One" {...a11yProps(0)} />
-                                <Tab label="Item Two" {...a11yProps(1)} />
-                            </Tabs>
-                        </Box>
-                        <CustomTabPanel value={value} index={0}>
-                            <FormControl sx={{ my: 2 }}>
-                                <TextField id="outlined-basic" label="Nom de l'entreprise à ajouter aux contacts" variant="outlined" value="coucou" />
-                            </FormControl>
-                        </CustomTabPanel>
-                        <CustomTabPanel value={value} index={1}>
-                            <FormControl sx={{ my: 2 }}>
-                                <TextField id="outlined-basic" label="Nom de l'entreprise à ajouter aux contacts" variant="outlined" value="coucou2" />
-                            </FormControl>
-                        </CustomTabPanel> */}
+                    {/* /////////////////////// Pour faire des ONGLETS /////////////////////// */}
+                    {/* Impossible mettre ce qu'on veut dans les TAB car => ERROR => app-index.js:31 Warning: validateDOMNesting(...): <p> cannot appear as a descendant of <p>.*/}
+                    {/* <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                            <Tab label="Item One" {...a11yProps(0)} />
+                            <Tab label="Item Two" {...a11yProps(1)} />
+                        </Tabs>
+                    </Box>
+                    <CustomTabPanel value={value} index={0}>
+                        <FormControl sx={{ my: 2 }}>
+                            <TextField id="outlined-basic" label="Nom de l'entreprise à ajouter aux contacts" variant="outlined" value="coucou" />
+                        </FormControl>
+                    </CustomTabPanel>
+                    <CustomTabPanel value={value} index={1}>
+                        <FormControl sx={{ my: 2 }}>
+                            <TextField id="outlined-basic" label="Nom de l'entreprise à ajouter aux contacts" variant="outlined" value="coucou2" />
+                        </FormControl>
+                    </CustomTabPanel> */}
 
 
+                    {/* /////////////////////// On affiche les FORMULAIRES DE CREATION CONTACTS -ou- LA LISTE DE CONTACTS /////////////////////// */}
+                    {displayNewContactForms
+                    ? <Box>              
+                        <Accordion sx={{
+                            //my: 2
+                        }}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header" >
+                                <Typography
+                                    color="secondary.light"
+                                    sx={{ bgcolor: 'primary.main', p: 2, borderRadius: 1 }}
+                                >Nouveau Contact avec recherche (cliquer pour ouvrir et pour fermer)</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <ContactForm emptyContact={emptyContact} addContact={(e) => addContactOnFirebaseAndReload (currentUser, e)} />
+                            </AccordionDetails>
+                        </Accordion>
 
-                        {displayNewContactForms
-                        ? <Box>              
-                            <Accordion sx={{
-                                //my: 2
-                            }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1a-content"
-                                    id="panel1a-header" >
-                                    <Typography
-                                        color="secondary.light"
-                                        sx={{ bgcolor: 'primary.main', p: 2, borderRadius: 1 }}
-                                    >Nouveau Contact avec recherche (cliquer pour ouvrir et pour fermer)</Typography>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    <ContactForm emptyContact={emptyContact} addContact={(e) => addContactOnFirebaseAndReload (currentUser, e)} />
-                                </AccordionDetails>
-                            </Accordion>
+                        <Accordion sx={{ my: 2 }}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header" >
+                                <Typography
+                                    color="secondary.light"
+                                    sx={{ bgcolor: 'primary.main', p: 2, borderRadius: 1 }}
+                                >Nouveau Contact en partant de zéro (cliquer pour ouvrir et pour fermer)</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <ContactCard addContact={(e) => addContactOnFirebaseAndReload (currentUser, e)} contact={emptyContact} />
+                            </AccordionDetails>
+                        </Accordion>
+                        <Button variant="contained" color="secondary" onClick={() => setDisplayNewContactForms(!displayNewContactForms)}>Tableau des contacts</Button>
+                    </Box>
 
-                            <Accordion sx={{ my: 2 }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1a-content"
-                                    id="panel1a-header" >
-                                    <Typography
-                                        color="secondary.light"
-                                        sx={{ bgcolor: 'primary.main', p: 2, borderRadius: 1 }}
-                                    >Nouveau Contact en partant de zéro (cliquer pour ouvrir et pour fermer)</Typography>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    <ContactCard addContact={(e) => addContactOnFirebaseAndReload (currentUser, e)} contact={emptyContact} />
-                                </AccordionDetails>
-                            </Accordion>
-                            <Button variant="contained" color="secondary" onClick={() => setDisplayNewContactForms(!displayNewContactForms)}>Tableau des contacts</Button>
-                        </Box>
+                    : <Box sx={{ marginTop:"2em", position:"relative"}} >
+                        <Accordion sx={{ bgcolor: 'primary.light', //width:"80%", margin:"auto",
+                            //my: 2
+                        }}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header" >
+                                    Recherche (cliquer pour ouvrir et pour fermer)
+                                {/* <Typography  //color="secondary.light"
+                                    sx={{ p: 2, borderRadius: 1 }} >Recherche (cliquer pour ouvrir et pour fermer)</Typography> */}
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Paper sx={{ margin: "2em", padding: "2em", bgcolor: 'lightCyan.light', }} >
+                                    <SearchContactsForm onSearchChange={setContactsSearchCriteria} />
+                                    <Typography variant="h5" component="div" sx={{ p: 2 }}>{filteredContactsTab.length} contacts trouvés (sur {contacts.length})</Typography>
+                                </Paper>
+                            </AccordionDetails>
+                        </Accordion>
+                       
 
-                        : 
-                        <Box sx={{ marginTop:"40px", position:"relative"}} >
-
-                            <FilterContacts onTextChange={setFilterName}  />
-
-                            {/* <Fade component="p" in={!displayNewContactForms}>
-                                <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
-                            </Fade>
-                            <Collapse orientation="horizontal" in={!displayNewContactForms}>
-                                <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
-                            </Collapse> */}
+                        {/* /////////////////////// Pour EFFETS ????? /////////////////////// */}
+                        {/* <Fade component="p" in={!displayNewContactForms}>
                             <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
-                            {filterName !== "" && <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({filteredContacts.length}) contacts dans la recherche.</Typography>}
+                        </Fade>
+                        <Collapse orientation="horizontal" in={!displayNewContactForms}>
+                            <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
+                        </Collapse> */}
+
+                        {(JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)) 
+                        ? 
+                        <Typography variant="h5" component="div" sx={{ p: 2 }}>{filteredContactsTab.length} contacts trouvés (sur {contacts.length})</Typography>
+                        : <Typography variant="h5" component="div" sx={{ p: 2 }}>{contacts.length} contacts</Typography>
+                        }                        
+
+                        <Box sx={{ marginTop:"40px", position:"relative"}} >
                             <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez {alerts.nbContactWithDatePassed} relance(s) passée(s) et {alerts.nbContactWithDateSoon} relance(s) à faire dans les 7 jour(s).</Typography>
                             <Box sx={{ position:"absolute", right:0, top:0  }} >
                                 <Tooltip title="Ajouter un contact (avec ou sans recherche)" placement="left">
@@ -305,12 +344,13 @@ export default function Contacts() {
                                         <PersonAddRoundedIcon fontSize="large" />                             
                                         <PersonSearchRoundedIcon fontSize="large" />
                                         <AddIcon fontSize="large" /> */}
+                                        Nouveau contact
                                         <AddCircleOutlineIcon fontSize="large" />
                                     </IconButton>
                                 </Tooltip>
                             </Box>
                             <ContactsTable
-                                contacts={filteredContacts}
+                                contacts={filteredContactsTab}
                                 selectedContactId={selectedContact.id}
                                 setSelectedContact={setSelectedContact}
                                 handleUpdateContact={updateContactInContactsAndDB}
@@ -320,20 +360,21 @@ export default function Contacts() {
                             />
                             {/* <TestTableSortLabel2 contacts={contacts} selectedContactId={selectedContact.id} setSelectedContact={setSelectedContact} handleUpdateContact={updateContactInContactsAndDB} handleDeleteContact={deleteContact} /> */}
                         </Box>
-                        }
                     </Box>
+                    }
+                </Box>
 
-                    : <Box sx={{ display: "flex", justifyContent: "space-around", margin: "20px", padding: "20px", 
-                    //border: "solid 3px blue", borderRadius: "10px" 
-                    }}>
-                        {/* https://www.youtube.com/watch?v=f3Whk3hfd7I&ab_channel=LikeWD */}
-                        {/* Connexion */}
-                        <SignIn />
-                        {/* Inscription */}
-                        {/* <UserAuthContextProvider> */}
-                        <SignUp />
-                        {/* </UserAuthContextProvider> */}
-                    </Box>
+                : <Box sx={{ display: "flex", justifyContent: "space-around", margin: "20px", padding: "20px", 
+                //border: "solid 3px blue", borderRadius: "10px" 
+                }}>
+                    {/* https://www.youtube.com/watch?v=f3Whk3hfd7I&ab_channel=LikeWD */}
+                    {/* Connexion */}
+                    <SignIn />
+                    {/* Inscription */}
+                    {/* <UserAuthContextProvider> */}
+                    <SignUp />
+                    {/* </UserAuthContextProvider> */}
+                </Box>
             }
 
         </Box>
