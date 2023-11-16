@@ -150,8 +150,10 @@ type ContactRowProps = {
 }
 export default function ContactRow({ contact, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, }: ContactRowProps) {
 
-    //console.log("CONTACT ROW")
+    console.log("CONTACT ROW")
     //console.log(alerts.alerts)
+
+    const [contactInfo, setContactInfo] = React.useState<Contact>(contact)
 
 
     const muiTheme = useTheme();
@@ -422,18 +424,24 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     //   };
     type CustomTextFieldProps = {
         attribut: keyof Contact
-        startAdornment: any
-        inputProps?: any
+        startAdornment?: any
+        //inputProps?: any
+        center?:boolean
+        smallLighter?:boolean
     }
-    const CustomTextField = ({attribut, startAdornment, inputProps='' }: CustomTextFieldProps) => {
+    const CustomTextField = ({attribut, startAdornment='', 
+    //inputProps= {}, 
+    center=false, smallLighter=false }: CustomTextFieldProps) => {
         return <TextField  //label="Nom de l'entreprise"    
             value={contact[attribut]}
             onChange={handleChangeText(attribut)}
             InputProps={{
                 startAdornment:startAdornment,
                 disableUnderline: contact[attribut].length > 0,
-                inputProps: inputProps,
+                //inputProps: inputProps,
+                // {{ style: { textAlign: 'center', color: "gray", fontSize: "0.8em" } }}
             }}
+            inputProps= {{ style: { textAlign: center ? 'center' : 'left', fontSize: smallLighter ? "0.8em" : "1em", color: smallLighter ? "gray" : ""  } }}
         />
     }
 
@@ -562,18 +570,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     startAdornment={contact.isClient 
                         ? <HandshakeOutlinedIcon color='success' fontSize='large' /> 
                         : <PsychologyAltIcon sx={{ color: muiTheme.palette.gray.main, }} fontSize='large' />} 
-                />
-               
-
-
-                {/* <TextField id="standard-basic"
-                    value={contact.businessCity}
-                    onChange={handleChangeText('businessCity')}
-                    InputProps={{
-                        disableUnderline: true,
-                    }}
-                    inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
-                /> */}
+                />            
             </StyledTableCell>
 
             {/* contactPhone + businessPhone */}
@@ -586,13 +583,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         disableUnderline: contact.businessPhone.length > 0
                     }}
                     inputProps={{ style: { textAlign: 'center' } }}
-                /> */}
-                <CustomTextField 
-                    attribut="contactPhone" 
-                    startAdornment="Direct"
-                    inputProps={{ style: { textAlign: 'center' } }}
-                />
-               
+                /> 
                 <TextField id="standard-basic" //label="Téléphone" 
                     value={contact.businessPhone}
                     onChange={handleChangeText('businessPhone')}
@@ -604,16 +595,25 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         disableUnderline: contact.businessPhone.length > 0
                     }}
                     inputProps={{ style: { textAlign: 'center', color: "gray", fontSize: "0.8em" } }}
+                /> */}
+                 <CustomTextField 
+                    attribut="contactPhone" 
+                    startAdornment="Direct"
+                    center={true}
+                    //inputProps={{ style: { textAlign: 'center' } }}
                 />
                  <CustomTextField 
                     attribut="businessPhone" 
                     startAdornment= {<span style={{ color: 'gray', fontSize: "0.8em" }}>Standard </span>}
+                    center
+                    smallLighter
+                    //inputProps={{ style: { textAlign: 'center', color: "gray", fontSize: "0.8em" } }}
                 />
             </StyledTableCell>
 
             {/* ContactName */}
             <StyledTableCell>
-                <TextField id="standard-basic" //label="Nom du contact" 
+                {/* <TextField id="standard-basic" //label="Nom du contact" 
                     value={contact.contactName} onChange={handleChangeText('contactName')}
                     InputProps={{
                         disableUnderline: contact.contactName.length > 0
@@ -625,7 +625,9 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         disableUnderline: contact.contactPosition.length > 0
                     }}
                     inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
-                />
+                /> */}
+                <CustomTextField attribut="contactName"  />
+                <CustomTextField attribut="contactPosition" smallLighter />
             </StyledTableCell>
 
             {/* contactEmail */}
@@ -635,23 +637,30 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 {/* <Box sx={{ display: "flex", gap: 2 }}> */}
                 {/* <MailOutlineOutlinedIcon /> */}
                 <Tooltip title="Contact direct">
-                    <TextField id="standard-basic" //label="Email du contact" 
+                    {/* <TextField id="standard-basic" //label="Email du contact" 
                         value={contact.contactEmail} onChange={handleChangeText('contactEmail')}
                         InputProps={{
                             disableUnderline: contact.contactEmail.length > 0
                         }}
-                    />
+                    /> */}
+                    {/*  Je met le CustomTextField dans une DIV car le composant enfant de Tooltip doit être capable d'accepter une ref */}
+                    <Box>
+                        <CustomTextField attribut="contactEmail"/>
+                    </Box>
                 </Tooltip>
                 {/* </Box> */}
                 <Tooltip title="Contact entreprise">
-                    <TextField id="standard-basic"
+                    {/* <TextField id="standard-basic"
                         value={contact.businessEmail} onChange={handleChangeText('businessEmail')}
                         InputProps={{
                             startAdornment: contact.businessEmail.length === 0 && "...",
                             disableUnderline: true//contact.businessEmail.length > 0
                         }}
                         inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
-                    />
+                    /> */}
+                    <Box>
+                        <CustomTextField attribut="businessEmail" smallLighter />
+                    </Box>
                 </Tooltip>
                 <Tooltip title="Site Web de l'entreprise">
                     <TextField id="standard-basic"
@@ -662,12 +671,13 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         }}
                         inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
                     />
+                    {/* <CustomTextField attribut="businessWebsite" smallLighter />                     */}
                 </Tooltip>
             </StyledTableCell>
 
             {/* businessCity */}
             <StyledTableCell component="td" scope="row" >
-                <TextField id="standard-basic"
+                {/* <TextField id="standard-basic"
                     value={contact.businessCity}
                     onChange={handleChangeText('businessCity')}
                     InputProps={{
@@ -679,14 +689,18 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             //color: "gray"
                         }
                     }}
-                />
-                <TextField id="standard-basic"
+                /> */}
+                <CustomTextField attribut="businessCity" />                    
+
+                {/* <TextField id="standard-basic"
                     value={contact.businessAddress} onChange={handleChangeText('businessAddress')}
                     InputProps={{
                         disableUnderline: contact.businessAddress.length > 0
                     }}
                     inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
-                />
+                /> */}
+                <CustomTextField attribut="businessAddress" smallLighter />                    
+
             </StyledTableCell>
 
             {/* hasBeenCalled */}
@@ -826,6 +840,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             onChange={handleChangeText('comments')}
                             sx={{ textAlign: 'left' }}
                         />
+                        {/* <CustomTextField attribut="comments"  />                     */}                        
                     </DialogContent>
                     <DialogActions>
                         <Button variant="contained" color='primary' onClick={handleCloseCommentDialog}>Valider</Button>
