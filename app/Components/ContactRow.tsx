@@ -302,11 +302,14 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     }
   
 
-    const handleChangeText = (attribut: keyof Contact) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        //console.log("event.target.value", event.target.value)
+    // const handleChangeText = (attribut: keyof Contact) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>, attribut: keyof Contact) => {
+        
+        console.log("event.target.value", event.target.value)
+        console.log(attribut)
         handleUpdateContact(contact.id, { key: attribut, value: event.target.value })
         // handleUpdateContact({ ...contact, [attribut]: event.target.value })
-    }
+    } 
     const handleChangeCheckbox = (contact: Contact, attribut: keyof Contact) => {
         console.log("contact", contact)
         handleUpdateContact(contact.id, { key: attribut, value: !contact[attribut] })
@@ -365,9 +368,6 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
 
 
-
-
-
     const [openCommentDialogue, setOpenCommentDialogue] = React.useState(false);
     const handleClickOpenCommentDialog = () => {
         setOpenCommentDialogue(true);
@@ -407,21 +407,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         handleCloseCommentDialog()
     }
 
-    // interface CustomTextFieldProps {
-    //     label: string;
-    //     value: string;
-    //     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    //   }
-      
-    //   const CustomTextField: React.FC<CustomTextFieldProps> = ({ label, value, onChange }) => {
-    //     return (
-    //       <TextField
-    //         label={label}
-    //         value={value}
-    //         onChange={onChange}
-    //       />
-    //     );
-    //   };
+  
+    // J'ai voulu créer un composant commun pour tous les TextField, mais ça ne fonctionne pas => problème de onChange et de focus
     type CustomTextFieldProps = {
         attribut: keyof Contact
         startAdornment?: any
@@ -432,9 +419,26 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     const CustomTextField = ({attribut, startAdornment='', 
     //inputProps= {}, 
     center=false, smallLighter=false }: CustomTextFieldProps) => {
-        return <TextField  //label="Nom de l'entreprise"    
-            value={contact[attribut]}
-            onChange={handleChangeText(attribut)}
+
+        const [value, setValue] = React.useState(contact[attribut]);
+
+        const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+            setValue(event.target.value);
+        };    
+        const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+            // Mettez à jour l'état du composant parent ici
+            console.log("ON BLUR !!")        
+            console.log(e)
+            console.log(e.target.value)
+            handleChangeText(e, attribut);
+        };
+
+        return <TextField  //label="Nom de l'entreprise"
+            // value={contact[attribut]}
+            // onChange={(e) => handleChangeText(e, attribut)}
+            value={value}
+            onChange={handleChange}
+            onBlur={handleBlur}
             InputProps={{
                 startAdornment:startAdornment,
                 disableUnderline: contact[attribut].length > 0,
@@ -444,9 +448,6 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             inputProps= {{ style: { textAlign: center ? 'center' : 'left', fontSize: smallLighter ? "0.8em" : "1em", color: smallLighter ? "gray" : ""  } }}
         />
     }
-
-    
-
 
     return (
         <StyledTableRow
@@ -548,13 +549,11 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     onChange={handleChangeLogo} />                 */}
             </StyledTableCell>
 
-{/* FAIRE textfild custom avec nom du field.................... pour tous les input text !!!!!!!!!!!! */}
-
             {/* businessName */}
             <StyledTableCell component="td" scope="row" >
-                {/*   <TextField  //label="Nom de l'entreprise"    
+                  <TextField  //label="Nom de l'entreprise"    
                     value={contact.businessName}
-                    onChange={handleChangeText('businessName')}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessName')}
                     InputProps={{
                         startAdornment: contact.isClient ? <HandshakeOutlinedIcon color='success' fontSize='large' /> : <PsychologyAltIcon
                             //color='gray'      // foncitonne mais me souligne en rouge !!!
@@ -564,20 +563,18 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             fontSize='large' />,
                         disableUnderline: contact.businessName.length > 0,
                     }}
-                /> */}
-                <CustomTextField 
-                    attribut="businessName" 
-                    startAdornment={contact.isClient 
+                />
+                {/* <CustomTextField attribut="businessName"  startAdornment={contact.isClient 
                         ? <HandshakeOutlinedIcon color='success' fontSize='large' /> 
                         : <PsychologyAltIcon sx={{ color: muiTheme.palette.gray.main, }} fontSize='large' />} 
-                />            
+                />             */}
             </StyledTableCell>
 
             {/* contactPhone + businessPhone */}
             <StyledTableCell align="center">
-                {/* <TextField id="standard-basic" //label="Téléphone" 
+                <TextField id="standard-basic" //label="Téléphone" 
                     value={contact.contactPhone}
-                    onChange={handleChangeText('contactPhone')}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactPhone')}
                     InputProps={{
                         startAdornment: "Direct ",
                         disableUnderline: contact.businessPhone.length > 0
@@ -586,7 +583,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 /> 
                 <TextField id="standard-basic" //label="Téléphone" 
                     value={contact.businessPhone}
-                    onChange={handleChangeText('businessPhone')}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessPhone')}
                     color="secondary"
                     size='small'
                     InputProps={{
@@ -595,39 +592,28 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         disableUnderline: contact.businessPhone.length > 0
                     }}
                     inputProps={{ style: { textAlign: 'center', color: "gray", fontSize: "0.8em" } }}
-                /> */}
-                 <CustomTextField 
-                    attribut="contactPhone" 
-                    startAdornment="Direct"
-                    center={true}
-                    //inputProps={{ style: { textAlign: 'center' } }}
                 />
-                 <CustomTextField 
-                    attribut="businessPhone" 
-                    startAdornment= {<span style={{ color: 'gray', fontSize: "0.8em" }}>Standard </span>}
-                    center
-                    smallLighter
-                    //inputProps={{ style: { textAlign: 'center', color: "gray", fontSize: "0.8em" } }}
-                />
+                 {/* <CustomTextField attribut="contactPhone" startAdornment="Direct" center={true} />
+                 <CustomTextField attribut="businessPhone" startAdornment= {<span style={{ color: 'gray', fontSize: "0.8em" }}>Standard </span>} center smallLighter /> */}
             </StyledTableCell>
 
             {/* ContactName */}
             <StyledTableCell>
-                {/* <TextField id="standard-basic" //label="Nom du contact" 
-                    value={contact.contactName} onChange={handleChangeText('contactName')}
+                <TextField id="standard-basic" //label="Nom du contact" 
+                    value={contact.contactName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactName')}
                     InputProps={{
                         disableUnderline: contact.contactName.length > 0
                     }}
                 />
                 <TextField id="standard-basic" //label="Nom du contact" 
-                    value={contact.contactPosition} onChange={handleChangeText('contactPosition')}
+                    value={contact.contactPosition} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactPosition')}
                     InputProps={{
                         disableUnderline: contact.contactPosition.length > 0
                     }}
                     inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
-                /> */}
-                <CustomTextField attribut="contactName"  />
-                <CustomTextField attribut="contactPosition" smallLighter />
+                />
+                {/* <CustomTextField attribut="contactName"  />
+                <CustomTextField attribut="contactPosition" smallLighter /> */}
             </StyledTableCell>
 
             {/* contactEmail */}
@@ -637,49 +623,45 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 {/* <Box sx={{ display: "flex", gap: 2 }}> */}
                 {/* <MailOutlineOutlinedIcon /> */}
                 <Tooltip title="Contact direct">
-                    {/* <TextField id="standard-basic" //label="Email du contact" 
-                        value={contact.contactEmail} onChange={handleChangeText('contactEmail')}
+                    <TextField id="standard-basic" //label="Email du contact" 
+                        value={contact.contactEmail} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactEmail')}
                         InputProps={{
                             disableUnderline: contact.contactEmail.length > 0
                         }}
-                    /> */}
+                    />
                     {/*  Je met le CustomTextField dans une DIV car le composant enfant de Tooltip doit être capable d'accepter une ref */}
-                    <Box>
-                        <CustomTextField attribut="contactEmail"/>
-                    </Box>
+                    {/* <Box><CustomTextField attribut="contactEmail"/></Box> */}
                 </Tooltip>
                 {/* </Box> */}
                 <Tooltip title="Contact entreprise">
-                    {/* <TextField id="standard-basic"
-                        value={contact.businessEmail} onChange={handleChangeText('businessEmail')}
+                    <TextField id="standard-basic"
+                        value={contact.businessEmail} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessEmail')}
                         InputProps={{
                             startAdornment: contact.businessEmail.length === 0 && "...",
                             disableUnderline: true//contact.businessEmail.length > 0
                         }}
                         inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
-                    /> */}
-                    <Box>
-                        <CustomTextField attribut="businessEmail" smallLighter />
-                    </Box>
+                    />
+                    {/* <Box><CustomTextField attribut="businessEmail" smallLighter /></Box> */}
                 </Tooltip>
                 <Tooltip title="Site Web de l'entreprise">
                     <TextField id="standard-basic"
-                        value={contact.businessWebsite} onChange={handleChangeText('businessWebsite')}
+                        value={contact.businessWebsite} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessWebsite')}
                         InputProps={{
                             startAdornment: contact.businessWebsite.length === 0 && "...",
                             disableUnderline: true//contact.businessWebsite.length > 0
                         }}
                         inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
                     />
-                    {/* <CustomTextField attribut="businessWebsite" smallLighter />                     */}
+                    {/* <Box><CustomTextField attribut="businessWebsite" smallLighter />  </Box> */}
                 </Tooltip>
             </StyledTableCell>
 
             {/* businessCity */}
             <StyledTableCell component="td" scope="row" >
-                {/* <TextField id="standard-basic"
+                <TextField id="standard-basic"
                     value={contact.businessCity}
-                    onChange={handleChangeText('businessCity')}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessCity')}
                     InputProps={{
                         disableUnderline: contact.businessCity.length > 0
                     }}
@@ -689,17 +671,17 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             //color: "gray"
                         }
                     }}
-                /> */}
-                <CustomTextField attribut="businessCity" />                    
+                />
+                {/* <CustomTextField attribut="businessCity" />                     */}
 
-                {/* <TextField id="standard-basic"
-                    value={contact.businessAddress} onChange={handleChangeText('businessAddress')}
+                <TextField id="standard-basic"
+                    value={contact.businessAddress} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessAddress')}
                     InputProps={{
                         disableUnderline: contact.businessAddress.length > 0
                     }}
                     inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
-                /> */}
-                <CustomTextField attribut="businessAddress" smallLighter />                    
+                />
+                {/* <CustomTextField attribut="businessAddress" smallLighter />                     */}
 
             </StyledTableCell>
 
@@ -787,24 +769,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     onChange={() => handleChangeCheckbox(contact, "hasBeenSentEmailOrMeetUp")}
                     inputProps={{ 'aria-label': 'controlled' }}
                 /> */}
-            </StyledTableCell>
-
-            {/* hasReceivedEmail */}
-            {/* <StyledTableCell align="center">
-                <Checkbox checked={contact.hasReceivedEmail}
-                    icon={<StarUnchecked />}
-                    checkedIcon={<StarCheckedFilled />}
-                    sx={{
-                        color: pink[800], '&.Mui-checked': { color: pink[600] },
-                        "&.Mui-disabled": {     // On ajoute ça pour mettre une couleur quand disabled, sinon gris !
-                            color: lighten(pink[800], 0.5)
-                        },
-                    }}
-                    // disabled={(contact.hasBeenSentEmailOrMeetUp && contact.hasBeenCalled) ? false : true}
-                    disabled={(!contact.hasBeenSentEmailOrMeetUp) ? true : false}
-                    onChange={() => handleChangeCheckbox(contact, "hasReceivedEmail")}
-                    inputProps={{ 'aria-label': 'controlled' }} />
-            </StyledTableCell> */}
+            </StyledTableCell>          
 
             {/* comments */}
             <StyledTableCell align="center"
@@ -837,7 +802,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             type="comment" fullWidth variant="standard"
                             multiline
                             value={contact.comments}
-                            onChange={handleChangeText('comments')}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'comments')}
                             sx={{ textAlign: 'left' }}
                         />
                         {/* <CustomTextField attribut="comments"  />                     */}                        
@@ -935,12 +900,13 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             <StyledTableCell component="td" scope="row" >
                 <TextField id="standard-basic"   
                     value={contact.businessType}
-                    onChange={handleChangeText('businessType')}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessType')}
                     InputProps={{
                         startAdornment: contact.businessType.length === 0 && "...",
                         disableUnderline: true
                     }}
                 />               
+                {/* <CustomTextField attribut="businessType" /> */}
             </StyledTableCell>
 
             {/* Supprimer contact ? */}

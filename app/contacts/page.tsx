@@ -203,7 +203,7 @@ export default function Contacts() {
         } else {
             setFilteredContactsTab(contacts)
         }      
-    }, [contactsSearchCriteria, contacts])
+    }, [contactsSearchCriteria, contacts])      // !!!!!!!!!!!!!!! lansser contact ? car si modif ça peut disparaitre !!!!!!
 
 
 
@@ -263,7 +263,7 @@ export default function Contacts() {
                     </CustomTabPanel> */}
 
 
-                    {/* /////////////////////// On affiche les FORMULAIRES DE CREATION CONTACTS -ou- LA LISTE DE CONTACTS /////////////////////// */}
+                    {/* /////////////////////// On affiche les FORMULAIRES DE CREATION CONTACTS -ou- LA RECHERCHE + LISTE DE CONTACTS /////////////////////// */}
                     {displayNewContactForms
                     ? <Box>              
                         <Accordion sx={{
@@ -301,6 +301,7 @@ export default function Contacts() {
                     </Box>
 
                     : <Box sx={{ marginTop:"2em", position:"relative"}} >
+                    {/* ///////// RECHERCHE DE CONTACTS ///////// */}
                         <Accordion sx={{ bgcolor: 'primary.light', //width:"80%", margin:"auto",
                             //my: 2
                         }}>
@@ -313,9 +314,12 @@ export default function Contacts() {
                                     sx={{ p: 2, borderRadius: 1 }} >Recherche (cliquer pour ouvrir et pour fermer)</Typography> */}
                             </AccordionSummary>
                             <AccordionDetails>
-                                <Paper sx={{ margin: "2em", padding: "2em", bgcolor: 'lightCyan.light', }} >
+                                <Paper sx={{ 
+                                    //margin: "2em", 
+                                    padding: "1em", 
+                                    bgcolor: 'lightCyan.light', }} >
                                     <SearchContactsForm onSearchChange={setContactsSearchCriteria} />
-                                    <Typography variant="h5" component="div" sx={{ p: 2 }}>{filteredContactsTab.length} contacts trouvés (sur {contacts.length})</Typography>
+                                    {/* <Typography variant="h5" component="div" sx={{ p: 2 }}>{filteredContactsTab.length} contacts trouvés (sur {contacts.length})</Typography> */}
                                 </Paper>
                             </AccordionDetails>
                         </Accordion>
@@ -331,11 +335,13 @@ export default function Contacts() {
 
                         {(JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)) 
                         ? 
-                        <Typography variant="h5" component="div" sx={{ p: 2 }}>{filteredContactsTab.length} contacts trouvés (sur {contacts.length})</Typography>
+                        <Typography variant="h5" component="div" sx={{ p: 2 }}>Recherche : {filteredContactsTab.length} contacts trouvés (sur {contacts.length})</Typography>
                         : <Typography variant="h5" component="div" sx={{ p: 2 }}>{contacts.length} contacts</Typography>
                         }                        
 
-                        <Box sx={{ marginTop:"40px", position:"relative"}} >
+                        <Box sx={{ 
+                            //marginTop:"40px", 
+                            position:"relative"}} >
                             <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez {alerts.nbContactWithDatePassed} relance(s) passée(s) et {alerts.nbContactWithDateSoon} relance(s) à faire dans les 7 jour(s).</Typography>
                             <Box sx={{ position:"absolute", right:0, top:0  }} >
                                 <Tooltip title="Ajouter un contact (avec ou sans recherche)" placement="left">
@@ -349,7 +355,9 @@ export default function Contacts() {
                                     </IconButton>
                                 </Tooltip>
                             </Box>
+                            {/* ///////// LISTE DE CONTACTS ///////// */}
                             <ContactsTable
+                                //contacts={contacts}
                                 contacts={filteredContactsTab}
                                 selectedContactId={selectedContact.id}
                                 setSelectedContact={setSelectedContact}
