@@ -41,7 +41,7 @@ import fakeContactsData from '../utils/contacts'
 //import writeContactData from '../utils/firebase'
 //import firebase from 'firebase/app'
 //import firebaseConfig from '../utils/firebaseConfig'
-import { storage, readDataFromFirebaseAndSetContact, addFakeDataOnFirebaseAndReload, addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, deleteDataOnFirebaseAndReload } from '../utils/firebase'
+import { storage, addFakeDataOnFirebaseAndReload, addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, deleteDataOnFirebaseAndReload, getContactsFromDatabase } from '../utils/firebase'
 import { Timestamp } from 'firebase/firestore';
 import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, deleteDoc, updateDoc, doc } from "firebase/firestore";
 import { getStorage, ref } from "firebase/storage";
@@ -54,6 +54,7 @@ import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
 import PersonSearchRoundedIcon from '@mui/icons-material/PersonSearchRounded';
 import AddIcon from '@mui/icons-material/Add';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ClearIcon from '@mui/icons-material/Clear';
 
 import Fade from '@mui/material';
 import Collapse from '@mui/material';
@@ -100,11 +101,11 @@ function CustomTabPanel(props: TabPanelProps) {
 
 export default function Contacts() {
     const [contacts, setContacts] = React.useState<Contact[]>([])
-    const [filteredContactsTab, setFilteredContactsTab] = React.useState<Contact[]>(contacts)
+    const [filteredContacts, setFilteredContacts] = React.useState<Contact[]>([])
     //const [selectedContact, setSelectedContact] = React.useState<Contact | undefined>()   
     const [selectedContact, setSelectedContact] = React.useState<Contact | { id: string }>({ id: "0" })
     const [loading, setLoading] = React.useState(true)
-    const [alerts, setAlerts] = React.useState<Alerts>({ nbContactWithDatePassed: 0, nbContactWithDateSoon: 0})
+    const [alerts, setAlerts] = React.useState<Alerts>({ nbContactsWithDatePassed: 0, nbContactsWithDateSoon: 0})
 
     const emptyContact: Contact = {
         id: '',
@@ -137,73 +138,97 @@ export default function Contacts() {
 
     const [displayNewContactForms, setDisplayNewContactForms] = React.useState(false)
     
-    const emptySearchCriteria: SearchContact = {
+    const emptySearchCriteria: SearchContactCriteria = {
         businessName: '',
-        businessCity: '',
+        businessCity: [],
         businessType: []
     }
-    const [contactsSearchCriteria, setContactsSearchCriteria] = React.useState<SearchContact>(emptySearchCriteria)
+    const [contactsSearchCriteria, setContactsSearchCriteria] = React.useState<SearchContactCriteria>(emptySearchCriteria)
     //const [contactsSearchCriteria, setContactsSearchCriteria] = React.useState({})
 
 
     //console.log("PAGE Contacts",contacts)
     //console.log(selectedContact)
-    //console.log(contacts)
-    console.log(contactsSearchCriteria)
+    console.log("contacts", contacts)
+    console.log("filteredContacts", filteredContacts)
+    //console.log(contactsSearchCriteria)
 
     const { currentUser } = useAuthUserContext()
     // console.log(currentUser)
     // console.log(currentUser?.uid)
+
+      
+    //const updateContactInContactsAndDB = (updatingContact: Contact) => {     // ou selectedContact
+    const updateContactInContactsAndDB = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
+        console.log("updatingContact", id, keyAndValue)
+
+        //setContacts(updateContactsInLocalList(contacts, id, keyAndValue))
+        setFilteredContacts(updateContactsInLocalList(filteredContacts, id, keyAndValue))
+        //setmoviesList(sortArrayBy(updatedMovies, orderedBy))    
+        updatDataOnFirebase(id, keyAndValue)
+    }  
    
 
     React.useEffect(() => { 
-        readDataFromFirebaseAndSetContact(currentUser, setLoading, setContacts)
+        console.log("User Effect READ")
+
+        getContactsFromDatabase(currentUser).then((contactsList) => {
+            setContacts(contactsList);
+            setFilteredContacts(contactsList);
+            setLoading(false);
+        });
+       
     }, [currentUser])
     // }, [currentUser?.uid])
 
  
-
     React.useEffect(() => {
+        console.log("User Effect ALERTES")
         setAlerts(countContactsByAlertDates(contacts))
-    }, [contacts]) 
+    }, [contacts])
     
-    
-    //const updateContactInContactsAndDB = (updatingContact: Contact) => {     // ou selectedContact
-    const updateContactInContactsAndDB = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
-        console.log("updatingContact", id, keyAndValue)
-        setContacts(updateContactsInLocalList(contacts, id, keyAndValue))
-        //setmoviesList(sortArrayBy(updatedMovies, orderedBy))    
-        updatDataOnFirebase(id, keyAndValue)
-    }  
+    React.useEffect(() => {
+        setContacts(filteredContacts)
+    }, [filteredContacts])
+        
 
 
-  
+
+   
 
     React.useEffect(() => {
-        if (contactsSearchCriteria && (contactsSearchCriteria?.businessName !== '' || contactsSearchCriteria.businessCity !== '' || contactsSearchCriteria.businessType.length > 0)) {      // metre diff de empty !!!!!!!!!!
-            console.log(contactsSearchCriteria)
-
+        console.log("User Effect RECHERCHE")
+        
+        //if (contactsSearchCriteria && (contactsSearchCriteria?.businessName !== '' || contactsSearchCriteria.businessCity !== '' || contactsSearchCriteria.businessType.length > 0)) {      // metre diff de empty !!!!!!!!!!
+        if (JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)) {        
+            const searchOnCity = contactsSearchCriteria.businessCity.length > 0 ? contactsSearchCriteria.businessCity : ['']
             const searchOnType = contactsSearchCriteria.businessType.length > 0 ? contactsSearchCriteria.businessType : ['']
 
             const searchedContacts: Contact[] = contacts.filter((contact) => {
-                return (contact.businessName.toLowerCase().includes(contactsSearchCriteria.businessName.toLowerCase()) 
-                    && contact.businessCity.toLowerCase().includes(contactsSearchCriteria.businessCity.toLowerCase()) 
+                return (
+                    contact.businessName.toLowerCase().includes(contactsSearchCriteria.businessName.toLowerCase()) 
+                    //&& contact.businessCity.toLowerCase().includes(contactsSearchCriteria.businessCity.toLowerCase()
+
                     // SOME() => au moins une des valeurs du tableau doit être vraie
-                    && searchOnType.some((type) => contact.businessType.toLowerCase().includes(type.toLowerCase())
+                    && searchOnCity.some((city) => contact.businessCity.toLowerCase().includes(city.toLowerCase()))       // toLowerCase ???
+                    && searchOnType.some((type) => contact.businessType.toLowerCase().includes(type.toLowerCase()))
                         // {
                         //     console.log(type)
                         //     console.log(contact.businessType)
                         //     return contact.businessType.toLowerCase().includes(type.toLowerCase())
                         // }
                     )
-                    )
             })
             console.log(searchedContacts)
-            setFilteredContactsTab(searchedContacts)
+            setFilteredContacts(searchedContacts)
         } else {
-            setFilteredContactsTab(contacts)
+            setFilteredContacts(contacts)
         }      
-    }, [contactsSearchCriteria, contacts])      // !!!!!!!!!!!!!!! lansser contact ? car si modif ça peut disparaitre !!!!!!
+    }, [
+        //emptySearchCriteria,      // Boucle infinie !!! Pourquoi ??? Pourtant sa valeur ne change jamais... 
+        contactsSearchCriteria, 
+        //contacts
+    ])      // !!!!!!!!!!!!!!! laisser contact ? car si modif ça peut disparaitre !!!!!!
 
 
 
@@ -300,8 +325,8 @@ export default function Contacts() {
                         <Button variant="contained" color="secondary" onClick={() => setDisplayNewContactForms(!displayNewContactForms)}>Tableau des contacts</Button>
                     </Box>
 
+                    // {/* ///////// RECHERCHE DE CONTACTS ///////// */}
                     : <Box sx={{ marginTop:"2em", position:"relative"}} >
-                    {/* ///////// RECHERCHE DE CONTACTS ///////// */}
                         <Accordion sx={{ bgcolor: 'primary.light', //width:"80%", margin:"auto",
                             //my: 2
                         }}>
@@ -317,9 +342,12 @@ export default function Contacts() {
                                 <Paper sx={{ 
                                     //margin: "2em", 
                                     padding: "1em", 
-                                    bgcolor: 'lightCyan.light', }} >
-                                    <SearchContactsForm onSearchChange={setContactsSearchCriteria} />
-                                    {/* <Typography variant="h5" component="div" sx={{ p: 2 }}>{filteredContactsTab.length} contacts trouvés (sur {contacts.length})</Typography> */}
+                                    bgcolor: 'lightCyan.light',
+                                    //position: "relative" 
+                                    }}
+                                >
+                                    <SearchContactsForm onSearchChange={setContactsSearchCriteria} emptySearchCriteria = {emptySearchCriteria} />                                   
+                                    {/* <Typography variant="h5" component="div" sx={{ p: 2 }}>{filteredContacts.length} contacts trouvés (sur {contacts.length})</Typography> */}
                                 </Paper>
                             </AccordionDetails>
                         </Accordion>
@@ -335,14 +363,14 @@ export default function Contacts() {
 
                         {(JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)) 
                         ? 
-                        <Typography variant="h5" component="div" sx={{ p: 2 }}>Recherche : {filteredContactsTab.length} contacts trouvés (sur {contacts.length})</Typography>
+                        <Typography variant="h5" component="div" sx={{ p: 2 }}>Recherche : {filteredContacts.length} contacts trouvé(s) (sur {contacts.length})</Typography>
                         : <Typography variant="h5" component="div" sx={{ p: 2 }}>{contacts.length} contacts</Typography>
                         }                        
 
                         <Box sx={{ 
                             //marginTop:"40px", 
                             position:"relative"}} >
-                            <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez {alerts.nbContactWithDatePassed} relance(s) passée(s) et {alerts.nbContactWithDateSoon} relance(s) à faire dans les 7 jour(s).</Typography>
+                            <Typography variant="h5" component="div" color="warning.main" sx={{ p: 2 }}>Vous avez {alerts.nbContactsWithDatePassed} relance(s) passée(s) <Typography color="primary.main">et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jour(s)</Typography>.</Typography>
                             <Box sx={{ position:"absolute", right:0, top:0  }} >
                                 <Tooltip title="Ajouter un contact (avec ou sans recherche)" placement="left">
                                     <IconButton aria-label="edit" color="primary" onClick={() => setDisplayNewContactForms(!displayNewContactForms)}>
@@ -355,10 +383,10 @@ export default function Contacts() {
                                     </IconButton>
                                 </Tooltip>
                             </Box>
-                            {/* ///////// LISTE DE CONTACTS ///////// */}
+                            {/* ///////// LISTE DE CONTACTS (avec ou sans recherche) ///////// */}
                             <ContactsTable
                                 //contacts={contacts}
-                                contacts={filteredContactsTab}
+                                contacts={filteredContacts}
                                 selectedContactId={selectedContact.id}
                                 setSelectedContact={setSelectedContact}
                                 handleUpdateContact={updateContactInContactsAndDB}

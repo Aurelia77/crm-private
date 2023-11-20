@@ -4,9 +4,14 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import {getUniqueSortedValues} from '../utils/functionsToolbox';
 import contacts from '../utils/contacts';
 
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import ClearIcon from '@mui/icons-material/Clear';
+
 
 interface SearchFormProps {
-    onSearchChange: (search: SearchContact) => void;
+    onSearchChange: (search: SearchContactCriteria) => void;
+    emptySearchCriteria: SearchContactCriteria;
 }
 
 const MenuSelectProps = {
@@ -19,29 +24,37 @@ const MenuSelectProps = {
 };
 
 
-export default function SearchContactsForm({ onSearchChange }: SearchFormProps) {
-    const [search, setSearch] = React.useState<SearchContact>({ businessName: '', businessCity: '', businessType: [] });
+export default function SearchContactsForm({ onSearchChange, emptySearchCriteria }: SearchFormProps) {
+    const [search, setSearch] = React.useState<SearchContactCriteria>({ businessName: '', businessCity: [], businessType: [] });
 
     // const businessTypes = ["Camping", "Hôtel", "Congiergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre"];
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const allDifferentsBusinessTypeValues = getUniqueSortedValues(contacts, 'businessType')
+    const allDifferentsBusinessCitiesValues = getUniqueSortedValues(contacts, 'businessCity')
+
+    const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>) => {
         console.log(event.target.name, event.target.value)
         setSearch({ ...search, [event.target.name]: event.target.value });
         //onSearchChange({ ...search, [event.target.name]: event.target.value });
         // setSearch({ ...search, [event.target.name]: event.target.checked });
     }
 
-    const handleChangeType = (event: SelectChangeEvent<string[]>) => {
+    const handleChangeMultipleSelect = (event: SelectChangeEvent<string[]>, attribut: keyof SearchContactCriteria) => {
         // const { target: { value }, } = event;
         const value = event.target.value;
 
-        setSearch({ ...search, businessType: typeof value === 'string' ? [value] : value });
+        setSearch({ ...search, [attribut]: typeof value === 'string' ? [value] : value });
         //setSearch({ ...search, businessType: value });            // me dit que Value peut être de type String mais pourtant je ne vois pas quand c'est possible !!!???
 
         // setSearch(typeof value === 'string' ? value.split(',') : value, );
     };
 
-    const allDifferentsBusinessTypeValues = getUniqueSortedValues(contacts, 'businessType')
+    const resetSearch = () => {
+        setSearch(emptySearchCriteria);
+        onSearchChange(emptySearchCriteria);
+    }
+
+   
 
 
 
@@ -54,22 +67,44 @@ export default function SearchContactsForm({ onSearchChange }: SearchFormProps) 
     }, [search, onSearchChange])
 
     return (
-        <FormControl >
+        <FormControl sx={{ position: "relative" }} >
             <Typography variant="h6" gutterBottom component="div">Recherche</Typography>
             {/* <FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText> */}
-            <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-                <TextField id="search-name" label="Nom" name='businessName' value={search.businessName} onChange={handleChange}
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', }}>
+                <TextField id="search-name" label="Nom" name='businessName' value={search.businessName} onChange={handleChangeText}
                     sx={{ width: '200px', marginRight: "30px" }} />
-                <TextField id="search-city" label="Ville" name='businessCity' value={search.businessCity} onChange={handleChange}
-                    sx={{ width: '200px', marginRight: "30px" }} />
+                {/* <TextField id="search-city" label="Ville" name='businessCity' value={search.businessCity} onChange={handleChange} 
+                    sx={{ width: '200px', marginRight: "30px" }} />*/}
 
                 <FormControl >
-                    <InputLabel id="demo-multiple-checkbox-label">Type de contact</InputLabel>
+                    <InputLabel id="multiple-checkbox-city-label">Ville</InputLabel>
                     <Select
-                        id="demo-multiple-checkbox-label"
+                        id="multiple-checkbox-city-label"
+                        multiple={true}
+                        value={search.businessCity}
+                        onChange={(e) => handleChangeMultipleSelect(e, "businessCity")}
+                        input={<OutlinedInput label="Type" 
+                        sx={{ width: '300px', border: "solid 1px black" }} 
+                        />}
+                        renderValue={(selected) => selected.join(', ')}
+                        //sx={{ width: '33%', border: "solid 1px black" }}
+                        MenuProps={MenuSelectProps}
+                    >
+                        {allDifferentsBusinessCitiesValues.map((city) => (
+                            <MenuItem key={city} value={city}>
+                                <Checkbox checked={search.businessCity.indexOf(city) > -1} />
+                                <ListItemText primary={city} />
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+                <FormControl >
+                    <InputLabel id="multiple-checkbox-type-label">Type de contact</InputLabel>
+                    <Select
+                        id="multiple-checkbox-type-label"
                         multiple={true}
                         value={search.businessType}
-                        onChange={handleChangeType}
+                        onChange={(e) => handleChangeMultipleSelect(e, "businessType")}
                         input={<OutlinedInput label="Type" 
                         sx={{ width: '300px', border: "solid 1px black" }} 
                         />}
@@ -85,6 +120,8 @@ export default function SearchContactsForm({ onSearchChange }: SearchFormProps) 
                         ))}
                     </Select>
                 </FormControl>
+
+               
 
 
                 {/* <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel>
@@ -106,6 +143,18 @@ export default function SearchContactsForm({ onSearchChange }: SearchFormProps) 
                     ))}
                 </Select> */}
             </Box>
+
+            <Tooltip title="Supprimer la recherche">
+                <IconButton color="error" sx={{
+                    //padding: 0 
+                    position: "absolute",
+                    top: 0,
+                    right: 0
+                }}       // Car les boutons ont automatiquement un padding
+                    onClick={resetSearch} >
+                    <ClearIcon />
+                </IconButton>
+            </Tooltip>
 
 
             {/* <FormControl component="fieldset">

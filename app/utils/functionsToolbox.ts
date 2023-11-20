@@ -38,17 +38,17 @@ const isDateTimeStampObjBeforeAWeek = (timeStamp: Timestamp) => {
     return timeStamp && (timeStampObjToTimeStamp(timeStamp) > timeStampNow) &&  (timeStampObjToTimeStamp(timeStamp) < timeStampInAWeek)   
 }
 
-const countContactsByAlertDates = (contactsTab: Contact[]) => {
-    let nbContactWithDatePassed = 0
-    let nbContactWithDateSoon = 0
+const countContactsByAlertDates = (contactsTab: Contact[]): Alerts => {
+    let nbContactsWithDatePassed = 0
+    let nbContactsWithDateSoon = 0
 
     contactsTab.forEach(contact => {
         if (contact.dateOfNextCall) {
-            isDateTimeStampObjPassed(contact.dateOfNextCall) && nbContactWithDatePassed++
-            isDateTimeStampObjBeforeAWeek(contact.dateOfNextCall) && nbContactWithDateSoon++
+            isDateTimeStampObjPassed(contact.dateOfNextCall) && nbContactsWithDatePassed++
+            isDateTimeStampObjBeforeAWeek(contact.dateOfNextCall) && nbContactsWithDateSoon++
         }              
     })
-    return { nbContactWithDatePassed, nbContactWithDateSoon }
+    return { nbContactsWithDatePassed, nbContactsWithDateSoon }
 }
 
 const updateContactsInLocalList = (contacts: Contact[], id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }): Contact[] => {

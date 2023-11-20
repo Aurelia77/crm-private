@@ -114,10 +114,40 @@ const storage = getStorage(app);
 //     console.log(doc.id, " => ", doc.data());
 // });
 
-const readDataFromFirebaseAndSetContact = (currentUser: any, setLoading: any, setContacts: any) => {
+// const readDataFromFirebaseAndSetContact = (currentUser: any, setLoading: any, setContacts: any) => {
+//   // const readDataFromFirebase = (currentUser: User | null) => {
+//   let contactsArr: Contact[] = []
+
+//   const contactsCollectionRef = collection(fireStoreDb, "contacts");
+//   const q =
+//     //(filterName !== '')
+//     //   ? query(contactsCollectionRef, where("userId", "==", currentUser?.uid ?? ""), where("businessName", ">=", filterName), where("businessName", "<=", filterName + "\uf8ff"))    // \uf8ff = "z
+//     //   : 
+//     query(contactsCollectionRef, where("userId", "==", currentUser?.uid ?? ""));
+//   //const q = query(collection(fireStoreDb, "contacts"), where("userId", "==", currentUser?.uid ?? ""));
+//   // const q = query(collection(fireStoreDb, "contacts"), where("userId", "==", currentUser?.uid ?? ""));
+
+//   getDocs(q).then((querySnapshot) => {
+//     //getDocs(collection(fireStoreDb, "contacts")).then((querySnapshot) => {
+//     querySnapshot.forEach((doc) => {
+//       //console.log(doc.data())
+//     //console.log("contactsArr***", contactsArr)
+
+//       contactsArr.push({ ...doc.data() as Contact })  // On indique que doc.data() est de type Contact           
+//       //setContacts([...contacts, doc.data()])        // Non
+//       //setContacts(prev => [...prev, doc.data()])    // Non
+//     })
+//     setLoading(false)
+//     console.log("contactsArr", contactsArr)
+//     setContacts(contactsArr)
+//   });
+//   // return () => {           // ? dans une vidéo : https://www.youtube.com/watch?v=-yrnWnN0g9o&ab_channel=DevWorld
+//   //     unsub()
+//   // }
+// }
+const getContactsFromDatabase = async (currentUser: any) => {
   // const readDataFromFirebase = (currentUser: User | null) => {
   let contactsArr: Contact[] = []
-
   const contactsCollectionRef = collection(fireStoreDb, "contacts");
   const q =
     //(filterName !== '')
@@ -127,20 +157,21 @@ const readDataFromFirebaseAndSetContact = (currentUser: any, setLoading: any, se
   //const q = query(collection(fireStoreDb, "contacts"), where("userId", "==", currentUser?.uid ?? ""));
   // const q = query(collection(fireStoreDb, "contacts"), where("userId", "==", currentUser?.uid ?? ""));
 
-  getDocs(q).then((querySnapshot) => {
-    //getDocs(collection(fireStoreDb, "contacts")).then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-      //console.log(doc.data())
-      contactsArr.push({ ...doc.data() as Contact })  // On indique que doc.data() est de type Contact           
-      //setContacts([...contacts, doc.data()])        // Non
-      //setContacts(prev => [...prev, doc.data()])    // Non
-    })
-    setLoading(false)
-    setContacts(contactsArr)
+  const querySnapshot = await getDocs(q);
+  //getDocs(collection(fireStoreDb, "contacts")).then((querySnapshot) => {
+  querySnapshot.forEach((doc) => {
+    //console.log(doc.data())
+    //console.log("contactsArr***", contactsArr)
+    contactsArr.push({ ...doc.data() as Contact }); // On indique que doc.data() est de type Contact           
+
+
   });
+  return contactsArr;
   // return () => {           // ? dans une vidéo : https://www.youtube.com/watch?v=-yrnWnN0g9o&ab_channel=DevWorld
   //     unsub()
   // }
+
+ 
 }
 
 const addFakeDataOnFirebaseAndReload = (currentUser: any, fakeContactsData: Contact[]) => {
@@ -319,7 +350,8 @@ export {
   realtimeDb,
   auth,
   storage,
-  readDataFromFirebaseAndSetContact,
+  //readDataFromFirebaseAndSetContact,
+  getContactsFromDatabase,
   addFakeDataOnFirebaseAndReload,
   addContactOnFirebaseAndReload,
   deleteAllDatasOnFirebaseAndReload,

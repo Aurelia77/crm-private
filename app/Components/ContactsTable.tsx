@@ -214,14 +214,12 @@ type ContactsTableProps = {
     handleDeleteContact: (id: string) => void
 
     //setSelectedContactId: (id: string) => void
-    //setContacts: (contacts: Contact[]) => void
 }
 export default function ContactsTable({ contacts, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact
-    //setContacts
 }: ContactsTableProps) {
 
     //console.log("CONTACT TABLE")
-    //console.log("TABLE Contacts = ", contacts)
+    console.log("CONTACT TABLE Contacts = ", contacts)
 
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof Contact>('businessName');

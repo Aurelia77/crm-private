@@ -56,12 +56,12 @@ type UserInfos = {
 };
 
 type Alerts = {
-  nbContactWithDatePassed: number,
-  nbContactWithDateSoon: number,
+  nbContactsWithDatePassed: number,
+  nbContactsWithDateSoon: number,
 }
 
-type SearchContact = {
+type SearchContactCriteria = {
   businessName: string,
-  businessCity: string,
+  businessCity: string[],
   businessType: string[],
 }
