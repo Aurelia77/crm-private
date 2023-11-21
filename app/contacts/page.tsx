@@ -175,20 +175,17 @@ export default function Contacts() {
         getContactsFromDatabase(currentUser).then((contactsList) => {
             setContacts(contactsList);
             setFilteredContacts(contactsList);
+            setAlerts(countContactsByAlertDates(contactsList))
             setLoading(false);
         });
        
     }, [currentUser])
     // }, [currentUser?.uid])
-
- 
-    React.useEffect(() => {
-        console.log("User Effect ALERTES")
-        setAlerts(countContactsByAlertDates(contacts))
-    }, [contacts])
+   
     
     React.useEffect(() => {
         setContacts(filteredContacts)
+        setAlerts(countContactsByAlertDates(filteredContacts))
     }, [filteredContacts])
         
 
@@ -227,8 +224,8 @@ export default function Contacts() {
     }, [
         //emptySearchCriteria,      // Boucle infinie !!! Pourquoi ??? Pourtant sa valeur ne change jamais... 
         contactsSearchCriteria, 
-        //contacts
-    ])      // !!!!!!!!!!!!!!! laisser contact ? car si modif ça peut disparaitre !!!!!!
+        //contacts  
+    ])      // !!!!!!!!!!!!!!! laisser contact ? car si modif ça peut disparaitre !!!!!! NON on ne veut pas ! + boucle infinie !!!
 
 
 
@@ -370,7 +367,7 @@ export default function Contacts() {
                         <Box sx={{ 
                             //marginTop:"40px", 
                             position:"relative"}} >
-                            <Typography variant="h5" component="div" color="warning.main" sx={{ p: 2 }}>Vous avez {alerts.nbContactsWithDatePassed} relance(s) passée(s) <Typography color="primary.main">et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jour(s)</Typography>.</Typography>
+                            <Typography variant="h5" component="div" color="warning.main" sx={{ p: 2 }}>Dans la recherche : {alerts.nbContactsWithDatePassed} relance(s) passée(s) <Typography color="primary.main">et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jour(s)</Typography>.</Typography>
                             <Box sx={{ position:"absolute", right:0, top:0  }} >
                                 <Tooltip title="Ajouter un contact (avec ou sans recherche)" placement="left">
                                     <IconButton aria-label="edit" color="primary" onClick={() => setDisplayNewContactForms(!displayNewContactForms)}>

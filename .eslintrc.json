@@ -1,8 +1,16 @@
 {
-   "extends": "next/core-web-vitals",
+  // "extends": "next/core-web-vitals",
   // Ligne ci-dessus remplacée par la ligne ci-dessous pour éviter l'erreur dans contacts.js
   // Mais erreur dans Vercel donc j'enlève !!!
   //"extends": ["next/babel","next/core-web-vitals"],
+
+  "extends": [
+    "next/core-web-vitals",
+    // Pour les tests, ces 2 lignes (https://www.youtube.com/watch?v=AS79oJ3Fcf0&ab_channel=DaveGray)
+    // + installer : pnpm i -D eslint-plugin-jest-dom eslint-plugin-testing-library
+    "plugin:testing-library/react",
+    "plugin:jest-dom/recommended"
+  ],
 
 
   // Pour ne pas avoir les erreurs ESLINT (pbm déployement Vercel) : https://nextjs.org/docs/pages/building-your-application/configuring/eslint#disabling-rules (car sinon erreur sur Vercel)
