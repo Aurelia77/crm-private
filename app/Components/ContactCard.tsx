@@ -13,7 +13,10 @@ import Edit from '@mui/icons-material/Edit';
 import LocationOn from '@mui/icons-material/LocationOn';
 import { grey } from '@mui/material/colors';
 import Image from 'next/image'
-import { TextField, Stack, Button, FormControl, InputLabel, Select, MenuItem, Autocomplete, Chip, ListItem, List } from '@mui/material'
+import { TextField, Stack, Button, FormControl, InputLabel, MenuItem, Autocomplete, Chip, ListItem, List , OutlinedInput, Checkbox, ListItemText} from '@mui/material'
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+
+
 
 type ContactCardProps = {
     contact: Contact ; 
@@ -23,6 +26,9 @@ type ContactCardProps = {
 export default function ContactCard({ contact, addContact }: ContactCardProps) {
 
     const [contactToAdd, setContactToAdd] = React.useState<Contact>(contact)
+
+    const businessTypes: BusinessType[] = ["", "Camping", "Hôtel", "Congiergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre"];
+
 
     React.useEffect(() => {
         setContactToAdd(contact)    // Sinon quand on clic ne change rien !
@@ -35,6 +41,11 @@ export default function ContactCard({ contact, addContact }: ContactCardProps) {
         setContactToAdd({...contactToAdd, [attribut]: event.target.value })
         // handleUpdateContact({ ...contact, [attribut]: event.target.value })
     }
+    const handleChangeSelectType = (event: SelectChangeEvent) => { 
+        const type: BusinessType = event.target.value as BusinessType       // obligé de mettre as BusinessType car sinon type = string, on peut faire autrement ???
+        setContactToAdd({...contactToAdd, businessType: type })
+    };
+
 
     const findLabelNafCodes = (code: string) => {
         const codesNaf = require('../nafCodes.json');       // donc codesNaf = à ce qu'on a dans nafCodes.json => un tableau d'objets
@@ -65,6 +76,21 @@ export default function ContactCard({ contact, addContact }: ContactCardProps) {
                 <TextField id="outlined-basic" label="Nom de l'entreprise à ajouter aux contacts" variant="outlined" value={contactToAdd.businessName}
                 onChange={handleChangeText("businessName")} />
                 {/* <TextField id="outlined-basic" label="Secteur d'activité" variant="outlined" value={findLabelNafCodes(contactToAdd.businessActivity)} /> */}
+               
+                <FormControl >
+                    <InputLabel id="checkbox-type-label">Type de contact</InputLabel>
+                    <Select
+                        id="checkbox-type-label"
+                        value={contactToAdd.businessType}
+                        //onChange={(e) => handleChangeSelect(e, "businessType")}
+                        onChange={handleChangeSelectType}
+                    >
+                         {businessTypes.map((type) => (
+                            <MenuItem key={type} value={type}>{type}</MenuItem>
+                        ))}                       
+                    </Select>
+                </FormControl>
+
                 <TextField id="outlined-basic" label="Ville" variant="outlined" value={contactToAdd.businessCity} onChange={handleChangeText("businessCity")} />
                 <TextField id="outlined-basic" label="Adresse" variant="outlined" value={contactToAdd.businessAddress} onChange={handleChangeText("businessAddress")} />
                 <TextField id="outlined-basic" label="Téléphone" variant="outlined" value={contactToAdd.businessPhone} onChange={handleChangeText("businessPhone")} />

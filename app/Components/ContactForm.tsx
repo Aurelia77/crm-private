@@ -111,29 +111,6 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
     // const thereIsListToDisplay: boolean = () => !isSearchOnSiret() && resultInseeSearch.length > 0
 
 
-    // const emptyContact: Contact = {     // existe-t-il un moyen de créer un objet avec toutes les valeurs à '' ou 0 sans tout réécrire ???
-    //     id : 0,
-    //     logo : "",
-    //     businessName : "",
-    //     denominationUsuelleEtablissement : [],
-    //     businessActivity : "",
-    //     businessPhone : "", 
-    //     businessEmail :  "",
-    //     businessAddress : "",
-    //     businessWebsite : "", 
-    //     businessCity :  "",
-    //     contactName :  "",
-    //     contactPhone : "", 
-    //     contactEmail : "", 
-    //     contactPosition: "",
-    //     tag: [],
-    //     interestGauge: 0,
-    //     dateOfFirstCall: new Date(0),
-    //     dateOfLastCall: new Date(0),
-    //     dateOfNextCall: new Date(0),
-    //     comments: ""
-    // }
-
     React.useEffect(() => {
         // console.log("***-USEEFFECT-1 QUERY : query", query)
 

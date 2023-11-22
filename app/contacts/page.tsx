@@ -398,7 +398,7 @@ export default function Contacts() {
                                {alerts.nbContactsWithDatePassed} relance(s) passée(s) 
                                 <Typography color="primary.main">
                                     et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jour(s)
-                                </Typography>.
+                                </Typography>
                             </Typography>
                             <Box sx={{ position:"absolute", right:0, top:0  }} >
                                 <Tooltip title="Ajouter un contact (avec ou sans recherche)" placement="left">
