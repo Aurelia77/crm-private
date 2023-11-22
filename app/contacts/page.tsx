@@ -163,9 +163,8 @@ export default function Contacts() {
     const updateContactInContactsAndDB = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
         console.log("updatingContact", id, keyAndValue)
 
-        //setContacts(updateContactsInLocalList(contacts, id, keyAndValue))
+        setContacts(updateContactsInLocalList(contacts, id, keyAndValue))
         setFilteredContacts(updateContactsInLocalList(filteredContacts, id, keyAndValue))
-        //setmoviesList(sortArrayBy(updatedMovies, orderedBy))    
         updatDataOnFirebase(id, keyAndValue)
     }  
    
@@ -185,7 +184,6 @@ export default function Contacts() {
    
     
     React.useEffect(() => {
-        setContacts(filteredContacts)
         setAlerts(countContactsByAlertDates(filteredContacts))
     }, [filteredContacts])
    
@@ -254,8 +252,8 @@ export default function Contacts() {
                     <Box sx={{ display: "flex", justifyContent: "space-around", padding: "10px", border: "solid 3px blue", borderRadius: "10px" }}>
                         <Typography component="div" style={{ display: "block", width: "500px" }} >Pour version d'essai : Pour ajouter des contacts TEST ou tout supprimer : </Typography>
                         <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>Ajouter Contacts Test</Button>
-                        <Button variant="contained" color='primary' sx={{ width:"300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUser, false)}>Supprimer tout mes contacts</Button>
-                        {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatas(true)}>Supprimer toutes les données !!!</Button> */}
+                        <Button variant="contained" color='primary' sx={{ width:"300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUser)}>Supprimer tout mes contacts</Button>
+                        {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer toutes les données !!!</Button> */}
                     </Box>
 
                     {/* /////////////////////// Pour REALTIME DB /////////////////////// */}
@@ -321,7 +319,32 @@ export default function Contacts() {
 
                     : <Box sx={{ marginTop:"2em", position:"relative"}} >
                     
-                        {/* ///////// RECHERCHE DE CONTACTS ///////// */}
+                         {/* ///////// CALENDRIER ///////// */}
+                         <Accordion sx={{ bgcolor: 'ochre.dark', //width:"80%", margin:"auto",
+                            //my: 2
+                        }}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header" >
+                                    Calendrier (cliquer pour ouvrir et pour fermer)
+                                {/* <Typography  //color="secondary.light"
+                                    sx={{ p: 2, borderRadius: 1 }} >Recherche (cliquer pour ouvrir et pour fermer)</Typography> */}
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Paper sx={{ 
+                                    //margin: "2em", 
+                                    padding: "1em", 
+                                    bgcolor: 'ochre.light',
+                                    //position: "relative" 
+                                    }}
+                                >
+                                      <Calendar contacts={contacts} />
+                                </Paper>
+                            </AccordionDetails>
+                        </Accordion>
+                       
+                       {/* ///////// RECHERCHE DE CONTACTS ///////// */}
                         <Accordion sx={{ bgcolor: 'primary.light', //width:"80%", margin:"auto",
                             //my: 2
                         }}>
@@ -347,30 +370,6 @@ export default function Contacts() {
                             </AccordionDetails>
                         </Accordion>
 
-                        {/* ///////// CALENDRIER ///////// */}
-                        <Accordion sx={{ bgcolor: 'ochre.dark', //width:"80%", margin:"auto",
-                            //my: 2
-                        }}>
-                            <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header" >
-                                    Calendrier (cliquer pour ouvrir et pour fermer)
-                                {/* <Typography  //color="secondary.light"
-                                    sx={{ p: 2, borderRadius: 1 }} >Recherche (cliquer pour ouvrir et pour fermer)</Typography> */}
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <Paper sx={{ 
-                                    //margin: "2em", 
-                                    padding: "1em", 
-                                    bgcolor: 'ochre.light',
-                                    //position: "relative" 
-                                    }}
-                                >
-                                      <Calendar contacts={contacts} />
-                                </Paper>
-                            </AccordionDetails>
-                        </Accordion>
                        
 
                         {/* /////////////////////// Pour EFFETS ????? /////////////////////// */}
@@ -381,16 +380,26 @@ export default function Contacts() {
                             <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
                         </Collapse> */}
 
-                        {(JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)) 
-                        ? 
-                        <Typography variant="h5" component="div" sx={{ p: 2 }}>Recherche : {filteredContacts.length} contacts trouvé(s) (sur {contacts.length})</Typography>
-                        : <Typography variant="h5" component="div" sx={{ p: 2 }}>{contacts.length} contacts</Typography>
-                        }                        
+                        <Typography variant="h5" component="div" sx={{ p: 2 }}>
+                            {(JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)) 
+                                ? `Recherche : ${filteredContacts.length} contacts trouvé(s) (sur ${contacts.length})`
+                                : `${contacts.length} contacts`
+                            }                        
+                        </Typography>
 
                         <Box sx={{ 
                             //marginTop:"40px", 
                             position:"relative"}} >
-                            <Typography variant="h5" component="div" color="warning.main" sx={{ p: 2 }}>Dans la recherche : {alerts.nbContactsWithDatePassed} relance(s) passée(s) <Typography color="primary.main">et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jour(s)</Typography>.</Typography>
+                            <Typography variant="h5" component="div" color="warning.main" sx={{ p: 2 }}>
+                                {(JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)) 
+                                    ? " Dans la recherche : "
+                                    : ""
+                                }  
+                               {alerts.nbContactsWithDatePassed} relance(s) passée(s) 
+                                <Typography color="primary.main">
+                                    et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jour(s)
+                                </Typography>.
+                            </Typography>
                             <Box sx={{ position:"absolute", right:0, top:0  }} >
                                 <Tooltip title="Ajouter un contact (avec ou sans recherche)" placement="left">
                                     <IconButton aria-label="edit" color="primary" onClick={() => setDisplayNewContactForms(!displayNewContactForms)}>

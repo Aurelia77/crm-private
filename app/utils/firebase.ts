@@ -202,15 +202,10 @@ const addContactOnFirebaseAndReload = (currentUser: any, contact: Contact) => {
   //window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
 }
 
-const deleteAllDatasOnFirebaseAndReload = (currentUser: any, allAndNotOnlyFromConnectedUser: boolean) => {
-  
-
-  
-
-
+const deleteAllDatasOnFirebaseAndReload = (currentUser: any = null, ) => {
 
   const contactsCollection = collection(fireStoreDb, "contacts");
-  const q = (!allAndNotOnlyFromConnectedUser && currentUser)
+  const q = (currentUser)
     ? query(contactsCollection, where("userId", "==", currentUser.uid))
     : query(contactsCollection);
 
@@ -248,6 +243,24 @@ const deleteAllDatasOnFirebaseAndReload = (currentUser: any, allAndNotOnlyFromCo
   //     });
   // });
 }
+
+const deleteDataOnFirebaseAndReload = (contactId: string) => {
+  const q = query(collection(fireStoreDb, "contacts"), where("id", "==", contactId));
+  getDocs(q).then((querySnapshot) => {
+    const deletePromises = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
+    return Promise.all(deletePromises);
+
+    // 2 lignes ci-dessus au lieu de ça => a l'air de fonctionné à chaque fois... Sinon pas tjs ! (donné par GitCopilot) => Pourtant qu'un seul doc à supprimer donc nécessaire d'avoir Promise.all ????
+    // querySnapshot.forEach((doc) => {
+    //     console.log(doc.data())
+    //     console.log(doc.ref)
+    //     deleteDoc(doc.ref)
+    // })
+  }).then(() => {
+    window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
+  })
+}
+
 
 // const updateContactInContactsAndDB = (updatingContact: Contact) => {     // ou selectedContact
 //     console.log("updatingContact", updatingContact)
@@ -318,22 +331,7 @@ const updatDataOnFirebase = (id: string, keyAndValue: { key: string, value: stri
   })
 }
 
-const deleteDataOnFirebaseAndReload = (contactId: string) => {
-  const q = query(collection(fireStoreDb, "contacts"), where("id", "==", contactId));
-  getDocs(q).then((querySnapshot) => {
-    const deletePromises = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
-    return Promise.all(deletePromises);
 
-    // 2 lignes ci-dessus au lieu de ça => a l'air de fonctionné à chaque fois... Sinon pas tjs ! (donné par GitCopilot) => Pourtant qu'un seul doc à supprimer donc nécessaire d'avoir Promise.all ????
-    // querySnapshot.forEach((doc) => {
-    //     console.log(doc.data())
-    //     console.log(doc.ref)
-    //     deleteDoc(doc.ref)
-    // })
-  }).then(() => {
-    window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
-  })
-}
 
 
 
