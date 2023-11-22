@@ -63,11 +63,11 @@ function getDaysOfNextCallsForMonth(contactsList: Contact[], targetDate: Dayjs) 
                 let businessName = contact.businessName;
                 return nextCallDate?.getMonth() === targetDate.month() && nextCallDate?.getFullYear() === targetDate.year();
             })
-            // .map(contact => contact.dateOfNextCall.getDate()))
-            .map(contact => ({
-              date: contact.dateOfNextCall.getDate(),
-              businessName: contact.businessName
-          }))
+            .map(contact => contact.dateOfNextCall.getDate())
+          //   .map(contact => ({
+          //     date: contact.dateOfNextCall.getDate(),
+          //     businessName: contact.businessName
+          // }))
           )
 
     return contactsList
@@ -75,11 +75,12 @@ function getDaysOfNextCallsForMonth(contactsList: Contact[], targetDate: Dayjs) 
                 let nextCallDate = contact.dateOfNextCall;
                 return nextCallDate?.getMonth() === targetDate.month() && nextCallDate?.getFullYear() === targetDate.year();
             })
-            //.map(contact => contact.dateOfNextCall.getDate())
-            .map(contact => ({
-              date: contact.dateOfNextCall.getDate(),
-              businessName: contact.businessName
-          }))
+            .map(contact => contact.dateOfNextCall.getDate()
+          //   .map(contact => ({
+          //     date: contact.dateOfNextCall.getDate(),
+          //     businessName: contact.businessName
+          // })
+          )
             
 }
 
@@ -101,68 +102,77 @@ const initialValue = dayjs(new Date());
 //dayjs('2022-04-17');
 
 
-interface HighlightedDay {
-  day: number;
-  text: string;
-}
-interface MarkedDayProps extends PickersDayProps<Dayjs> {
-  highlightedDays?: HighlightedDay[];
-}
-function MarkedDay(props: MarkedDayProps) {
-  // function MarkedDay(props: PickersDayProps<Dayjs> & { highlightedDays?: number[] }) {
+// interface HighlightedDay {
+//   day: number;
+//   text: string;
+// }
+// interface MarkedDayProps extends PickersDayProps<Dayjs> {
+//   highlightedDays?: HighlightedDay[];
+// }
+// function MarkedDay(props: MarkedDayProps) {
+//   // function MarkedDay(props: PickersDayProps<Dayjs> & { highlightedDays?: number[] }) {
+// //   const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
+
 //   const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
 
-  const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
-
-  //   const isSelected =
-//     !props.outsideCurrentMonth && highlightedDays.indexOf(props.day.date()) >= 0;
+//   //   const isSelected =
+// //     !props.outsideCurrentMonth && highlightedDays.indexOf(props.day.date()) >= 0;
 
 
-  const highlightedDay = highlightedDays.find(
-    (d) => !outsideCurrentMonth && d.day === day.date()
-  );
+//   const highlightedDay = highlightedDays.find(
+//     (d) => !outsideCurrentMonth && d.day === day.date()
+//   );
 
-  return (
-    <Badge
-//       key={props.day.toString()}
-      key={day.toString()}
-      overlap="circular"
-      //       badgeContent={isSelected ? <NotificationsIcon color='warning' fontSize='small' /> : undefined}
-//     //   badgeContent={isSelected ? '🌚' : undefined}
-      badgeContent={
-        highlightedDay ? (
-          <NotificationsIcon color="warning" fontSize="small" />
-        ) : undefined
-      }
-    >
-      <Tooltip title={highlightedDay?.text || ''}>
-        <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
-      </Tooltip>
-    </Badge>
-  );
-}
 //   return (
 //     <Badge
-//       key={props.day.toString()}
+// //       key={props.day.toString()}
+//       key={day.toString()}
 //       overlap="circular"
-//       badgeContent={isSelected ? <NotificationsIcon color='warning' fontSize='small' /> : undefined}
-//     //   badgeContent={isSelected ? '🌚' : undefined}
+//       //       badgeContent={isSelected ? <NotificationsIcon color='warning' fontSize='small' /> : undefined}
+// //     //   badgeContent={isSelected ? '🌚' : undefined}
+//       badgeContent={
+//         highlightedDay ? (
+//           <NotificationsIcon color="warning" fontSize="small" />
+//         ) : undefined
+//       }
 //     >
-//       <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
+//       <Tooltip title={highlightedDay?.text || ''}>
+//         <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
+//       </Tooltip>
 //     </Badge>
 //   );
 // }
 
+function MarkedDay(props: PickersDayProps<Dayjs> & { highlightedDays?: number[] }) {
+  const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
+
+  const isSelected =
+    !props.outsideCurrentMonth && highlightedDays.indexOf(props.day.date()) >= 0;
+
+  return (
+    <Badge
+      key={props.day.toString()}
+      overlap="circular"
+      badgeContent={isSelected ? <NotificationsIcon color='warning' fontSize='small' /> : undefined}
+    //   badgeContent={isSelected ? '🌚' : undefined}
+    >
+      <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
+    </Badge>
+  );
+}
+
+
 export default function Calendar({contacts}: {contacts: Contact[]}) {
   //const requestAbortController = React.useRef<AbortController | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [highlightedDays, setHighlightedDays] = React.useState<HighlightedDay[]>([]);
+  //const [highlightedDays, setHighlightedDays] = React.useState<HighlightedDay[]>([]);
+  const [highlightedDays, setHighlightedDays] = React.useState([1, 2, 15]);
 
   const fetchHighlightedDays = (date: Dayjs) => {
     //const controller = new AbortController();
     // const daysToHighlight = getDaysOfNextCallsForMonth(fakeContactsData, date)
     // setHighlightedDays(daysToHighlight);
-    //setHighlightedDays(getDaysOfNextCallsForMonth(fakeContactsData, date));
+    setHighlightedDays(getDaysOfNextCallsForMonth(fakeContactsData, date));
     setIsLoading(false);
     // fakeFetch(date, {
     //   signal: controller.signal,
@@ -183,10 +193,7 @@ export default function Calendar({contacts}: {contacts: Contact[]}) {
     // requestAbortController.current = controller;
   };
 
-    React.useEffect(() => {
-        console.log("!!!")
-        getDaysOfNextCallsForMonth(fakeContactsData, dayjs('2023-12-17'))
-    }, [])
+
 
   React.useEffect(() => {
     fetchHighlightedDays(initialValue);
