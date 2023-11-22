@@ -1,5 +1,4 @@
 const contacts : Contact[] = [
-//const contacts = [
     {
         id: "1",
         isClient : true,

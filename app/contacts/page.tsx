@@ -38,6 +38,7 @@ import SearchContactsForm from '../Components/SearchContactsForm';
 import Calendar from '../Components/Calendar';
 
 import fakeContactsData from '../utils/contacts'
+import contactsLaurianeCampings from '../utils/contactsLauriane';
 //import getContacts from '../utils/firebase'
 //import writeContactData from '../utils/firebase'
 //import firebase from 'firebase/app'
@@ -49,6 +50,8 @@ import { getStorage, ref } from "firebase/storage";
 
 import { uid } from 'uid';
 import { Dayjs } from 'dayjs';       // npm install dayjs
+
+import {emptyContact} from '../utils/toolbox'
 
 import { useAuthUserContext } from '../context/UseAuthContext'
 import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
@@ -62,7 +65,7 @@ import Collapse from '@mui/material';
 
 import { unsubscribe } from 'diagnostics_channel';
 
-import { countContactsByAlertDates, updateContactsInLocalList } from '../utils/functionsToolbox';
+import { countContactsByAlertDates, updateContactsInLocalList } from '../utils/toolbox';
 
 
 interface TabPanelProps {
@@ -108,45 +111,18 @@ export default function Contacts() {
     const [loading, setLoading] = React.useState(true)
     const [alerts, setAlerts] = React.useState<Alerts>({ nbContactsWithDatePassed: 0, nbContactsWithDateSoon: 0})
 
-    const emptyContact: Contact = {
-        id: '',
-        isClient: false,
-        logo: '',
-        businessName: '',
-        denominationUsuelleEtablissement: [],
-        businessType: '',
-        businessActivity: '',
-        businessAddress: '',
-        businessWebsite: '',
-        businessPhone: '',
-        businessEmail: '',
-        businessCity: '',
-        contactName: '',
-        contactPhone: '',
-        contactEmail: '',
-        contactPosition: '',
-        hasBeenCalled: 0,
-        hasBeenSentEmailOrMeetUp: 0,
-        filesSent: [],
-        tag: [],
-        interestGauge: null, // Marche ps ???1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, 
-        dateOfFirstCall: null,
-        dateOfLastCall: null,
-        dateOfNextCall: null,
-        comments: '',
-        userId: ''
-    }
-
+    
     const [displayNewContactForms, setDisplayNewContactForms] = React.useState(false)
     
-    const emptySearchCriteria: SearchContactCriteria = {
+     const emptySearchCriteria: SearchContactCriteria = {
         businessName: '',
         businessCity: [],
         businessType: []
     }
     const [contactsSearchCriteria, setContactsSearchCriteria] = React.useState<SearchContactCriteria>(emptySearchCriteria)
     //const [contactsSearchCriteria, setContactsSearchCriteria] = React.useState({})
-
+  
+    const isSearchCriteriaEmpty = JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)
 
     //console.log("PAGE Contacts",contacts)
     //console.log(selectedContact)
@@ -230,7 +206,9 @@ export default function Contacts() {
 
 
     return (
-        <Box sx={{ position:"relative", marginTop:"2em" }}>
+        <Box sx={{ position:"relative", 
+        //marginTop:"2em"
+         }}>
         {/* <React.Fragment sx={{ position:"absolute" }}> */}          
 
             {/* <Image */}
@@ -246,12 +224,13 @@ export default function Contacts() {
             {loading
             ? <Container>Chargement...</Container>
             : currentUser
-                ? <Box sx={{ marginTop:"50px" }} >
+                ? <Box sx={{ marginTop:"20px" }} >
                     
                     {/* /////////////////////// Pour Version ESSAI /////////////////////// */}
                     <Box sx={{ display: "flex", justifyContent: "space-around", padding: "10px", border: "solid 3px blue", borderRadius: "10px" }}>
-                        <Typography component="div" style={{ display: "block", width: "500px" }} >Pour version d'essai : Pour ajouter des contacts TEST ou tout supprimer : </Typography>
+                        <Typography component="div" style={{ display: "block", width: "500px" }} >Version TEST : Ajouter contacts TEST ou TOUT supprimer : </Typography>
                         <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>Ajouter Contacts Test</Button>
+                        <Button variant="contained" color='secondary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping</Button>
                         <Button variant="contained" color='primary' sx={{ width:"300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUser)}>Supprimer tout mes contacts</Button>
                         {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer toutes les données !!!</Button> */}
                     </Box>
@@ -378,28 +357,26 @@ export default function Contacts() {
                         </Fade>
                         <Collapse orientation="horizontal" in={!displayNewContactForms}>
                             <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
-                        </Collapse> */}
-
-                        <Typography variant="h5" component="div" sx={{ p: 2 }}>
-                            {(JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)) 
-                                ? `Recherche : ${filteredContacts.length} contacts trouvé(s) (sur ${contacts.length})`
-                                : `${contacts.length} contacts`
-                            }                        
-                        </Typography>
+                        </Collapse> */}                       
 
                         <Box sx={{ 
-                            //marginTop:"40px", 
+                            marginTop:"20px", 
                             position:"relative"}} >
-                            <Typography variant="h5" component="div" color="warning.main" sx={{ p: 2 }}>
-                                {(JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)) 
-                                    ? " Dans la recherche : "
-                                    : ""
-                                }  
-                               {alerts.nbContactsWithDatePassed} relance(s) passée(s) 
+                            <Box sx={{ display:"flex", alignItems:"center", marginBottom:"10px", }}>
+                                <Typography variant="h5">
+                                    {isSearchCriteriaEmpty
+                                        ? `Recherche : ${filteredContacts.length} contacts trouvé(s) (sur ${contacts.length})`
+                                        : `${contacts.length} contacts : `
+                                    }
+                                </Typography>
+                                <Typography color="warning.main"  sx={{ px: 2 }}>
+                                    {alerts.nbContactsWithDatePassed} relance(s) passée(s)
+                                </Typography>
                                 <Typography color="primary.main">
                                     et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jour(s)
                                 </Typography>
-                            </Typography>
+                            </Box>
+                            
                             <Box sx={{ position:"absolute", right:0, top:0  }} >
                                 <Tooltip title="Ajouter un contact (avec ou sans recherche)" placement="left">
                                     <IconButton aria-label="edit" color="primary" onClick={() => setDisplayNewContactForms(!displayNewContactForms)}>
@@ -407,7 +384,7 @@ export default function Contacts() {
                                         <PersonAddRoundedIcon fontSize="large" />                             
                                         <PersonSearchRoundedIcon fontSize="large" />
                                         <AddIcon fontSize="large" /> */}
-                                        Nouveau contact
+                                        <Typography>Nouveau contact</Typography>
                                         <AddCircleOutlineIcon fontSize="large" />
                                     </IconButton>
                                 </Tooltip>

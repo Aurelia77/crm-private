@@ -1,5 +1,34 @@
 import { Timestamp } from 'firebase/firestore';
+import { uid } from 'uid';
 
+const emptyContact: Contact = {
+    id: uid(),
+    isClient: false,
+    logo: '',
+    businessName: '',
+    denominationUsuelleEtablissement: [],
+    businessType: '',
+    businessActivity: '',
+    businessAddress: '',
+    businessWebsite: '',
+    businessPhone: '',
+    businessEmail: '',
+    businessCity: '',
+    contactName: '',
+    contactPhone: '',
+    contactEmail: '',
+    contactPosition: '',
+    hasBeenCalled: 0,
+    hasBeenSentEmailOrMeetUp: 0,
+    filesSent: [],
+    tag: [],
+    interestGauge: null, // Marche ps ???1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, 
+    dateOfFirstCall: null,
+    dateOfLastCall: null,
+    dateOfNextCall: null,
+    comments: '',
+    userId: ''
+}
 
 const timeStampObjToTimeStamp = (timeStampObj: Timestamp): number => {
     if (timeStampObj) {
@@ -80,6 +109,7 @@ const getUniqueSortedValues = (contacts: Contact[], key: keyof Contact) => {
 
 
 export { 
+    emptyContact,
     timeStampObjToTimeStamp,
     //timeStampToTimeStampObj,
     isDateTimeStampObjPassed,

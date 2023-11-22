@@ -48,7 +48,7 @@ const headCells: readonly Column[] = [               // readonly ???
     { id: 'isClient', label: 'Client ?', minWidth: "7em", },    
     { id: 'dateOfNextCall', label: <Box sx={{ display: 'flex', alignItems: 'center', }}
     ><AccessAlarmRoundedIcon fontSize='large' sx={{ marginRight: "20px" }} />Relance</Box>, minWidth: "13em", },
-    { id: 'logo', label: '', minWidth: "5em", },
+    { id: 'logo', label: 'Logo', minWidth: "5em", },
     { id: 'businessName', label: 'Entreprise', minWidth: "15em", },
     { id: 'contactPhone', label: <CallRoundedIcon fontSize='large' />, minWidth: "15em", },
     { id: 'contactName', label: <AccountCircleRoundedIcon fontSize='large' />, minWidth: "15em",

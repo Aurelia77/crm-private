@@ -1,7 +1,7 @@
 import React from 'react'
 import { FormControl, FormHelperText, Input, InputLabel, TextField, Typography, MenuItem, Checkbox, FormGroup, FormControlLabel, OutlinedInput, ListItemText, Box } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import {getUniqueSortedValues} from '../utils/functionsToolbox';
+import {getUniqueSortedValues} from '../utils/toolbox';
 import contacts from '../utils/contacts';
 
 import Tooltip from '@mui/material/Tooltip';

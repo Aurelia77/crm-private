@@ -21,7 +21,7 @@ type Contact = {
   contactEmail: string,
   contactPosition: string,
   hasBeenCalled: 0 | 1 | 2,       // 0="no" | 1="yes but no answer" | 2="yes and answered",
-  hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3,       // 0="nothing" | 1="email sent" | 2="email sent and received" | 3="met up",
+  hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3,  // 0="nothing" | 1="email sent" | 2="email sent and received" | 3="met up",
   filesSent: File[] | [],
   //fileSent: File | null,
   tag: string[],

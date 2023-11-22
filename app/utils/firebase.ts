@@ -174,6 +174,11 @@ const getContactsFromDatabase = async (currentUser: any) => {
  
 }
 
+
+
+
+
+
 const addFakeDataOnFirebaseAndReload = (currentUser: any, fakeContactsData: Contact[]) => {
   fakeContactsData.map((contact: Contact) => {
     console.log(contact)
@@ -187,20 +192,82 @@ const addFakeDataOnFirebaseAndReload = (currentUser: any, fakeContactsData: Cont
       .catch((error) => { console.error("Error adding document: ", error); });
   })
   //window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données        // n'enregistre pas les données à chaque fois si je le mets ici !!!
-}
+}   
+// PAS DE RELOAD pourtant ça recharge !!!!!!!!!!!!!!!!!!!!!!!!!
 
-const addContactOnFirebaseAndReload = (currentUser: any, contact: Contact) => {
+// const addContactOnFirebase = (currentUser: any, contact: Contact) => {
+//   console.log("add contact", contact)
+//   console.log({ ...contact, id: uid() })
+
+//   return addDoc(collection(fireStoreDb, "contacts"), { ...contact, userId: currentUser?.uid })
+//     .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
+//     .catch((error) => { console.error("Error adding document: ", error); });
+// }
+
+// const addContactOnFirebaseAndReload = async (currentUser: any, contact: Contact) => {
+//   console.log("add contact", contact)
+//   console.log({ ...contact, id: uid() })
+
+//   await addContactOnFirebase(currentUser, contact)
+//   window.location.reload()
+// }
+
+
+
+const addContactOnFirebaseAndReload = async (currentUser: any, contact: Contact) => {
   console.log("add contact", contact)
   console.log({ ...contact, id: uid() })
 
-  addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid(), userId: currentUser?.uid })
-    //addDoc(collection(fireStoreDb, "contacts"), {contact})
-    .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
-    // Ici ou après ?????
-    .then(() => { window.location.reload() })    // On rafraichit => re-render => useEffect avec la lecture des données            
-    .catch((error) => { console.error("Error adding document: ", error); });
+  try {
+    const docRef = await addDoc(collection(fireStoreDb, "contacts"), { ...contact, userId: currentUser?.uid });
+    console.log("Document written with ID: ", docRef.id);
+  } catch (error) {
+    console.error("Error adding document: ", error);
+  }
+
+  console.log("****************//////////////FINI ///////////**********")
+  
   //window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
 }
+
+
+
+// //moi
+// const addContactOnFirebase = async (currentUser: any, contact: Contact) => {
+//   console.log("add contact", contact)
+//   console.log({ ...contact, id: uid() })
+
+//   // addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid(), userId: currentUser?.uid })
+//   try {
+//     const docRef = await addDoc(collection(fireStoreDb, "contacts"), { ...contact, userId: currentUser?.uid });
+//     console.log("Document written with ID: ", docRef.id);
+//   } catch (error) {
+//     console.error("Error adding document: ", error);
+//   }
+//   //window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
+// }
+
+// const addContactOnFirebaseAndReload = async (currentUser: any, contact: Contact) => {
+//   console.log("add contact", contact)
+//   console.log({ ...contact, id: uid() })
+
+//   await addContactOnFirebase(currentUser, contact)
+//   window.location.reload()
+// }
+
+
+
+
+
+
+
+// const addContactOnFirebaseAndReload = (currentUser: any, contact: Contact) => {
+//   console.log("add contact", contact)
+//   console.log({ ...contact, id: uid() })
+
+//   addContactOnFirebase(currentUser, contact)
+//   window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
+// }
 
 const deleteAllDatasOnFirebaseAndReload = (currentUser: any = null, ) => {
 

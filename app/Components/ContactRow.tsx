@@ -72,7 +72,7 @@ import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfi
 import Tooltip from '@mui/material/Tooltip';
 import { timeStamp } from 'console';
 
-import { timeStampObjToTimeStamp } from '../utils/functionsToolbox';
+import { timeStampObjToTimeStamp } from '../utils/toolbox';
 
 
 // Pour les smileys du RATING 

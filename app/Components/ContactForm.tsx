@@ -391,6 +391,19 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
 
 
 
+//     <FormControl >
+//     <InputLabel id="checkbox-type-label">Type de contact</InputLabel>
+//     <Select
+//         id="checkbox-type-label"
+//         value={contactToAdd.businessType}
+//         //onChange={(e) => handleChangeSelect(e, "businessType")}
+//         onChange={handleChangeSelectType}
+//     >
+//         {businessTypes.map((type) => (
+//             <MenuItem key={type} value={type}>{type}</MenuItem>
+//         ))}
+//     </Select>
+// </FormControl>
 
 
     return (
@@ -404,6 +417,8 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
                 {/* {loading
              ? <p>Chargement...</p> 
              : */}
+
+                {/* ////////////////// RECHERCHE ////////////////// */}
                 <FormControl
                     variant='filled'
                     sx={{
@@ -426,7 +441,7 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
                             <TextField type="text" variant='outlined' color='primary' label="Nom" onChange={e => setQuery({ ...query, name: `*${e.target.value.trim().replaceAll(" ", "* AND denominationUniteLegale:*")}*` })}
                                 //value={searchContact.name} // Pas besoin de mettre valeur !!!???
                                 fullWidth />
-                        </Box>
+                        </Box>                     
                         <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                             <LocationCityRoundedIcon sx={{ color: 'action.active', mr: 1, mb: 2 }} />
                             <TextField type="text" variant='outlined' color='primary' label="Ville" onChange={e => setQuery({ ...query, city: `*${e.target.value.trim().replaceAll(" ", "* AND libelleCommuneEtablissement:*")}*` })} fullWidth />
@@ -458,6 +473,7 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
                 {/* } */}
 
 {/* Faire une fonction pour  Object.entries(infosContact).length > 0 => utilisée 2 fois !!!  */}
+                {/* ////////////////// RESULTATS ////////////////// */}
                 {thereIsListToDisplay() &&
                     <Box sx={{ width: Object.entries(infosContact).length > 0 ? "33.33%" : "66.66%", }}
                         //border={2} color='primary.dark' 
@@ -491,6 +507,7 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
                     </Box>
                 }
 
+                {/* ////////////////// Affichage d'UN CONTACT ////////////////// */}
                 {Object.entries(infosContact).length > 0 &&
                     <Box width={thereIsListToDisplay() ? "33.33%" : "50%"} >
                         {/* Est-ce bien de faire ça ci-dessous ? Car sans le "as Contact", memê si je mets ci-dessus la condition "Object.entries(infosContact).length > 0" (ifosContact n'est pas un objet vide, donc selon comme il est typé (Contact | {}) il est forcement de type Contact) => me met un erreur Impossible d'assigner le type '{} | Contact' au type 'Contact'.   */}
