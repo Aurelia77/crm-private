@@ -32,7 +32,6 @@ function fakeFetch(date: Dayjs, { signal }: { signal: AbortSignal }) {
     };
   });
 }
-
 function datesFetchInContacts(contacts: Contact[], date: Dayjs, { signal }: { signal: AbortSignal }) {
   return new Promise<{ daysToHighlight: number[] }>((resolve, reject) => {
       //const daysInMonth = date.daysInMonth();
@@ -52,121 +51,113 @@ function datesFetchInContacts(contacts: Contact[], date: Dayjs, { signal }: { si
   });
 }
 
-function getDaysOfNextCallsForMonth(contactsList: Contact[], targetDate: Dayjs) {
-// function getDaysOfNextCallsForMonth(contactsList: Contact[], targetDate: Dayjs): Promise<{ daysToHighlight: number[] }> {
-    //return Promise.resolve(
-    //return new Promise<{ daysToHighlight: number[] }>((resolve, reject) => {
-    
-        console.log(contactsList
-            .filter(contact => {
-                let nextCallDate = contact.dateOfNextCall;
-                let businessName = contact.businessName;
-                return nextCallDate?.getMonth() === targetDate.month() && nextCallDate?.getFullYear() === targetDate.year();
-            })
-            .map(contact => contact.dateOfNextCall.getDate())
-          //   .map(contact => ({
-          //     date: contact.dateOfNextCall.getDate(),
-          //     businessName: contact.businessName
-          // }))
-          )
-
-    return contactsList
-            .filter(contact => {
-                let nextCallDate = contact.dateOfNextCall;
-                return nextCallDate?.getMonth() === targetDate.month() && nextCallDate?.getFullYear() === targetDate.year();
-            })
-            .map(contact => contact.dateOfNextCall.getDate()
-          //   .map(contact => ({
-          //     date: contact.dateOfNextCall.getDate(),
-          //     businessName: contact.businessName
-          // })
-          )
-            
-}
-
-
-
-// function getDaysOfNextCallsForMonth(contactsList: Contact[], targetDate: Dayjs) {
-//     return contactsList
-//         .filter(contact => {
-//             let nextCallDate = contact.dateOfNextCall;
-//             return nextCallDate?.getMonth() === targetDate.month() && nextCallDate?.getFullYear() === targetDate.year();
-//         })
-//         .map(contact => contact.dateOfNextCall.getDate());
-// }
-
-//console.log(getDaysOfNextCallsForMonth(fakeContactsData, dayjs('2023-12-17')))
 
 
 const initialValue = dayjs(new Date());
 //dayjs('2022-04-17');
 
 
-// interface HighlightedDay {
-//   day: number;
-//   text: string;
-// }
-// interface MarkedDayProps extends PickersDayProps<Dayjs> {
-//   highlightedDays?: HighlightedDay[];
-// }
-// function MarkedDay(props: MarkedDayProps) {
-//   // function MarkedDay(props: PickersDayProps<Dayjs> & { highlightedDays?: number[] }) {
-// //   const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
-
+interface HighlightedDay {
+  date: number;
+  businessName: string;
+}
+interface MarkedDayProps extends PickersDayProps<Dayjs> {
+  highlightedDays?: HighlightedDay[];
+}
+function MarkedDay(props: MarkedDayProps) {
+  // function MarkedDay(props: PickersDayProps<Dayjs> & { highlightedDays?: number[] }) {
 //   const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
 
-//   //   const isSelected =
-// //     !props.outsideCurrentMonth && highlightedDays.indexOf(props.day.date()) >= 0;
+  const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
+
+  //console.log(highlightedDays, day, outsideCurrentMonth, other)
+
+  //   const isSelected =
+//     !props.outsideCurrentMonth && highlightedDays.indexOf(props.day.date()) >= 0;
 
 
-//   const highlightedDay = highlightedDays.find(
-//     (d) => !outsideCurrentMonth && d.day === day.date()
-//   );
+  const highlightedDay = highlightedDays.find(
+    (d) => !outsideCurrentMonth && d.date === day.date()
+  );
+
+  //console.log("highlightedDay", highlightedDay)
+
+  return (
+    <Badge
+//       key={props.day.toString()}
+      key={day.toString()}
+      overlap="circular"
+      //       badgeContent={isSelected ? <NotificationsIcon color='warning' fontSize='small' /> : undefined}
+//     //   badgeContent={isSelected ? '🌚' : undefined}
+      badgeContent={
+        highlightedDay ? (
+          <NotificationsIcon color="warning" fontSize="small" />
+        ) : undefined
+      }
+    >
+      <Tooltip title={highlightedDay?.businessName || ''}>
+        <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
+      </Tooltip>
+    </Badge>
+  );
+}
+// SANS les messages
+// function MarkedDay(props: PickersDayProps<Dayjs> & { highlightedDays?: number[] }) {
+//   const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
+
+//   const isSelected =
+//     !props.outsideCurrentMonth && highlightedDays.indexOf(props.day.date()) >= 0;
 
 //   return (
 //     <Badge
-// //       key={props.day.toString()}
-//       key={day.toString()}
+//       key={props.day.toString()}
 //       overlap="circular"
-//       //       badgeContent={isSelected ? <NotificationsIcon color='warning' fontSize='small' /> : undefined}
-// //     //   badgeContent={isSelected ? '🌚' : undefined}
-//       badgeContent={
-//         highlightedDay ? (
-//           <NotificationsIcon color="warning" fontSize="small" />
-//         ) : undefined
-//       }
+//       badgeContent={isSelected ? <NotificationsIcon color='warning' fontSize='small' /> : undefined}
+//     //   badgeContent={isSelected ? '🌚' : undefined}
 //     >
-//       <Tooltip title={highlightedDay?.text || ''}>
-//         <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
-//       </Tooltip>
+//       <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
 //     </Badge>
 //   );
 // }
 
-function MarkedDay(props: PickersDayProps<Dayjs> & { highlightedDays?: number[] }) {
-  const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
 
-  const isSelected =
-    !props.outsideCurrentMonth && highlightedDays.indexOf(props.day.date()) >= 0;
+function getDaysOfNextCallsForMonth(contactsList: Contact[], targetDate: Dayjs) {
+  // function getDaysOfNextCallsForMonth(contactsList: Contact[], targetDate: Dayjs): Promise<{ daysToHighlight: number[] }> {
+  //return Promise.resolve(
+  //return new Promise<{ daysToHighlight: number[] }>((resolve, reject) => {
+  let daysInMonthAndText: HighlightedDay[]
 
-  return (
-    <Badge
-      key={props.day.toString()}
-      overlap="circular"
-      badgeContent={isSelected ? <NotificationsIcon color='warning' fontSize='small' /> : undefined}
-    //   badgeContent={isSelected ? '🌚' : undefined}
-    >
-      <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
-    </Badge>
-  );
-}
+  daysInMonthAndText = contactsList
+    .filter(contact => {
+      let nextCallDate = contact.dateOfNextCall;
+      return nextCallDate?.getMonth() === targetDate.month() && nextCallDate?.getFullYear() === targetDate.year();
+    })
+    //.map(contact => contact.dateOfNextCall.getDate())
+    .map(contact => ({
+      date: contact.dateOfNextCall.getDate(),
+      businessName: contact.businessName
+    }))
 
+  console.log(daysInMonthAndText)
+  
+  return daysInMonthAndText
+}  
+  // function getDaysOfNextCallsForMonth(contactsList: Contact[], targetDate: Dayjs) {
+  //     return contactsList
+  //         .filter(contact => {
+  //             let nextCallDate = contact.dateOfNextCall;
+  //             return nextCallDate?.getMonth() === targetDate.month() && nextCallDate?.getFullYear() === targetDate.year();
+  //         })
+  //         .map(contact => contact.dateOfNextCall.getDate());
+  // }
+  
+  //console.log(getDaysOfNextCallsForMonth(fakeContactsData, dayjs('2023-12-17')))
 
 export default function Calendar({contacts}: {contacts: Contact[]}) {
   //const requestAbortController = React.useRef<AbortController | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
-  //const [highlightedDays, setHighlightedDays] = React.useState<HighlightedDay[]>([]);
-  const [highlightedDays, setHighlightedDays] = React.useState([1, 2, 15]);
+  const [highlightedDays, setHighlightedDays] = React.useState<HighlightedDay[]>([]);
+  //const [highlightedDays, setHighlightedDays] = React.useState([1, 2, 15]);
 
   const fetchHighlightedDays = (date: Dayjs) => {
     //const controller = new AbortController();
