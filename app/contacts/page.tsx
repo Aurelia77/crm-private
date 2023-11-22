@@ -36,7 +36,6 @@ import SignUp from '../Components/auth/SignUp';
 import AuthDetails from '../Components/AuthDetails';
 import SearchContactsForm from '../Components/SearchContactsForm';
 import Calendar from '../Components/Calendar';
-import Calendar2 from '../Components/Calendar2';
 
 import fakeContactsData from '../utils/contacts'
 //import getContacts from '../utils/firebase'
