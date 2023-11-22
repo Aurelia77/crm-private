@@ -150,7 +150,7 @@ type ContactRowProps = {
 }
 export default function ContactRow({ contact, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, }: ContactRowProps) {
 
-    console.log("CONTACT ROW")
+    //console.log("CONTACT ROW")
     //console.log(alerts.alerts)
 
     const [contactInfo, setContactInfo] = React.useState<Contact>(contact)

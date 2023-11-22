@@ -35,6 +35,8 @@ import SignIn from '../Components/auth/SignIn';
 import SignUp from '../Components/auth/SignUp';
 import AuthDetails from '../Components/AuthDetails';
 import SearchContactsForm from '../Components/SearchContactsForm';
+import Calendar from '../Components/Calendar';
+import Calendar2 from '../Components/Calendar2';
 
 import fakeContactsData from '../utils/contacts'
 //import getContacts from '../utils/firebase'
@@ -149,8 +151,8 @@ export default function Contacts() {
 
     //console.log("PAGE Contacts",contacts)
     //console.log(selectedContact)
-    console.log("contacts", contacts)
-    console.log("filteredContacts", filteredContacts)
+    //console.log("contacts", contacts)
+    //console.log("filteredContacts", filteredContacts)
     //console.log(contactsSearchCriteria)
 
     const { currentUser } = useAuthUserContext()
@@ -170,7 +172,7 @@ export default function Contacts() {
    
 
     React.useEffect(() => { 
-        console.log("User Effect READ")
+        //console.log("User Effect READ")
 
         getContactsFromDatabase(currentUser).then((contactsList) => {
             setContacts(contactsList);
@@ -187,14 +189,10 @@ export default function Contacts() {
         setContacts(filteredContacts)
         setAlerts(countContactsByAlertDates(filteredContacts))
     }, [filteredContacts])
-        
-
-
-
    
 
     React.useEffect(() => {
-        console.log("User Effect RECHERCHE")
+       // console.log("User Effect RECHERCHE")
         
         //if (contactsSearchCriteria && (contactsSearchCriteria?.businessName !== '' || contactsSearchCriteria.businessCity !== '' || contactsSearchCriteria.businessType.length > 0)) {      // metre diff de empty !!!!!!!!!!
         if (JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)) {        
@@ -236,7 +234,7 @@ export default function Contacts() {
 
     return (
         <Box sx={{ position:"relative", marginTop:"2em" }}>
-        {/* <React.Fragment sx={{ position:"absolute" }}> */}
+        {/* <React.Fragment sx={{ position:"absolute" }}> */}          
 
             {/* <Image */}
             <Typography variant="h3" component="h1" sx={{ 
@@ -322,8 +320,9 @@ export default function Contacts() {
                         <Button variant="contained" color="secondary" onClick={() => setDisplayNewContactForms(!displayNewContactForms)}>Tableau des contacts</Button>
                     </Box>
 
-                    // {/* ///////// RECHERCHE DE CONTACTS ///////// */}
                     : <Box sx={{ marginTop:"2em", position:"relative"}} >
+                    
+                        {/* ///////// RECHERCHE DE CONTACTS ///////// */}
                         <Accordion sx={{ bgcolor: 'primary.light', //width:"80%", margin:"auto",
                             //my: 2
                         }}>
@@ -345,6 +344,31 @@ export default function Contacts() {
                                 >
                                     <SearchContactsForm onSearchChange={setContactsSearchCriteria} emptySearchCriteria = {emptySearchCriteria} />                                   
                                     {/* <Typography variant="h5" component="div" sx={{ p: 2 }}>{filteredContacts.length} contacts trouvés (sur {contacts.length})</Typography> */}
+                                </Paper>
+                            </AccordionDetails>
+                        </Accordion>
+
+                        {/* ///////// CALENDRIER ///////// */}
+                        <Accordion sx={{ bgcolor: 'ochre.dark', //width:"80%", margin:"auto",
+                            //my: 2
+                        }}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header" >
+                                    Calendrier (cliquer pour ouvrir et pour fermer)
+                                {/* <Typography  //color="secondary.light"
+                                    sx={{ p: 2, borderRadius: 1 }} >Recherche (cliquer pour ouvrir et pour fermer)</Typography> */}
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Paper sx={{ 
+                                    //margin: "2em", 
+                                    padding: "1em", 
+                                    bgcolor: 'ochre.light',
+                                    //position: "relative" 
+                                    }}
+                                >
+                                      <Calendar contacts={contacts} />
                                 </Paper>
                             </AccordionDetails>
                         </Accordion>

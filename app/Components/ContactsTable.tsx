@@ -219,7 +219,7 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
 }: ContactsTableProps) {
 
     //console.log("CONTACT TABLE")
-    console.log("CONTACT TABLE Contacts = ", contacts)
+    //console.log("CONTACT TABLE Contacts = ", contacts)
 
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof Contact>('businessName');

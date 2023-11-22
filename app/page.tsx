@@ -6,6 +6,7 @@ import { styled } from '@mui/material/styles';
 import Button, { ButtonProps } from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { purple } from '@mui/material/colors';
+import { useTheme } from '@mui/material/styles';
 
 
 
@@ -18,22 +19,25 @@ const PurpleButton = styled(Button)<ButtonProps>(({ theme }) => ({
 }));
 
 export default function Home() {
+  const muiTheme = useTheme();
+  console.log("muiTheme", muiTheme)
+
   return (
-    <div>     
-       <input type='button' value='Contacts' onClick={() => {window.location.href = '/contacts'}} />
-       <Button variant="contained" href= '/'>CRM</Button>
-    </div>
-      // <Stack spacing={2} direction="row" justifyContent="center" marginTop={20} >     
-      //   {/* <Button variant="contained" href= '/contacts'>Contacts</Button> */}
-      //   <PurpleButton 
-      //     variant="contained"
-      //     href= '/contacts'>
-      //     Contacts
-      //   </PurpleButton>
-      //   <Button variant="contained" href= '/'>CRM</Button>
-      //   <Button variant="contained" color="secondary"  href= '/testPages/testUseEffectPage' >Test Page</Button>
-      //   <Button variant="contained" color="ochre" href= '/testPages/testAutocompletePage'>Autocomplete</Button> 
-      //   <Button variant="contained" color="primary" href= '/testPages/testTableSortLabel'>TestTableSortLabel OK</Button>
-      // </Stack>      
+    // <div>     
+    //    <input type='button' value='Contacts' onClick={() => {window.location.href = '/contacts'}} />
+    //    <Button variant="contained" href= '/'>CRM</Button>
+    // </div>
+      <Stack spacing={2} direction="row" justifyContent="center" marginTop={20} >     
+        {/* <Button variant="contained" href= '/contacts'>Contacts</Button> */}
+        <PurpleButton 
+          variant="contained"
+          href= '/contacts'>
+          Contacts
+        </PurpleButton>
+        {/* <Button variant="contained" href= '/calendar'>Calendrier</Button> */}
+        <Button variant="contained" color="secondary"  href= '/testPages/testUseEffectPage' >Test Page</Button>
+        <Button variant="contained" color="ochre" href= '/testPages/testAutocompletePage'>Autocomplete</Button> 
+        <Button variant="contained" color="primary" href= '/testPages/testTableSortLabel'>TestTableSortLabel OK</Button>
+      </Stack>      
   )
 }

@@ -1,22 +1,4 @@
-
-// // import {render, screen, fireEvent} from '@testing-library/react'
-// // import userEvent from '@testing-library/user-event'
-
-
-// // import "@testing-library/jest-dom";
-// // import { fireEvent, render, screen } from "@testing-library/react";
-// // import Home from '../app/page'
-// // import { describe, it } from "node:test";
-// // // import { describe, expect, test } from '@jest/globals';
-
-
-// // describe('Home', () => {
-// //     it('renders buttons', () => {
-// //         render(<Home />)
-// //         const button = screen.getByText('Contacts')
-// //         expect(button).toBeInTheDocument()
-// //     })
-// // })
+// J'ai laissé tomber les TESTS après 8h passé dessus => pbm avec MuiProviders =>  console.error  Error: Uncaught [TypeError: Cannot read properties of null (reading 'useContext')]    ==> Sans MuiProviders ça marche ! 
 
 // // LAYOUTChat copilot
 import { render, screen } from '@testing-library/react';
@@ -27,6 +9,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 import MuiProviders from '../app/Components/MuiProviders';
 
+// Fonctionne seulement si j'enlève MuiProviders dans le layout
 describe('RootLayout', () => {
   test('renders children correctly', () => {
     const testId = 'child-component';
@@ -34,15 +17,15 @@ describe('RootLayout', () => {
         <RootLayout>
           <div data-testid={testId}>Test Child</div>
         </RootLayout>
-        ,{
-        wrapper: MuiProviders
-      }
+      //   ,{
+      //   wrapper: MuiProviders
+      // }
     );
     const childComponent = screen.getByTestId(testId);
     expect(childComponent).toBeInTheDocument();
   });
 });
-
+// ERREUR : TypeError: Cannot read properties of null (reading 'useContext')
 describe('Home', () => {
   test('renders Contacts button', () => {
     render(
@@ -57,6 +40,9 @@ describe('Home', () => {
     expect(linkElement).toBeInTheDocument();
   });
 });
+
+
+
 
 
 // import { render, screen } from '@testing-library/react';

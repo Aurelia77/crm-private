@@ -9,7 +9,7 @@ type Contact = {
   businessName: string,
   denominationUsuelleEtablissement: string[],
   businessType: BusinessType,
-  interestGauge: number | null, // Marche ps ???1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, 
+  interestGauge: 1 | 2 | 3 | 4 | 5 | null, // Marche ps ???1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, 
   businessActivity: string,
   businessAddress: string,
   businessWebsite: string,
