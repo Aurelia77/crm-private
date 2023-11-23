@@ -98,11 +98,11 @@ export default function Calendar({contacts}: {contacts: Contact[]}) {
 
   const [dateToSeeOnTheCalendar, setDateToSeeOnTheCalendar] = React.useState<Dayjs>(dayjs(new Date())) // today
 
-  const [contactsToCallThisDay, setContactsToCallThisDay] = React.useState<string>("")
+  const [contactsToCallThisDay, setContactsToCallThisDay] = React.useState<HighlightedDay[]>([])
  
   
   //console.log(contacts)
-  //console.log(highlightedDays)
+  console.log(highlightedDays)
   //console.log("dateToSeeOnTheCalendar", dateToSeeOnTheCalendar)
  
   // const fetchHighlightedDays = (contacts: Contact[], date: Dayjs) => {
@@ -154,17 +154,21 @@ export default function Calendar({contacts}: {contacts: Contact[]}) {
   //     !props.outsideCurrentMonth && highlightedDays.indexOf(props.day.date()) >= 0;
   
   
-    const highlightedDay = highlightedDays.find(
-      (d) => {
-        // console.log("d.date", d.date)
-        // console.log("d.date", d.date.getDate())
-        // console.log("day.date()", day.date())
-        return !outsideCurrentMonth && d.date.getDate() === day.date()
-      }
-    );
+    // const highlightedDay = highlightedDays.find(
+    //   (d) => {
+    //     // console.log("d.date", d.date)
+    //     // console.log("d.date", d.date.getDate())
+    //     // console.log("day.date()", day.date())
+    //     return !outsideCurrentMonth && d.date.getDate() === day.date()
+    //   }
+    // );
+    const highlightedDayAndBusinessName: HighlightedDay[] = highlightedDays.filter(d => 
+      !outsideCurrentMonth && d.date.getDate() === day.date()
+    )
+
   
   
-    //console.log("highlightedDay", highlightedDay)
+    console.log("highlightedDay", highlightedDayAndBusinessName)
   
     return (
       <Badge
@@ -174,16 +178,17 @@ export default function Calendar({contacts}: {contacts: Contact[]}) {
         // badgeContent={isSelected ? <NotificationsIcon color='warning' fontSize='small' /> : undefined}
         // badgeContent={isSelected ? '🌚' : undefined}
         badgeContent={
-          highlightedDay 
+          highlightedDayAndBusinessName.length > 0 
             ? 
             // <NotificationsIcon color="warning" fontSize="small" /> 
-            <Tooltip title={highlightedDay?.businessName}>
+            // <Tooltip title={highlightedDayAndBusinessName?.businessName}     /////////////////////// ????????????
+            // >
               <IconButton //color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
-                onClick={() => setContactsToCallThisDay(highlightedDay?.businessName)} >
+                onClick={() => setContactsToCallThisDay(highlightedDayAndBusinessName)} >
                 {/* onClick={() => setContactsToCallThisDay(highlightedDay?.businessName || "")} > */}
                 <NotificationsIcon color="warning" fontSize="small" />
               </IconButton>
-            </Tooltip>
+            // </Tooltip>
            : undefined
         }
              
@@ -259,10 +264,20 @@ export default function Calendar({contacts}: {contacts: Contact[]}) {
             } as any,
           }}
         />
-        <Box sx={{ border: '1px solid #CCC', p: 2, ml: 2, width: 300 }} >
-          <Typography variant="body2" sx={{ mt: 2 }}>
-            {contactsToCallThisDay}
+        <Box sx={{ border: '1px solid #CCC', p: 2, ml: 2, width: 300 }} >          
+          <Typography align="center" sx={{ mb: 2, }} >
+           {/* {contactsToCallThisDay[0].date.toLocaleDateString()} */}
+            {/* {contactsToCallThisDay[0].date.toLocaleString('default', { month: 'long' })}  */}
+            {contactsToCallThisDay[0].date.toLocaleString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
+          </Typography> 
+          <Typography sx={{ mb: 2, color: 'primary.main', fontWeight: 700 }} >
+            Contact(s) à appeler ce jour
           </Typography>
+          {contactsToCallThisDay.map((contact, index) => (
+            <Typography key={index} variant="body2" sx={{ mt: 2 }} >
+              {contact.businessName}
+            </Typography>
+          ))}
         </Box>
     </Box>
   );
