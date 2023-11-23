@@ -318,7 +318,11 @@ export default function Contacts() {
                                     //position: "relative" 
                                     }}
                                 >
-                                      <Calendar contacts={contacts} />
+                                      <Calendar 
+                                        //contacts={fakeContactsData}
+                                        //contacts={filteredContacts}   // ????????? 
+                                        contacts={contacts}         
+                                      />
                                 </Paper>
                             </AccordionDetails>
                         </Accordion>

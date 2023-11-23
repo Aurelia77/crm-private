@@ -515,7 +515,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             //label="Date de relance"
                             //ampm={false}          // Si on met TIME aussi
                             // format="DD/MM/YYYY HH:mm"
-                            format="DD/MM/YYYY"
+                            format="DD MMM YYYY"
 
                             //minDate={dayjs(new Date())}   // à remettre !!!!!!!!!!!
 
@@ -894,6 +894,34 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         </React.Fragment>
                     ))}
                 </Typography>
+            </StyledTableCell>
+
+            {/* dateOfFirstCall */}
+            <StyledTableCell >  
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <Container>
+                        <Box sx={{
+                            display: "flex",
+                            justifyContent: "end", 
+                            marginBottom: "10px"
+                        }}>
+                            <Tooltip title="Supprimer la date">
+                                <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
+                                    onClick={() => handleChangeDate(null, "dateOfFirstCall")} >
+                                    <ClearIcon
+                                    //color='warning'
+                                    />
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
+                        <DatePicker
+                            //format="DD/MM/YYYY"
+                            format="DD MMM YYYY"
+                            value={contact.dateOfFirstCall !== null ? dayjs(contact.dateOfFirstCall.toDate()) : null}
+                            onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfFirstCall")}
+                        />
+                    </ Container>
+                </LocalizationProvider>
             </StyledTableCell>
 
             {/* type */}

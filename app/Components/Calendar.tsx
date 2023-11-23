@@ -10,9 +10,6 @@ import { DayCalendarSkeleton } from '@mui/x-date-pickers/DayCalendarSkeleton';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Tooltip from '@mui/material/Tooltip';
 
-import fakeContactsData from '../utils/contacts'
-
-
 function getRandomNumber(min: number, max: number) {
   return Math.round(Math.random() * (max - min) + min);
 }
@@ -53,12 +50,9 @@ function datesFetchInContacts(contacts: Contact[], date: Dayjs, { signal }: { si
 
 
 
-const initialValue = dayjs(new Date());
-//dayjs('2022-04-17');
-
 
 interface HighlightedDay {
-  date: number;
+  date: Date;
   businessName: string;
 }
 interface MarkedDayProps extends PickersDayProps<Dayjs> {
@@ -70,6 +64,10 @@ function MarkedDay(props: MarkedDayProps) {
 
   const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
 
+  //console.log("highlightedDays", highlightedDays)
+  //console.log("day", day)
+
+
   //console.log(highlightedDays, day, outsideCurrentMonth, other)
 
   //   const isSelected =
@@ -77,10 +75,15 @@ function MarkedDay(props: MarkedDayProps) {
 
 
   const highlightedDay = highlightedDays.find(
-    (d) => !outsideCurrentMonth && d.date === day.date()
+    (d) => {
+      // console.log("d.date", d.date)
+      // console.log("d.date", d.date.getDate())
+      // console.log("day.date()", day.date())
+      return !outsideCurrentMonth && d.date.getDate() === day.date()
+    }
   );
 
-  //console.log("highlightedDay", highlightedDay)
+  console.log("highlightedDay", highlightedDay)
 
   return (
     <Badge
@@ -127,14 +130,17 @@ function getDaysOfNextCallsForMonth(contactsList: Contact[], targetDate: Dayjs) 
   //return new Promise<{ daysToHighlight: number[] }>((resolve, reject) => {
   let daysInMonthAndText: HighlightedDay[]
 
+  //console.log(contactsList)
+  console.log("targetDate", targetDate)
+
   daysInMonthAndText = contactsList
     .filter(contact => {
-      let nextCallDate = contact.dateOfNextCall;
+      const nextCallDate = contact.dateOfNextCall?.toDate()   // => on tranforme le ObjectTimestamp en Date
       return nextCallDate?.getMonth() === targetDate.month() && nextCallDate?.getFullYear() === targetDate.year();
     })
     //.map(contact => contact.dateOfNextCall.getDate())
     .map(contact => ({
-      date: contact.dateOfNextCall.getDate(),
+      date: contact.dateOfNextCall.toDate() ,
       businessName: contact.businessName
     }))
 
@@ -155,16 +161,25 @@ function getDaysOfNextCallsForMonth(contactsList: Contact[], targetDate: Dayjs) 
 
 export default function Calendar({contacts}: {contacts: Contact[]}) {
   //const requestAbortController = React.useRef<AbortController | null>(null);
-  const [isLoading, setIsLoading] = React.useState(false);
+  //const [isLoading, setIsLoading] = React.useState(false);
   const [highlightedDays, setHighlightedDays] = React.useState<HighlightedDay[]>([]);
-  //const [highlightedDays, setHighlightedDays] = React.useState([1, 2, 15]);
 
-  const fetchHighlightedDays = (date: Dayjs) => {
+  const [dateToSeeOnTheCalendar, setDateToSeeOnTheCalendar] = React.useState<Dayjs>(dayjs(new Date())) // today
+
+  console.log("dateToSeeOnTheCalendar", dateToSeeOnTheCalendar)
+
+
+  console.log(contacts)
+  console.log(highlightedDays)
+ 
+  const fetchHighlightedDays = (contacts: Contact[], date: Dayjs) => {
     //const controller = new AbortController();
     // const daysToHighlight = getDaysOfNextCallsForMonth(fakeContactsData, date)
     // setHighlightedDays(daysToHighlight);
-    setHighlightedDays(getDaysOfNextCallsForMonth(fakeContactsData, date));
-    setIsLoading(false);
+
+    console.log(contacts)
+    setHighlightedDays(getDaysOfNextCallsForMonth(contacts, date));
+    //setIsLoading(false);
     // fakeFetch(date, {
     //   signal: controller.signal,
     // })
@@ -187,27 +202,33 @@ export default function Calendar({contacts}: {contacts: Contact[]}) {
 
 
   React.useEffect(() => {
-    fetchHighlightedDays(initialValue);
+    console.log(contacts)
+    fetchHighlightedDays(contacts, dateToSeeOnTheCalendar);
     // abort request on unmount
     //return () => requestAbortController.current?.abort();
-  }, []);
+  }, [contacts, dateToSeeOnTheCalendar]);
 
   const handleMonthChange = (date: Dayjs) => {
+    console.log("date", date)
     //if (requestAbortController.current) {
       // make sure that you are aborting useless requests
       // because it is possible to switch between months pretty quickly
     //  requestAbortController.current.abort();
     //}
-    setIsLoading(true);
+    //setIsLoading(true);
+
+    setDateToSeeOnTheCalendar(date)
+
     setHighlightedDays([]);
-    fetchHighlightedDays(date);
+    fetchHighlightedDays(contacts, date);
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateCalendar
-        defaultValue={initialValue}
-        loading={isLoading}
+        //defaultValue={dateToSeeOnTheCalendar} // seulement si cette valeur ne change jamais => ici : erreur : MUI: A component is changing the default value state of an uncontrolled DateCalendar after being initialized.
+        value={dateToSeeOnTheCalendar}
+        //loading={isLoading}
         onMonthChange={handleMonthChange}
         renderLoading={() => <DayCalendarSkeleton />}
         slots={{
