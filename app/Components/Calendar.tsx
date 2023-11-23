@@ -268,13 +268,15 @@ export default function Calendar({contacts}: {contacts: Contact[]}) {
           <Typography align="center" sx={{ mb: 2, }} >
            {/* {contactsToCallThisDay[0].date.toLocaleDateString()} */}
             {/* {contactsToCallThisDay[0].date.toLocaleString('default', { month: 'long' })}  */}
-            {contactsToCallThisDay[0].date.toLocaleString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
+            {contactsToCallThisDay[0] && contactsToCallThisDay[0].date.toLocaleString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
           </Typography> 
           <Typography sx={{ mb: 2, color: 'primary.main', fontWeight: 700 }} >
             Contact(s) à appeler ce jour
           </Typography>
           {contactsToCallThisDay.map((contact, index) => (
-            <Typography key={index} variant="body2" sx={{ mt: 2 }} >
+            <Typography key={index} variant="body2" sx={{ mt: 2 }} 
+              //onClick={() => console.log("contact", contact) }            
+            >
               {contact.businessName}
             </Typography>
           ))}
