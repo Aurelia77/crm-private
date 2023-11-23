@@ -7,16 +7,12 @@ import UserAuthContextProvider from './context/UseAuthContext';
 import MuiProviders from './Components/MuiProviders';
 import { ErrorBoundary } from 'react-error-boundary'// + pnpm install --save react-error-boundary
 
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+
 
 
 //import { makeStyles } from '@mui/styles';     // npm install @mui/styles
-
-
-
-
-
-
-
 
 
 
@@ -57,7 +53,10 @@ export default function RootLayout({
         )}>
           <MuiProviders>
             <UserAuthContextProvider>
-              {children}
+               {/* The general recommendation is to declare the LocalizationProvider once, wrapping your entire application. Then, you don't need to repeat the boilerplate code for every Date and Time Picker in your application. */}
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                {children}
+              </LocalizationProvider>
             </UserAuthContextProvider>
           </MuiProviders>
         </ErrorBoundary>

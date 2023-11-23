@@ -6,8 +6,6 @@ import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutl
 // Pour le DATE PICKER => npm install @mui/x-date-pickers
 import dayjs, { Dayjs } from 'dayjs';       // npm install dayjs
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { MuiFileInput } from 'mui-file-input'
@@ -474,8 +472,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 />
             </StyledTableCell>
 
-            {/* dateOfNextCall */}
-            {/* The general recommendation is to declare the LocalizationProvider once, wrapping your entire application. Then, you don't need to repeat the boilerplate code for every Date and Time Picker in your application. */}
+            {/* dateOfNextCall */}           
             <StyledTableCell
                 style={{
                     backgroundColor: isDatePassed(contact.dateOfNextCall)
@@ -492,52 +489,53 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     //sx={{ color: pink[800] }} 
                     fontSize='large' />}
 
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <Container
-                    //components={['DateTimePicker']}       // ???
-                    >
-                        <Box sx={{
-                            display: "flex",
-                            justifyContent: "end",           //"space-between", 
-                            marginBottom: "10px"
-                        }}> {/* Sinon on pouvait mettre un float:right sur le bouton ci-dessous */}
-                            {/* <NotificationsNoneOutlinedIcon sx={{ color: pink[800] }} /> */}
-                            <Tooltip title="Supprimer la date">
-                                <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
-                                    onClick={() => handleChangeDate(null, "dateOfNextCall")} >
-                                    <ClearIcon
-                                    //color='warning'
-                                    />
-                                </IconButton>
-                            </Tooltip>
-                        </Box>
-                        <DatePicker
-                            // <DateTimePicker
-                            //defaultValue={null}
-                            //label="Date de relance"
-                            //ampm={false}          // Si on met TIME aussi
-                            // format="DD/MM/YYYY HH:mm"
-                            format="DD MMM YYYY"
+ {/* The general recommendation is to declare the LocalizationProvider once, wrapping your entire application. Then, you don't need to repeat the boilerplate code for every Date and Time Picker in your application. */}
+                {/* <LocalizationProvider dateAdapter={AdapterDayjs}> */}
+                <Container
+                //components={['DateTimePicker']}       // ???
+                >
+                    <Box sx={{
+                        display: "flex",
+                        justifyContent: "end",           //"space-between", 
+                        marginBottom: "10px"
+                    }}> {/* Sinon on pouvait mettre un float:right sur le bouton ci-dessous */}
+                        {/* <NotificationsNoneOutlinedIcon sx={{ color: pink[800] }} /> */}
+                        <Tooltip title="Supprimer la date">
+                            <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
+                                onClick={() => handleChangeDate(null, "dateOfNextCall")} >
+                                <ClearIcon
+                                //color='warning'
+                                />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                    <DatePicker
+                        // <DateTimePicker
+                        //defaultValue={null}
+                        //label="Date de relance"
+                        //ampm={false}          // Si on met TIME aussi
+                        // format="DD/MM/YYYY HH:mm"
+                        format="DD MMM YYYY"
 
-                            //minDate={dayjs(new Date())}   // à remettre !!!!!!!!!!!
+                        //minDate={dayjs(new Date())}   // à remettre !!!!!!!!!!!
 
-                            // viewRenderers={{  hours: renderTimeViewClock,
-                            //     minutes: renderTimeViewClock,
-                            //     seconds: renderTimeViewClock, }}
-                            //value={dayjs(contact.dateOfNextCall)}   // => Avant FIREBASE ça fonctionnait avec ça (car FIREBASE transforme les dates en objet Timestamp(?))
-                            //{dayjs(new Date("01/01/2000"))}
-                            //value={dayjs(contact.dateOfNextCall.toDate())}        // Erreur si date = null
-                            //value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : undefined}  // Si on met UNDEFINED =>  A component is changing the uncontrolled value of a picker to be controlled. Elements should not switch from uncontrolled to controlled (or vice versa). It's considered controlled if the value is not `undefined`.
-                            // Impossible de mettre une date vide ???
-                            //value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : dayjs(new Date("01/01/2023"))}
-                            value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : null}
-                            onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfNextCall")}
-                            slotProps={{
-                                //textField: { variant: 'standard', }       // Fait quoi ?
-                            }}
-                        />
-                    </ Container>
-                </LocalizationProvider>
+                        // viewRenderers={{  hours: renderTimeViewClock,
+                        //     minutes: renderTimeViewClock,
+                        //     seconds: renderTimeViewClock, }}
+                        //value={dayjs(contact.dateOfNextCall)}   // => Avant FIREBASE ça fonctionnait avec ça (car FIREBASE transforme les dates en objet Timestamp(?))
+                        //{dayjs(new Date("01/01/2000"))}
+                        //value={dayjs(contact.dateOfNextCall.toDate())}        // Erreur si date = null
+                        //value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : undefined}  // Si on met UNDEFINED =>  A component is changing the uncontrolled value of a picker to be controlled. Elements should not switch from uncontrolled to controlled (or vice versa). It's considered controlled if the value is not `undefined`.
+                        // Impossible de mettre une date vide ???
+                        //value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : dayjs(new Date("01/01/2023"))}
+                        value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : null}
+                        onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfNextCall")}
+                        slotProps={{
+                            //textField: { variant: 'standard', }       // Fait quoi ?
+                        }}
+                    />
+                </ Container>
+                {/* </LocalizationProvider> */}
                 {/* {contact.dateOfNextCall.toLocaleDateString()} {contact.dateOfNextCall.getHours().toString().padStart(2, '0')}:{contact.dateOfNextCall.getMinutes().toString().padStart(2, '0')} */}
             </StyledTableCell>
 
@@ -900,30 +898,28 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
             {/* dateOfFirstCall */}
             <StyledTableCell >  
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <Container>
-                        <Box sx={{
-                            display: "flex",
-                            justifyContent: "end", 
-                            marginBottom: "10px"
-                        }}>
-                            <Tooltip title="Supprimer la date">
-                                <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
-                                    onClick={() => handleChangeDate(null, "dateOfFirstCall")} >
-                                    <ClearIcon
-                                    //color='warning'
-                                    />
-                                </IconButton>
-                            </Tooltip>
-                        </Box>
-                        <DatePicker
-                            //format="DD/MM/YYYY"
-                            format="DD MMM YYYY"
-                            value={contact.dateOfFirstCall !== null ? dayjs(contact.dateOfFirstCall.toDate()) : null}
-                            onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfFirstCall")}
-                        />
-                    </ Container>
-                </LocalizationProvider>
+                <Container>
+                    <Box sx={{
+                        display: "flex",
+                        justifyContent: "end", 
+                        marginBottom: "10px"
+                    }}>
+                        <Tooltip title="Supprimer la date">
+                            <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
+                                onClick={() => handleChangeDate(null, "dateOfFirstCall")} >
+                                <ClearIcon
+                                //color='warning'
+                                />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                    <DatePicker
+                        //format="DD/MM/YYYY"
+                        format="DD MMM YYYY"
+                        value={contact.dateOfFirstCall !== null ? dayjs(contact.dateOfFirstCall.toDate()) : null}
+                        onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfFirstCall")}
+                    />
+                </ Container>
             </StyledTableCell>
 
             {/* type */}
