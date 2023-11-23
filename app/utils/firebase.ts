@@ -397,6 +397,35 @@ const updatDataOnFirebase = (id: string, keyAndValue: { key: string, value: stri
     })
   })
 }
+const updatDataWholeContactOnFirebase = (contactToUpdate: Contact) => {
+  // const contactToUpdateRef = doc(fireStoreDb, "contacts", id);
+  // console.log(contactToUpdateRef)
+
+  // // Set the "capital" field of the city 'DC'
+  // updateDoc(contactToUpdateRef, {
+  //     [keyAndValue.key]: keyAndValue.value
+  // });
+  const q = query(collection(fireStoreDb, "contacts"), where("id", "==", contactToUpdate.id));
+
+  getDocs(q).then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {        // besoin du FOREACH alors qu'il n'y en a qu'un ???
+      //console.log(doc.data())
+      //console.log(doc.ref)
+      //console.log(doc.id)
+     // console.log("FIREBASE", keyAndValue.key, keyAndValue.value)
+      //docID = doc.id;
+
+      updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
+        ...contactToUpdate
+        });
+
+      // updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
+      //   [keyAndValue.key]: keyAndValue.value
+      // });
+      //set(doc.ref, updatingContact)
+    })
+  })
+}
 
 
 
@@ -421,6 +450,7 @@ export {
   addContactOnFirebaseAndReload,
   deleteAllDatasOnFirebaseAndReload,
   updatDataOnFirebase,
+  updatDataWholeContactOnFirebase,
   deleteDataOnFirebaseAndReload
 
 }

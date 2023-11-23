@@ -147,8 +147,9 @@ type ContactRowProps = {
     handleUpdateContact: (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => void   // obligé de mettre NULL pour la date ! (???)
     //handleUpdateContact: (contact: Contact) => void
     handleDeleteContact: () => void
+    diplayContactCard: (contact: Contact) => void
 }
-export default function ContactRow({ contact, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, }: ContactRowProps) {
+export default function ContactRow({ contact, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, diplayContactCard}: ContactRowProps) {
 
     //console.log("CONTACT ROW")
     //console.log(alerts.alerts)
@@ -456,6 +457,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             key={contact.id} selected={selectedContactId === contact.id ? true : false}
             //className={selectedContactId === contact.id ? 'tableRowSelected bg-cyan-400 ' : 'bg-yellow-200'}      // CYAN ne s'affiche pas, mais jaune oui
             onClick={() => setSelectedContact(contact)}
+            onDoubleClick={() => diplayContactCard(contact)}
             style={{
                 //backgroundColor: contact.isClient ? muiTheme.palette.primary.light : muiTheme.palette.ochre.light 
                 //color: "blue" //contact.isClient ? "primary.main" : "secondary.main"

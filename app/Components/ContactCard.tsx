@@ -20,12 +20,15 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 type ContactCardProps = {
     contact: Contact ; 
-    addContact: (contact: Contact) => void
+    addContact?: (contact: Contact) => void
+    updateContact?: (contact: Contact) => void
+    contactCardDisplayStatus?: boolean
+    setContactCardDisplayStatus?: (status: boolean) => void
 }
 
-export default function ContactCard({ contact, addContact }: ContactCardProps) {
+export default function ContactCard({ contact, addContact, updateContact, contactCardDisplayStatus=true, setContactCardDisplayStatus }: ContactCardProps) {
 
-    const [contactToAdd, setContactToAdd] = React.useState<Contact>(contact)
+    const [contactToAddOrUpdate, setContactToAdd] = React.useState<Contact>(contact)
 
     const businessTypes: BusinessType[] = ["", "Camping", "Hôtel", "Congiergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre"];
 
@@ -38,12 +41,12 @@ export default function ContactCard({ contact, addContact }: ContactCardProps) {
 
     const handleChangeText = (attribut: keyof Contact) => (event: React.ChangeEvent<HTMLInputElement>) => {
         //console.log("event.target.value", event.target.value)
-        setContactToAdd({...contactToAdd, [attribut]: event.target.value })
+        setContactToAdd({...contactToAddOrUpdate, [attribut]: event.target.value })
         // handleUpdateContact({ ...contact, [attribut]: event.target.value })
     }
     const handleChangeSelectType = (event: SelectChangeEvent) => { 
         const type: BusinessType = event.target.value as BusinessType       // obligé de mettre as BusinessType car sinon type = string, on peut faire autrement ???
-        setContactToAdd({...contactToAdd, businessType: type })
+        setContactToAdd({...contactToAddOrUpdate, businessType: type })
     };
 
 
@@ -62,18 +65,39 @@ export default function ContactCard({ contact, addContact }: ContactCardProps) {
         //JSON.stringify(contact) === '{}' ? <div></div> :
         <Card key={contact.id}
         //className=' my-2'
-        //sx={{ my: 2 }}        // my = 0.5rem (donc 1/2 taille de la police de la racine (em pour l'élément))
+        sx={{ 
+            //my: 2
+            position: "relative",
+         }}        // my = 0.5rem (donc 1/2 taille de la police de la racine (em pour l'élément))
         >
+            {/* A changer !!!!!!!! Mettre cette val de partout !!! */}
+            { setContactCardDisplayStatus &&
+            <Box sx={{ position: "absolute", right: "200px", top: 0,
+                zIndex: 1000,
+             }} >
+                {/* <Tooltip title="Ajouter un contact (avec ou sans recherche)" placement="left"> */}
+                    <IconButton aria-label="edit" color="primary" 
+                    onClick={() => setContactCardDisplayStatus(!contactCardDisplayStatus)}
+                    >
+                        {/* <Typography>A voir quel icon on garde : </Typography>
+                                        <PersonAddRoundedIcon fontSize="large" />                             
+                                        <PersonSearchRoundedIcon fontSize="large" />
+                                        <AddIcon fontSize="large" /> */}
+                        <Typography>Fermer</Typography>
+                        {/* <AddCircleOutlineIcon fontSize="large" /> */}
+                    </IconButton>
+                {/* </Tooltip> */}
+            </Box>}
             <FormControl
                 sx={{ p: 2, 
                 display: 'flex'
              }}
             >           
                 {contact.logo
-                    ? <Avatar variant="rounded" src={contactToAdd.logo} />
-                    : <Avatar variant="rounded" sx={{ bgcolor: grey[500], fontSize:"9px" }} >{contactToAdd.businessName}</Avatar>
+                    ? <Avatar variant="rounded" src={contactToAddOrUpdate.logo} />
+                    : <Avatar variant="rounded" sx={{ bgcolor: grey[500], fontSize:"9px" }} >{contactToAddOrUpdate.businessName}</Avatar>
                 }
-                <TextField id="outlined-basic" label="Nom de l'entreprise à ajouter aux contacts" variant="outlined" value={contactToAdd.businessName}
+                <TextField id="outlined-basic" label="Nom de l'entreprise à ajouter aux contacts" variant="outlined" value={contactToAddOrUpdate.businessName}
                 onChange={handleChangeText("businessName")} />
                 {/* <TextField id="outlined-basic" label="Secteur d'activité" variant="outlined" value={findLabelNafCodes(contactToAdd.businessActivity)} /> */}
                
@@ -81,7 +105,7 @@ export default function ContactCard({ contact, addContact }: ContactCardProps) {
                     <InputLabel id="checkbox-type-label">Type de contact</InputLabel>
                     <Select
                         id="checkbox-type-label"
-                        value={contactToAdd.businessType}
+                        value={contactToAddOrUpdate.businessType}
                         //onChange={(e) => handleChangeSelect(e, "businessType")}
                         onChange={handleChangeSelectType}
                     >
@@ -91,11 +115,11 @@ export default function ContactCard({ contact, addContact }: ContactCardProps) {
                     </Select>
                 </FormControl>
 
-                <TextField id="outlined-basic" label="Ville" variant="outlined" value={contactToAdd.businessCity} onChange={handleChangeText("businessCity")} />
-                <TextField id="outlined-basic" label="Adresse" variant="outlined" value={contactToAdd.businessAddress} onChange={handleChangeText("businessAddress")} />
-                <TextField id="outlined-basic" label="Téléphone" variant="outlined" value={contactToAdd.businessPhone} onChange={handleChangeText("businessPhone")} />
-                <TextField id="outlined-basic" label="Website" variant="outlined" value={contactToAdd.businessWebsite} onChange={handleChangeText("businessWebsite")} />
-                <TextField id="outlined-basic" label="Email" variant="outlined" value={contactToAdd.businessEmail} onChange={handleChangeText("businessEmail")} />
+                <TextField id="outlined-basic" label="Ville" variant="outlined" value={contactToAddOrUpdate.businessCity} onChange={handleChangeText("businessCity")} />
+                <TextField id="outlined-basic" label="Adresse" variant="outlined" value={contactToAddOrUpdate.businessAddress} onChange={handleChangeText("businessAddress")} />
+                <TextField id="outlined-basic" label="Téléphone" variant="outlined" value={contactToAddOrUpdate.businessPhone} onChange={handleChangeText("businessPhone")} />
+                <TextField id="outlined-basic" label="Website" variant="outlined" value={contactToAddOrUpdate.businessWebsite} onChange={handleChangeText("businessWebsite")} />
+                <TextField id="outlined-basic" label="Email" variant="outlined" value={contactToAddOrUpdate.businessEmail} onChange={handleChangeText("businessEmail")} />
                 {/* <TextField id="outlined-basic" label="Nom du contact" variant="outlined" value={contactToAdd.contactName} onChange={handleChangeText("contactName")} />
                 <TextField id="outlined-basic" label="Téléphone du contact" variant="outlined" value={contactToAdd.contactPhone} onChange={handleChangeText("contactPhone")} />
                 <TextField id="outlined-basic" label="Email du contact" variant="outlined" value={contactToAdd.contactEmail} onChange={handleChangeText("contactEmail")} />
@@ -118,7 +142,8 @@ export default function ContactCard({ contact, addContact }: ContactCardProps) {
                 <Chip></Chip>
                 <Switch />
             </Stack> */}
-            <Button variant="contained" sx={{ width: '100%', mt: 1, mb: 2 }} onClick={() => addContact(contactToAdd)} >Ajouter comme contact</Button>
+            {addContact && <Button variant="contained" sx={{ width: '100%', mt: 1, mb: 2 }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
+            {updateContact && <Button variant="contained" color='secondary' sx={{ width: '100%', mt: 1, mb: 2 }} onClick={() => updateContact(contactToAddOrUpdate)} >Mettre à jour le contact</Button>}
         </Card>
     )
 }

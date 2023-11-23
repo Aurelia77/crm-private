@@ -83,7 +83,7 @@ function MarkedDay(props: MarkedDayProps) {
     }
   );
 
-  console.log("highlightedDay", highlightedDay)
+  //console.log("highlightedDay", highlightedDay)
 
   return (
     <Badge
@@ -131,7 +131,7 @@ function getDaysOfNextCallsForMonth(contactsList: Contact[], targetDate: Dayjs) 
   let daysInMonthAndText: HighlightedDay[]
 
   //console.log(contactsList)
-  console.log("targetDate", targetDate)
+  //console.log("targetDate", targetDate)
 
   daysInMonthAndText = contactsList
     .filter(contact => {
@@ -165,19 +165,18 @@ export default function Calendar({contacts}: {contacts: Contact[]}) {
   const [highlightedDays, setHighlightedDays] = React.useState<HighlightedDay[]>([]);
 
   const [dateToSeeOnTheCalendar, setDateToSeeOnTheCalendar] = React.useState<Dayjs>(dayjs(new Date())) // today
-
-  console.log("dateToSeeOnTheCalendar", dateToSeeOnTheCalendar)
-
-
-  console.log(contacts)
-  console.log(highlightedDays)
+ 
+  
+  //console.log(contacts)
+  //console.log(highlightedDays)
+  //console.log("dateToSeeOnTheCalendar", dateToSeeOnTheCalendar)
  
   const fetchHighlightedDays = (contacts: Contact[], date: Dayjs) => {
     //const controller = new AbortController();
     // const daysToHighlight = getDaysOfNextCallsForMonth(fakeContactsData, date)
     // setHighlightedDays(daysToHighlight);
 
-    console.log(contacts)
+    //console.log(contacts)
     setHighlightedDays(getDaysOfNextCallsForMonth(contacts, date));
     //setIsLoading(false);
     // fakeFetch(date, {
@@ -202,7 +201,7 @@ export default function Calendar({contacts}: {contacts: Contact[]}) {
 
 
   React.useEffect(() => {
-    console.log(contacts)
+    //console.log(contacts)
     fetchHighlightedDays(contacts, dateToSeeOnTheCalendar);
     // abort request on unmount
     //return () => requestAbortController.current?.abort();

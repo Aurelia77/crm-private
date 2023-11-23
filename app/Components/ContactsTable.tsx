@@ -213,11 +213,11 @@ type ContactsTableProps = {
     handleUpdateContact: (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => void   // obligé de mettre NULL pour la date ! (???)
     // handleUpdateContact: (updatingContact: Contact) => void
     handleDeleteContact: (id: string) => void
+    diplayContactCard: (contact: Contact) => void
 
     //setSelectedContactId: (id: string) => void
 }
-export default function ContactsTable({ contacts, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact
-}: ContactsTableProps) {
+export default function ContactsTable({ contacts, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, diplayContactCard}: ContactsTableProps) {
 
     //console.log("CONTACT TABLE")
     //console.log("CONTACT TABLE Contacts = ", contacts)
@@ -238,7 +238,8 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };
+    };  
+
 
     const muiTheme = useTheme();
 
@@ -324,7 +325,8 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
                                     selectedContactId={selectedContactId}
                                     setSelectedContact={setSelectedContact}
                                     handleUpdateContact={handleUpdateContact}
-                                    handleDeleteContact={() => handleDeleteContact(row.id)}                                   
+                                    handleDeleteContact={() => handleDeleteContact(row.id)}  
+                                    diplayContactCard={diplayContactCard}                                 
                                 //setContacts={setContacts} 
                                 />
                             );
