@@ -49,10 +49,10 @@ import Typography from '@mui/material/Typography';
 // }
 
 
-interface HighlightedDay {
-  date: Date;
-  businessName: string;
-}
+// interface HighlightedDay {
+//   date: Date;
+//   businessName: string;
+// }
 
 
 
@@ -60,51 +60,56 @@ function getDaysOfNextCallsForMonth(contactsList: Contact[], targetDate: Dayjs) 
   // function getDaysOfNextCallsForMonth(contactsList: Contact[], targetDate: Dayjs): Promise<{ daysToHighlight: number[] }> {
   //return Promise.resolve(
   //return new Promise<{ daysToHighlight: number[] }>((resolve, reject) => {
-  let daysInMonthAndText: HighlightedDay[]
+  let contactsToCallThisMonth: Contact[]
 
   //console.log(contactsList)
   //console.log("targetDate", targetDate)
 
-  daysInMonthAndText = contactsList
+  contactsToCallThisMonth = contactsList
     .filter(contact => {
       const nextCallDate = contact.dateOfNextCall?.toDate()   // => on tranforme le ObjectTimestamp en Date
       return nextCallDate?.getMonth() === targetDate.month() && nextCallDate?.getFullYear() === targetDate.year();
     })
-    //.map(contact => contact.dateOfNextCall.getDate())
-    .map(contact => ({
-      date: contact.dateOfNextCall.toDate() ,
-      businessName: contact.businessName
-    }))
+    // //.map(contact => contact.dateOfNextCall.getDate())
+    // .map(contact => ({
+    //   date: contact.dateOfNextCall.toDate(),
+    //   businessName: contact.businessName
+    // }))
 
-  console.log(daysInMonthAndText)
-  
-  return daysInMonthAndText
-}  
-  // function getDaysOfNextCallsForMonth(contactsList: Contact[], targetDate: Dayjs) {
-  //     return contactsList
-  //         .filter(contact => {
-  //             let nextCallDate = contact.dateOfNextCall;
-  //             return nextCallDate?.getMonth() === targetDate.month() && nextCallDate?.getFullYear() === targetDate.year();
-  //         })
-  //         .map(contact => contact.dateOfNextCall.getDate());
-  // }
-  
-  //console.log(getDaysOfNextCallsForMonth(fakeContactsData, dayjs('2023-12-17')))
+  console.log(contactsToCallThisMonth)
 
-export default function Calendar({contacts}: {contacts: Contact[]}) {
+  return contactsToCallThisMonth
+}
+// function getDaysOfNextCallsForMonth(contactsList: Contact[], targetDate: Dayjs) {
+//     return contactsList
+//         .filter(contact => {
+//             let nextCallDate = contact.dateOfNextCall;
+//             return nextCallDate?.getMonth() === targetDate.month() && nextCallDate?.getFullYear() === targetDate.year();
+//         })
+//         .map(contact => contact.dateOfNextCall.getDate());
+// }
+
+//console.log(getDaysOfNextCallsForMonth(fakeContactsData, dayjs('2023-12-17')))
+
+type CalendarProps = {
+  contacts: Contact[];
+  diplayContactCardToUpdate: (contact: Contact) => void;
+};
+
+export default function Calendar({ contacts, diplayContactCardToUpdate }: CalendarProps) {
   //const requestAbortController = React.useRef<AbortController | null>(null);
   //const [isLoading, setIsLoading] = React.useState(false);
-  const [highlightedDays, setHighlightedDays] = React.useState<HighlightedDay[]>([]);
+  const [contactsToCallThisMonthAndToHighlight, setContactsToCallThisMonthAndToHighlight] = React.useState<Contact[]>([]);
 
   const [dateToSeeOnTheCalendar, setDateToSeeOnTheCalendar] = React.useState<Dayjs>(dayjs(new Date())) // today
 
-  const [contactsToCallThisDay, setContactsToCallThisDay] = React.useState<HighlightedDay[]>([])
- 
-  
+  const [contactsToCallThisDay, setContactsToCallThisDay] = React.useState<Contact[]>([])
+
+
   //console.log(contacts)
-  console.log(highlightedDays)
+  console.log(contactsToCallThisMonthAndToHighlight)
   //console.log("dateToSeeOnTheCalendar", dateToSeeOnTheCalendar)
- 
+
   // const fetchHighlightedDays = (contacts: Contact[], date: Dayjs) => {
   //   //const controller = new AbortController();
   //   // const daysToHighlight = getDaysOfNextCallsForMonth(fakeContactsData, date)
@@ -135,41 +140,48 @@ export default function Calendar({contacts}: {contacts: Contact[]}) {
   // };
 
 
+
   interface MarkedDayProps extends PickersDayProps<Dayjs> {
-    highlightedDays?: HighlightedDay[];
+    highlightedDays?: Contact[];
   }
+  // function MarkedDay(props: PickersDayProps<Dayjs> & { highlightedDays?: number[] }) {
+  //   const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
   function MarkedDay(props: MarkedDayProps) {
     // function MarkedDay(props: PickersDayProps<Dayjs> & { highlightedDays?: number[] }) {
-  //   const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
-  
-    const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
-  
-    //console.log("highlightedDays", highlightedDays)
+    //   const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
+
+    // Bien laisse le nom highlightedDays !!!
+    const { highlightedDays: highlightedContactDays = [], day, outsideCurrentMonth, ...other } = props;
+
+    console.log("highlightedDays", highlightedContactDays)
     //console.log("day", day)
-  
-  
+
+
     //console.log(highlightedDays, day, outsideCurrentMonth, other)
-  
+
     //   const isSelected =
-  //     !props.outsideCurrentMonth && highlightedDays.indexOf(props.day.date()) >= 0;
-  
-  
-    // const highlightedDay = highlightedDays.find(
-    //   (d) => {
+    //     !props.outsideCurrentMonth && highlightedDays.indexOf(props.day.date()) >= 0;
+
+
+    // const highlightedDay = highlightedContactDays.find(
+    //   (contact) => {
     //     // console.log("d.date", d.date)
     //     // console.log("d.date", d.date.getDate())
     //     // console.log("day.date()", day.date())
-    //     return !outsideCurrentMonth && d.date.getDate() === day.date()
+    //     return !outsideCurrentMonth && contact.dateOfNextCall.getDate() === day.date()
     //   }
     // );
-    const highlightedDayAndBusinessName: HighlightedDay[] = highlightedDays.filter(d => 
-      !outsideCurrentMonth && d.date.getDate() === day.date()
-    )
 
-  
-  
-    console.log("highlightedDay", highlightedDayAndBusinessName)
-  
+    const highlightedContacts: Contact[] = highlightedContactDays.filter((contact: Contact) =>
+      { 
+        console.log(contact.dateOfNextCall.toDate().getDate())
+        console.log(day.date())
+        //console.log(contact.dateOfNextCall.date())
+        return !outsideCurrentMonth && contact.dateOfNextCall.toDate().getDate() === day.date()
+      }
+    )
+    console.log("highlightedContacts", highlightedContacts)
+
     return (
       <Badge
         //  key={props.day.toString()}
@@ -178,23 +190,23 @@ export default function Calendar({contacts}: {contacts: Contact[]}) {
         // badgeContent={isSelected ? <NotificationsIcon color='warning' fontSize='small' /> : undefined}
         // badgeContent={isSelected ? '🌚' : undefined}
         badgeContent={
-          highlightedDayAndBusinessName.length > 0 
-            ? 
+          highlightedContacts.length > 0
+            ?
             // <NotificationsIcon color="warning" fontSize="small" /> 
             // <Tooltip title={highlightedDayAndBusinessName?.businessName}     /////////////////////// ????????????
             // >
-              <IconButton //color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
-                onClick={() => setContactsToCallThisDay(highlightedDayAndBusinessName)} >
-                {/* onClick={() => setContactsToCallThisDay(highlightedDay?.businessName || "")} > */}
-                <NotificationsIcon color="warning" fontSize="small" />
-              </IconButton>
+            <IconButton //color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
+              onClick={() => setContactsToCallThisDay(highlightedContacts)} >
+              {/* onClick={() => setContactsToCallThisDay(highlightedDay?.businessName || "")} > */}
+              <NotificationsIcon color="warning" fontSize="small" />
+            </IconButton>
             // </Tooltip>
-           : undefined
+            : undefined
         }
-             
+
       >
         {/* <Tooltip title={highlightedDay?.businessName}>*/}
-          <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
+        <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
         {/*</Tooltip> */}
       </Badge>
     );
@@ -202,10 +214,10 @@ export default function Calendar({contacts}: {contacts: Contact[]}) {
   // SANS les messages
   // function MarkedDay(props: PickersDayProps<Dayjs> & { highlightedDays?: number[] }) {
   //   const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
-  
+
   //   const isSelected =
   //     !props.outsideCurrentMonth && highlightedDays.indexOf(props.day.date()) >= 0;
-  
+
   //   return (
   //     <Badge
   //       key={props.day.toString()}
@@ -224,7 +236,7 @@ export default function Calendar({contacts}: {contacts: Contact[]}) {
     //console.log(contacts)
 
     //fetchHighlightedDays(contacts, dateToSeeOnTheCalendar);
-    setHighlightedDays(getDaysOfNextCallsForMonth(contacts, dateToSeeOnTheCalendar));
+    setContactsToCallThisMonthAndToHighlight(getDaysOfNextCallsForMonth(contacts, dateToSeeOnTheCalendar));
 
     // abort request on unmount
     //return () => requestAbortController.current?.abort();
@@ -233,54 +245,52 @@ export default function Calendar({contacts}: {contacts: Contact[]}) {
   const handleMonthChange = (date: Dayjs) => {
     console.log("date", date)
     //if (requestAbortController.current) {
-      // make sure that you are aborting useless requests
-      // because it is possible to switch between months pretty quickly
+    // make sure that you are aborting useless requests
+    // because it is possible to switch between months pretty quickly
     //  requestAbortController.current.abort();
     //}
     //setIsLoading(true);
 
     setDateToSeeOnTheCalendar(date)
 
-    setHighlightedDays([]);
+    setContactsToCallThisMonthAndToHighlight([]);
 
     //fetchHighlightedDays(contacts, date);
-    setHighlightedDays(getDaysOfNextCallsForMonth(contacts, date));
+    setContactsToCallThisMonthAndToHighlight(getDaysOfNextCallsForMonth(contacts, date));
   };
 
   return (
-    <Box style={{ display:"flex" }} >      
-        <DateCalendar
-          //defaultValue={dateToSeeOnTheCalendar} // seulement si cette valeur ne change jamais => ici : erreur : MUI: A component is changing the default value state of an uncontrolled DateCalendar after being initialized.
-          value={dateToSeeOnTheCalendar}
-          //loading={isLoading}
-          onMonthChange={handleMonthChange}
-          renderLoading={() => <DayCalendarSkeleton />}
-          slots={{
-            day: MarkedDay,
-          }}
-          slotProps={{
-            day: {
-              highlightedDays,
-            } as any,
-          }}
-        />
-        <Box sx={{ border: '1px solid #CCC', p: 2, ml: 2, width: 300 }} >          
-          <Typography align="center" sx={{ mb: 2, }} >
-           {/* {contactsToCallThisDay[0].date.toLocaleDateString()} */}
-            {/* {contactsToCallThisDay[0].date.toLocaleString('default', { month: 'long' })}  */}
-            {contactsToCallThisDay[0] && contactsToCallThisDay[0].date.toLocaleString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
-          </Typography> 
-          <Typography sx={{ mb: 2, color: 'primary.main', fontWeight: 700 }} >
-            Contact(s) à appeler ce jour
+    <Box style={{ display: "flex" }} >
+      <DateCalendar
+        //defaultValue={dateToSeeOnTheCalendar} // seulement si cette valeur ne change jamais => ici : erreur : MUI: A component is changing the default value state of an uncontrolled DateCalendar after being initialized.
+        value={dateToSeeOnTheCalendar}
+        //loading={isLoading}
+        onMonthChange={handleMonthChange}
+        renderLoading={() => <DayCalendarSkeleton />}
+        slots={{
+          day: MarkedDay,
+        }}
+        slotProps={{
+          day: {
+            highlightedDays: contactsToCallThisMonthAndToHighlight,
+          } as any,
+        }}
+      />
+      <Box sx={{ border: '1px solid #CCC', p: 2, ml: 2, width: 300 }} >
+        <Typography align="center" sx={{ mb: 2, }} >
+          {contactsToCallThisDay[0] && contactsToCallThisDay[0].dateOfNextCall.toDate().toLocaleString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
+        </Typography>
+        <Typography sx={{ mb: 2, color: 'primary.main', fontWeight: 700 }} >
+          Contact(s) à appeler ce jour
+        </Typography>
+        {contactsToCallThisDay.map((contact, index) => (
+          <Typography key={index} variant="body2" sx={{ mt: 2 }}
+            onClick={() => diplayContactCardToUpdate(contact) }            
+          >
+            {contact.businessName}
           </Typography>
-          {contactsToCallThisDay.map((contact, index) => (
-            <Typography key={index} variant="body2" sx={{ mt: 2 }} 
-              //onClick={() => console.log("contact", contact) }            
-            >
-              {contact.businessName}
-            </Typography>
-          ))}
-        </Box>
+        ))}
+      </Box>
     </Box>
   );
 }

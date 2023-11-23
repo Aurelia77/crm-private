@@ -361,7 +361,8 @@ export default function Contacts() {
                                       <Calendar 
                                         //contacts={fakeContactsData}
                                         //contacts={filteredContacts}   // ????????? 
-                                        contacts={contacts}         
+                                        contacts={contacts} 
+                                        diplayContactCardToUpdate={diplayContactCardToUpdate}        
                                       />
                                 </Paper>
                             </AccordionDetails>
