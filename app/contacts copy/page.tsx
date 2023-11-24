@@ -39,12 +39,11 @@ import Calendar from '../Components/Calendar';
 
 import fakeContactsData from '../utils/contactsTest'
 import contactsLaurianeCampings from '../utils/contactsLauriane';
-import contactsLaurianeCampings_x10 from '../utils/contactsLauriane x10';
 //import getContacts from '../utils/firebase'
 //import writeContactData from '../utils/firebase'
 //import firebase from 'firebase/app'
 //import firebaseConfig from '../utils/firebaseConfig'
-import { storage, addFakeDataOnFirebaseAndReload, addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, updatDataWholeContactOnFirebase, deleteDataOnFirebaseAndReload, getContactsFromDatabase } from '../utils/firebase'
+import { storage, addFakeDataOnFirebaseAndReload, addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, deleteDataOnFirebaseAndReload, getContactsFromDatabase } from '../utils/firebase'
 import { Timestamp } from 'firebase/firestore';
 import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, deleteDoc, updateDoc, doc } from "firebase/firestore";
 import { getStorage, ref } from "firebase/storage";
@@ -66,7 +65,7 @@ import Collapse from '@mui/material';
 
 import { unsubscribe } from 'diagnostics_channel';
 
-import { countContactsByAlertDates, updatedContactsInLocalList, updatedContactsInLocalListWithWholeContact } from '../utils/toolbox';
+import { countContactsByAlertDates, updateContactsInLocalList } from '../utils/toolbox';
 
 
 interface TabPanelProps {
@@ -114,10 +113,6 @@ export default function Contacts() {
 
     
     const [displayNewContactForms, setDisplayNewContactForms] = React.useState(false)
-    const [contactToDisplay, setContactToDisplay] = React.useState<Contact>(emptyContact)
-    const [isContactCardDisplay, setIsContactCardDisplay] = React.useState(false)
-
-    console.log(isContactCardDisplay)
     
      const emptySearchCriteria: SearchContactCriteria = {
         businessName: '',
@@ -144,27 +139,10 @@ export default function Contacts() {
     const updateContactInContactsAndDB = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
         console.log("updatingContact", id, keyAndValue)
 
-        setContacts(updatedContactsInLocalList(contacts, id, keyAndValue))
-        setFilteredContacts(updatedContactsInLocalList(filteredContacts, id, keyAndValue))
+        setContacts(updateContactsInLocalList(contacts, id, keyAndValue))
+        setFilteredContacts(updateContactsInLocalList(filteredContacts, id, keyAndValue))
         updatDataOnFirebase(id, keyAndValue)
     }  
-
-    const updateWholeContactInContactsAndDB = (contactToUpdate: Contact) => {
-        setContacts(updatedContactsInLocalListWithWholeContact(contacts, contactToUpdate))
-        setFilteredContacts(updatedContactsInLocalListWithWholeContact(contacts, contactToUpdate))
-        updatDataWholeContactOnFirebase(contactToUpdate)
-
-        setIsContactCardDisplay(false)
-    }  
-
-    const diplayContactCardToUpdate = (contact: Contact) => {
-        setContactToDisplay(contact)
-        setIsContactCardDisplay(true)
-    }
-    const diplayContactCardNew = () => {
-        setContactToDisplay(emptyContact)
-        setIsContactCardDisplay(true)
-    }
    
 
     React.useEffect(() => { 
@@ -220,16 +198,6 @@ export default function Contacts() {
         //contacts  
     ])      // !!!!!!!!!!!!!!! laisser contact ? car si modif ça peut disparaitre !!!!!! NON on ne veut pas ! + boucle infinie !!!
 
-    // React.useEffect(() => {
-
-    //     console.log("USE EFFECT contactToDisplay")
-    //     let newContacts: Contact[] = contacts.map(contact => {
-    //         return contact.id === contactToDisplay.id ? contactToDisplay : contact
-    //     })
-    //     setContacts(newContacts)
-    // }, [contactToDisplay])
-
-
 
 
     const storageRef = ref(storage);
@@ -241,16 +209,7 @@ export default function Contacts() {
         <Box sx={{ position:"relative", 
         //marginTop:"2em"
          }}>
-        {/* <React.Fragment sx={{ position:"absolute" }}> */} 
-
-            {/* /////////////////////// ContactCart /////////////////////// */}
-            {isContactCardDisplay  && <ContactCard contact={contactToDisplay} 
-            //updateContact={setContactToDisplay} 
-            updateContact={updateWholeContactInContactsAndDB}
-            // updateContact={() => {console.log("updateContact")}} 
-            contactCardDisplayStatus={isContactCardDisplay} setContactCardDisplayStatus={setIsContactCardDisplay} />  }
-           
-
+        {/* <React.Fragment sx={{ position:"absolute" }}> */}          
 
             {/* <Image */}
             <Typography variant="h3" component="h1" sx={{ 
@@ -269,11 +228,10 @@ export default function Contacts() {
                     
                     {/* /////////////////////// Pour Version ESSAI /////////////////////// */}
                     <Box sx={{ display: "flex", justifyContent: "space-around", padding: "10px", border: "solid 3px blue", borderRadius: "10px" }}>
-                        <Typography component="div" style={{ display: "block", width: "360px" }} >Version TEST : Ajouter contacts TEST ou TOUT supprimer : </Typography>
+                        <Typography component="div" style={{ display: "block", width: "500px" }} >Version TEST : Ajouter contacts TEST ou TOUT supprimer : </Typography>
                         <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>Ajouter Contacts Test</Button>
-                        <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
-                        <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button>
-                        <Button variant="contained" color='error' sx={{ width:"300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUser)}>Supprimer tous mes contacts</Button>
+                        <Button variant="contained" color='secondary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping</Button>
+                        <Button variant="contained" color='primary' sx={{ width:"300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUser)}>Supprimer tout mes contacts</Button>
                         {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer toutes les données !!!</Button> */}
                     </Box>
 
@@ -363,8 +321,7 @@ export default function Contacts() {
                                       <Calendar 
                                         //contacts={fakeContactsData}
                                         //contacts={filteredContacts}   // ????????? 
-                                        contacts={contacts} 
-                                        diplayContactCardToUpdate={diplayContactCardToUpdate}        
+                                        contacts={contacts}         
                                       />
                                 </Paper>
                             </AccordionDetails>
@@ -426,10 +383,7 @@ export default function Contacts() {
                             
                             <Box sx={{ position:"absolute", right:0, top:0  }} >
                                 <Tooltip title="Ajouter un contact (avec ou sans recherche)" placement="left">
-                                    <IconButton aria-label="edit" color="primary" 
-                                        onClick={() => setDisplayNewContactForms(!displayNewContactForms)}
-                                        //onClick={diplayContactCardNew}
-                                    >
+                                    <IconButton aria-label="edit" color="primary" onClick={() => setDisplayNewContactForms(!displayNewContactForms)}>
                                         {/* <Typography>A voir quel icon on garde : </Typography>
                                         <PersonAddRoundedIcon fontSize="large" />                             
                                         <PersonSearchRoundedIcon fontSize="large" />
@@ -447,7 +401,6 @@ export default function Contacts() {
                                 setSelectedContact={setSelectedContact}
                                 handleUpdateContact={updateContactInContactsAndDB}
                                 handleDeleteContact={deleteDataOnFirebaseAndReload}
-                                diplayContactCard={diplayContactCardToUpdate}
                             //setContacts={setContacts}
                             //orderedBy={orderedBy} 
                             />

@@ -76,7 +76,7 @@ function getDaysOfNextCallsForMonth(contactsList: Contact[], targetDate: Dayjs) 
     //   businessName: contact.businessName
     // }))
 
-  console.log(contactsToCallThisMonth)
+  //console.log(contactsToCallThisMonth)
 
   return contactsToCallThisMonth
 }
@@ -107,7 +107,7 @@ export default function Calendar({ contacts, diplayContactCardToUpdate }: Calend
 
 
   //console.log(contacts)
-  console.log(contactsToCallThisMonthAndToHighlight)
+  //console.log(contactsToCallThisMonthAndToHighlight)
   //console.log("dateToSeeOnTheCalendar", dateToSeeOnTheCalendar)
 
   // const fetchHighlightedDays = (contacts: Contact[], date: Dayjs) => {
@@ -153,7 +153,7 @@ export default function Calendar({ contacts, diplayContactCardToUpdate }: Calend
     // Bien laisse le nom highlightedDays !!!
     const { highlightedDays: highlightedContactDays = [], day, outsideCurrentMonth, ...other } = props;
 
-    console.log("highlightedDays", highlightedContactDays)
+    //console.log("highlightedDays", highlightedContactDays)
     //console.log("day", day)
 
 
@@ -174,13 +174,13 @@ export default function Calendar({ contacts, diplayContactCardToUpdate }: Calend
 
     const highlightedContacts: Contact[] = highlightedContactDays.filter((contact: Contact) =>
       { 
-        console.log(contact.dateOfNextCall.toDate().getDate())
-        console.log(day.date())
+        //console.log(contact.dateOfNextCall.toDate().getDate())
+       // console.log(day.date())
         //console.log(contact.dateOfNextCall.date())
         return !outsideCurrentMonth && contact.dateOfNextCall.toDate().getDate() === day.date()
       }
     )
-    console.log("highlightedContacts", highlightedContacts)
+    //console.log("highlightedContacts", highlightedContacts)
 
     return (
       <Badge

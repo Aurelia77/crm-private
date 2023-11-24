@@ -162,38 +162,32 @@ const getContactsFromDatabase = async (currentUser: any) => {
   querySnapshot.forEach((doc) => {
     //console.log(doc.data())
     //console.log("contactsArr***", contactsArr)
-    contactsArr.push({ ...doc.data() as Contact }); // On indique que doc.data() est de type Contact           
-
-
+    contactsArr.push({ ...doc.data() as Contact }); // On indique que doc.data() est de type Contact     
   });
   return contactsArr;
   // return () => {           // ? dans une vidéo : https://www.youtube.com/watch?v=-yrnWnN0g9o&ab_channel=DevWorld
   //     unsub()
   // }
-
- 
 }
 
-
-
-
-
-
 const addFakeDataOnFirebaseAndReload = (currentUser: any, fakeContactsData: Contact[]) => {
-  fakeContactsData.map((contact: Contact) => {
-    console.log(contact)
-    console.log({
-      ...contact, id: uid(), userId: currentUser?.uid
-    })
-    addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid(), userId: currentUser?.uid })
+  // fakeContactsData.map((contact: Contact) => {
+  //   console.log(contact)
+  //   console.log({
+  //     ...contact, id: uid(), userId: currentUser?.uid
+  //   })
+  const promises = fakeContactsData.map((contact: Contact) => {
+    return addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid(), userId: currentUser?.uid })
       //addDoc(collection(fireStoreDb, "contacts"), {contact})
       .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
-      .then(() => { window.location.reload() })                                           // bien ici ??? Va pas recharcger à chaque fois ???
+      //.then(() => { window.location.reload() })     // NON ! Va pas recharcger à chaque fois
       .catch((error) => { console.error("Error adding document: ", error); });
   })
   //window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données        // n'enregistre pas les données à chaque fois si je le mets ici !!!
+  Promise.all(promises)
+    .then(() => { window.location.reload() })
+    .catch((error) => { console.error("Error reloading page: ", error); });
 }   
-// PAS DE RELOAD pourtant ça recharge !!!!!!!!!!!!!!!!!!!!!!!!!
 
 // const addContactOnFirebase = (currentUser: any, contact: Contact) => {
 //   console.log("add contact", contact)

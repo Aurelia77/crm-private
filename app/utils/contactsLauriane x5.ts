@@ -1,6 +1,6 @@
 import {emptyContact} from '../utils/toolbox'
 
-const contactsLaurianeCampings : Contact[] = [
+const contactsLaurianeCampings_x5 : Contact[] = [
     {
         ...emptyContact,
         "isClient": true,
@@ -72,4 +72,4 @@ const contactsLaurianeCampings : Contact[] = [
     }
 ]
 
-export default contactsLaurianeCampings;
+export default contactsLaurianeCampings_x5;
