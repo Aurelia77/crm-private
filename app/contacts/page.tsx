@@ -390,7 +390,7 @@ export default function Contacts() {
                                     //position: "relative" 
                                     }}
                                 >
-                                    <SearchContactsForm onSearchChange={setContactsSearchCriteria} emptySearchCriteria = {emptySearchCriteria} />                                   
+                                    <SearchContactsForm onSearchChange={setContactsSearchCriteria} emptySearchCriteria = {emptySearchCriteria} contacts={contacts} />                                   
                                     {/* <Typography variant="h5" component="div" sx={{ p: 2 }}>{filteredContacts.length} contacts trouvés (sur {contacts.length})</Typography> */}
                                 </Paper>
                             </AccordionDetails>

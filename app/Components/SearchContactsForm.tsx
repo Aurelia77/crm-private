@@ -2,7 +2,6 @@ import React from 'react'
 import { FormControl, FormHelperText, Input, InputLabel, TextField, Typography, MenuItem, Checkbox, FormGroup, FormControlLabel, OutlinedInput, ListItemText, Box } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import {getUniqueSortedValues} from '../utils/toolbox';
-import contacts from '../utils/contactsTest';
 
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
@@ -12,6 +11,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 interface SearchFormProps {
     onSearchChange: (search: SearchContactCriteria) => void;
     emptySearchCriteria: SearchContactCriteria;
+    contacts: Contact[];
 }
 
 const MenuSelectProps = {
@@ -24,7 +24,7 @@ const MenuSelectProps = {
 };
 
 
-export default function SearchContactsForm({ onSearchChange, emptySearchCriteria }: SearchFormProps) {
+export default function SearchContactsForm({ onSearchChange, emptySearchCriteria, contacts }: SearchFormProps) {
     const [search, setSearch] = React.useState<SearchContactCriteria>({ businessName: '', businessCity: [], businessType: [] });
 
     // const businessTypes = ["Camping", "Hôtel", "Congiergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre"];
