@@ -221,7 +221,7 @@ const addContactOnFirebaseAndReload = async (currentUser: any, contact: Contact)
 
   console.log("****************//////////////FINI ///////////**********")
   
-  //window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
+  window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
 }
 
 
