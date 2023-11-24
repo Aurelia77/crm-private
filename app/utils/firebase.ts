@@ -6,10 +6,10 @@
 
 
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, set } from "firebase/database";
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from "firebase/auth";
-import { getStorage } from "firebase/storage";
+import { getStorage, ref, uploadBytes  } from "firebase/storage";
 
 import { Timestamp } from 'firebase/firestore';
 import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, deleteDoc, updateDoc, doc } from "firebase/firestore";
@@ -50,6 +50,14 @@ const auth = getAuth(app);
 
 // Initialize Cloud Storage and get a reference to the service
 const storage = getStorage(app);
+
+const storageRef = ref(storage);
+// //console.log(storageRef)
+const guadeloupeRef = ref(storage, 'guadeloupe.jpg');
+
+// uploadBytes(guadeloupeRef, file).then((snapshot) => {
+//     console.log('Uploaded a blob or file!');
+// });
 
 // 1-REALTIME DB
 //const [todo, setTodo] = React.useState<string>('')

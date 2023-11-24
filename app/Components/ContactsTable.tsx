@@ -283,7 +283,7 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
             {/* <Typography variant="h5" component="div" sx={{ p: 2 }}>Liste des contacts ({contacts.length})</Typography> */}
             <TableContainer
                 //sx={{ maxHeight: document.documentElement.clientHeight * 0.88 }}   //vh = 1% de la hauteur du viewport (la zone d'affichage).// Ok mais problème avec Vercel !!!               
-                sx={{ maxHeight: "calc(100vh - 320px)" }}
+                sx={{ maxHeight: "calc(100vh - 300px)" }}
             // sx={{ maxHeight:  "calc(100vh - 185px)" }} 
             >
                 <Table stickyHeader aria-label="sticky table">

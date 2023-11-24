@@ -6,6 +6,7 @@ import {getUniqueSortedValues} from '../utils/toolbox';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import ClearIcon from '@mui/icons-material/Clear';
+import Switch from '@mui/material/Switch';
 
 
 interface SearchFormProps {
@@ -25,7 +26,7 @@ const MenuSelectProps = {
 
 
 export default function SearchContactsForm({ onSearchChange, emptySearchCriteria, contacts }: SearchFormProps) {
-    const [search, setSearch] = React.useState<SearchContactCriteria>({ businessName: '', businessCity: [], businessType: [] });
+    const [search, setSearch] = React.useState<SearchContactCriteria>({ isClient: false,  businessName: '', businessCity: [], businessType: [] });
 
     // const businessTypes = ["Camping", "Hôtel", "Congiergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre"];
 
@@ -49,15 +50,16 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
         // setSearch(typeof value === 'string' ? value.split(',') : value, );
     };
 
+    const handleChangeSwitchIsClient = () => {
+        setSearch({ ...search, isClient: !search.isClient });
+    }
+
     const resetSearch = () => {
         setSearch(emptySearchCriteria);
         onSearchChange(emptySearchCriteria);
     }
 
    
-
-
-
 
     // Je me demandais s'il ne fallait pas mieux mettre onSearchChange dans handleChange et handleChangeType, mais apparemment non !!!
     // Si vous déplacez l'appel à onSearchChange dans handleChange et handleChangeType, il sera appelé avant que l'état search ne soit mis à jour, car setState est asynchrone. Cela signifie que onSearchChange recevrait l'ancien état search, pas le nouvel état.
@@ -67,10 +69,25 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
     }, [search, onSearchChange])
 
     return (
-        <FormControl sx={{ position: "relative" }} >
-            <Typography variant="h6" gutterBottom component="div">Recherche</Typography>
+        <FormControl sx={{ position: "relative", bgcolor: 'lightCyan.light', padding:"25px", width: "calc(100vw - 170px)" }} >
             {/* <FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText> */}
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', 
+            justifyContent: 'space-between'// 
+            //gap: "70px"
+         }}>
+                <Typography variant="h6" gutterBottom component="div">Recherche</Typography>
+                <FormControlLabel 
+                    control={
+                        <Switch
+                        checked={search.isClient}
+                        onChange={handleChangeSwitchIsClient}
+                        color="success"
+                        inputProps={{ 'aria-label': 'controlled' }}
+                    />
+                } 
+                    label="Clients ?" 
+                />
+               
                 <TextField id="search-name" label="Nom" name='businessName' value={search.businessName} onChange={handleChangeText}
                     sx={{ width: '200px', marginRight: "30px" }} />
                 {/* <TextField id="search-city" label="Ville" name='businessCity' value={search.businessCity} onChange={handleChange} 
@@ -149,7 +166,7 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
                     //padding: 0 
                     position: "absolute",
                     top: 0,
-                    right: 0
+                    right: "10px"
                 }}       // Car les boutons ont automatiquement un padding
                     onClick={resetSearch} >
                     <ClearIcon />

@@ -61,6 +61,7 @@ type Alerts = {
 }
 
 type SearchContactCriteria = {
+  isClient: boolean,
   businessName: string,
   businessCity: string[],
   businessType: string[],

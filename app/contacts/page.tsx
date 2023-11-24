@@ -47,12 +47,13 @@ import contactsLaurianeCampings_x10 from '../utils/contactsLauriane x10';
 import { storage, addFakeDataOnFirebaseAndReload, addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, updatDataWholeContactOnFirebase, deleteDataOnFirebaseAndReload, getContactsFromDatabase } from '../utils/firebase'
 import { Timestamp } from 'firebase/firestore';
 import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, deleteDoc, updateDoc, doc } from "firebase/firestore";
-import { getStorage, ref } from "firebase/storage";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, uploadBytesResumable } from "firebase/storage";
 
 import { uid } from 'uid';
 import { Dayjs } from 'dayjs';       // npm install dayjs
 
-import {emptyContact} from '../utils/toolbox'
+import { emptyContact } from '../utils/toolbox'
 
 import { useAuthUserContext } from '../context/UseAuthContext'
 import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
@@ -67,6 +68,11 @@ import Collapse from '@mui/material';
 import { unsubscribe } from 'diagnostics_channel';
 
 import { countContactsByAlertDates, updatedContactsInLocalList, updatedContactsInLocalListWithWholeContact } from '../utils/toolbox';
+import { MuiFileInput } from 'mui-file-input';
+import Diversity3Icon from '@mui/icons-material/Diversity3';
+import PersonIcon from '@mui/icons-material/Person';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 
 interface TabPanelProps {
@@ -74,33 +80,35 @@ interface TabPanelProps {
     index: number;
     value: number;
 }
-function a11yProps(index: number) {
-    return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
-    };
-}
-function CustomTabPanel(props: TabPanelProps) {
+function TabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
 
     return (
         <div
             role="tabpanel"
             hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
+            id={`vertical-tabpanel-${index}`}
+            aria-labelledby={`vertical-tab-${index}`}
+            style={{ width: "calc(100vw - 120px)" }}
             {...other}
         >
             {value === index && (
-                <Box sx={{ p: 3 }}>
-                    <Typography>{children}</Typography>
+                <Box
+                // sx={{ p: 3 }}
+                >
+                    <Typography component={"div"}
+                    >{children}</Typography>
                 </Box>
             )}
         </div>
     );
 }
-
-
+function a11yProps(index: number) {
+    return {
+        id: `vertical-tab-${index}`,
+        'aria-controls': `vertical-tabpanel-${index}`,
+    };
+}
 
 
 
@@ -110,24 +118,39 @@ export default function Contacts() {
     //const [selectedContact, setSelectedContact] = React.useState<Contact | undefined>()   
     const [selectedContact, setSelectedContact] = React.useState<Contact | { id: string }>({ id: "0" })
     const [loading, setLoading] = React.useState(true)
-    const [alerts, setAlerts] = React.useState<Alerts>({ nbContactsWithDatePassed: 0, nbContactsWithDateSoon: 0})
+    const [alerts, setAlerts] = React.useState<Alerts>({ nbContactsWithDatePassed: 0, nbContactsWithDateSoon: 0 })
 
-    
+
     const [displayNewContactForms, setDisplayNewContactForms] = React.useState(false)
     const [contactToDisplay, setContactToDisplay] = React.useState<Contact>(emptyContact)
     const [isContactCardDisplay, setIsContactCardDisplay] = React.useState(false)
 
     console.log(isContactCardDisplay)
-    
-     const emptySearchCriteria: SearchContactCriteria = {
+
+    const emptySearchCriteria: SearchContactCriteria = {
+        isClient: false,
         businessName: '',
         businessCity: [],
         businessType: []
     }
     const [contactsSearchCriteria, setContactsSearchCriteria] = React.useState<SearchContactCriteria>(emptySearchCriteria)
     //const [contactsSearchCriteria, setContactsSearchCriteria] = React.useState({})
-  
+
     const isSearchCriteriaEmpty = JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)
+
+    const [tabValue, setTabValue] = React.useState(0);
+
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+        setTabValue(newValue);
+    };
+
+    const titles = [
+        { label: "Contacts", icon: <Diversity3Icon /> },
+        { label: "Calendrier", icon: <CalendarMonthIcon /> },
+        { label: "Nouveau", icon: <PersonAddIcon /> },
+        { label: "Contact", icon: <PersonIcon /> },
+    ]
+   
 
     //console.log("PAGE Contacts",contacts)
     //console.log(selectedContact)
@@ -139,7 +162,7 @@ export default function Contacts() {
     // console.log(currentUser)
     // console.log(currentUser?.uid)
 
-      
+
     //const updateContactInContactsAndDB = (updatingContact: Contact) => {     // ou selectedContact
     const updateContactInContactsAndDB = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
         console.log("updatingContact", id, keyAndValue)
@@ -147,7 +170,7 @@ export default function Contacts() {
         setContacts(updatedContactsInLocalList(contacts, id, keyAndValue))
         setFilteredContacts(updatedContactsInLocalList(filteredContacts, id, keyAndValue))
         updatDataOnFirebase(id, keyAndValue)
-    }  
+    }
 
     const updateWholeContactInContactsAndDB = (contactToUpdate: Contact) => {
         setContacts(updatedContactsInLocalListWithWholeContact(contacts, contactToUpdate))
@@ -155,7 +178,7 @@ export default function Contacts() {
         updatDataWholeContactOnFirebase(contactToUpdate)
 
         setIsContactCardDisplay(false)
-    }  
+    }
 
     const diplayContactCardToUpdate = (contact: Contact) => {
         setContactToDisplay(contact)
@@ -165,9 +188,9 @@ export default function Contacts() {
         setContactToDisplay(emptyContact)
         setIsContactCardDisplay(true)
     }
-   
 
-    React.useEffect(() => { 
+
+    React.useEffect(() => {
         //console.log("User Effect READ")
 
         getContactsFromDatabase(currentUser).then((contactsList) => {
@@ -176,47 +199,47 @@ export default function Contacts() {
             setAlerts(countContactsByAlertDates(contactsList))
             setLoading(false);
         });
-       
+
     }, [currentUser])
     // }, [currentUser?.uid])
-   
-    
+
+
     React.useEffect(() => {
         setAlerts(countContactsByAlertDates(filteredContacts))
     }, [filteredContacts])
-   
+
 
     React.useEffect(() => {
-       // console.log("User Effect RECHERCHE")
-        
+        // console.log("User Effect RECHERCHE")
+
         //if (contactsSearchCriteria && (contactsSearchCriteria?.businessName !== '' || contactsSearchCriteria.businessCity !== '' || contactsSearchCriteria.businessType.length > 0)) {      // metre diff de empty !!!!!!!!!!
-        if (JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)) {        
+        if (JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)) {
             const searchOnCity = contactsSearchCriteria.businessCity.length > 0 ? contactsSearchCriteria.businessCity : ['']
             const searchOnType = contactsSearchCriteria.businessType.length > 0 ? contactsSearchCriteria.businessType : ['']
 
             const searchedContacts: Contact[] = contacts.filter((contact) => {
                 return (
-                    contact.businessName.toLowerCase().includes(contactsSearchCriteria.businessName.toLowerCase()) 
+                    contact.businessName.toLowerCase().includes(contactsSearchCriteria.businessName.toLowerCase())
                     //&& contact.businessCity.toLowerCase().includes(contactsSearchCriteria.businessCity.toLowerCase()
 
                     // SOME() => au moins une des valeurs du tableau doit être vraie
                     && searchOnCity.some((city) => contact.businessCity.toLowerCase().includes(city.toLowerCase()))       // toLowerCase ???
                     && searchOnType.some((type) => contact.businessType.toLowerCase().includes(type.toLowerCase()))
-                        // {
-                        //     console.log(type)
-                        //     console.log(contact.businessType)
-                        //     return contact.businessType.toLowerCase().includes(type.toLowerCase())
-                        // }
-                    )
+                    // {
+                    //     console.log(type)
+                    //     console.log(contact.businessType)
+                    //     return contact.businessType.toLowerCase().includes(type.toLowerCase())
+                    // }
+                )
             })
             console.log(searchedContacts)
             setFilteredContacts(searchedContacts)
         } else {
             setFilteredContacts(contacts)
-        }      
+        }
     }, [
         //emptySearchCriteria,      // Boucle infinie !!! Pourquoi ??? Pourtant sa valeur ne change jamais... 
-        contactsSearchCriteria, 
+        contactsSearchCriteria,
         //contacts  
     ])      // !!!!!!!!!!!!!!! laisser contact ? car si modif ça peut disparaitre !!!!!! NON on ne veut pas ! + boucle infinie !!!
 
@@ -231,243 +254,373 @@ export default function Contacts() {
 
 
 
+    // const [file, setFile] = React.useState<Blob | Uint8Array | ArrayBuffer | null>(null);
 
-    const storageRef = ref(storage);
-    //console.log(storageRef)
 
+    //     const storageRef = ref(storage);
+    // // //console.log(storageRef)
+    // const guadeloupeRef = ref(storage, 'guadeloupe.jpg');
+
+    // // uploadBytes(guadeloupeRef, file).then((snapshot) => {
+    // //     console.log('Uploaded a blob or file!');
+    // // });
+
+    // const [imgUrl, setImgUrl] = React.useState<string>("");
+    // const [progresspercent, setProgresspercent] = React.useState(0);
+
+    // const handleSubmit = (e) => {
+    //     e.preventDefault()
+    //     const file = e.target[0]?.files[0]
+    //     if (!file) return;
+    //     const storageRef = ref(storage, `files/${file.name}`);
+    //     const uploadTask = uploadBytesResumable(storageRef, file);
+
+    //     uploadTask.on("state_changed",
+    //         (snapshot) => {
+    //             const progress =
+    //                 Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+    //             setProgresspercent(progress);
+    //         },
+    //         (error) => {
+    //             alert(error);
+    //         },
+    //         () => {
+    //             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+    //                 setImgUrl(downloadURL)
+    //             });
+    //         }
+    //     );
+    // }
 
 
     return (
-        <Box sx={{ position:"relative", 
-        //marginTop:"2em"
-         }}>
-        {/* <React.Fragment sx={{ position:"absolute" }}> */} 
+        <Box sx={{
+            position: "relative",
+            //marginTop:"2em"
+        }}>
+
+            {/* <div className="App">
+                <form onSubmit={handleSubmit} className='form'>
+                    <input type='file' />
+                    <button type='submit'>Upload</button>
+                </form>
+                { !imgUrl && <div className='outerbar'>
+                    <div className='innerbar' style={{ width: `${progresspercent}%` }}>{progresspercent}%</div>
+                </div>
+                }
+                { imgUrl && <img src={imgUrl} alt='uploaded file' height={200} /> }
+            </div> */}
+
+            {/* <MuiFileInput
+                    value={file}
+                    //multiple={true}
+                    onChange={(file) => setFile(file)}
+                //onChange={handleChangeFile} 
+                /> */}
+            {/* <Image src={guadeloupeRef} alt="Guadeloupe" layout="fill" objectFit="cover" quality={100} /> */}
+
+            {/* <React.Fragment sx={{ position:"absolute" }}> */}
 
             {/* /////////////////////// ContactCart /////////////////////// */}
-            {isContactCardDisplay  && <ContactCard contact={contactToDisplay} 
-            //updateContact={setContactToDisplay} 
-            updateContact={updateWholeContactInContactsAndDB}
-            // updateContact={() => {console.log("updateContact")}} 
-            contactCardDisplayStatus={isContactCardDisplay} setContactCardDisplayStatus={setIsContactCardDisplay} />  }
-           
+            {/* {isContactCardDisplay && <ContactCard contact={contactToDisplay}
+                //updateContact={setContactToDisplay} 
+                updateContact={updateWholeContactInContactsAndDB}
+                // updateContact={() => {console.log("updateContact")}} 
+                contactCardDisplayStatus={isContactCardDisplay} setContactCardDisplayStatus={setIsContactCardDisplay} />} */}
 
 
-            {/* <Image */}
-            <Typography variant="h3" component="h1" sx={{ 
-                //margin:"50px" 
-            }} >Application de gestion de contacts</Typography>
+
+            {/* <Typography variant="h3" component="h1" sx={{
+                //margin:"50px"
+                marginLeft:"20px" 
+            }} >Application de gestion de contacts</Typography> */}
 
             {/* /////////////////////// Info USER /////////////////////// */}
-            <Box sx={{ position:"absolute", right:0, top:0  }} ><AuthDetails /></Box>            
+            <Box sx={{ position: "absolute", right: "5px", top: 0 }} ><AuthDetails /></Box>
             {/* On affiche le nom de l'utilisateur */}
             {/* <Typography variant="h3" component="div" gutterBottom>User Auth = {currentUser?.email}</Typography> */}
 
             {loading
-            ? <Container>Chargement...</Container>
-            : currentUser
-                ? <Box sx={{ marginTop:"20px" }} >
-                    
-                    {/* /////////////////////// Pour Version ESSAI /////////////////////// */}
-                    <Box sx={{ display: "flex", justifyContent: "space-around", padding: "10px", border: "solid 3px blue", borderRadius: "10px" }}>
-                        <Typography component="div" style={{ display: "block", width: "360px" }} >Version TEST : Ajouter contacts TEST ou TOUT supprimer : </Typography>
-                        <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>Ajouter Contacts Test</Button>
-                        <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
-                        <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button>
-                        <Button variant="contained" color='error' sx={{ width:"300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUser)}>Supprimer tous mes contacts</Button>
-                        {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer toutes les données !!!</Button> */}
+                ? <Container>Chargement...</Container>
+                : !currentUser
+                    //  {/* ///////// CONNEXION / INSCRIPTION ///////// */}
+                    ? <Box sx={{
+                        display: "flex", justifyContent: "space-around", margin: "20px", padding: "20px",
+                        //border: "solid 3px blue", borderRadius: "10px" 
+                    }}>
+                        {/* https://www.youtube.com/watch?v=f3Whk3hfd7I&ab_channel=LikeWD */}
+                        {/* Connexion */}
+                        <SignIn />
+                        {/* Inscription */}
+                        {/* <UserAuthContextProvider> */}
+                        <SignUp />
+                        {/* </UserAuthContextProvider> */}
                     </Box>
+                    
+                    : <Box sx={{ marginTop: "20px" }} >
 
-                    {/* /////////////////////// Pour REALTIME DB /////////////////////// */}
-                    {/* <input type="text" value={todo} onChange={handleTodoChange} />
+                        {/* /////////////////////// Pour Version ESSAI /////////////////////// */}
+                        <Box sx={{ display: "flex", justifyContent: "space-around", padding: "10px", border: "solid 3px blue", borderRadius: "10px", marginBottom:"10px", width:"calc(100vw - 200px)" }}>
+                            <Typography component="div" style={{ display: "block", 
+                            //width: "360px" 
+                            }} >Pour Version TEST : </Typography>
+                            <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>Ajouter Contacts Test</Button>
+                            <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
+                            <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button>
+                            <Button variant="contained" color='error' sx={{ width: "300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUser)}>Supprimer tous mes contacts</Button>
+                            {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer toutes les données !!!</Button> */}
+                        </Box>
+
+                        {/* /////////////////////// Pour REALTIME DB /////////////////////// */}
+                        {/* <input type="text" value={todo} onChange={handleTodoChange} />
                     <Button variant="contained" onClick={writeContactData2}>Ajouter dans REALTIME DB</Button> */}
 
-                    {/* /////////////////////// Pour faire des ONGLETS /////////////////////// */}
-                    {/* Impossible mettre ce qu'on veut dans les TAB car => ERROR => app-index.js:31 Warning: validateDOMNesting(...): <p> cannot appear as a descendant of <p>.*/}
-                    {/* <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                            <Tab label="Item One" {...a11yProps(0)} />
-                            <Tab label="Item Two" {...a11yProps(1)} />
-                        </Tabs>
-                    </Box>
-                    <CustomTabPanel value={value} index={0}>
-                        <FormControl sx={{ my: 2 }}>
-                            <TextField id="outlined-basic" label="Nom de l'entreprise à ajouter aux contacts" variant="outlined" value="coucou" />
-                        </FormControl>
-                    </CustomTabPanel>
-                    <CustomTabPanel value={value} index={1}>
-                        <FormControl sx={{ my: 2 }}>
-                            <TextField id="outlined-basic" label="Nom de l'entreprise à ajouter aux contacts" variant="outlined" value="coucou2" />
-                        </FormControl>
-                    </CustomTabPanel> */}
+    {/* ///////////////////////ONGLETS- Tabs /////////////////////// */}
+                        <Box
+                            sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100vh'
+                        }}
+                        >
+                            <Tabs
+                                orientation="vertical"
+                                variant="scrollable"
+                                value={tabValue}
+                                onChange={handleChange}
+                                aria-label="Vertical tabs example"
+                                sx={{ borderRight: 1, borderColor: 'divider', width: "120px" }}
+                            >
+                                {titles.map((title, index) => (
+                                    <Tab key={index} label={title.label} icon={title.icon} {...a11yProps(index)} />
+                                ))}                                
+                            </Tabs>
+
+                            {/* ///////// LISTE DE CONTACTS + recherche) ///////// */}
+                            <TabPanel key="0" value={tabValue} index={0}  >
+                                <Box sx={{ display: "flex", alignItems: "center", margin: "25px", }}>
+                                    <Typography variant="h5">
+                                        {isSearchCriteriaEmpty
+                                            ? `Recherche : ${filteredContacts.length} contacts trouvé(s) (sur ${contacts.length})`
+                                            : `${contacts.length} contacts : `
+                                        }
+                                    </Typography>
+                                    <Typography color="warning.main" sx={{ px: 2 }}>
+                                        {alerts.nbContactsWithDatePassed} relance(s) passée(s)
+                                    </Typography>
+                                    <Typography color="primary.main">
+                                        et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jour(s)
+                                    </Typography>
+                                </Box>
+                                <SearchContactsForm onSearchChange={setContactsSearchCriteria} emptySearchCriteria={emptySearchCriteria} contacts={contacts} />
+
+                                <ContactsTable
+                                    //contacts={contacts}
+                                    contacts={filteredContacts}
+                                    selectedContactId={selectedContact.id}
+                                    setSelectedContact={setSelectedContact}
+                                    handleUpdateContact={updateContactInContactsAndDB}
+                                    handleDeleteContact={deleteDataOnFirebaseAndReload}
+                                    diplayContactCard={diplayContactCardToUpdate}
+                                />
+                            </TabPanel>
+
+                            {/* ///////// CALENDRIER ///////// */}
+                            <TabPanel key="1" value={tabValue} index={1}>
+                                <Calendar
+                                    //contacts={fakeContactsData}
+                                    //contacts={filteredContacts}   // ????????? 
+                                    contacts={contacts}
+                                    diplayContactCardToUpdate={diplayContactCardToUpdate}
+                                />
+                            </TabPanel>
+
+                            {/* ///////// RECHERCHE DE CONTACTS ///////// */}
+                            <TabPanel key="2" value={tabValue} index={2}>
+                                  <Accordion sx={{
+                                    //my: 2
+                                }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header" >
+                                        <Typography
+                                            color="secondary.light"
+                                            sx={{ bgcolor: 'primary.main', p: 2, borderRadius: 1 }}
+                                        >Nouveau Contact avec recherche (cliquer pour ouvrir et pour fermer)</Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <ContactForm emptyContact={emptyContact} addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)} />
+                                    </AccordionDetails>
+                                </Accordion>
+
+                                <Accordion sx={{ my: 2 }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header" >
+                                        <Typography
+                                            color="secondary.light"
+                                            sx={{ bgcolor: 'primary.main', p: 2, borderRadius: 1 }}
+                                        >Nouveau Contact en partant de zéro (cliquer pour ouvrir et pour fermer)</Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <ContactCard addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)} contact={emptyContact} />
+                                    </AccordionDetails>
+                                </Accordion>
+                            </TabPanel>
+
+                            {/* ///////// Un CONTACT ///////// */}
+                            <TabPanel key="3" value={tabValue} index={3}>
+                                {isContactCardDisplay && <ContactCard contact={contactToDisplay}
+                                    //updateContact={setContactToDisplay} 
+                                    updateContact={updateWholeContactInContactsAndDB}
+                                    // updateContact={() => {console.log("updateContact")}} 
+                                    contactCardDisplayStatus={isContactCardDisplay} setContactCardDisplayStatus={setIsContactCardDisplay} />}
+                            </TabPanel>
+                        </Box>
 
 
-                    {/* /////////////////////// On affiche les FORMULAIRES DE CREATION CONTACTS -ou- LA RECHERCHE + LISTE DE CONTACTS /////////////////////// */}
-                    {displayNewContactForms
-                    ? <Box>              
-                        <Accordion sx={{
-                            //my: 2
-                        }}>
-                            <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header" >
-                                <Typography
-                                    color="secondary.light"
-                                    sx={{ bgcolor: 'primary.main', p: 2, borderRadius: 1 }}
-                                >Nouveau Contact avec recherche (cliquer pour ouvrir et pour fermer)</Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <ContactForm emptyContact={emptyContact} addContact={(e) => addContactOnFirebaseAndReload (currentUser, e)} />
-                            </AccordionDetails>
-                        </Accordion>
+                        {/* /////////////////////// On affiche les FORMULAIRES DE CREATION CONTACTS -ou- LA RECHERCHE + LISTE DE CONTACTS /////////////////////// */}
+                        {displayNewContactForms
+                            ? <Box>
+                                {/* <Accordion sx={{
+                                    //my: 2
+                                }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header" >
+                                        <Typography
+                                            color="secondary.light"
+                                            sx={{ bgcolor: 'primary.main', p: 2, borderRadius: 1 }}
+                                        >Nouveau Contact avec recherche (cliquer pour ouvrir et pour fermer)</Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <ContactForm emptyContact={emptyContact} addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)} />
+                                    </AccordionDetails>
+                                </Accordion>
 
-                        <Accordion sx={{ my: 2 }}>
-                            <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header" >
-                                <Typography
-                                    color="secondary.light"
-                                    sx={{ bgcolor: 'primary.main', p: 2, borderRadius: 1 }}
-                                >Nouveau Contact en partant de zéro (cliquer pour ouvrir et pour fermer)</Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <ContactCard addContact={(e) => addContactOnFirebaseAndReload (currentUser, e)} contact={emptyContact} />
-                            </AccordionDetails>
-                        </Accordion>
-                        <Button variant="contained" color="secondary" onClick={() => setDisplayNewContactForms(!displayNewContactForms)}>Tableau des contacts</Button>
-                    </Box>
+                                <Accordion sx={{ my: 2 }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header" >
+                                        <Typography
+                                            color="secondary.light"
+                                            sx={{ bgcolor: 'primary.main', p: 2, borderRadius: 1 }}
+                                        >Nouveau Contact en partant de zéro (cliquer pour ouvrir et pour fermer)</Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <ContactCard addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)} contact={emptyContact} />
+                                    </AccordionDetails>
+                                </Accordion>
+                                <Button variant="contained" color="secondary" onClick={() => setDisplayNewContactForms(!displayNewContactForms)}>Tableau des contacts</Button> */}
+                            </Box>
 
-                    : <Box sx={{ marginTop:"2em", position:"relative"}} >
-                    
-                         {/* ///////// CALENDRIER ///////// */}
-                         <Accordion sx={{ bgcolor: 'ochre.dark', //width:"80%", margin:"auto",
-                            //my: 2
-                        }}>
-                            <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header" >
-                                    Calendrier (cliquer pour ouvrir et pour fermer)
-                                {/* <Typography  //color="secondary.light"
-                                    sx={{ p: 2, borderRadius: 1 }} >Recherche (cliquer pour ouvrir et pour fermer)</Typography> */}
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <Paper sx={{ 
-                                    //margin: "2em", 
-                                    padding: "1em", 
-                                    bgcolor: 'ochre.light',
-                                    //position: "relative" 
-                                    }}
-                                >
-                                      <Calendar 
-                                        //contacts={fakeContactsData}
-                                        //contacts={filteredContacts}   // ????????? 
-                                        contacts={contacts} 
-                                        diplayContactCardToUpdate={diplayContactCardToUpdate}        
-                                      />
-                                </Paper>
-                            </AccordionDetails>
-                        </Accordion>
-                       
-                       {/* ///////// RECHERCHE DE CONTACTS ///////// */}
-                        <Accordion sx={{ bgcolor: 'primary.light', //width:"80%", margin:"auto",
-                            //my: 2
-                        }}>
-                            <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header" >
-                                    Recherche (cliquer pour ouvrir et pour fermer)
-                                {/* <Typography  //color="secondary.light"
-                                    sx={{ p: 2, borderRadius: 1 }} >Recherche (cliquer pour ouvrir et pour fermer)</Typography> */}
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <Paper sx={{ 
-                                    //margin: "2em", 
-                                    padding: "1em", 
-                                    bgcolor: 'lightCyan.light',
-                                    //position: "relative" 
-                                    }}
-                                >
-                                    <SearchContactsForm onSearchChange={setContactsSearchCriteria} emptySearchCriteria = {emptySearchCriteria} contacts={contacts} />                                   
-                                    {/* <Typography variant="h5" component="div" sx={{ p: 2 }}>{filteredContacts.length} contacts trouvés (sur {contacts.length})</Typography> */}
-                                </Paper>
-                            </AccordionDetails>
-                        </Accordion>
+                            : <Box sx={{ marginTop: "2em", position: "relative" }} >
 
-                       
+                                {/* ///////// CALENDRIER ///////// */}
+                                {/* <Accordion sx={{
+                                    bgcolor: 'ochre.dark', //width:"80%", margin:"auto",
+                                    //my: 2
+                                }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header" >
+                                        Calendrier (cliquer pour ouvrir et pour fermer)
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Paper sx={{
+                                            //margin: "2em", 
+                                            padding: "1em",
+                                            bgcolor: 'ochre.light',
+                                            //position: "relative" 
+                                        }}
+                                        >
+                                            <Calendar
+                                                //contacts={fakeContactsData}
+                                                //contacts={filteredContacts}   // ????????? 
+                                                contacts={contacts}
+                                                diplayContactCardToUpdate={diplayContactCardToUpdate}
+                                            />
+                                        </Paper>
+                                    </AccordionDetails>
+                                </Accordion> */}
 
-                        {/* /////////////////////// Pour EFFETS ????? /////////////////////// */}
-                        {/* <Fade component="p" in={!displayNewContactForms}>
+                                {/* ///////// RECHERCHE DE CONTACTS ///////// */}
+                                {/* <Accordion sx={{
+                                    bgcolor: 'primary.light', //width:"80%", margin:"auto",
+                                    //my: 2
+                                }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header" >
+                                        Recherche (cliquer pour ouvrir et pour fermer)
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Paper sx={{
+                                            //margin: "2em", 
+                                            padding: "1em",
+                                            bgcolor: 'lightCyan.light',
+                                            //position: "relative" 
+                                        }}
+                                        >
+                                            <SearchContactsForm onSearchChange={setContactsSearchCriteria} emptySearchCriteria={emptySearchCriteria} contacts={contacts} />
+                                        </Paper>
+                                    </AccordionDetails>
+                                </Accordion> */}
+
+
+
+                                {/* /////////////////////// Pour EFFETS ????? /////////////////////// */}
+                                {/* <Fade component="p" in={!displayNewContactForms}>
                             <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
                         </Fade>
                         <Collapse orientation="horizontal" in={!displayNewContactForms}>
                             <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
-                        </Collapse> */}                       
+                        </Collapse> */}
 
-                        <Box sx={{ 
-                            marginTop:"20px", 
-                            position:"relative"}} >
-                            <Box sx={{ display:"flex", alignItems:"center", marginBottom:"10px", }}>
-                                <Typography variant="h5">
-                                    {isSearchCriteriaEmpty
-                                        ? `Recherche : ${filteredContacts.length} contacts trouvé(s) (sur ${contacts.length})`
-                                        : `${contacts.length} contacts : `
-                                    }
-                                </Typography>
-                                <Typography color="warning.main"  sx={{ px: 2 }}>
-                                    {alerts.nbContactsWithDatePassed} relance(s) passée(s)
-                                </Typography>
-                                <Typography color="primary.main">
-                                    et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jour(s)
-                                </Typography>
-                            </Box>
-                            
-                            <Box sx={{ position:"absolute", right:0, top:0  }} >
-                                <Tooltip title="Ajouter un contact (avec ou sans recherche)" placement="left">
-                                    <IconButton aria-label="edit" color="primary" 
-                                        onClick={() => setDisplayNewContactForms(!displayNewContactForms)}
-                                        //onClick={diplayContactCardNew}
-                                    >
-                                        {/* <Typography>A voir quel icon on garde : </Typography>
+                                <Box sx={{
+                                    marginTop: "20px",
+                                    position: "relative"
+                                }} >
+                                    
+
+                                    {/* <Box sx={{ position: "absolute", right: 0, top: 0 }} >
+                                        <Tooltip title="Ajouter un contact (avec ou sans recherche)" placement="left">
+                                            <IconButton aria-label="edit" color="primary"
+                                                onClick={() => setDisplayNewContactForms(!displayNewContactForms)}
+                                            //onClick={diplayContactCardNew}
+                                            >
+                                                <Typography>A voir quel icon on garde : </Typography>
                                         <PersonAddRoundedIcon fontSize="large" />                             
                                         <PersonSearchRoundedIcon fontSize="large" />
-                                        <AddIcon fontSize="large" /> */}
-                                        <Typography>Nouveau contact</Typography>
-                                        <AddCircleOutlineIcon fontSize="large" />
-                                    </IconButton>
-                                </Tooltip>
-                            </Box>
-                            {/* ///////// LISTE DE CONTACTS (avec ou sans recherche) ///////// */}
-                            <ContactsTable
-                                //contacts={contacts}
-                                contacts={filteredContacts}
-                                selectedContactId={selectedContact.id}
-                                setSelectedContact={setSelectedContact}
-                                handleUpdateContact={updateContactInContactsAndDB}
-                                handleDeleteContact={deleteDataOnFirebaseAndReload}
-                                diplayContactCard={diplayContactCardToUpdate}
-                            //setContacts={setContacts}
-                            //orderedBy={orderedBy} 
-                            />
-                            {/* <TestTableSortLabel2 contacts={contacts} selectedContactId={selectedContact.id} setSelectedContact={setSelectedContact} handleUpdateContact={updateContactInContactsAndDB} handleDeleteContact={deleteContact} /> */}
-                        </Box>
-                    </Box>
-                    }
-                </Box>
+                                        <AddIcon fontSize="large" />
+                                                <Typography>Nouveau contact</Typography>
+                                                <AddCircleOutlineIcon fontSize="large" />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Box> */}
 
-                : <Box sx={{ display: "flex", justifyContent: "space-around", margin: "20px", padding: "20px", 
-                //border: "solid 3px blue", borderRadius: "10px" 
-                }}>
-                    {/* https://www.youtube.com/watch?v=f3Whk3hfd7I&ab_channel=LikeWD */}
-                    {/* Connexion */}
-                    <SignIn />
-                    {/* Inscription */}
-                    {/* <UserAuthContextProvider> */}
-                    <SignUp />
-                    {/* </UserAuthContextProvider> */}
-                </Box>
+                                    {/* ///////// LISTE DE CONTACTS (avec ou sans recherche) ///////// */}
+                                    {/* <ContactsTable
+                                        //contacts={contacts}
+                                        contacts={filteredContacts}
+                                        selectedContactId={selectedContact.id}
+                                        setSelectedContact={setSelectedContact}
+                                        handleUpdateContact={updateContactInContactsAndDB}
+                                        handleDeleteContact={deleteDataOnFirebaseAndReload}
+                                        diplayContactCard={diplayContactCardToUpdate}
+                                    //setContacts={setContacts}
+                                    //orderedBy={orderedBy} 
+                                    /> */}
+                                    {/* <TestTableSortLabel2 contacts={contacts} selectedContactId={selectedContact.id} setSelectedContact={setSelectedContact} handleUpdateContact={updateContactInContactsAndDB} handleDeleteContact={deleteContact} /> */}
+                                </Box>
+                            </Box>
+                        }
+                    </Box>
+
+                   
             }
 
         </Box>

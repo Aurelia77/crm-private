@@ -30,7 +30,8 @@ body {
 
 body {
   background-color: #b8fbff;
-  font-family: cursive 
+  font-family: cursive;
+  margin: 0;
 }
 
 /* .demo{
