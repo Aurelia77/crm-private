@@ -28,6 +28,7 @@ const MenuSelectProps = {
 export default function SearchContactsForm({ onSearchChange, emptySearchCriteria, contacts }: SearchFormProps) {
     const [search, setSearch] = React.useState<SearchContactCriteria>({ isClient: false,  businessName: '', businessCity: [], businessType: [] });
 
+    console.log(search)
     // const businessTypes = ["Camping", "Hôtel", "Congiergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre"];
 
     const allDifferentsBusinessTypeValues = getUniqueSortedValues(contacts, 'businessType')
@@ -76,7 +77,7 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
             //gap: "70px"
          }}>
                 <Typography variant="h6" gutterBottom component="div">Recherche</Typography>
-                <FormControlLabel 
+                {/* <FormControlLabel 
                     control={
                         <Switch
                         checked={search.isClient}
@@ -86,7 +87,7 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
                     />
                 } 
                     label="Clients ?" 
-                />
+                /> */}
                
                 <TextField id="search-name" label="Nom" name='businessName' value={search.businessName} onChange={handleChangeText}
                     sx={{ width: '200px', marginRight: "30px" }} />

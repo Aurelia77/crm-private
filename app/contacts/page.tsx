@@ -222,6 +222,8 @@ export default function Contacts() {
                     contact.businessName.toLowerCase().includes(contactsSearchCriteria.businessName.toLowerCase())
                     //&& contact.businessCity.toLowerCase().includes(contactsSearchCriteria.businessCity.toLowerCase()
 
+                    && contactsSearchCriteria.isClient === contact.isClient
+
                     // SOME() => au moins une des valeurs du tableau doit être vraie
                     && searchOnCity.some((city) => contact.businessCity.toLowerCase().includes(city.toLowerCase()))       // toLowerCase ???
                     && searchOnType.some((type) => contact.businessType.toLowerCase().includes(type.toLowerCase()))
