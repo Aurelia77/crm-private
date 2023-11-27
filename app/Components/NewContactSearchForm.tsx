@@ -54,14 +54,14 @@ const CustomedTextField = ({ contactInfo, value, setValue }: { contactInfo: Cont
     return <TextField type="text" variant='outlined' color='secondary' label="First Name" onChange={e => setValue({ ...contactInfo, value: e.target.value })} value={value} fullWidth required />
 }
 
-type ContactForm = {
+type NewContactSearchForm = {
     emptyContact: Contact,
     addContact: (contact: Contact) => void
 }
 
-export default function ContactForm({    //contacts, setContacts }: { contacts: Contact[], setContacts: Function
+export default function NewContactSearchForm({    //contacts, setContacts }: { contacts: Contact[], setContacts: Function
     emptyContact,
-    addContact }: ContactForm) {
+    addContact }: NewContactSearchForm) {
     const token = '613dca81-d71e-3b02-ac1a-b2170d2084c6'
     const apiAccessUrl = "https://api.insee.fr/entreprises/sirene/V3/siret?q="
 
@@ -408,7 +408,6 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
 
     return (
         <React.Fragment>    
-            <Typography variant="h3" gutterBottom>Recherche de contact</Typography>
             <Stack //sx={{ border: 3, borderColor: 'primary.main' }}
                 //sx={{ justifyContent:"space-around" }} 
                 justifyContent="flex-start" direction="row"
@@ -458,7 +457,7 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
                             // inputProps={{ maxLength: 5 }}    // Non car compte les espaces
                             />
                         </Box> */}
-                        <p>Commencer à écrire (ex : spectacle)</p>
+                        {/* <p>Commencer à écrire (ex : spectacle)</p>
                         <Autocomplete id="combo-box-demo" options={codesNaf} sx={{ width: 300 }}
                             //onInputChange={(e) => handleOnChangbusinessActivitySearch(codesNaf.id)}       // NON
                             onInputChange={handleOnChangbusinessActivitySearch}
@@ -467,7 +466,7 @@ export default function ContactForm({    //contacts, setContacts }: { contacts: 
                                 return <li {...props} key={businessActivity.id} data-code_businessActivity={businessActivity.id} color="primary.main" >{businessActivity.label}</li>
                             }}
                             renderInput={(params) => <TextField {...params} label="Activité" placeholder="FilmPlaceholder" />}     // si le paramètre options est un objet => affiche les labels de l'objet
-                        />
+                        /> */}
                     </Stack>
                 </FormControl>
                 {/* } */}

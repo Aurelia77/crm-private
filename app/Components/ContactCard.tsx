@@ -22,11 +22,14 @@ type ContactCardProps = {
     contact: Contact ; 
     addContact?: (contact: Contact) => void
     updateContact?: (contact: Contact) => void
-    contactCardDisplayStatus?: boolean
-    setContactCardDisplayStatus?: (status: boolean) => void
+    //contactCardDisplayStatus?: boolean
+    //setContactCardDisplayStatus?: (status: boolean) => void
 }
 
-export default function ContactCard({ contact, addContact, updateContact, contactCardDisplayStatus=true, setContactCardDisplayStatus }: ContactCardProps) {
+export default function ContactCard({ contact, addContact, updateContact, 
+    //contactCardDisplayStatus=true, 
+    //setContactCardDisplayStatus
+ }: ContactCardProps) {
 
     const [contactToAddOrUpdate, setContactToAdd] = React.useState<Contact>(contact)
 
@@ -71,23 +74,15 @@ export default function ContactCard({ contact, addContact, updateContact, contac
          }}        // my = 0.5rem (donc 1/2 taille de la police de la racine (em pour l'élément))
         >
             {/* A changer !!!!!!!! Mettre cette val de partout !!! */}
-            { setContactCardDisplayStatus &&
-            <Box sx={{ position: "absolute", right: "200px", top: 0,
+            {/* <Box sx={{ position: "absolute", right: "200px", top: 0,
                 zIndex: 1000,
              }} >
-                {/* <Tooltip title="Ajouter un contact (avec ou sans recherche)" placement="left"> */}
                     <IconButton aria-label="edit" color="primary" 
                     onClick={() => setContactCardDisplayStatus(!contactCardDisplayStatus)}
                     >
-                        {/* <Typography>A voir quel icon on garde : </Typography>
-                                        <PersonAddRoundedIcon fontSize="large" />                             
-                                        <PersonSearchRoundedIcon fontSize="large" />
-                                        <AddIcon fontSize="large" /> */}
                         <Typography>Fermer</Typography>
-                        {/* <AddCircleOutlineIcon fontSize="large" /> */}
                     </IconButton>
-                {/* </Tooltip> */}
-            </Box>}
+            </Box> */}
             <FormControl
                 sx={{ p: 2, 
                 display: 'flex'

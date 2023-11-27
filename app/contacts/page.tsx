@@ -28,7 +28,7 @@ import { Container, Tooltip, Paper } from '@mui/material';
 import { TextField, Select, MenuItem, Autocomplete, ListItem, List, InputLabel, Tabs, Tab, Box as CustomBox } from '@mui/material'
 
 
-import ContactForm from '../Components/ContactForm';
+import NewContactSearchForm from '../Components/NewContactSearchForm';
 import ContactCard from '../Components/ContactCard';
 import ContactsTable from '../Components/ContactsTable';
 import SignIn from '../Components/auth/SignIn';
@@ -73,6 +73,7 @@ import Diversity3Icon from '@mui/icons-material/Diversity3';
 import PersonIcon from '@mui/icons-material/Person';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 
 interface TabPanelProps {
@@ -139,9 +140,14 @@ export default function Contacts() {
     const isSearchCriteriaEmpty = JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)
 
     const [tabValue, setTabValue] = React.useState(0);
+    const [tabNewContactValue, setTabNewContactValue] = React.useState(0);
+                                    
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
+    };
+    const handleChangeTabNewContact = (event: React.SyntheticEvent, newValue: number) => {
+        setTabNewContactValue(newValue);
     };
 
     const titles = [
@@ -149,6 +155,7 @@ export default function Contacts() {
         { label: "Calendrier", icon: <CalendarMonthIcon /> },
         { label: "Nouveau", icon: <PersonAddIcon /> },
         { label: "Contact", icon: <PersonIcon /> },
+        { label: "Admin", icon: <SettingsIcon /> },
     ]
    
 
@@ -177,12 +184,15 @@ export default function Contacts() {
         setFilteredContacts(updatedContactsInLocalListWithWholeContact(contacts, contactToUpdate))
         updatDataWholeContactOnFirebase(contactToUpdate)
 
-        setIsContactCardDisplay(false)
+        setTabValue(0)
+        setContactToDisplay(emptyContact)
+        //setIsContactCardDisplay(false)
     }
 
     const diplayContactCardToUpdate = (contact: Contact) => {
         setContactToDisplay(contact)
         setIsContactCardDisplay(true)
+        setTabValue(3)
     }
     const diplayContactCardNew = () => {
         setContactToDisplay(emptyContact)
@@ -387,7 +397,7 @@ export default function Contacts() {
                                 variant="scrollable"
                                 value={tabValue}
                                 onChange={handleChange}
-                                aria-label="Vertical tabs example"
+                                aria-label="Vertical tabs"
                                 sx={{ borderRight: 1, borderColor: 'divider', width: "120px" }}
                             >
                                 {titles.map((title, index) => (
@@ -436,46 +446,52 @@ export default function Contacts() {
 
                             {/* ///////// RECHERCHE DE CONTACTS ///////// */}
                             <TabPanel key="2" value={tabValue} index={2}>
-                                  <Accordion sx={{
-                                    //my: 2
-                                }}>
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header" >
-                                        <Typography
-                                            color="secondary.light"
-                                            sx={{ bgcolor: 'primary.main', p: 2, borderRadius: 1 }}
-                                        >Nouveau Contact avec recherche (cliquer pour ouvrir et pour fermer)</Typography>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        <ContactForm emptyContact={emptyContact} addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)} />
-                                    </AccordionDetails>
-                                </Accordion>
+                                <Tabs
+                                    //orientation="vertical"
+                                    // variant="scrollable"
+                                    value={tabNewContactValue}
+                                    onChange={handleChangeTabNewContact}
+                                    aria-label="Horizontal tabs"
+                                    //sx={{ borderRight: 1, borderColor: 'divider', width: "120px" }}
+                                >
 
-                                <Accordion sx={{ my: 2 }}>
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header" >
-                                        <Typography
-                                            color="secondary.light"
-                                            sx={{ bgcolor: 'primary.main', p: 2, borderRadius: 1 }}
-                                        >Nouveau Contact en partant de zéro (cliquer pour ouvrir et pour fermer)</Typography>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        <ContactCard addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)} contact={emptyContact} />
-                                    </AccordionDetails>
-                                </Accordion>
+                                    <Tab key={0} label="Recherche INSEE"
+                                    //icon={title.icon}
+                                    // {...a11yProps(index)} 
+                                    />
+                                    <Tab key={1} label="Recherche de zéro"
+                                    //icon={title.icon}
+                                    // {...a11yProps(index)} 
+                                    />
+                                </Tabs>
+
+                                {/* ///////// Recherche INSEE ///////// */}
+                                <TabPanel key="0" value={tabNewContactValue} index={0}  >
+                                    <NewContactSearchForm emptyContact={emptyContact} addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)} />
+                                </TabPanel>
+
+                                {/* ///////// Recherche de ZERO ///////// */}
+                                <TabPanel key="1" value={tabNewContactValue} index={1}  >
+                                    <ContactCard addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)} contact={emptyContact} />
+                                </TabPanel>
                             </TabPanel>
 
                             {/* ///////// Un CONTACT ///////// */}
                             <TabPanel key="3" value={tabValue} index={3}>
-                                {isContactCardDisplay && <ContactCard contact={contactToDisplay}
+                                <ContactCard contact={contactToDisplay}
                                     //updateContact={setContactToDisplay} 
                                     updateContact={updateWholeContactInContactsAndDB}
                                     // updateContact={() => {console.log("updateContact")}} 
-                                    contactCardDisplayStatus={isContactCardDisplay} setContactCardDisplayStatus={setIsContactCardDisplay} />}
+                                    //contactCardDisplayStatus={isContactCardDisplay} 
+                                    //setContactCardDisplayStatus={setIsContactCardDisplay} 
+                                />
+                            </TabPanel>
+    
+                            {/* ///////// ADMIN ///////// */}
+                            <TabPanel key="4" value={tabValue} index={4}>
+                                <Typography variant="h5" component="div" sx={{ p: 2 }}>ADMIN</Typography>
+                                {/* <Typography variant="h5" component="div" sx={{ p: 2 }}>{currentUser.displayName}</Typography> */}
+                                <Typography variant="h5" component="div" sx={{ p: 2 }}>{currentUser.email}</Typography>                               
                             </TabPanel>
                         </Box>
 
