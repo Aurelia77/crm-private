@@ -266,43 +266,19 @@ export default function Contacts() {
 
 
 
-    // const [file, setFile] = React.useState<Blob | Uint8Array | ArrayBuffer | null>(null);
 
 
-    //     const storageRef = ref(storage);
-    // // //console.log(storageRef)
-    // const guadeloupeRef = ref(storage, 'guadeloupe.jpg');
+    const [file, setFile] = React.useState<Blob | Uint8Array | ArrayBuffer | null>(null);
 
-    // // uploadBytes(guadeloupeRef, file).then((snapshot) => {
-    // //     console.log('Uploaded a blob or file!');
-    // // });
+    const storageRef = ref(storage);
+    // //console.log(storageRef)
+    const guadeloupeRef = ref(storage, 'guadeloupe.jpg');
 
-    // const [imgUrl, setImgUrl] = React.useState<string>("");
-    // const [progresspercent, setProgresspercent] = React.useState(0);
+    // uploadBytes(guadeloupeRef, file).then((snapshot) => {
+    //     console.log('Uploaded a blob or file!');
+    // });
 
-    // const handleSubmit = (e) => {
-    //     e.preventDefault()
-    //     const file = e.target[0]?.files[0]
-    //     if (!file) return;
-    //     const storageRef = ref(storage, `files/${file.name}`);
-    //     const uploadTask = uploadBytesResumable(storageRef, file);
-
-    //     uploadTask.on("state_changed",
-    //         (snapshot) => {
-    //             const progress =
-    //                 Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-    //             setProgresspercent(progress);
-    //         },
-    //         (error) => {
-    //             alert(error);
-    //         },
-    //         () => {
-    //             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-    //                 setImgUrl(downloadURL)
-    //             });
-    //         }
-    //     );
-    // }
+   
 
 
     return (
@@ -311,24 +287,14 @@ export default function Contacts() {
             //marginTop:"2em"
         }}>
 
-            {/* <div className="App">
-                <form onSubmit={handleSubmit} className='form'>
-                    <input type='file' />
-                    <button type='submit'>Upload</button>
-                </form>
-                { !imgUrl && <div className='outerbar'>
-                    <div className='innerbar' style={{ width: `${progresspercent}%` }}>{progresspercent}%</div>
-                </div>
-                }
-                { imgUrl && <img src={imgUrl} alt='uploaded file' height={200} /> }
-            </div> */}
+           
 
             {/* <MuiFileInput
                     value={file}
                     //multiple={true}
                     onChange={(file) => setFile(file)}
                 //onChange={handleChangeFile} 
-                /> */}
+            /> */}
             {/* <Image src={guadeloupeRef} alt="Guadeloupe" layout="fill" objectFit="cover" quality={100} /> */}
 
             {/* <React.Fragment sx={{ position:"absolute" }}> */}

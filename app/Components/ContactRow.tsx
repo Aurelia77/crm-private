@@ -72,6 +72,8 @@ import { timeStamp } from 'console';
 
 import { timeStampObjToTimeStamp } from '../utils/toolbox';
 
+import { storage } from '../utils/firebase'
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 // Pour les smileys du RATING 
 // => (dans le composant car besoin de connaitre la donnée pour ajuster la taille en fonction)  NON car sinon il faut cliquer 2 fois pour que ça valide !!!  
@@ -338,9 +340,10 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         //newFile && handleUpdateContact({ ...contact, fileSent: [...contact.fileSent, newFile] })   
         //  newFile && handleUpdateContact({ ...contact, fileSent: newFile })
     }
-    const handleChangeLogo = (image: ChangeEvent<HTMLInputElement> | null) => {
-        console.log("image", image)
-        console.log("image", image?.target.value)
+    
+    const handleChangeLogo = (event: React.ChangeEvent<HTMLInputElement>) => {
+        console.log("image", event)
+        console.log("image", event.target.getAttribute('data-loaded-src'))
         //image && handleUpdateContact(contact.id, {key: attribut, value: !contact[attribut] } )
         //image && handleUpdateContact({ ...contact, logo: image.target.value })
         //image && handleUpdateContact({ ...contact, logo: image })
@@ -448,6 +451,34 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         />
     }
 
+
+    // const [imgUrl, setImgUrl] = React.useState<string>("");
+    // const [progresspercent, setProgresspercent] = React.useState(0);
+
+    // const handleSubmit = (e) => {
+    //     e.preventDefault()
+    //     const file = e.target[0]?.files[0]
+    //     if (!file) return;
+    //     const storageRef = ref(storage, `files/${file.name}`);
+    //     const uploadTask = uploadBytesResumable(storageRef, file);
+
+    //     uploadTask.on("state_changed",
+    //         (snapshot) => {
+    //             const progress =
+    //                 Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+    //             setProgresspercent(progress);
+    //         },
+    //         (error) => {
+    //             alert(error);
+    //         },
+    //         () => {
+    //             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+    //                 setImgUrl(downloadURL)
+    //             });
+    //         }
+    //     );
+    // }
+
     return (
         <StyledTableRow
             // className= "tableRowSelected"
@@ -540,13 +571,31 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             </StyledTableCell>
 
             {/* LOGO */}
-            <StyledTableCell component="td" scope="row" >
+            <StyledTableCell component="td" scope="row"
+            //sx={{ padding:0 }}  
+            >
                 {/* <TextField type="file" onChange={handleChangeLogo2} /> */}
-                {contact.logo && <Image src={contact.logo} alt={contact.businessName} width={50} height={50} />}
+                {contact.logo && <Image src={contact.logo} alt={contact.businessName} width={100} height={100} style={{ borderRadius: "10%" }}
+                //onClick={handleChangeLogo} 
+                />}
                 {/* <MuiFileInput
                     value={contact.logo}
                     //onChange={ (file) => handleChangeFile(file)} />
-                    onChange={handleChangeLogo} />                 */}
+                    onChange={handleChangeLogo} />
+                <div className="App">
+                    {!imgUrl && <div className='outerbar'>
+                        <div className='innerbar' style={{ width: `${progresspercent}%` }}>{progresspercent}%</div>
+                    </div>
+                    }
+                    <form onSubmit={handleSubmit} className='form'>
+                        <input type='file' />
+                        <button type='submit'>Upload</button>
+                    </form>
+                    <div style={{ display: "flex" }}>
+
+                        {imgUrl && <img src={imgUrl} alt='uploaded file' height={200} />}
+                    </div>
+                </div> */}
             </StyledTableCell>
 
             {/* businessName */}
