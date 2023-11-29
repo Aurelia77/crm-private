@@ -13,9 +13,16 @@ import Edit from '@mui/icons-material/Edit';
 import LocationOn from '@mui/icons-material/LocationOn';
 import { grey } from '@mui/material/colors';
 import Image from 'next/image'
-import { TextField, Stack, Button, FormControl, InputLabel, MenuItem, Autocomplete, Chip, ListItem, List , OutlinedInput, Checkbox, ListItemText} from '@mui/material'
+import { TextField, Stack, Button, FormControl, InputLabel, MenuItem, Autocomplete, Chip, ListItem, List , OutlinedInput, Checkbox, ListItemText, FormControlLabel, Tooltip} from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import {sortedBusinessCategories, contactTypes} from '../utils/toolbox'
+import dayjs, { Dayjs } from 'dayjs';       // npm install dayjs
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import ClearIcon from '@mui/icons-material/Clear';
+//import { ClearIcon, DatePicker } from '@mui/x-date-pickers';      // Bizarre ça a l'air de marcher aussi comme ça !!!???
+import { Timestamp } from 'firebase/firestore';
+import { useTheme } from '@mui/material/styles';
 
 
 type ContactCardProps = {
@@ -31,25 +38,34 @@ export default function ContactCard({ contact, addContact, updateContact,
     //setContactCardDisplayStatus
  }: ContactCardProps) {
 
-    const [contactToAddOrUpdate, setContactToAdd] = React.useState<Contact>(contact)
+    const [contactToAddOrUpdate, setContactToAddOrUpdate] = React.useState<Contact>(contact)
 
+    
+    const muiTheme = useTheme();
 
-
+///////////// Encore besoin ??????????
     React.useEffect(() => {
-        setContactToAdd(contact)    // Sinon quand on clic ne change rien !
+        setContactToAddOrUpdate(contact)    // Sinon quand on clic ne change rien !
     }, [contact])
 
-    //console.log(contactToAdd)
+    console.log("contactToAddOrUpdate", contactToAddOrUpdate)
+    console.log("dateOfNextCall", contactToAddOrUpdate.dateOfNextCall)
+    console.log("dateOfNextCall?.toDate()", contactToAddOrUpdate.dateOfNextCall?.toDate())
 
     const handleChangeText = (attribut: keyof Contact) => (event: React.ChangeEvent<HTMLInputElement>) => {
         //console.log("event.target.value", event.target.value)
-        setContactToAdd({...contactToAddOrUpdate, [attribut]: event.target.value })
+        setContactToAddOrUpdate({...contactToAddOrUpdate, [attribut]: event.target.value })
         // handleUpdateContact({ ...contact, [attribut]: event.target.value })
     }
-    const handleChangeSelectType = (event: SelectChangeEvent) => { 
+    const handleChangeSelect = (event: SelectChangeEvent, attribut: keyof Contact) => { 
         const type: BusinessCatType = event.target.value as BusinessCatType       // obligé de mettre as businessCategory car sinon type = string, on peut faire autrement ???
-        setContactToAdd({...contactToAddOrUpdate, businessCategory: type })
+        setContactToAddOrUpdate({...contactToAddOrUpdate, [attribut]: type })
     };
+    const handleChangeDate = (newDate: Dayjs | null, attribut: keyof Contact) => {
+        console.log("newDate", newDate)
+        //setContactToAddOrUpdate({...contactToAddOrUpdate, [attribut]: newDate ? Timestamp.fromDate(newDate.toDate()) : null })
+    }   
+    
 
 
     const findLabelNafCodes = (code: string) => {
@@ -65,55 +81,149 @@ export default function ContactCard({ contact, addContact, updateContact,
 
     return (
         //JSON.stringify(contact) === '{}' ? <div></div> :
-        <Card key={contact.id}
-        //className=' my-2'
-        sx={{ 
-            //my: 2
-            position: "relative",
-         }}        // my = 0.5rem (donc 1/2 taille de la police de la racine (em pour l'élément))
-        >
-            {/* A changer !!!!!!!! Mettre cette val de partout !!! */}
-            {/* <Box sx={{ position: "absolute", right: "200px", top: 0,
-                zIndex: 1000,
-             }} >
-                    <IconButton aria-label="edit" color="primary" 
-                    onClick={() => setContactCardDisplayStatus(!contactCardDisplayStatus)}
-                    >
-                        <Typography>Fermer</Typography>
-                    </IconButton>
-            </Box> */}
+        <Card key={contact.id} elevation={3}
+            sx={{ 
+                my: "3%",
+                position: "relative",
+                mx: "auto",
+                padding: "5%",
+                maxWidth: "850px",
+                bgcolor: 'lightCyan.light',
+                //backgroundColor: muiTheme.palette.primary.light,
+            }}        // my = 0.5rem (donc 1/2 taille de la police de la racine (em pour l'élément))
+        >      
+            
             <FormControl
-                sx={{ p: 2, 
-                display: 'flex'
-             }}
-            >           
-                {contact.logo
-                    ? <Avatar variant="rounded" src={contactToAddOrUpdate.logo} />
-                    : <Avatar variant="rounded" sx={{ bgcolor: grey[500], fontSize:"9px" }} >{contactToAddOrUpdate.businessName}</Avatar>
-                }
-                <TextField id="outlined-basic" label="Nom de l'entreprise à ajouter aux contacts" variant="outlined" value={contactToAddOrUpdate.businessName}
-                onChange={handleChangeText("businessName")} />
-                {/* <TextField id="outlined-basic" label="Secteur d'activité" variant="outlined" value={findLabelNafCodes(contactToAdd.businessActivity)} /> */}
-               
-                <FormControl >
-                    <InputLabel id="checkbox-type-label">Catégorie de contact</InputLabel>
-                    <Select
-                        id="checkbox-type-label"
-                        value={contactToAddOrUpdate.businessCategory}
-                        //onChange={(e) => handleChangeSelect(e, "businessCategory")}
-                        onChange={handleChangeSelectType}
-                    >
-                         {sortedBusinessCategories.map((type) => (
-                            <MenuItem key={type} value={type}>{type}</MenuItem>
-                        ))}                       
-                    </Select>
-                </FormControl>
+                sx={{  
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 7,                
+                }}
+            >    
+                <Box sx={{ display: 'flex', justifyContent:"space-between" //width:"100%"
+                //alignItems: 'center', gap: 2, 
+            }}
+                >
+                    <TextField required id="outlined-basic" label="Nom" variant="outlined" value={contactToAddOrUpdate.businessName}
+                        onChange={handleChangeText("businessName")} sx={{width:"70%" }} 
+                        inputProps={{ 
+                            style: { color: muiTheme.palette.primary.dark, } 
+                        }}                    
+                    />
 
-                <TextField id="outlined-basic" label="Ville" variant="outlined" value={contactToAddOrUpdate.businessCity} onChange={handleChangeText("businessCity")} />
-                <TextField id="outlined-basic" label="Adresse" variant="outlined" value={contactToAddOrUpdate.businessAddress} onChange={handleChangeText("businessAddress")} />
-                <TextField id="outlined-basic" label="Téléphone" variant="outlined" value={contactToAddOrUpdate.businessPhone} onChange={handleChangeText("businessPhone")} />
-                <TextField id="outlined-basic" label="Website" variant="outlined" value={contactToAddOrUpdate.businessWebsite} onChange={handleChangeText("businessWebsite")} />
-                <TextField id="outlined-basic" label="Email" variant="outlined" value={contactToAddOrUpdate.businessEmail} onChange={handleChangeText("businessEmail")} />
+                    {/* <TextField id="outlined-basic" label="Secteur d'activité" variant="outlined" value={findLabelNafCodes(contactToAdd.businessActivity)} /> */}
+                    {contact.logo
+                        ? <Avatar variant="rounded" src={contactToAddOrUpdate.logo} 
+                        sx={{ width: 150, height: 150 }} />
+                        : <Avatar variant="rounded" sx={{ bgcolor: grey[500], fontSize:"9px", width: 150, height: 150 }} >{contactToAddOrUpdate.businessName}</Avatar>
+                    }
+                </Box>
+
+                <Box sx={{ display: 'flex', justifyContent:"space-around", marginBottom:"30px"  }} >
+                    <Box sx={{}} >
+                        <Box sx={{
+                            display: "flex",
+                            justifyContent: "space-between", 
+                            marginBottom: "10px"
+                        }}> {/* Sinon on pouvait mettre un float:right sur le bouton ci-dessous */}
+                            {/* <NotificationsNoneOutlinedIcon sx={{ color: pink[800] }} /> */}
+                            <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}>Date de RELANCE</Typography>
+                            <Tooltip title="Supprimer la date">
+                                <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
+                                    onClick={() => setContactToAddOrUpdate({...contactToAddOrUpdate, dateOfNextCall: null })} >
+                                    <ClearIcon />
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
+                        <DatePicker
+                            format="DD MMM YYYY"
+                            value={contactToAddOrUpdate.dateOfNextCall !== null ? dayjs(contactToAddOrUpdate.dateOfNextCall?.toDate()) : null}
+                            onChange={(newDate: Dayjs | null) => setContactToAddOrUpdate({...contactToAddOrUpdate, dateOfNextCall: newDate ? Timestamp.fromDate(newDate.toDate()) : null })}
+                            slotProps={{
+                            }}
+                            label={contactToAddOrUpdate.dateOfNextCall === null ? "JJ mmm AAAA" : ""}
+                        />
+                    </ Box>
+                    <Box>
+                        <Box sx={{
+                            display: "flex",
+                            justifyContent: "space-between", 
+                            marginBottom: "10px"
+                        }}>
+                            <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}>Date du PREMIER appel</Typography>
+                            <Tooltip title="Supprimer la date">
+                                <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
+                                    onClick={() => setContactToAddOrUpdate({...contactToAddOrUpdate, dateOfFirstCall: null })} >
+                                    <ClearIcon />
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
+                        <DatePicker
+                            format="DD MMM YYYY"
+                            value={contactToAddOrUpdate.dateOfFirstCall !== null ? dayjs(contactToAddOrUpdate.dateOfFirstCall.toDate()) : null}
+                            onChange={(newDate: Dayjs | null) => setContactToAddOrUpdate({...contactToAddOrUpdate, dateOfFirstCall: newDate ? Timestamp.fromDate(newDate.toDate()) : null })}
+                            slotProps={{
+                            }}
+                            label={contactToAddOrUpdate.dateOfFirstCall === null ? "JJ mmm AAAA" : ""}
+                        />
+                    </ Box>
+                </Box> 
+
+                <Box sx={{ display: 'flex', justifyContent:"space-between"  }} >
+                    <FormControlLabel control={<Switch 
+                        checked={contactToAddOrUpdate.isClient}
+                        onChange={() => setContactToAddOrUpdate({...contactToAddOrUpdate, isClient: !contactToAddOrUpdate.isClient })}
+                        color="success"
+                        inputProps={{ 'aria-label': 'controlled' }}
+                    />} label={contactToAddOrUpdate.isClient ? "Client" : "Prospect"} />
+                
+                    <FormControl sx={{ width:"40%"}} >
+                        <InputLabel id="checkbox-type-label">Type</InputLabel>
+                        <Select
+                            id="checkbox-type-label"
+                            value={contactToAddOrUpdate.contactType}
+                            onChange={(e) => handleChangeSelect(e, "contactType")}
+                            
+                        inputProps={{ 
+                            style: { color: muiTheme.palette.primary.dark, } 
+                        }}                    
+                        >
+                            {contactTypes.map((type) => (
+                                <MenuItem key={type} value={type}>{type}</MenuItem>
+                            ))}                       
+                        </Select>
+                    </FormControl>
+
+                    <FormControl sx={{ width:"40%"}} >
+                        <InputLabel id="checkbox-type-label">Catégorie</InputLabel>
+                        <Select
+                            id="checkbox-type-label"
+                            value={contactToAddOrUpdate.businessCategory}
+                            onChange={(e) => handleChangeSelect(e, "businessCategory")}
+                        >
+                            {sortedBusinessCategories.map((cat) => (
+                                <MenuItem key={cat} value={cat}>{cat}</MenuItem>
+                            ))}                       
+                        </Select>
+                    </FormControl>
+                </Box>
+
+                <Box sx={{ display: 'flex', justifyContent:"space-between"  }} >
+                    <TextField id="outlined-basic" label="Ville" variant="outlined" value={contactToAddOrUpdate.businessCity} onChange={handleChangeText("businessCity")} sx={{ width:"40%" }} />
+                    <TextField id="outlined-basic" label="Adresse" variant="outlined" value={contactToAddOrUpdate.businessAddress} onChange={handleChangeText("businessAddress")} sx={{ width:"55%" }} />
+                </Box>
+
+                <Box sx={{ display: 'flex', justifyContent:"space-between"  }} >
+                    <TextField id="outlined-basic" label="Téléphone DIRECT" variant="outlined" value={contactToAddOrUpdate.contactPhone} onChange={handleChangeText("businessPhone")} sx={{ width:"48%" }} />
+                    <TextField id="outlined-basic" label="Téléphone STANDARD" variant="outlined" value={contactToAddOrUpdate.businessPhone} onChange={handleChangeText("businessPhone")} sx={{ width:"48%" }} />
+                </Box>
+
+                <Box sx={{ display: 'flex', justifyContent:"space-between"  }} >
+
+                    <TextField id="outlined-basic" label="Email DIRECT" variant="outlined" value={contactToAddOrUpdate.contactEmail} onChange={handleChangeText("businessEmail")} sx={{ width:"32%" }} />
+                    <TextField id="outlined-basic" label="Email ENTREPRISE" variant="outlined" value={contactToAddOrUpdate.businessEmail} onChange={handleChangeText("businessEmail")} sx={{ width:"32%" }} />
+                    <TextField id="outlined-basic" label="Website" variant="outlined" value={contactToAddOrUpdate.businessWebsite} onChange={handleChangeText("businessWebsite")} sx={{ width:"32%" }} />
+                </Box>
                 {/* <TextField id="outlined-basic" label="Nom du contact" variant="outlined" value={contactToAdd.contactName} onChange={handleChangeText("contactName")} />
                 <TextField id="outlined-basic" label="Téléphone du contact" variant="outlined" value={contactToAdd.contactPhone} onChange={handleChangeText("contactPhone")} />
                 <TextField id="outlined-basic" label="Email du contact" variant="outlined" value={contactToAdd.contactEmail} onChange={handleChangeText("contactEmail")} />
@@ -124,6 +234,9 @@ export default function ContactCard({ contact, addContact, updateContact,
                 {/* <IconButton>
                     <Edit sx={{ fontSize: 14 }} />
                 </IconButton> */}
+
+                {addContact && <Button variant="contained" sx={{ width: '100%', mt: 1, mb: 2 }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
+                {updateContact && <Button variant="contained" color='pink' sx={{ width: '100%', mt: 1, mb: 2 }} onClick={() => updateContact(contactToAddOrUpdate)} >Mettre à jour le contact</Button>}
             </FormControl>
             
             {/* <Divider />
@@ -136,8 +249,7 @@ export default function ContactCard({ contact, addContact, updateContact,
                 <Chip></Chip>
                 <Switch />
             </Stack> */}
-            {addContact && <Button variant="contained" sx={{ width: '100%', mt: 1, mb: 2 }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
-            {updateContact && <Button variant="contained" color='secondary' sx={{ width: '100%', mt: 1, mb: 2 }} onClick={() => updateContact(contactToAddOrUpdate)} >Mettre à jour le contact</Button>}
+           
         </Card>
     )
 }

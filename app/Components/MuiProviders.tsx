@@ -15,7 +15,6 @@ declare module '@mui/material/styles' {
         pink?: PaletteOptions['primary'];
         lightCyan?: PaletteOptions['primary'];
     }
-
 }
 // Pour ajouter une nouvelle couleur au options de Button
 declare module '@mui/material/Button' {
@@ -78,6 +77,9 @@ export default function MuiProviders({ children }: { children: React.ReactNode }
             MuiTextField: {
                 defaultProps: {
                     variant: "standard",
+                    inputProps: {
+                        //sx: { color: "red" },
+                    },
                     InputProps: {
                         //disableUnderline: true,
                     },

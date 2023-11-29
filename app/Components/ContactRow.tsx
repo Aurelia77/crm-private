@@ -620,6 +620,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         // Impossible de mettre une date vide ???
                         //value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : dayjs(new Date("01/01/2023"))}
                         value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : null}
+                        label={contact.dateOfNextCall === null ? "JJ mmm AAAA" : ""}
                         onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfNextCall")}
                         slotProps={{
                             //textField: { variant: 'standard', }       // Fait quoi ?
@@ -1045,6 +1046,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         format="DD MMM YYYY"
                         value={contact.dateOfFirstCall !== null ? dayjs(contact.dateOfFirstCall.toDate()) : null}
                         onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfFirstCall")}
+                        label={contact.dateOfFirstCall === null ? "JJ mmm AAAA" : ""}
                     />
                 </ Container>
             </StyledTableCell>
