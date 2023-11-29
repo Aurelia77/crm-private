@@ -638,10 +638,9 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     value={contact.logo}
                     //onChange={ (file) => handleChangeFile(file)} />
                     onChange={handleChangeLogo} /> */}
-                <form
+                {/* <form       // => FormControl n'est pas conçu pour gérer les soumissions de formulaire.
                 //onSubmit={handleChangeLogo}
-                >
-                    {/* <FormControl onSubmit={handleChangeLogo}>       => FormControl n'est pas conçu pour gérer les soumissions de formulaire.*/}
+                >                     
                     <TextField
                         name="upload-photo"
                         type="file"
@@ -653,10 +652,10 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         variant="contained" startIcon={<CloudUploadIcon />}
                     //onClick={handleChangeLogo}
                     >
-                        Upload file
+                        Upload file */}
                         {/* <VisuallyHiddenInput type="file" /> */}
-                    </Button>
-                </form>
+                    {/* </Button>
+                </form> */}
                 {/* <div className="App">
                     {!imgUrl && <div className='outerbar'>
                         <div className='innerbar' style={{ width: `${progresspercent}%` }}>{progresspercent}%</div>
