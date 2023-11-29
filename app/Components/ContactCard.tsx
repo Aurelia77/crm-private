@@ -15,7 +15,7 @@ import { grey } from '@mui/material/colors';
 import Image from 'next/image'
 import { TextField, Stack, Button, FormControl, InputLabel, MenuItem, Autocomplete, Chip, ListItem, List , OutlinedInput, Checkbox, ListItemText} from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-
+import {sortedBusinessCategories, contactTypes} from '../utils/toolbox'
 
 
 type ContactCardProps = {
@@ -33,7 +33,6 @@ export default function ContactCard({ contact, addContact, updateContact,
 
     const [contactToAddOrUpdate, setContactToAdd] = React.useState<Contact>(contact)
 
-    const businessCategories: BusinessCatType[] = ["NON DEFINI", "Camping", "Hôtel", "Congiergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre"];
 
 
     React.useEffect(() => {
@@ -97,14 +96,14 @@ export default function ContactCard({ contact, addContact, updateContact,
                 {/* <TextField id="outlined-basic" label="Secteur d'activité" variant="outlined" value={findLabelNafCodes(contactToAdd.businessActivity)} /> */}
                
                 <FormControl >
-                    <InputLabel id="checkbox-type-label">Type de contact</InputLabel>
+                    <InputLabel id="checkbox-type-label">Catégorie de contact</InputLabel>
                     <Select
                         id="checkbox-type-label"
                         value={contactToAddOrUpdate.businessCategory}
                         //onChange={(e) => handleChangeSelect(e, "businessCategory")}
                         onChange={handleChangeSelectType}
                     >
-                         {businessCategories.map((type) => (
+                         {sortedBusinessCategories.map((type) => (
                             <MenuItem key={type} value={type}>{type}</MenuItem>
                         ))}                       
                     </Select>

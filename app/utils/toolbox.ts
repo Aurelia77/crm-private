@@ -31,6 +31,14 @@ const emptyContact: Contact = {
     userId: ''
 }
 
+const businessCategories: BusinessCatType[] = ["NON DEFINI", "Camping", "Hôtel", "Congiergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre"];
+
+const sortedBusinessCategories = [...businessCategories].sort();
+
+const contactTypes: ContactTypeType[] = ["NON DEFINI", "Particulier", "Entreprise", "Partenaire"];
+
+
+
 const timeStampObjToTimeStamp = (timeStampObj: Timestamp): number => {
     if (timeStampObj) {
         // console.log(timeStampObj)                           // Timestamp {seconds: 1700147570, nanoseconds: 377000000} 
@@ -116,6 +124,8 @@ const getUniqueSortedValues = (contacts: Contact[], key: keyof Contact) => {
 
 export { 
     emptyContact,
+    sortedBusinessCategories,
+    contactTypes,
     timeStampObjToTimeStamp,
     //timeStampToTimeStampObj,
     isDateTimeStampObjPassed,

@@ -55,6 +55,10 @@ import MailIcon from '@mui/icons-material/Mail';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
+import { InputLabel, MenuItem } from '@mui/material'
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+
+import {sortedBusinessCategories, contactTypes} from '../utils/toolbox'
 
 
 
@@ -314,6 +318,9 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         handleUpdateContact(contact.id, { key: attribut, value: event.target.value })
         // handleUpdateContact({ ...contact, [attribut]: event.target.value })
     }
+    const handleChangeSelect = (event: SelectChangeEvent, attribut: keyof Contact) => {
+        handleUpdateContact(contact.id, { key: attribut, value: event.target.value })
+    }
     const handleChangeCheckbox = (contact: Contact, attribut: keyof Contact) => {
         console.log("contact", contact)
         handleUpdateContact(contact.id, { key: attribut, value: !contact[attribut] })
@@ -542,21 +549,18 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 />
             </StyledTableCell>
 
-            {/* Type ? */}
+            {/* Type */}
             <StyledTableCell component="td" scope="row" >
-                <TextField  //label="Nom de l'entreprise"    
-                    value={contact.contactType}
-                    //onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessName')}
-                    InputProps={{
-                        // startAdornment: contact.isClient ? <HandshakeOutlinedIcon color='success' fontSize='large' /> : <PsychologyAltIcon
-                        //     //color='gray'      // foncitonne mais me souligne en rouge !!!
-                        //     sx={{
-                        //         color: muiTheme.palette.gray.main,
-                        //     }}
-                        //     fontSize='large' />,
-                        // disableUnderline: contact.businessName.length > 0,
-                    }}
-                />                
+                <FormControl >
+                    <Select
+                        value={contact.contactType}
+                        onChange={(e) => handleChangeSelect(e, "contactType")}
+                    >
+                        {contactTypes.map((type) => (
+                            <MenuItem key={type} value={type}>{type}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
             </StyledTableCell>
 
             {/* dateOfNextCall */}
@@ -1045,16 +1049,28 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 </ Container>
             </StyledTableCell>
 
-            {/* type */}
+            {/* catégorie */}
             <StyledTableCell component="td" scope="row" >
-                <TextField id="standard-basic"
+                {/* <TextField id="standard-basic"
                     value={contact.businessCategory}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessCategory')}
                     InputProps={{
                         startAdornment: contact.businessCategory.length === 0 && "...",
                         disableUnderline: true
                     }}
-                />
+                /> */}
+                <FormControl >
+                    <Select
+                        id="checkbox-type-label"
+                        value={contact.businessCategory}
+                        //onChange={(e) => handleChangeSelect(e, "businessCategory")}
+                        onChange={(e) => handleChangeSelect(e, "businessCategory")}
+                    >
+                         {sortedBusinessCategories.map((cat) => (
+                            <MenuItem key={cat} value={cat}>{cat}</MenuItem>
+                        ))}                       
+                    </Select>
+                </FormControl>
                 {/* <CustomTextField attribut="businessCategory" /> */}
             </StyledTableCell>
 
