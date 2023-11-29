@@ -421,10 +421,10 @@ export default function Contacts() {
                                             : `${contacts.length} contacts : `
                                         }
                                     </Typography>
-                                    <Typography color="warning.main" sx={{ px: 2 }}>
+                                    <Typography variant="h6" color="warning.main" sx={{ px: 2 }}>
                                         {alerts.nbContactsWithDatePassed} relance(s) passée(s)
                                     </Typography>
-                                    <Typography color="primary.main">
+                                    <Typography variant="h6" color="primary.main">
                                         et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jour(s)
                                     </Typography>
                                 </Box>                                
@@ -452,7 +452,7 @@ export default function Contacts() {
                                 />
                             </TabPanel>
 
-                            {/* ///////// RECHERCHE DE CONTACTS ///////// */}
+                            {/* ///////// Nouveau CONTACT ///////// */}
                             <TabPanel key="2" value={tabValue} index={2}>
                                 <Tabs
                                     //orientation="vertical"

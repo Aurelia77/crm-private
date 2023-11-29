@@ -131,13 +131,13 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
                             value={search.isClient}
                             onChange={handleChangeRadio}
                         >
-                            <FormControlLabel value="yes" control={<Radio />} label="Client" />
+                            <FormControlLabel value="yes" control={<Radio />} label="Clients" />
                             <FormControlLabel value="no" control={<Radio />} label="Prospects" />
                             <FormControlLabel value="all" control={<Radio />} label="TOUS" />
                         </RadioGroup>
                     </FormControl> 
 
-                    <Box sx={{ display:"flex", flexDirection:"column", gap:"50px", width: '30%', 
+                    <Box sx={{ display:"flex", flexDirection:"column", gap:"30px", width: '30%', 
                         //border:"1px solid black" 
                     }} >
                         <TextField id="search-name" label="Nom" name='businessName' value={search.businessName} onChange={handleChangeText}
@@ -168,7 +168,7 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
                         </FormControl>
                     </Box >
 
-                    <Box sx={{ display:"flex", flexDirection:"column", gap:"50px", width: '30%', 
+                    <Box sx={{ display:"flex", flexDirection:"column", gap:"30px", width: '30%', 
                         //border:"1px solid black" 
                     }} >
                         <FormControl >
@@ -194,7 +194,7 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
                             </Select>
                         </FormControl>
                         <FormControl >
-                            <InputLabel id="multiple-checkbox-type-label">Catégorie de contact</InputLabel>
+                            <InputLabel id="multiple-checkbox-type-label">Catégorie</InputLabel>
                             <Select
                                 id="multiple-checkbox-type-label"
                                 multiple={true}
