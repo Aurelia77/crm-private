@@ -177,6 +177,19 @@ const getContactsFromDatabase = async (currentUser: any) => {
   //     unsub()
   // }
 }
+// const getCategoriesFromDatabase = async (currentUser: any) => {
+//   // const readDataFromFirebase = (currentUser: User | null) => {
+//   let catArr: BusinessCatType[] = []
+//   const categoriesCollectionRef = collection(fireStoreDb, "businessCategories");
+//   const q = query(categoriesCollectionRef);
+//   // const q = query(contactsCollectionRef, where("userId", "==", currentUser?.uid ?? "")); // aJOUTER + tard !!!!!!!!!!
+  
+//   const querySnapshot = await getDocs(q);
+//   querySnapshot.forEach((doc) => {
+//     catArr.push({ ...doc.data() as BusinessCatType });    
+//   });
+//   return catArr;
+// }
 
 const addFakeDataOnFirebaseAndReload = (currentUser: any, fakeContactsData: Contact[]) => {
   // fakeContactsData.map((contact: Contact) => {
@@ -448,6 +461,7 @@ export {
   storage,
   //readDataFromFirebaseAndSetContact,
   getContactsFromDatabase,
+  //getCategoriesFromDatabase,
   addFakeDataOnFirebaseAndReload,
   addContactOnFirebaseAndReload,
   deleteAllDatasOnFirebaseAndReload,

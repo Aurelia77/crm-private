@@ -8,8 +8,9 @@ import { emptyContact } from '../utils/toolbox'
 const contactsLaurianeCampings_x10: Contact[] = [
     {
         ...emptyContact,
-        "businessType": "Camping",
+        "businessCategory": "Camping",
         "isClient": true,
+        "contactType": "Entreprise",
         "dateOfNextCall": null,
         "logo": "",
         "businessName": "Port Pothiau",
@@ -26,8 +27,9 @@ const contactsLaurianeCampings_x10: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessType": "Camping",
+        "businessCategory": "Camping",
         "isClient": true,
+        "contactType": "Entreprise",
         "dateOfNextCall": null,
         "logo": "",
         "businessName": "Capricorne 3*",
@@ -44,8 +46,9 @@ const contactsLaurianeCampings_x10: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessType": "Camping",
+        "businessCategory": "Camping",
         "isClient": true,
+        "contactType": "Entreprise",
         "dateOfNextCall": null,
         "logo": "",
         "businessName": "Camping le ceinturon",
@@ -62,8 +65,9 @@ const contactsLaurianeCampings_x10: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessType": "Camping",
+        "businessCategory": "Camping",
         "isClient": true,
+        "contactType": "Entreprise",
         "dateOfNextCall": null,
         "logo": "",
         "businessName": "Les palmiers 4*",
@@ -80,8 +84,9 @@ const contactsLaurianeCampings_x10: Contact[] = [
     },    
     {
         ...emptyContact,
-        "businessType": "Camping",
+        "businessCategory": "Camping",
         "isClient": false,
+        "contactType": "Entreprise",
         "dateOfNextCall": null,
         "logo": "",
         "businessName": "Camping Vert Gapeau",
@@ -98,8 +103,9 @@ const contactsLaurianeCampings_x10: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessType": "Camping",
+        "businessCategory": "Camping",
         "isClient": false,
+        "contactType": "Entreprise",
         "dateOfNextCall": null,
         "logo": "",
         "businessName": "Camping l'Artaudois",
@@ -116,8 +122,9 @@ const contactsLaurianeCampings_x10: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessType": "Camping",
+        "businessCategory": "Camping",
         "isClient": false,
+        "contactType": "Entreprise",
         "dateOfNextCall": null,
         "logo": "",
         "businessName": "Camping Saint Pierre Des Horts",
@@ -134,8 +141,9 @@ const contactsLaurianeCampings_x10: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessType": "Camping",
+        "businessCategory": "Camping",
         "isClient": false,
+        "contactType": "Entreprise",
         "dateOfNextCall": null,
         "logo": "",
         "businessName": "Les Bois de Mont Redon",
@@ -152,8 +160,9 @@ const contactsLaurianeCampings_x10: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessType": "Camping",
+        "businessCategory": "Camping",
         "isClient": false,
+        "contactType": "Entreprise",
         "dateOfNextCall": null,
         "logo": "",
         "businessName": "Camping Clos Rose Marie",
@@ -170,8 +179,9 @@ const contactsLaurianeCampings_x10: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessType": "Camping",
+        "businessCategory": "Camping",
         "isClient": false,
+        "contactType": "Entreprise",
         "dateOfNextCall": null,
         "logo": "",
         "businessName": "Camping Eurosurf campéole Hyères Gien",
@@ -188,7 +198,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -206,7 +216,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -224,7 +234,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -242,7 +252,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },   
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -260,7 +270,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -278,7 +288,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -296,7 +306,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -314,7 +324,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -332,7 +342,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": true,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -350,7 +360,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -368,7 +378,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -386,7 +396,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": true,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -410,7 +420,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
 
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -428,7 +438,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -446,7 +456,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -471,7 +481,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
 
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -489,7 +499,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": true,
     //     "dateOfNextCall": "07/12/2023",
     //     "logo": "",
@@ -507,7 +517,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -525,7 +535,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -543,7 +553,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -566,7 +576,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
 
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -584,7 +594,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": true,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -602,7 +612,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -620,7 +630,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -638,7 +648,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -656,7 +666,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -674,7 +684,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": true,
     //     "dateOfNextCall": "07/12/2023",
     //     "logo": "",
@@ -692,7 +702,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },   
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -710,7 +720,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -728,7 +738,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -746,7 +756,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -764,7 +774,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -782,7 +792,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -800,7 +810,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -818,7 +828,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -836,7 +846,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -854,7 +864,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -872,7 +882,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -890,7 +900,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -908,7 +918,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -926,7 +936,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -944,7 +954,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -962,7 +972,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -980,7 +990,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -998,7 +1008,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -1014,7 +1024,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",
@@ -1032,7 +1042,7 @@ const contactsLaurianeCampings_x10: Contact[] = [
     // },
     // {
     //     ...emptyContact,
-    //     "businessType": "Camping",
+    //     "businessCategory": "Camping",
     //     "isClient": false,
     //     "dateOfNextCall": null,
     //     "logo": "",

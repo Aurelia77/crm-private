@@ -4,10 +4,11 @@ import { uid } from 'uid';
 const emptyContact: Contact = {
     id: uid(),
     isClient: false,
+    contactType : "NON DEFINI", 
     logo: '',
     businessName: '',
     denominationUsuelleEtablissement: [],
-    businessType: '',
+    businessCategory: "NON DEFINI",
     businessActivity: '',
     businessAddress: '',
     businessWebsite: '',

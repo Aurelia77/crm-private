@@ -7,6 +7,7 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import ClearIcon from '@mui/icons-material/Clear';
 import Switch from '@mui/material/Switch';
+import {FormLabel, Radio, RadioGroup} from '@mui/material';
 
 
 interface SearchFormProps {
@@ -26,13 +27,15 @@ const MenuSelectProps = {
 
 
 export default function SearchContactsForm({ onSearchChange, emptySearchCriteria, contacts }: SearchFormProps) {
-    const [search, setSearch] = React.useState<SearchContactCriteria>({ isClient: false,  businessName: '', businessCity: [], businessType: [] });
+    const [search, setSearch] = React.useState<SearchContactCriteria>({ isClient: "all",  contactType: [], businessName: '', businessCity: [], businessCategory: [] });
 
-    console.log(search)
-    // const businessTypes = ["Camping", "Hôtel", "Congiergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre"];
+    //console.log(search)
+    // const businessCategorys = ["Camping", "Hôtel", "Congiergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre"];
 
-    const allDifferentsBusinessTypeValues = getUniqueSortedValues(contacts, 'businessType')
+    const allDifferentsBusinessCategoryValues = getUniqueSortedValues(contacts, 'businessCategory')
     const allDifferentsBusinessCitiesValues = getUniqueSortedValues(contacts, 'businessCity')
+    const allDifferentsContactTypesValues = getUniqueSortedValues(contacts, 'contactType')
+
 
     const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>) => {
         console.log(event.target.name, event.target.value)
@@ -46,13 +49,13 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
         const value = event.target.value;
 
         setSearch({ ...search, [attribut]: typeof value === 'string' ? [value] : value });
-        //setSearch({ ...search, businessType: value });            // me dit que Value peut être de type String mais pourtant je ne vois pas quand c'est possible !!!???
+        //setSearch({ ...search, businessCategory: value });            // me dit que Value peut être de type String mais pourtant je ne vois pas quand c'est possible !!!???
 
         // setSearch(typeof value === 'string' ? value.split(',') : value, );
     };
 
-    const handleChangeSwitchIsClient = () => {
-        setSearch({ ...search, isClient: !search.isClient });
+    const handleChangeRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch({ ...search, isClient: event.target.value as "yes" | "no" | "all" });
     }
 
     const resetSearch = () => {
@@ -94,6 +97,42 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
                 {/* <TextField id="search-city" label="Ville" name='businessCity' value={search.businessCity} onChange={handleChange} 
                     sx={{ width: '200px', marginRight: "30px" }} />*/}
 
+                <FormControl>
+                    <FormLabel id="radio-buttons-group-label">Client ?</FormLabel>
+                    <RadioGroup
+                        aria-labelledby="radio-buttons-group-label"
+                        //defaultValue="both"
+                        name="radio-buttons-group"                        
+                        value={search.isClient}
+                        onChange={handleChangeRadio}
+                    >
+                        <FormControlLabel value="yes" control={<Radio />} label="Oui" />
+                        <FormControlLabel value="no" control={<Radio />} label="Non" />
+                        <FormControlLabel value="all" control={<Radio />} label="Tous !" />
+                    </RadioGroup>
+                </FormControl>     
+
+                <FormControl >
+                    <InputLabel>Type</InputLabel>
+                    <Select
+                        multiple={true}
+                        value={search.contactType}
+                        onChange={(e) => handleChangeMultipleSelect(e, "contactType")}
+                        input={<OutlinedInput label="Ville"         // ici le label est utilisé pour l'accessibilité et non pour l'affichage.
+                        sx={{ width: '300px', border: "solid 1px black" }} 
+                        />}
+                        renderValue={(selected) => selected.join(', ')}
+                        //sx={{ width: '33%', border: "solid 1px black" }}
+                        MenuProps={MenuSelectProps}
+                    >
+                        {allDifferentsContactTypesValues.map((type) => (
+                            <MenuItem key={type} value={type}>
+                                <Checkbox checked={search.contactType.indexOf(type) > -1} />
+                                <ListItemText primary={type} />
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
                 <FormControl >
                     <InputLabel id="multiple-checkbox-city-label">Ville</InputLabel>
                     <Select
@@ -101,8 +140,8 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
                         multiple={true}
                         value={search.businessCity}
                         onChange={(e) => handleChangeMultipleSelect(e, "businessCity")}
-                        input={<OutlinedInput label="Type" 
-                        sx={{ width: '300px', border: "solid 1px black" }} 
+                        input={<OutlinedInput label="Ville"         // ici le label est utilisé pour l'accessibilité et non pour l'affichage.
+                            sx={{ width: '300px', border: "solid 1px black" }} 
                         />}
                         renderValue={(selected) => selected.join(', ')}
                         //sx={{ width: '33%', border: "solid 1px black" }}
@@ -117,23 +156,23 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
                     </Select>
                 </FormControl>
                 <FormControl >
-                    <InputLabel id="multiple-checkbox-type-label">Type de contact</InputLabel>
+                    <InputLabel id="multiple-checkbox-type-label">Catégorie de contact</InputLabel>
                     <Select
                         id="multiple-checkbox-type-label"
                         multiple={true}
-                        value={search.businessType}
-                        onChange={(e) => handleChangeMultipleSelect(e, "businessType")}
-                        input={<OutlinedInput label="Type" 
-                        sx={{ width: '300px', border: "solid 1px black" }} 
+                        value={search.businessCategory}
+                        onChange={(e) => handleChangeMultipleSelect(e, "businessCategory")}
+                        input={<OutlinedInput label="Catégorie de contact" 
+                            sx={{ width: '300px', border: "solid 1px black" }} 
                         />}
                         renderValue={(selected) => selected.join(', ')}
                         //sx={{ width: '33%', border: "solid 1px black" }}
                         MenuProps={MenuSelectProps}
                     >
-                        {allDifferentsBusinessTypeValues.map((type) => (
-                            <MenuItem key={type} value={type}>
-                                <Checkbox checked={search.businessType.indexOf(type) > -1} />
-                                <ListItemText primary={type} />
+                        {allDifferentsBusinessCategoryValues.map((cat) => (
+                            <MenuItem key={cat} value={cat}>
+                                <Checkbox checked={search.businessCategory.indexOf(cat) > -1} />
+                                <ListItemText primary={cat} />
                             </MenuItem>
                         ))}
                     </Select>
@@ -178,7 +217,7 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
             {/* <FormControl component="fieldset">
                    <Typography component="legend">Type</Typography>
                 <FormGroup>
-                    {businessTypes.map((type) => (
+                    {businessCategorys.map((type) => (
                         <FormControlLabel
                             key={type}
                             control={<Checkbox 
@@ -186,7 +225,7 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
                                 checked={false}   //{search[type]} 
                                 onChange={handleChange} 
                                 //name={type}
-                                name='businessType'
+                                name='businessCategory'
                                 value={type}
                                  />}
                             label={type}
@@ -201,7 +240,7 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
                      value={search.type}
                      onChange={handleChange('type')}
                  >
-                     {businessTypes.map((type) => (
+                     {businessCategorys.map((type) => (
                          <MenuItem key={type} value={type}>{type}</MenuItem>
                      ))}
                  </Select>

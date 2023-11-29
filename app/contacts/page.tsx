@@ -36,6 +36,7 @@ import SignUp from '../Components/auth/SignUp';
 import AuthDetails from '../Components/AuthDetails';
 import SearchContactsForm from '../Components/SearchContactsForm';
 import Calendar from '../Components/Calendar';
+import Admin from '../Components/Admin';
 
 import fakeContactsData from '../utils/contactsTest'
 import contactsLaurianeCampings from '../utils/contactsLauriane';
@@ -126,13 +127,14 @@ export default function Contacts() {
     const [contactToDisplay, setContactToDisplay] = React.useState<Contact>(emptyContact)
     const [isContactCardDisplay, setIsContactCardDisplay] = React.useState(false)
 
-    console.log(isContactCardDisplay)
+   // console.log(isContactCardDisplay)
 
     const emptySearchCriteria: SearchContactCriteria = {
-        isClient: false,
+        isClient: "all",
+        contactType: [],
         businessName: '',
         businessCity: [],
-        businessType: []
+        businessCategory: []
     }
     const [contactsSearchCriteria, setContactsSearchCriteria] = React.useState<SearchContactCriteria>(emptySearchCriteria)
     //const [contactsSearchCriteria, setContactsSearchCriteria] = React.useState({})
@@ -155,7 +157,7 @@ export default function Contacts() {
         { label: "Calendrier", icon: <CalendarMonthIcon /> },
         { label: "Nouveau", icon: <PersonAddIcon /> },
         { label: "Contact", icon: <PersonIcon /> },
-        { label: "Admin", icon: <SettingsIcon /> },
+        // { label: "Admin", icon: <SettingsIcon /> },
     ]
    
 
@@ -220,28 +222,67 @@ export default function Contacts() {
 
 
     React.useEffect(() => {
-        // console.log("User Effect RECHERCHE")
+        console.log("User Effect RECHERCHE")
+        console.log(contactsSearchCriteria)
 
-        //if (contactsSearchCriteria && (contactsSearchCriteria?.businessName !== '' || contactsSearchCriteria.businessCity !== '' || contactsSearchCriteria.businessType.length > 0)) {      // metre diff de empty !!!!!!!!!!
+        //if (contactsSearchCriteria && (contactsSearchCriteria?.businessName !== '' || contactsSearchCriteria.businessCity !== '' || contactsSearchCriteria.businessCategory.length > 0)) {      // metre diff de empty !!!!!!!!!!
         if (JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)) {
+            //const searchIsClient = switch (contactsSearchCriteria.isClient)
+
+            // let searchIsClient: string
+            // switch (contactsSearchCriteria.isClient) {
+            //     case true:
+            //         searchIsClient = 'Client';
+            //         break;
+            //     case false:
+            //         searchIsClient = 'Non client';
+            //         break;
+            //     default:
+            //         searchIsClient = 'Indéterminé';
+            // }
+
+            const searchIsClient = contactsSearchCriteria.isClient === "yes" ? true : contactsSearchCriteria.isClient === "no" ? false : null
             const searchOnCity = contactsSearchCriteria.businessCity.length > 0 ? contactsSearchCriteria.businessCity : ['']
-            const searchOnType = contactsSearchCriteria.businessType.length > 0 ? contactsSearchCriteria.businessType : ['']
+            const searchOnCategory = contactsSearchCriteria.businessCategory.length > 0 ? contactsSearchCriteria.businessCategory : ['']
+            const searchOnType = contactsSearchCriteria.contactType.length > 0 ? contactsSearchCriteria.contactType : ['']
+
+
+            //console.log(searchOnCategory)
 
             const searchedContacts: Contact[] = contacts.filter((contact) => {
+               
                 return (
+                    // Dans la méthode filter, si une condition est fausse pour un élément spécifique (dans ce cas, un contact), le reste des conditions pour cet élément ne sera pas vérifié.
                     contact.businessName.toLowerCase().includes(contactsSearchCriteria.businessName.toLowerCase())
                     //&& contact.businessCity.toLowerCase().includes(contactsSearchCriteria.businessCity.toLowerCase()
 
-                    && contactsSearchCriteria.isClient === contact.isClient
+                    // Dans cette condition, si searchIsClient est null, la condition searchIsClient === null || contact.isClient === searchIsClient sera toujours vraie, donc elle n'affectera pas les résultats de la recherche. Si searchIsClient est true ou false, la condition vérifiera si contact.isClient est égal à searchIsClient.
+                    && (searchIsClient === null || contact.isClient === searchIsClient)
 
-                    // SOME() => au moins une des valeurs du tableau doit être vraie
-                    && searchOnCity.some((city) => contact.businessCity.toLowerCase().includes(city.toLowerCase()))       // toLowerCase ???
-                    && searchOnType.some((type) => contact.businessType.toLowerCase().includes(type.toLowerCase()))
-                    // {
-                    //     console.log(type)
-                    //     console.log(contact.businessType)
-                    //     return contact.businessType.toLowerCase().includes(type.toLowerCase())
-                    // }
+                    // SOME() => au moins une des valeurs du tableau doit être vraie                    
+                    // && searchOnCity.some((city) => {
+                    //     console.log(city)
+                    //     console.log(contact.businessCity)
+                    //     console.log(contact.businessCity.toLowerCase().includes(city.toLowerCase()))
+                    //     return contact.businessCity.toLowerCase().includes(city.toLowerCase())
+                    // })         // On met INCLUDES et non === pour gérer le cas où  searchOnCity = [""]   
+                    && searchOnCity.some((city) => contact.businessCity.toLowerCase().includes(city.toLowerCase()))         // On met INCLUDES et non === pour gérer le cas où searchOnCity = [""]   
+
+                    && searchOnCategory.some((cat) => contact.businessCategory.includes(cat)) 
+                    // && searchOnCategory.some((cat) =>{ 
+                    //     console.log("cat", cat)
+                    //     console.log(contact.businessCategory)
+                    //     console.log(contact.businessCategory === cat)
+                    //     return contact.businessCategory.includes(cat) 
+                    // }) 
+
+
+                    && searchOnType.some((type) => {
+                        console.log("type", type)
+                        console.log(contact.contactType)
+                        console.log(contact.contactType.includes(type))
+                        return contact.contactType.includes(type)
+                    })
                 )
             })
             console.log(searchedContacts)
@@ -454,11 +495,12 @@ export default function Contacts() {
                             </TabPanel>
     
                             {/* ///////// ADMIN ///////// */}
-                            <TabPanel key="4" value={tabValue} index={4}>
+                            {/* <TabPanel key="4" value={tabValue} index={4}>
+                                <Admin />
                                 <Typography variant="h5" component="div" sx={{ p: 2 }}>ADMIN</Typography>
-                                {/* <Typography variant="h5" component="div" sx={{ p: 2 }}>{currentUser.displayName}</Typography> */}
+                                <Typography variant="h5" component="div" sx={{ p: 2 }}>{currentUser.displayName}</Typography>
                                 <Typography variant="h5" component="div" sx={{ p: 2 }}>{currentUser.email}</Typography>                               
-                            </TabPanel>
+                            </TabPanel> */}
                         </Box>
 
 

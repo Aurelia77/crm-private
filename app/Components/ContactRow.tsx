@@ -74,6 +74,7 @@ import { timeStampObjToTimeStamp } from '../utils/toolbox';
 
 import { storage } from '../utils/firebase'
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { FormControl } from '@mui/material';
 
 // Pour les smileys du RATING 
 // => (dans le composant car besoin de connaitre la donnée pour ajuster la taille en fonction)  NON car sinon il faut cliquer 2 fois pour que ça valide !!!  
@@ -149,10 +150,12 @@ type ContactRowProps = {
     handleDeleteContact: () => void
     diplayContactCard: (contact: Contact) => void
 }
-export default function ContactRow({ contact, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, diplayContactCard}: ContactRowProps) {
+export default function ContactRow({ contact, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, diplayContactCard }: ContactRowProps) {
 
     //console.log("CONTACT ROW")
     //console.log(alerts.alerts)
+    // console.log("LOGO", contact.logo)
+    // console.log("NOM", contact.businessName)
 
     const [contactInfo, setContactInfo] = React.useState<Contact>(contact)
 
@@ -174,7 +177,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         }
     }
 
-    
+
 
     //console.log(contact)
     //console.log("xxxhandleUpdateContact", handleUpdateContact)
@@ -183,8 +186,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     // hasBeenCalled => 0="no" | 1="yes but no answer" | 2="yes and answered",
     // hasBeenSentEmailOrMeetUp =>  0="nothing" | 1="email sent" | 2="email sent and received" | 3="met up",
 
-      // Renvoie la bonne icone selon l'état de hasBeenCalled (non envoyé, envoyé, lu...)
-      const RightMailIcon = ({ hasBeenSentEmailOrMeetUp }: { hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3 }) => {
+    // Renvoie la bonne icone selon l'état de hasBeenCalled (non envoyé, envoyé, lu...)
+    const RightMailIcon = ({ hasBeenSentEmailOrMeetUp }: { hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3 }) => {
         switch (hasBeenSentEmailOrMeetUp) {
             case 1: return <MailIcon sx={{ color: muiTheme.palette.ochre.main }} />
             case 2: return <MarkEmailReadIcon color='success' />
@@ -301,23 +304,23 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         : 0
         })
     }
-  
+
 
     // const handleChangeText = (attribut: keyof Contact) => (event: React.ChangeEvent<HTMLInputElement>) => {
     const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>, attribut: keyof Contact) => {
-        
+
         console.log("event.target.value", event.target.value)
         console.log(attribut)
         handleUpdateContact(contact.id, { key: attribut, value: event.target.value })
         // handleUpdateContact({ ...contact, [attribut]: event.target.value })
-    } 
+    }
     const handleChangeCheckbox = (contact: Contact, attribut: keyof Contact) => {
         console.log("contact", contact)
         handleUpdateContact(contact.id, { key: attribut, value: !contact[attribut] })
         //handleUpdateContact({ ...contact, [attribut]: !contact[attribut] })
     }
     const handleChangeDate = (newDate: Dayjs | null, attribut: keyof Contact) => {      // Obligé de mettre NULL ???        // On pt faire comme handleChangeText qui renvoie un EVENT ??? et ne pas avoir à passer l'arg ???
-       
+
         console.log("newDate", newDate) // M {$L: 'en', $u: undefined, $d: Wed Nov 01 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale), $y: 2023, $M: 10, …}
         console.log(typeof newDate) // object
         console.log(newDate?.toDate()) // Wed Nov 01 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale)
@@ -340,20 +343,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         //newFile && handleUpdateContact({ ...contact, fileSent: [...contact.fileSent, newFile] })   
         //  newFile && handleUpdateContact({ ...contact, fileSent: newFile })
     }
-    
-    const handleChangeLogo = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log("image", event)
-        console.log("image", event.target.getAttribute('data-loaded-src'))
-        //image && handleUpdateContact(contact.id, {key: attribut, value: !contact[attribut] } )
-        //image && handleUpdateContact({ ...contact, logo: image.target.value })
-        //image && handleUpdateContact({ ...contact, logo: image })
-    }
-    // const handleChangeLogo = (event: React.MouseEvent<HTMLImageElement>) => {
-    //     const newLogo = prompt('Enter new logo URL:');
-    //     if (newLogo !== null) {
-    //         handleUpdateContact({ ...contact, logo: newLogo })
-    //     }
-    // };
+
 
     const handleChangeInterestGauge = (newGauge: number | null) => {
         console.log(newGauge);      // Obligé de mettre ; sinon erreur !!! (Uncaught TypeError: console.log(...) is not a function)
@@ -409,27 +399,27 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         handleCloseCommentDialog()
     }
 
-  
+
     // J'ai voulu créer un composant commun pour tous les TextField, mais ça ne fonctionne pas => problème de onChange et de focus
     type CustomTextFieldProps = {
         attribut: keyof Contact
         startAdornment?: any
         //inputProps?: any
-        center?:boolean
-        smallLighter?:boolean
+        center?: boolean
+        smallLighter?: boolean
     }
-    const CustomTextField = ({attribut, startAdornment='', 
-    //inputProps= {}, 
-    center=false, smallLighter=false }: CustomTextFieldProps) => {
+    const CustomTextField = ({ attribut, startAdornment = '',
+        //inputProps= {}, 
+        center = false, smallLighter = false }: CustomTextFieldProps) => {
 
         const [value, setValue] = React.useState(contact[attribut]);
 
         const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
             setValue(event.target.value);
-        };    
+        };
         const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
             // Mettez à jour l'état du composant parent ici
-            console.log("ON BLUR !!")        
+            console.log("ON BLUR !!")
             console.log(e)
             console.log(e.target.value)
             handleChangeText(e, attribut);
@@ -442,42 +432,91 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             onChange={handleChange}
             onBlur={handleBlur}
             InputProps={{
-                startAdornment:startAdornment,
+                startAdornment: startAdornment,
                 disableUnderline: contact[attribut].length > 0,
                 //inputProps: inputProps,
                 // {{ style: { textAlign: 'center', color: "gray", fontSize: "0.8em" } }}
             }}
-            inputProps= {{ style: { textAlign: center ? 'center' : 'left', fontSize: smallLighter ? "0.8em" : "1em", color: smallLighter ? "gray" : ""  } }}
+            inputProps={{ style: { textAlign: center ? 'center' : 'left', fontSize: smallLighter ? "0.8em" : "1em", color: smallLighter ? "gray" : "" } }}
         />
     }
 
 
-    // const [imgUrl, setImgUrl] = React.useState<string>("");
-    // const [progresspercent, setProgresspercent] = React.useState(0);
+    const [imgUrl, setImgUrl] = React.useState<string>("");
+    //console.log("imgUrl", imgUrl)
+    const [progresspercent, setProgresspercent] = React.useState(0);
 
-    // const handleSubmit = (e) => {
-    //     e.preventDefault()
-    //     const file = e.target[0]?.files[0]
-    //     if (!file) return;
-    //     const storageRef = ref(storage, `files/${file.name}`);
-    //     const uploadTask = uploadBytesResumable(storageRef, file);
+    const handleSubmit = (e: any) => {
+        e.preventDefault()
+        console.log("e", e)
+        console.log("e.target", e.target)
+        const file = e.target[0]?.files[0]
+        if (!file) return;
+        const storageRef = ref(storage, `files/${file.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
 
-    //     uploadTask.on("state_changed",
-    //         (snapshot) => {
-    //             const progress =
-    //                 Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-    //             setProgresspercent(progress);
-    //         },
-    //         (error) => {
-    //             alert(error);
-    //         },
-    //         () => {
-    //             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-    //                 setImgUrl(downloadURL)
-    //             });
-    //         }
-    //     );
-    // }
+        uploadTask.on("state_changed",
+            (snapshot) => {
+                const progress =
+                    Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                setProgresspercent(progress);
+            },
+            (error) => {
+                alert(error);
+            },
+            () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    setImgUrl(downloadURL)
+                });
+            }
+        );
+    }
+    const handleChangeLogo = (e: any) => {
+        // const handleChangeLogo = (event: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault()
+
+        // console.log("image", e)
+        // console.log("image", e.target)
+        // console.log("image", e.target[0])
+        // console.log("image",e.target[0]?.files)
+        console.log("image", e.target[0]?.files[0])
+
+        const file = e.target[0]?.files[0]
+        if (!file) return;
+        const storageRef = ref(storage, `files/${file.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on("state_changed",
+            (snapshot) => {
+                const progress =
+                    Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                setProgresspercent(progress);
+            },
+            (error) => {
+                alert(error);
+            },
+            () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    setImgUrl(downloadURL)
+                });
+            }
+        );
+
+        console.log(imgUrl)
+
+        console.log("nouveau LOGO = ", imgUrl)
+        //handleUpdateContact(contact.id, {key: "logo", value: imgUrl})
+
+    }
+    // const handleChangeLogo = (event: React.MouseEvent<HTMLImageElement>) => {
+    //     const newLogo = prompt('Enter new logo URL:');
+    //     if (newLogo !== null) {
+    //         handleUpdateContact({ ...contact, logo: newLogo })
+    //     }
+    // };
+
+
+
 
     return (
         <StyledTableRow
@@ -503,7 +542,24 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 />
             </StyledTableCell>
 
-            {/* dateOfNextCall */}           
+            {/* Type ? */}
+            <StyledTableCell component="td" scope="row" >
+                <TextField  //label="Nom de l'entreprise"    
+                    value={contact.contactType}
+                    //onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessName')}
+                    InputProps={{
+                        // startAdornment: contact.isClient ? <HandshakeOutlinedIcon color='success' fontSize='large' /> : <PsychologyAltIcon
+                        //     //color='gray'      // foncitonne mais me souligne en rouge !!!
+                        //     sx={{
+                        //         color: muiTheme.palette.gray.main,
+                        //     }}
+                        //     fontSize='large' />,
+                        // disableUnderline: contact.businessName.length > 0,
+                    }}
+                />                
+            </StyledTableCell>
+
+            {/* dateOfNextCall */}
             <StyledTableCell
                 style={{
                     backgroundColor: isDatePassed(contact.dateOfNextCall)
@@ -520,7 +576,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     //sx={{ color: pink[800] }} 
                     fontSize='large' />}
 
- {/* The general recommendation is to declare the LocalizationProvider once, wrapping your entire application. Then, you don't need to repeat the boilerplate code for every Date and Time Picker in your application. */}
+                {/* The general recommendation is to declare the LocalizationProvider once, wrapping your entire application. Then, you don't need to repeat the boilerplate code for every Date and Time Picker in your application. */}
                 {/* <LocalizationProvider dateAdapter={AdapterDayjs}> */}
                 <Container
                 //components={['DateTimePicker']}       // ???
@@ -581,8 +637,27 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 {/* <MuiFileInput
                     value={contact.logo}
                     //onChange={ (file) => handleChangeFile(file)} />
-                    onChange={handleChangeLogo} />
-                <div className="App">
+                    onChange={handleChangeLogo} /> */}
+                <form
+                //onSubmit={handleChangeLogo}
+                >
+                    {/* <FormControl onSubmit={handleChangeLogo}>       => FormControl n'est pas conçu pour gérer les soumissions de formulaire.*/}
+                    <TextField
+                        name="upload-photo"
+                        type="file"
+                    //onChange={handleChangeLogo}
+                    />
+                    <Button
+                        //component="label"
+                        type="submit"
+                        variant="contained" startIcon={<CloudUploadIcon />}
+                    //onClick={handleChangeLogo}
+                    >
+                        Upload file
+                        {/* <VisuallyHiddenInput type="file" /> */}
+                    </Button>
+                </form>
+                {/* <div className="App">
                     {!imgUrl && <div className='outerbar'>
                         <div className='innerbar' style={{ width: `${progresspercent}%` }}>{progresspercent}%</div>
                     </div>
@@ -600,7 +675,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
             {/* businessName */}
             <StyledTableCell component="td" scope="row" >
-                  <TextField  //label="Nom de l'entreprise"    
+                <TextField  //label="Nom de l'entreprise"    
                     value={contact.businessName}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessName')}
                     InputProps={{
@@ -629,7 +704,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         disableUnderline: contact.businessPhone.length > 0
                     }}
                     inputProps={{ style: { textAlign: 'center' } }}
-                /> 
+                />
                 <TextField id="standard-basic" //label="Téléphone" 
                     value={contact.businessPhone}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessPhone')}
@@ -642,7 +717,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     }}
                     inputProps={{ style: { textAlign: 'center', color: "gray", fontSize: "0.8em" } }}
                 />
-                 {/* <CustomTextField attribut="contactPhone" startAdornment="Direct" center={true} />
+                {/* <CustomTextField attribut="contactPhone" startAdornment="Direct" center={true} />
                  <CustomTextField attribut="businessPhone" startAdornment= {<span style={{ color: 'gray', fontSize: "0.8em" }}>Standard </span>} center smallLighter /> */}
             </StyledTableCell>
 
@@ -818,7 +893,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     onChange={() => handleChangeCheckbox(contact, "hasBeenSentEmailOrMeetUp")}
                     inputProps={{ 'aria-label': 'controlled' }}
                 /> */}
-            </StyledTableCell>          
+            </StyledTableCell>
 
             {/* comments */}
             <StyledTableCell align="center"
@@ -854,7 +929,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'comments')}
                             sx={{ textAlign: 'left' }}
                         />
-                        {/* <CustomTextField attribut="comments"  />                     */}                        
+                        {/* <CustomTextField attribut="comments"  />                     */}
                     </DialogContent>
                     <DialogActions>
                         <Button variant="contained" color='primary' onClick={handleCloseCommentDialog}>Valider</Button>
@@ -946,11 +1021,11 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             </StyledTableCell>
 
             {/* dateOfFirstCall */}
-            <StyledTableCell >  
+            <StyledTableCell >
                 <Container>
                     <Box sx={{
                         display: "flex",
-                        justifyContent: "end", 
+                        justifyContent: "end",
                         marginBottom: "10px"
                     }}>
                         <Tooltip title="Supprimer la date">
@@ -973,15 +1048,15 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
             {/* type */}
             <StyledTableCell component="td" scope="row" >
-                <TextField id="standard-basic"   
-                    value={contact.businessType}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessType')}
+                <TextField id="standard-basic"
+                    value={contact.businessCategory}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessCategory')}
                     InputProps={{
-                        startAdornment: contact.businessType.length === 0 && "...",
+                        startAdornment: contact.businessCategory.length === 0 && "...",
                         disableUnderline: true
                     }}
-                />               
-                {/* <CustomTextField attribut="businessType" /> */}
+                />
+                {/* <CustomTextField attribut="businessCategory" /> */}
             </StyledTableCell>
 
             {/* Supprimer contact ? */}

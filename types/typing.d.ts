@@ -1,15 +1,17 @@
 
-type BusinessType = "" | "Camping" | "Hôtel" | "Congiergerie" | "Agence Event" | "Agence Artistique" | "Mairie" | "Lieu de réception" | "Wedding Planer" | "Restaurant Plage" | "Piscine Municipale" | "Yacht" | "Plage Privée" | "Agence Location Villa Luxe" | "Aquarium" | "Centre de Loisirs" | "Centre de Plongée" | "Agence Communication Audio Visuel" | "Autre";
+type BusinessCatType = "NON DEFINI" | "Camping" | "Hôtel" | "Congiergerie" | "Agence Event" | "Agence Artistique" | "Mairie" | "Lieu de réception" | "Wedding Planer" | "Restaurant Plage" | "Piscine Municipale" | "Yacht" | "Plage Privée" | "Agence Location Villa Luxe" | "Aquarium" | "Centre de Loisirs" | "Centre de Plongée" | "Agence Communication Audio Visuel" | "Autre";
 
+type ContactTypeType= "NON DEFINI" | "Particulier" | "Entreprise" | "Partenaire";
 
 type Contact = {
   id: string,
   isClient: boolean,
+  contactType: ContactTypeType,
   logo: string,
   businessName: string,
   denominationUsuelleEtablissement: string[],
-  businessType: BusinessType,
-  interestGauge: 1 | 2 | 3 | 4 | 5 | null, // Marche ps ???1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, 
+  businessCategory: BusinessCatType,
+  interestGauge: 1 | 2 | 3 | 4 | 5 | null, // 5=very interested  // Marche ps ???1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, 
   businessActivity: string,
   businessAddress: string,
   businessWebsite: string,
@@ -61,8 +63,9 @@ type Alerts = {
 }
 
 type SearchContactCriteria = {
-  isClient: boolean,
+  isClient: "yes" | "no" | "all",
+  contactType : ContactTypeType[],
   businessName: string,
   businessCity: string[],
-  businessType: string[],
+  businessCategory: string[],
 }

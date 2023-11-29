@@ -46,6 +46,7 @@ interface Column {
 
 const headCells: readonly Column[] = [               // readonly ???
     { id: 'isClient', label: 'Client ?', minWidth: "7em", },    
+    { id: 'contactType', label: 'Type ?', minWidth: "7em", },    
     { id: 'dateOfNextCall', label: <Box sx={{ display: 'flex', alignItems: 'center', }}
     ><AccessAlarmRoundedIcon fontSize='large' sx={{ marginRight: "20px" }} />Relance</Box>, minWidth: "13em", },
     { id: 'logo', label: 'Logo', minWidth: "5em", },
@@ -65,7 +66,7 @@ const headCells: readonly Column[] = [               // readonly ???
     { id: 'interestGauge', label: <FavoriteRoundedIcon fontSize='large' />, minWidth: "5em", },
     { id: 'filesSent', label: <AttachFileRoundedIcon fontSize='large' />, minWidth: "10em", },
     { id: 'dateOfFirstCall', label: 'Premier appel', minWidth: "13em", },
-    { id: 'businessType', label: 'Type', minWidth: "10em", },
+    { id: 'businessCategory', label: 'Type', minWidth: "10em", },
     // { id: 'supprimer', label: 'Supprimer ?', minWidth: "5em", },
 ];
 

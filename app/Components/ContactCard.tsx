@@ -33,7 +33,7 @@ export default function ContactCard({ contact, addContact, updateContact,
 
     const [contactToAddOrUpdate, setContactToAdd] = React.useState<Contact>(contact)
 
-    const businessTypes: BusinessType[] = ["", "Camping", "Hôtel", "Congiergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre"];
+    const businessCategories: BusinessCatType[] = ["", "Camping", "Hôtel", "Congiergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre"];
 
 
     React.useEffect(() => {
@@ -48,8 +48,8 @@ export default function ContactCard({ contact, addContact, updateContact,
         // handleUpdateContact({ ...contact, [attribut]: event.target.value })
     }
     const handleChangeSelectType = (event: SelectChangeEvent) => { 
-        const type: BusinessType = event.target.value as BusinessType       // obligé de mettre as BusinessType car sinon type = string, on peut faire autrement ???
-        setContactToAdd({...contactToAddOrUpdate, businessType: type })
+        const type: BusinessCatType = event.target.value as BusinessCatType       // obligé de mettre as businessCategory car sinon type = string, on peut faire autrement ???
+        setContactToAdd({...contactToAddOrUpdate, businessCategory: type })
     };
 
 
@@ -100,11 +100,11 @@ export default function ContactCard({ contact, addContact, updateContact,
                     <InputLabel id="checkbox-type-label">Type de contact</InputLabel>
                     <Select
                         id="checkbox-type-label"
-                        value={contactToAddOrUpdate.businessType}
-                        //onChange={(e) => handleChangeSelect(e, "businessType")}
+                        value={contactToAddOrUpdate.businessCategory}
+                        //onChange={(e) => handleChangeSelect(e, "businessCategory")}
                         onChange={handleChangeSelectType}
                     >
-                         {businessTypes.map((type) => (
+                         {businessCategories.map((type) => (
                             <MenuItem key={type} value={type}>{type}</MenuItem>
                         ))}                       
                     </Select>
