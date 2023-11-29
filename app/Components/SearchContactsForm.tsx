@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormControl, FormHelperText, Input, InputLabel, TextField, Typography, MenuItem, Checkbox, FormGroup, FormControlLabel, OutlinedInput, ListItemText, Box } from '@mui/material'
+import { FormControl, FormHelperText, Input, InputLabel, TextField, Typography, MenuItem, Checkbox, FormGroup, FormControlLabel, OutlinedInput, ListItemText, Box, Paper } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import {getUniqueSortedValues} from '../utils/toolbox';
 
@@ -8,6 +8,12 @@ import IconButton from '@mui/material/IconButton';
 import ClearIcon from '@mui/icons-material/Clear';
 import Switch from '@mui/material/Switch';
 import {FormLabel, Radio, RadioGroup} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import NavigationIcon from '@mui/icons-material/Navigation';
 
 
 interface SearchFormProps {
@@ -73,179 +79,202 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
     }, [search, onSearchChange])
 
     return (
-        <FormControl sx={{ position: "relative", bgcolor: 'lightCyan.light', padding:"25px", width: "calc(100vw - 170px)" }} >
-            {/* <FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText> */}
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', 
-            justifyContent: 'space-between'// 
-            //gap: "70px"
-         }}>
-                <Typography variant="h6" gutterBottom component="div">Recherche</Typography>
-                {/* <FormControlLabel 
-                    control={
-                        <Switch
-                        checked={search.isClient}
-                        onChange={handleChangeSwitchIsClient}
-                        color="success"
-                        inputProps={{ 'aria-label': 'controlled' }}
-                    />
-                } 
-                    label="Clients ?" 
-                /> */}
-               
-                <TextField id="search-name" label="Nom" name='businessName' value={search.businessName} onChange={handleChangeText}
-                    sx={{ width: '200px', marginRight: "30px" }} />
-                {/* <TextField id="search-city" label="Ville" name='businessCity' value={search.businessCity} onChange={handleChange} 
-                    sx={{ width: '200px', marginRight: "30px" }} />*/}
+        <Paper sx={{ margin: "2em", padding: "1em", bgcolor: 'primary.light', }} >
+            <FormControl sx={{ position: "relative", bgcolor: 'lightCyan.light', padding:"25px", 
+                width: "calc(100vw - 263px)" , 
+                //maxWidth: "1200px"    // A voir si très grand écran !!!
+            }} >   
+                
 
-                <FormControl>
-                    <FormLabel id="radio-buttons-group-label">Client ?</FormLabel>
-                    <RadioGroup
-                        aria-labelledby="radio-buttons-group-label"
-                        //defaultValue="both"
-                        name="radio-buttons-group"                        
-                        value={search.isClient}
-                        onChange={handleChangeRadio}
-                    >
-                        <FormControlLabel value="yes" control={<Radio />} label="Oui" />
-                        <FormControlLabel value="no" control={<Radio />} label="Non" />
-                        <FormControlLabel value="all" control={<Radio />} label="Tous !" />
-                    </RadioGroup>
-                </FormControl>     
+                <Fab disabled size="small" color="primary" sx={{
+                        position: "absolute",
+                        top: "5px",
+                        left: "5px" }} >
+                    <SearchIcon />
+                </Fab>
 
-                <FormControl >
-                    <InputLabel>Type</InputLabel>
-                    <Select
-                        multiple={true}
-                        value={search.contactType}
-                        onChange={(e) => handleChangeMultipleSelect(e, "contactType")}
-                        input={<OutlinedInput label="Ville"         // ici le label est utilisé pour l'accessibilité et non pour l'affichage.
-                        sx={{ width: '300px', border: "solid 1px black" }} 
-                        />}
-                        renderValue={(selected) => selected.join(', ')}
-                        //sx={{ width: '33%', border: "solid 1px black" }}
-                        MenuProps={MenuSelectProps}
-                    >
-                        {allDifferentsContactTypesValues.map((type) => (
-                            <MenuItem key={type} value={type}>
-                                <Checkbox checked={search.contactType.indexOf(type) > -1} />
-                                <ListItemText primary={type} />
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <FormControl >
-                    <InputLabel id="multiple-checkbox-city-label">Ville</InputLabel>
-                    <Select
-                        id="multiple-checkbox-city-label"
-                        multiple={true}
-                        value={search.businessCity}
-                        onChange={(e) => handleChangeMultipleSelect(e, "businessCity")}
-                        input={<OutlinedInput label="Ville"         // ici le label est utilisé pour l'accessibilité et non pour l'affichage.
-                            sx={{ width: '300px', border: "solid 1px black" }} 
-                        />}
-                        renderValue={(selected) => selected.join(', ')}
-                        //sx={{ width: '33%', border: "solid 1px black" }}
-                        MenuProps={MenuSelectProps}
-                    >
-                        {allDifferentsBusinessCitiesValues.map((city) => (
-                            <MenuItem key={city} value={city}>
-                                <Checkbox checked={search.businessCity.indexOf(city) > -1} />
-                                <ListItemText primary={city} />
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <FormControl >
-                    <InputLabel id="multiple-checkbox-type-label">Catégorie de contact</InputLabel>
-                    <Select
-                        id="multiple-checkbox-type-label"
-                        multiple={true}
-                        value={search.businessCategory}
-                        onChange={(e) => handleChangeMultipleSelect(e, "businessCategory")}
-                        input={<OutlinedInput label="Catégorie de contact" 
-                            sx={{ width: '300px', border: "solid 1px black" }} 
-                        />}
-                        renderValue={(selected) => selected.join(', ')}
-                        //sx={{ width: '33%', border: "solid 1px black" }}
-                        MenuProps={MenuSelectProps}
-                    >
-                        {allDifferentsBusinessCategoryValues.map((cat) => (
-                            <MenuItem key={cat} value={cat}>
-                                <Checkbox checked={search.businessCategory.indexOf(cat) > -1} />
-                                <ListItemText primary={cat} />
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
+                <Tooltip title="Supprimer la recherche">
+                        <Fab size="small" color="error" sx={{
+                        position: "absolute",
+                        top: "5px",
+                        right: "5px",
+                        padding:0   // Car les boutons ont automatiquement un padding
+                    }}      
+                        onClick={resetSearch} >
+                            <ClearIcon />
+                        </Fab>
+                </Tooltip>
 
-               
-
-
-                {/* <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel>
-                <Select
-                    labelId="demo-multiple-checkbox-label"
-                    id="demo-multiple-checkbox"
-                    multiple
-                    value={personName}
-                    onChange={handleChange2}
-                    input={<OutlinedInput label="Tag" />}
-                    renderValue={(selected) => selected.join(', ')}
-                    MenuProps={MenuProps}
-                >
-                    {names.map((name) => (
-                        <MenuItem key={name} value={name}>
-                            <Checkbox checked={personName.indexOf(name) > -1} />
-                            <ListItemText primary={name} />
-                        </MenuItem>
-                    ))}
-                </Select> */}
-            </Box>
-
-            <Tooltip title="Supprimer la recherche">
-                <IconButton color="error" sx={{
-                    //padding: 0 
-                    position: "absolute",
-                    top: 0,
-                    right: "10px"
-                }}       // Car les boutons ont automatiquement un padding
-                    onClick={resetSearch} >
-                    <ClearIcon />
-                </IconButton>
-            </Tooltip>
-
-
-            {/* <FormControl component="fieldset">
-                   <Typography component="legend">Type</Typography>
-                <FormGroup>
-                    {businessCategorys.map((type) => (
-                        <FormControlLabel
-                            key={type}
-                            control={<Checkbox 
-                                // checked={search[type] || false} 
-                                checked={false}   //{search[type]} 
-                                onChange={handleChange} 
-                                //name={type}
-                                name='businessCategory'
-                                value={type}
-                                 />}
-                            label={type}
+                {/* <FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText> */}
+                <Box sx={{ display: 'flex', justifyContent: 'space-around'// 
+                //gap: "70px"
+            }}>
+                    {/* <Typography variant="h6" gutterBottom component="div">Recherche</Typography> */}
+                    {/* <FormControlLabel 
+                        control={
+                            <Switch
+                            checked={search.isClient}
+                            onChange={handleChangeSwitchIsClient}
+                            color="success"
+                            inputProps={{ 'aria-label': 'controlled' }}
                         />
-                    ))}
-                </FormGroup> */}
+                    } 
+                        label="Clients ?" 
+                    /> */}             
+                
 
-            {/*          <InputLabel id="search-type-label">Type</InputLabel>
-                 <Select
-                     labelId="search-type-label"
-                     id="search-type"
-                     value={search.type}
-                     onChange={handleChange('type')}
-                 >
-                     {businessCategorys.map((type) => (
-                         <MenuItem key={type} value={type}>{type}</MenuItem>
-                     ))}
-                 </Select>
-            </FormControl> */}
-        </FormControl>
+                    <FormControl>
+                        <RadioGroup
+                            aria-labelledby="radio-buttons-group-label"
+                            //defaultValue="both"
+                            name="radio-buttons-group"                        
+                            value={search.isClient}
+                            onChange={handleChangeRadio}
+                        >
+                            <FormControlLabel value="yes" control={<Radio />} label="Client" />
+                            <FormControlLabel value="no" control={<Radio />} label="Prospects" />
+                            <FormControlLabel value="all" control={<Radio />} label="TOUS" />
+                        </RadioGroup>
+                    </FormControl> 
+
+                    <Box sx={{ display:"flex", flexDirection:"column", gap:"50px", width: '30%', 
+                        //border:"1px solid black" 
+                    }} >
+                        <TextField id="search-name" label="Nom" name='businessName' value={search.businessName} onChange={handleChangeText}
+                            sx={{ width: '100%', marginRight: "30px" }} />
+                        {/* <TextField id="search-city" label="Ville" name='businessCity' value={search.businessCity} onChange={handleChange} 
+                            sx={{ width: '200px', marginRight: "30px" }} />*/}    
+
+                        <FormControl >
+                            <InputLabel>Type</InputLabel>
+                            <Select
+                                multiple={true}
+                                value={search.contactType}
+                                onChange={(e) => handleChangeMultipleSelect(e, "contactType")}
+                                input={<OutlinedInput label="Ville"         // ici le label est utilisé pour l'accessibilité et non pour l'affichage.
+                                //sx={{ width: '300px' }} 
+                                />}
+                                renderValue={(selected) => selected.join(', ')}
+                                sx={{ width: '100%'}}
+                                MenuProps={MenuSelectProps}
+                            >
+                                {allDifferentsContactTypesValues.map((type) => (
+                                    <MenuItem key={type} value={type}>
+                                        <Checkbox checked={search.contactType.indexOf(type) > -1} />
+                                        <ListItemText primary={type} />
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Box >
+
+                    <Box sx={{ display:"flex", flexDirection:"column", gap:"50px", width: '30%', 
+                        //border:"1px solid black" 
+                    }} >
+                        <FormControl >
+                            <InputLabel id="multiple-checkbox-city-label">Ville</InputLabel>
+                            <Select
+                                id="multiple-checkbox-city-label"
+                                multiple={true}
+                                value={search.businessCity}
+                                onChange={(e) => handleChangeMultipleSelect(e, "businessCity")}
+                                input={<OutlinedInput label="Ville"         // ici le label est utilisé pour l'accessibilité et non pour l'affichage.
+                                    //sx={{ width: '300px', border: "solid 1px black" }} 
+                                />}
+                                renderValue={(selected) => selected.join(', ')}
+                                sx={{ width: '100%'}}
+                                MenuProps={MenuSelectProps}
+                            >
+                                {allDifferentsBusinessCitiesValues.map((city) => (
+                                    <MenuItem key={city} value={city}>
+                                        <Checkbox checked={search.businessCity.indexOf(city) > -1} />
+                                        <ListItemText primary={city} />
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <FormControl >
+                            <InputLabel id="multiple-checkbox-type-label">Catégorie de contact</InputLabel>
+                            <Select
+                                id="multiple-checkbox-type-label"
+                                multiple={true}
+                                value={search.businessCategory}
+                                onChange={(e) => handleChangeMultipleSelect(e, "businessCategory")}
+                                input={<OutlinedInput label="Catégorie de contact" 
+                                    //sx={{ width: '300px', border: "solid 1px black" }} 
+                                />}
+                                renderValue={(selected) => selected.join(', ')}
+                                sx={{ width: '100%'}}
+                                MenuProps={MenuSelectProps}
+                            >
+                                {allDifferentsBusinessCategoryValues.map((cat) => (
+                                    <MenuItem key={cat} value={cat}>
+                                        <Checkbox checked={search.businessCategory.indexOf(cat) > -1} />
+                                        <ListItemText primary={cat} />
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Box>
+                
+
+
+                    {/* <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel>
+                    <Select
+                        labelId="demo-multiple-checkbox-label"
+                        id="demo-multiple-checkbox"
+                        multiple
+                        value={personName}
+                        onChange={handleChange2}
+                        input={<OutlinedInput label="Tag" />}
+                        renderValue={(selected) => selected.join(', ')}
+                        MenuProps={MenuProps}
+                    >
+                        {names.map((name) => (
+                            <MenuItem key={name} value={name}>
+                                <Checkbox checked={personName.indexOf(name) > -1} />
+                                <ListItemText primary={name} />
+                            </MenuItem>
+                        ))}
+                    </Select> */}
+                </Box>
+
+            
+
+
+                {/* <FormControl component="fieldset">
+                    <Typography component="legend">Type</Typography>
+                    <FormGroup>
+                        {businessCategorys.map((type) => (
+                            <FormControlLabel
+                                key={type}
+                                control={<Checkbox 
+                                    // checked={search[type] || false} 
+                                    checked={false}   //{search[type]} 
+                                    onChange={handleChange} 
+                                    //name={type}
+                                    name='businessCategory'
+                                    value={type}
+                                    />}
+                                label={type}
+                            />
+                        ))}
+                    </FormGroup> */}
+
+                {/*          <InputLabel id="search-type-label">Type</InputLabel>
+                    <Select
+                        labelId="search-type-label"
+                        id="search-type"
+                        value={search.type}
+                        onChange={handleChange('type')}
+                    >
+                        {businessCategorys.map((type) => (
+                            <MenuItem key={type} value={type}>{type}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl> */}
+            </FormControl>
+        </Paper>
 
     )
 }

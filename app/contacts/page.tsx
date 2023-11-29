@@ -427,7 +427,8 @@ export default function Contacts() {
                                     <Typography color="primary.main">
                                         et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jour(s)
                                     </Typography>
-                                </Box>
+                                </Box>                                
+                                
                                 <SearchContactsForm onSearchChange={setContactsSearchCriteria} emptySearchCriteria={emptySearchCriteria} contacts={contacts} />
 
                                 <ContactsTable
