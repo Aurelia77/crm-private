@@ -35,7 +35,6 @@ import SignIn from '../Components/auth/SignIn';
 import SignUp from '../Components/auth/SignUp';
 import AuthDetails from '../Components/AuthDetails';
 import SearchContactsForm from '../Components/SearchContactsForm';
-import Calendar from '../Components/Calendar';
 import Admin from '../Components/Admin';
 
 import fakeContactsData from '../utils/contactsTest'
@@ -75,6 +74,9 @@ import PersonIcon from '@mui/icons-material/Person';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import SettingsIcon from '@mui/icons-material/Settings';
+import CalendarLittle from '../Components/CalendarLittle';
+import CalendarFull from '../Components/CalendarFull';
+import CalendarScheduler from '../Components/CalendarScheduler';
 
 
 interface TabPanelProps {
@@ -143,14 +145,8 @@ export default function Contacts() {
 
     const [tabValue, setTabValue] = React.useState(0);
     const [tabNewContactValue, setTabNewContactValue] = React.useState(0);
-                                    
-
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-        setTabValue(newValue);
-    };
-    const handleChangeTabNewContact = (event: React.SyntheticEvent, newValue: number) => {
-        setTabNewContactValue(newValue);
-    };
+    const [tabCalendarValue, setTabCalendarValue] = React.useState(0); 
+  
 
     const titles = [
         { label: "Contacts", icon: <Diversity3Icon /> },
@@ -403,7 +399,7 @@ export default function Contacts() {
                                 orientation="vertical"
                                 variant="scrollable"
                                 value={tabValue}
-                                onChange={handleChange}
+                                onChange={(e, newValue) => setTabValue(newValue)}
                                 aria-label="Vertical tabs"
                                 sx={{ borderRight: 1, borderColor: 'divider', width: "120px" }}
                             >
@@ -444,12 +440,60 @@ export default function Contacts() {
 
                             {/* ///////// CALENDRIER ///////// */}
                             <TabPanel key="1" value={tabValue} index={1}>
-                                <Calendar
-                                    //contacts={fakeContactsData}
-                                    //contacts={filteredContacts}   // ????????? 
-                                    contacts={contacts}
-                                    diplayContactCardToUpdate={diplayContactCardToUpdate}
-                                />
+                                <Tabs
+                                    value={tabCalendarValue}
+                                    onChange={(e, newValue: number) => setTabCalendarValue(newValue) }
+                                    aria-label="Horizontal tabs"
+                                    //sx={{ borderRight: 1, borderColor: 'divider', width: "120px" }}
+                                >
+
+                                    <Tab key={0} label="Petit Calendrier"
+                                    //icon={title.icon}
+                                    // {...a11yProps(index)} 
+                                    />
+                                    <Tab key={1} label="Grand Calendrier"
+                                    //icon={title.icon}
+                                    // {...a11yProps(index)} 
+                                    />
+                                    <Tab key={2} label="Scheduler Calendrier"
+                                    //icon={title.icon}
+                                    // {...a11yProps(index)} 
+                                    />
+                                </Tabs>                               
+
+                                {/* ///////// Petit Calendrier ///////// */}
+                                <TabPanel key="0" value={tabCalendarValue} index={0}  >
+                                    <CalendarLittle
+                                        //contacts={fakeContactsData}
+                                        //contacts={filteredContacts}   // ????????? 
+                                        contacts={contacts}
+                                        diplayContactCardToUpdate={diplayContactCardToUpdate}
+                                    />
+                                </TabPanel>
+
+                                 {/* ///////// Grand Calendrier ///////// */}
+                                 <TabPanel key="1" value={tabCalendarValue} index={1}  >
+                                    <CalendarFull
+                                        //contacts={fakeContactsData}
+                                        //contacts={filteredContacts}   // ????????? 
+                                        contacts={contacts}
+                                        diplayContactCardToUpdate={diplayContactCardToUpdate}
+                                    />
+                                </TabPanel>
+
+                                {/* ///////// Scheduler Calendrier ///////// */}
+                                <TabPanel key="2" value={tabCalendarValue} index={2}  >
+                                    <CalendarScheduler
+                                        //contacts={fakeContactsData}
+                                        //contacts={filteredContacts}   // ????????? 
+                                        contacts={contacts}
+                                        diplayContactCardToUpdate={diplayContactCardToUpdate}
+                                    />
+                                </TabPanel>
+
+
+
+                                
                             </TabPanel>
 
                             {/* ///////// Nouveau CONTACT ///////// */}
@@ -458,7 +502,8 @@ export default function Contacts() {
                                     //orientation="vertical"
                                     // variant="scrollable"
                                     value={tabNewContactValue}
-                                    onChange={handleChangeTabNewContact}
+                                    onChange={(e, newValue) => setTabNewContactValue(newValue)}
+                                    // onChange={handleChangeTabNewContact}
                                     aria-label="Horizontal tabs"
                                     //sx={{ borderRight: 1, borderColor: 'divider', width: "120px" }}
                                 >

@@ -10,6 +10,8 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { useTheme } from '@mui/material/styles';
+
 
 // function getRandomNumber(min: number, max: number) {
 //   return Math.round(Math.random() * (max - min) + min);
@@ -96,16 +98,27 @@ type CalendarProps = {
   diplayContactCardToUpdate: (contact: Contact) => void;
 };
 
-export default function Calendar({ contacts, diplayContactCardToUpdate }: CalendarProps) {
+type DayAndContactsToCallThisDayType = {
+  day: Date;
+  contactsToCallThisDay: Contact[];
+}
+
+export default function CalendarLittle({ contacts, diplayContactCardToUpdate }: CalendarProps) {
   //const requestAbortController = React.useRef<AbortController | null>(null);
   //const [isLoading, setIsLoading] = React.useState(false);
   const [contactsToCallThisMonthAndToHighlight, setContactsToCallThisMonthAndToHighlight] = React.useState<Contact[]>([]);
 
   const [dateToSeeOnTheCalendar, setDateToSeeOnTheCalendar] = React.useState<Dayjs>(dayjs(new Date())) // today
 
-  const [contactsToCallThisDay, setContactsToCallThisDay] = React.useState<Contact[]>([])
+  console.log("dateToSeeOnTheCalendar", dateToSeeOnTheCalendar.format('DD MMMM YYYY'))
+  console.log(typeof dateToSeeOnTheCalendar)
 
+  //const [contactsToCallThisDay, setContactsToCallThisDay] = React.useState<Contact[]>([])
+  const [dayAndContactsToCallThisDay, setDayAndContactsToCallThisDay] = React.useState<DayAndContactsToCallThisDayType>({ day: dateToSeeOnTheCalendar.toDate(), contactsToCallThisDay: []})
 
+  //setDayAndContactsToCallThisDay({day: day.toDate(), contactsToCallThisDay: highlightedContacts})}
+
+  
   //console.log(contacts)
   //console.log(contactsToCallThisMonthAndToHighlight)
   //console.log("dateToSeeOnTheCalendar", dateToSeeOnTheCalendar)
@@ -139,6 +152,7 @@ export default function Calendar({ contacts, diplayContactCardToUpdate }: Calend
   //   // requestAbortController.current = controller;
   // };
 
+  const muiTheme = useTheme();
 
 
   interface MarkedDayProps extends PickersDayProps<Dayjs> {
@@ -152,6 +166,24 @@ export default function Calendar({ contacts, diplayContactCardToUpdate }: Calend
 
     // Bien laisse le nom highlightedDays !!!
     const { highlightedDays: highlightedContactDays = [], day, outsideCurrentMonth, ...other } = props;
+
+    console.log("day", day)
+    console.log(typeof day)
+    console.log("day", day.format('DD MMMM YYYY'))
+    console.log("day", day.date())
+    console.log("day", day.month())
+    console.log("day", day.format('MMMM'))
+    console.log("day", day.year())
+
+    console.log(day.toDate())
+    console.log(day.toDate().getTime())
+
+    const timestamp = day.toDate().getTime()
+//console.log("date", date)
+//console.log("date", date.toDate())
+
+//{contactsToCallThisDay[0] && contactsToCallThisDay[0].dateOfNextCall.toDate().toLocaleString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
+
 
     //console.log("highlightedDays", highlightedContactDays)
     //console.log("day", day)
@@ -180,26 +212,29 @@ export default function Calendar({ contacts, diplayContactCardToUpdate }: Calend
         return !outsideCurrentMonth && contact.dateOfNextCall.toDate().getDate() === day.date()
       }
     )
-    //console.log("highlightedContacts", highlightedContacts)
+    //console.log("highlightedContacts", day, highlightedContacts)
 
     return (
       <Badge
         //  key={props.day.toString()}
         key={day.toString()}
         overlap="circular"
+        // onClick={() => setContactsToCallThisDay(highlightedContacts)}
+        onClick={() => setDayAndContactsToCallThisDay({day: day.toDate(), contactsToCallThisDay: highlightedContacts})} 
+
         // badgeContent={isSelected ? <NotificationsIcon color='warning' fontSize='small' /> : undefined}
         // badgeContent={isSelected ? '🌚' : undefined}
         badgeContent={
           highlightedContacts.length > 0
-            ?
-            // <NotificationsIcon color="warning" fontSize="small" /> 
+            ?  <NotificationsIcon color="warning" fontSize="small" /> 
             // <Tooltip title={highlightedDayAndBusinessName?.businessName}     /////////////////////// ????????????
             // >
-            <IconButton //color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
-              onClick={() => setContactsToCallThisDay(highlightedContacts)} >
-              {/* onClick={() => setContactsToCallThisDay(highlightedDay?.businessName || "")} > */}
-              <NotificationsIcon color="warning" fontSize="small" />
-            </IconButton>
+            //   <IconButton //color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
+            //     //onClick={(e) => setContactsToCallThisDay(highlightedContacts)} 
+            //   >
+            //     {/* onClick={() => setContactsToCallThisDay(highlightedDay?.businessName || "")} > */}
+            //     <NotificationsIcon color="warning" fontSize="small" />
+            //   </IconButton>
             // </Tooltip>
             : undefined
         }
@@ -260,7 +295,7 @@ export default function Calendar({ contacts, diplayContactCardToUpdate }: Calend
   };
 
   return (
-    <Box style={{ display: "flex" }} >
+    <Box style={{ display: "flex", backgroundColor: muiTheme.palette.lightCyan.light, width:"800px", margin:"auto", marginTop:"50px", padding:"20px" }} >
       <DateCalendar
         //defaultValue={dateToSeeOnTheCalendar} // seulement si cette valeur ne change jamais => ici : erreur : MUI: A component is changing the default value state of an uncontrolled DateCalendar after being initialized.
         value={dateToSeeOnTheCalendar}
@@ -269,22 +304,35 @@ export default function Calendar({ contacts, diplayContactCardToUpdate }: Calend
         renderLoading={() => <DayCalendarSkeleton />}
         slots={{
           day: MarkedDay,
-        }}
+        }} 
         slotProps={{
           day: {
             highlightedDays: contactsToCallThisMonthAndToHighlight,
           } as any,
         }}
       />
+
       <Box sx={{ border: '1px solid #CCC', p: 2, ml: 2, width: 300 }} >
-        <Typography align="center" sx={{ mb: 2, }} >
+        {/* <Typography align="center" sx={{ mb: 2, }} >
           {contactsToCallThisDay[0] && contactsToCallThisDay[0].dateOfNextCall.toDate().toLocaleString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
-        </Typography>
+        </Typography> */}
+
+        <Typography align="center" sx={{ mb: 2, }} >{dayAndContactsToCallThisDay.day?.toLocaleString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}</Typography>
         <Typography sx={{ mb: 2, color: 'primary.main', fontWeight: 700 }} >
-          Contact(s) à appeler ce jour
+          Contact(s) à appeler ce jour ({dayAndContactsToCallThisDay.contactsToCallThisDay.length})
         </Typography>
-        {contactsToCallThisDay.map((contact, index) => (
+        {/* {contactsToCallThisDay.map((contact, index) => (
           <Typography key={index} variant="body2" sx={{ mt: 2 }}
+            onClick={() => diplayContactCardToUpdate(contact) }            
+          >
+            {contact.businessName}
+          </Typography>
+        ))} */}
+
+        {dayAndContactsToCallThisDay.contactsToCallThisDay.length === 0
+          ? <Typography variant="body2" sx={{ mt: 2 }} >Aucun !</Typography> 
+          : dayAndContactsToCallThisDay.contactsToCallThisDay.map((contact, index) => (
+          <Typography key={index} variant="body2" sx={{ mt: 2, cursor: 'pointer' }}
             onClick={() => diplayContactCardToUpdate(contact) }            
           >
             {contact.businessName}
