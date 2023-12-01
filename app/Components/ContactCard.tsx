@@ -123,8 +123,8 @@ export default function ContactCard({ contact, addContact, updateContact,
     }
 
 
-    const handleOpenFile = async (file) => {
-        
+    const handleOpenFile = async (file: any) => {
+
         console.log(file)
         const segments = file.split('/');
         const fileName = segments[segments.length - 1];
