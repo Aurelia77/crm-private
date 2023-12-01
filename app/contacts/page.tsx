@@ -61,6 +61,7 @@ import PersonSearchRoundedIcon from '@mui/icons-material/PersonSearchRounded';
 import AddIcon from '@mui/icons-material/Add';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ClearIcon from '@mui/icons-material/Clear';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 import Fade from '@mui/material';
 import Collapse from '@mui/material';
@@ -78,6 +79,8 @@ import CalendarLittle from '../Components/CalendarLittle';
 import CalendarFull from '../Components/CalendarFull';
 import CalendarScheduler from '../Components/CalendarScheduler';
 
+const TAB_WIDTH = 100
+
 interface TabPanelProps {
     children?: React.ReactNode;
     index: number;
@@ -92,7 +95,7 @@ function TabPanel(props: TabPanelProps) {
             hidden={value !== index}
             id={`vertical-tabpanel-${index}`}
             aria-labelledby={`vertical-tab-${index}`}
-            style={{ width: "calc(100vw - 120px)" }}
+            style={{ width: `calc(100vw - ${TAB_WIDTH}px)` }}
             {...other}
         >
             {value === index && (
@@ -152,6 +155,7 @@ export default function Contacts() {
         { label: "Calendrier", icon: <CalendarMonthIcon /> },
         { label: "Nouveau", icon: <PersonAddIcon /> },
         { label: "Contact", icon: <PersonIcon /> },
+        { label: "Modification BDD", icon: <SettingsIcon /> },
         // { label: "Admin", icon: <SettingsIcon /> },
     ]
    
@@ -303,51 +307,11 @@ export default function Contacts() {
 
 
 
-
-    const [file, setFile] = React.useState<Blob | Uint8Array | ArrayBuffer | null>(null);
-
-    const storageRef = ref(storage);
-    // //console.log(storageRef)
-    const guadeloupeRef = ref(storage, 'guadeloupe.jpg');
-
-    // uploadBytes(guadeloupeRef, file).then((snapshot) => {
-    //     console.log('Uploaded a blob or file!');
-    // });
-
-   
-
-
     return (
         <Box sx={{
             position: "relative",
-            //marginTop:"2em"
+            //marginTop:0
         }}>
-
-           
-
-            {/* <MuiFileInput
-                    value={file}
-                    //multiple={true}
-                    onChange={(file) => setFile(file)}
-                //onChange={handleChangeFile} 
-            /> */}
-            {/* <Image src={guadeloupeRef} alt="Guadeloupe" layout="fill" objectFit="cover" quality={100} /> */}
-
-            {/* <React.Fragment sx={{ position:"absolute" }}> */}
-
-            {/* /////////////////////// ContactCart /////////////////////// */}
-            {/* {isContactCardDisplay && <ContactCard contact={contactToDisplay}
-                //updateContact={setContactToDisplay} 
-                updateContact={updateWholeContactInContactsAndDB}
-                // updateContact={() => {console.log("updateContact")}} 
-                contactCardDisplayStatus={isContactCardDisplay} setContactCardDisplayStatus={setIsContactCardDisplay} />} */}
-
-
-
-            {/* <Typography variant="h3" component="h1" sx={{
-                //margin:"50px"
-                marginLeft:"20px" 
-            }} >Application de gestion de contacts</Typography> */}
 
             {/* /////////////////////// Info USER /////////////////////// */}
             <Box sx={{ position: "absolute", right: "5px", top: 0 }} ><AuthDetails /></Box>
@@ -359,7 +323,9 @@ export default function Contacts() {
                 : !currentUser
                     //  {/* ///////// CONNEXION / INSCRIPTION ///////// */}
                     ? <Box sx={{
-                        display: "flex", justifyContent: "space-around", margin: "20px", padding: "20px",
+                        display: "flex", justifyContent: "space-around", 
+                        margin: "20px", 
+                        padding: "20px",
                         //border: "solid 3px blue", borderRadius: "10px" 
                     }}>
                         {/* https://www.youtube.com/watch?v=f3Whk3hfd7I&ab_channel=LikeWD */}
@@ -371,27 +337,16 @@ export default function Contacts() {
                         {/* </UserAuthContextProvider> */}
                     </Box>
                     
-                    : <Box sx={{ marginTop: "20px" }} >
-
-                        {/* /////////////////////// Pour Version ESSAI /////////////////////// */}
-                        <Box sx={{ display: "flex", justifyContent: "space-around", padding: "10px", border: "solid 3px blue", borderRadius: "10px", marginBottom:"10px", width:"calc(100vw - 200px)" }}>
-                            <Typography component="div" style={{ display: "block", 
-                            //width: "360px" 
-                            }} >Pour Version TEST : </Typography>
-                            <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>Ajouter Contacts Test</Button>
-                            <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
-                            <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button>
-                            <Button variant="contained" color='error' sx={{ width: "300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUser)}>Supprimer tous mes contacts</Button>
-                            {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer toutes les données !!!</Button> */}
-                        </Box>
-
+                    : <Box sx={{ 
+                        //marginTop: "20px" 
+                    }} > 
                         {/* /////////////////////// Pour REALTIME DB /////////////////////// */}
                         {/* <input type="text" value={todo} onChange={handleTodoChange} />
                     <Button variant="contained" onClick={writeContactData2}>Ajouter dans REALTIME DB</Button> */}
 
-    {/* ///////////////////////ONGLETS- Tabs /////////////////////// */}
+    {/* ///////////////////////ONGLETS - Tabs /////////////////////// */}
                         <Box
-                            sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100vh'
+                            sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100vh', 
                         }}
                         >
                             <Tabs
@@ -400,16 +355,29 @@ export default function Contacts() {
                                 value={tabValue}
                                 onChange={(e, newValue) => setTabValue(newValue)}
                                 aria-label="Vertical tabs"
-                                sx={{ borderRight: 1, borderColor: 'divider', width: "120px" }}
+                                sx={{ borderRight: 1, borderColor: 'divider', width: TAB_WIDTH }}
                             >
-                                {titles.map((title, index) => (
-                                    <Tab key={index} label={title.label} icon={title.icon} {...a11yProps(index)} />
+                                {/* J'ai voulu ajouter un DIVIDER mais pour ça j'ai ajouter une BOX et alors plus poss de cliquer sur les tab => rien ne se passe !!! */}
+                                {titles.map((title, index) => (                                    
+                                    <Tab
+                                        key={index}
+                                        //label={title.label} 
+                                        title={title.label}
+                                        icon={title.icon}
+                                        {...a11yProps(index)}
+                                        sx={{ margin: '10px 0 10px 0' }}
+                                    //sx={{ marginBottom:"10px" }} 
+                                    />
                                 ))}                                
                             </Tabs>
 
                             {/* ///////// LISTE DE CONTACTS + recherche) ///////// */}
                             <TabPanel key="0" value={tabValue} index={0}  >
-                                <Box sx={{ display: "flex", alignItems: "center", margin: "25px", }}>
+                                <SearchContactsForm onSearchChange={setContactsSearchCriteria} emptySearchCriteria={emptySearchCriteria} contacts={contacts} />
+
+                                <Box sx={{ display: "flex", alignItems: "center",
+                                 marginLeft:"20px", 
+                            }}>
                                     <Typography variant="h5">
                                         {isSearchCriteriaEmpty
                                             ? `Recherche : ${filteredContacts.length} contacts trouvé(s) (sur ${contacts.length})`
@@ -424,7 +392,6 @@ export default function Contacts() {
                                     </Typography>
                                 </Box>                                
                                 
-                                <SearchContactsForm onSearchChange={setContactsSearchCriteria} emptySearchCriteria={emptySearchCriteria} contacts={contacts} />
 
                                 <ContactsTable
                                     //contacts={contacts}
@@ -489,10 +456,6 @@ export default function Contacts() {
                                         diplayContactCardToUpdate={diplayContactCardToUpdate}
                                     />
                                 </TabPanel>
-
-
-
-                                
                             </TabPanel>
 
                             {/* ///////// Nouveau CONTACT ///////// */}
@@ -537,6 +500,21 @@ export default function Contacts() {
                                     //contactCardDisplayStatus={isContactCardDisplay} 
                                     //setContactCardDisplayStatus={setIsContactCardDisplay} 
                                 />
+                            </TabPanel>
+
+                             {/* /////////////////////// Pour Version ESSAI /////////////////////// */}                      
+                            <TabPanel key="4" value={tabValue} index={4}>
+                                <Box sx={{ display: "flex", justifyContent: "space-around", padding: "10px", border: "solid 3px blue", borderRadius: "10px", marginTop: "200px", width: "calc(100vw - 200px)" }}>
+                                    <Typography component="div" style={{
+                                        display: "block",
+                                        //width: "360px" 
+                                    }} >Pour Version TEST : </Typography>
+                                    <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>Ajouter Contacts Test</Button>
+                                    <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
+                                    <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button>
+                                    <Button variant="contained" color='error' sx={{ width: "300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUser)}>Supprimer tous mes contacts</Button>
+                                    <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer toutes les données !!!</Button>
+                                </Box>
                             </TabPanel>
     
                             {/* ///////// ADMIN ///////// */}

@@ -51,7 +51,24 @@ const contacts : Contact[] = [
         contactPosition: "Homme de ménage",
         hasBeenCalled: 1,
         hasBeenSentEmailOrMeetUp: 3,
-        filesSent: [],
+        filesSent: [
+            {
+                fileName: "2404499-Petit-manuel-de-preparation-aux-situations-durgence-ILYS(1).pdf",
+                fileRef: "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/filesSent%2F2404499-Petit-manuel-de-preparation-aux-situations-durgence-ILYS(1).pdf?alt=media&token=686ebf52-4388-4bd4-b51f-30d372291dca"
+            },
+            {
+                fileName: "40knots.jpg",
+                fileRef: "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/filesSent%2F40knots.jpg?alt=media&token=5f14869c-bbda-44c5-8bfb-b02f0cdfe79f"
+            },
+            {
+                fileName: "Bon_Usage_Antiseptiques_par_Cclin(1).pdf",
+                fileRef: "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/filesSent%2FBon_Usage_Antiseptiques_par_Cclin(1).pdf?alt=media&token=312bc947-6192-4e59-84ad-d008b5be3774"
+            },
+            {
+                fileName: "AutoConstructionPoeleDeMasseDoubleCombustion.pdf",
+                fileRef: "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/filesSent%2FAutoConstructionPoeleDeMasseDoubleCombustion.pdf?alt=media&token=12fc2b5f-b0ee-4c07-b1ee-35ec2348f8ed"
+            },
+        ],
         tag: ["camping", "client"],
         dateOfFirstCall: new Date("2023-05-01"),
         dateOfLastCall: new Date("2023-08-01"),
@@ -168,7 +185,12 @@ const contacts : Contact[] = [
         contactPosition: "Responsable des animations",
         hasBeenCalled: 1,
         hasBeenSentEmailOrMeetUp: 3,
-        filesSent: [],
+        filesSent: [           
+            {
+                fileName: "40knots.jpg",
+                fileRef: "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/filesSent%2F40knots.jpg?alt=media&token=5078ffea-321d-438f-8550-8c7a2b7e0d25"
+            },           
+        ],
         tag: ["camping", "client"],
         dateOfFirstCall: new Date("2023-05-01"),
         dateOfLastCall: new Date("2023-08-01"),

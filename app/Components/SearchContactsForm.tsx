@@ -79,13 +79,11 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
     }, [search, onSearchChange])
 
     return (
-        <Paper sx={{ margin: "2em", padding: "1em", bgcolor: 'primary.light', }} >
+        <Paper sx={{ margin: "1em", marginTop:"2em", padding: "1em", bgcolor: 'primary.light', }} >
             <FormControl sx={{ position: "relative", bgcolor: 'lightCyan.light', padding:"25px", 
                 width: "calc(100vw - 263px)" , 
                 //maxWidth: "1200px"    // A voir si très grand écran !!!
-            }} >   
-                
-
+            }} >             
                 <Fab disabled size="small" color="primary" sx={{
                         position: "absolute",
                         top: "5px",
@@ -137,7 +135,7 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
                         </RadioGroup>
                     </FormControl> 
 
-                    <Box sx={{ display:"flex", flexDirection:"column", gap:"30px", width: '30%', 
+                    <Box sx={{ display:"flex", flexDirection:"column", gap:"20px", width: '30%', 
                         //border:"1px solid black" 
                     }} >
                         <TextField id="search-name" label="Nom" name='businessName' value={search.businessName} onChange={handleChangeText}
@@ -168,7 +166,7 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
                         </FormControl>
                     </Box >
 
-                    <Box sx={{ display:"flex", flexDirection:"column", gap:"30px", width: '30%', 
+                    <Box sx={{ display:"flex", flexDirection:"column", gap:"20px", width: '30%', 
                         //border:"1px solid black" 
                     }} >
                         <FormControl >
