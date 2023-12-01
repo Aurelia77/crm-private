@@ -524,7 +524,37 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     //     }
     // };
 
-
+    function stringToColor(string: string) {
+        let hash = 0;
+        let i;
+      
+        /* eslint-disable no-bitwise */
+        for (i = 0; i < string.length; i += 1) {
+          hash = string.charCodeAt(i) + ((hash << 5) - hash);
+        }
+      
+        let color = '#';
+      
+        for (i = 0; i < 3; i += 1) {
+          const value = (hash >> (i * 8)) & 0xff;
+          color += `00${value.toString(16)}`.slice(-2);
+        }
+        /* eslint-enable no-bitwise */
+      
+        return color;
+      }
+      
+      function stringAvatar(name: string) {
+        return {
+          sx: {
+            backgroundColor: stringToColor(name),
+            width: 100, 
+            height: 100 
+          },
+          children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+        };
+      }
+      
 
 
     return (
@@ -639,18 +669,22 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             >
                 {/* <TextField type="file" onChange={handleChangeLogo2} /> */}
                 {/* {contact.logo && <Image src={contact.logo} alt={contact.businessName} width={100} height={100} style={{ borderRadius: "10%" }}  />} */}
-                {/* <Avatar variant="rounded" src={contact.logo}
-                        sx={{ width: 150, height: 150 
-                        }} /> */}
-                {contact.logo
+                <Avatar 
+                    variant="rounded" 
+                    src={contact.logo
+                        ? contact.logo 
+                        : ""}
+                    {...stringAvatar(contact.businessName)}                    
+                />
+                {/* {contact.logo
                     ? <Avatar variant="rounded" src={contact.logo}
                         sx={{ 
                             width: 100, height: 100 
                         }} />
                     : <Avatar variant="rounded" sx={{ bgcolor: grey[500], fontSize: "9px", 
                     width: 100, height: 100 
-                }} >{contact.businessName}</Avatar>
-                }                
+                }} >{contact.businessName}</Avatar> 
+                }                */}
                
                 {/* <MuiFileInput
                     value={contact.logo}
