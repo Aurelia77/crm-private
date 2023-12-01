@@ -57,6 +57,7 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
 import { InputLabel, MenuItem } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { grey } from '@mui/material/colors';
 
 import {sortedBusinessCategories, contactTypes} from '../utils/toolbox'
 
@@ -158,7 +159,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
     //console.log("CONTACT ROW")
     //console.log(alerts.alerts)
-    // console.log("LOGO", contact.logo)
+    console.log("contact")
+    console.log("LOGO", contact.logo)
     // console.log("NOM", contact.businessName)
 
     const [contactInfo, setContactInfo] = React.useState<Contact>(contact)
@@ -636,9 +638,20 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             //sx={{ padding:0 }}  
             >
                 {/* <TextField type="file" onChange={handleChangeLogo2} /> */}
-                {contact.logo && <Image src={contact.logo} alt={contact.businessName} width={100} height={100} style={{ borderRadius: "10%" }}
-                //onClick={handleChangeLogo} 
-                />}
+                {/* {contact.logo && <Image src={contact.logo} alt={contact.businessName} width={100} height={100} style={{ borderRadius: "10%" }}  />} */}
+                {/* <Avatar variant="rounded" src={contact.logo}
+                        sx={{ width: 150, height: 150 
+                        }} /> */}
+                {contact.logo
+                    ? <Avatar variant="rounded" src={contact.logo}
+                        sx={{ 
+                            width: 100, height: 100 
+                        }} />
+                    : <Avatar variant="rounded" sx={{ bgcolor: grey[500], fontSize: "9px", 
+                    width: 100, height: 100 
+                }} >{contact.businessName}</Avatar>
+                }                
+               
                 {/* <MuiFileInput
                     value={contact.logo}
                     //onChange={ (file) => handleChangeFile(file)} />

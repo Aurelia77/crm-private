@@ -153,7 +153,7 @@ export default function ContactCard({ contact, addContact, updateContact,
                         <Box sx={{ marginRight:"10px" }}>
                             {/* => FormControl n'est pas conçu pour gérer les soumissions de formulaire. */}
 
-                            <form onSubmit={handleSubmitLogo} className='form'>
+                            <form onSubmit={handleSubmitLogo} >
                                 <TextField
                                     color="secondary"
                                     name="upload-photo"
@@ -171,13 +171,12 @@ export default function ContactCard({ contact, addContact, updateContact,
                                     {/* <VisuallyHiddenInput type="file" /> */}
                                 </Button>
                             </form>
-                            {/* <Box >
-                            <Box className='innerbar' sx={{ width: `${progresspercent}%`, backgroundColor: "red" }}>{progresspercent}%</Box>
+                            {/* <Box className='innerbar' sx={{ width: `${progresspercent}%`, backgroundColor: "red" }}>{progresspercent}%</Box>
                         </Box> */}
                             <LinearProgress variant="determinate" value={progresspercent} sx={{marginTop:"10px"}} />
-                            {/* } */}
+                            <Button variant="contained" color="error" sx={{marginTop:"10px"}} onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, logo: "" })} >Supprimer le logo</Button>
                         </Box>
-                        {contact.logo
+                        {contactToAddOrUpdate.logo
                             ? <Avatar variant="rounded" src={contactToAddOrUpdate.logo}
                                 sx={{ width: 150, height: 150 }} />
                             : <Avatar variant="rounded" sx={{ bgcolor: grey[500], fontSize: "9px", width: 150, height: 150 }} >{contactToAddOrUpdate.businessName}</Avatar>
