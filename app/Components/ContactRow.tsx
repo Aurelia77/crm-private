@@ -159,8 +159,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
     //console.log("CONTACT ROW")
     //console.log(alerts.alerts)
-    console.log("contact")
-    console.log("LOGO", contact.logo)
+    //console.log("contact")
+    //console.log("LOGO", contact.logo)
     // console.log("NOM", contact.businessName)
 
     const [contactInfo, setContactInfo] = React.useState<Contact>(contact)
@@ -968,7 +968,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 <Dialog open={openCommentDialogue} onClose={handleCloseCommentDialog} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="lg" fullWidth
                     disableRestoreFocus // sinon le focus ne se fait pas sur le TextField
                 >
-                    <DialogTitle id="alert-dialog-title">Commentaires</DialogTitle>
+                    <DialogTitle id="alert-dialog-title">Commentaires pour {contact.businessName}</DialogTitle>
                     <DialogContent
                         dividers
                     >
@@ -1051,12 +1051,12 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
             {/* filesSent */}
             <StyledTableCell align="right">
-                <MuiFileInput
+                {/* <MuiFileInput
                     value={contact.filesSent}
                     multiple={true}
                     onChange={(files) => handleChangeFile(files, "filesSent")}
                 //onChange={handleChangeFile} 
-                />
+                /> */}
                 {/* <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
         Upload file
         <VisuallyHiddenInput type="file" />

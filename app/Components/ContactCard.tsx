@@ -28,6 +28,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { MuiFileInput } from 'mui-file-input';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import LinearProgress from '@mui/material/LinearProgress';
+import { Input } from '@mui/material';
 
 
 type ContactCardProps = {
@@ -54,8 +55,11 @@ export default function ContactCard({ contact, addContact, updateContact,
     }, [contact])
 
     console.log("contactToAddOrUpdate", contactToAddOrUpdate)
-    console.log("dateOfNextCall", contactToAddOrUpdate.dateOfNextCall)
-    console.log("dateOfNextCall?.toDate()", contactToAddOrUpdate.dateOfNextCall?.toDate())
+    console.log("files", contactToAddOrUpdate.filesSent)
+    console.log(typeof contactToAddOrUpdate.filesSent)
+    contactToAddOrUpdate.filesSent.length > 0 && console.log(typeof contactToAddOrUpdate.filesSent[0])
+    // console.log("dateOfNextCall", contactToAddOrUpdate.dateOfNextCall)
+    // console.log("dateOfNextCall?.toDate()", contactToAddOrUpdate.dateOfNextCall?.toDate())
 
     const handleChangeText = (attribut: keyof Contact) => (event: React.ChangeEvent<HTMLInputElement>) => {
         //console.log("event.target.value", event.target.value)
@@ -87,13 +91,15 @@ export default function ContactCard({ contact, addContact, updateContact,
 
     const [progresspercent, setProgresspercent] = React.useState(0);
 
-    const handleSubmitLogo = (e: any) => {
+    const handleSubmitFiles = (e: any, attribut: string) => {
         e.preventDefault()
         console.log("e", e)
         console.log("e.target", e.target)
-        const file = e.target[0]?.files[0]
+        console.log("e.target", e.target.elements)
+        //const file = e.target[0]?.files[0]
+        const file = e.target.elements[0].files[0]
         if (!file) return;
-        const storageRef = ref(storage, `files/${file.name}`);
+        const storageRef = ref(storage, `${attribut}/${file.name}`);
         const uploadTask = uploadBytesResumable(storageRef, file);
 
         uploadTask.on("state_changed",
@@ -108,11 +114,33 @@ export default function ContactCard({ contact, addContact, updateContact,
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                     console.log("downloadURL", downloadURL)
-                    setContactToAddOrUpdate({ ...contactToAddOrUpdate, logo: downloadURL })
+                    attribut === "logo"
+                        ? setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: downloadURL })
+                        : setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: [...contactToAddOrUpdate.filesSent, downloadURL] })
                 });
             }
         );
     }
+
+
+    const handleOpenFile = async (file) => {
+        
+        console.log(file)
+        const segments = file.split('/');
+        const fileName = segments[segments.length - 1];
+
+        console.log('File name:', fileName);
+
+        const nameParts = fileName.split('.');
+        const extension = nameParts[nameParts.length - 1];
+
+        console.log('File extension:', extension);
+        const fileRef = ref(storage, `${file}`);
+
+        const url = await getDownloadURL(fileRef);
+        window.open(url, '_blank');
+    };
+
 
 
     return (
@@ -128,7 +156,7 @@ export default function ContactCard({ contact, addContact, updateContact,
                 //backgroundColor: muiTheme.palette.primary.light,
             }}        // my = 0.5rem (donc 1/2 taille de la police de la racine (em pour l'élément))
         >
-            <FormControl
+            <Box
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -141,34 +169,37 @@ export default function ContactCard({ contact, addContact, updateContact,
                     //alignItems: 'center', gap: 2, 
                 }}
                 >
-                    <TextField 
-                        required 
-                        id="outlined-basic" 
-                        label="Nom" 
-                        variant="outlined" 
+                    <TextField
+                        required
+                        id="outlined-basic"
+                        label="Nom"
+                        variant="outlined"
                         value={contactToAddOrUpdate.businessName}
                         onChange={handleChangeText("businessName")} sx={{ width: "40%" }}
                         inputProps={{
                             style: { color: muiTheme.palette.primary.dark, }
                         }}
-                        color= {contactToAddOrUpdate.businessName ? "success" : "error" }
+                        color={contactToAddOrUpdate.businessName ? "success" : "error"}
                     />
 
                     {/* <TextField id="outlined-basic" label="Secteur d'activité" variant="outlined" value={findLabelNafCodes(contactToAdd.businessActivity)} /> */}
 
                     <Box sx={{ display: "flex", width: "50%" }} >
-                        <Box sx={{ marginRight:"10px" }}>
+                        <Box sx={{ marginRight: "10px" }}>
                             {/* => FormControl n'est pas conçu pour gérer les soumissions de formulaire. */}
 
-                            <form onSubmit={handleSubmitLogo} >
-                                <TextField
+                            <form onSubmit={(e) => handleSubmitFiles(e, "logo")} >
+                                {/* <TextField
                                     color="secondary"
                                     name="upload-photo"
                                     type="file"
                                 //onChange={handleChangeLogo}
-                                />
+                                /> */}
+
+                                <Input type="file" />
+
                                 <Button
-                                    sx={{marginTop:"10px"}}
+                                    sx={{ marginTop: "10px" }}
                                     //component="label"
                                     type="submit"
                                     variant="contained" startIcon={<CloudUploadIcon />}
@@ -180,21 +211,22 @@ export default function ContactCard({ contact, addContact, updateContact,
                             </form>
                             {/* <Box className='innerbar' sx={{ width: `${progresspercent}%`, backgroundColor: "red" }}>{progresspercent}%</Box>
                         </Box> */}
-                            <LinearProgress variant="determinate" value={progresspercent} sx={{marginTop:"10px"}} />
-                            {contactToAddOrUpdate.logo && <Button variant="contained" color="error" sx={{marginTop:"10px"}} onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, logo: "" })} >Supprimer le logo</Button>}
+                            {progresspercent < 100 && <LinearProgress variant="determinate" value={progresspercent} sx={{ marginTop: "10px" }} />}
+
+                            {contactToAddOrUpdate.logo &&
+                                <Button variant="contained" color="error" sx={{ marginTop: "10px" }} onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, logo: "" })} >Supprimer le logo</Button>}
                         </Box>
-                        <Avatar 
-                            variant="rounded" 
+                        <Avatar
+                            variant="rounded"
                             src={contactToAddOrUpdate.logo
-                                ? contactToAddOrUpdate.logo 
-                                : ""}  
-                            sx={{ width:"150px", height:"150px" }}                 
+                                ? contactToAddOrUpdate.logo
+                                : ""}
+                            sx={{ width: "150px", height: "150px" }}
                         >
-                           {contactToAddOrUpdate.logo ? "" : "Pas de logo"} 
-                        </Avatar>  
+                            {contactToAddOrUpdate.logo ? "" : "Pas de logo"}
+                        </Avatar>
                     </Box>
                 </Box>
-
 
                 {/* ///////// DATES ///////// */}
                 <Box sx={{ display: 'flex', justifyContent: "space-around", marginBottom: "30px" }} >
@@ -299,7 +331,6 @@ export default function ContactCard({ contact, addContact, updateContact,
                     <TextField id="outlined-basic" label="Position" variant="outlined" value={contactToAddOrUpdate.contactPosition} onChange={handleChangeText("contactPosition")} sx={{ width: "30%" }} />
                 </Box>
 
-
                 {/* ///////// Tel Contact, Email ///////// */}
                 <Box sx={{ display: 'flex', justifyContent: "space-between" }} >
                     <TextField id="outlined-basic" label="Téléphone DIRECT" variant="outlined" value={contactToAddOrUpdate.contactPhone} onChange={handleChangeText("contactPhone")} sx={{ width: "45%" }} />
@@ -307,16 +338,76 @@ export default function ContactCard({ contact, addContact, updateContact,
                 </Box>
 
                 {/* ///////// Tel STANDARD, Email STANDARD et SITE WEB ///////// */}
-                <Box sx={{ display: 'flex', justifyContent: "space-between" }} >                    
-                    <TextField id="outlined-basic" label="Téléphone STANDARD" variant="outlined" value={contactToAddOrUpdate.businessPhone} onChange={handleChangeText("businessPhone")} sx={{ width: "30%" }} />                    
+                <Box sx={{ display: 'flex', justifyContent: "space-between" }} >
+                    <TextField id="outlined-basic" label="Téléphone STANDARD" variant="outlined" value={contactToAddOrUpdate.businessPhone} onChange={handleChangeText("businessPhone")} sx={{ width: "30%" }} />
                     <TextField id="outlined-basic" label="Email ENTREPRISE" variant="outlined" value={contactToAddOrUpdate.businessEmail} onChange={handleChangeText("businessEmail")} sx={{ width: "30%" }} />
                     <TextField id="outlined-basic" label="Site WEB" variant="outlined" value={contactToAddOrUpdate.businessWebsite} onChange={handleChangeText("businessWebsite")} sx={{ width: "30%" }} />
                 </Box>
-                {/* <TextField id="outlined-basic" label="Nom du contact" variant="outlined" value={contactToAdd.contactName} onChange={handleChangeText("contactName")} />
-                <TextField id="outlined-basic" label="Téléphone du contact" variant="outlined" value={contactToAdd.contactPhone} onChange={handleChangeText("contactPhone")} />
-                <TextField id="outlined-basic" label="Email du contact" variant="outlined" value={contactToAdd.contactEmail} onChange={handleChangeText("contactEmail")} />
-                <TextField id="outlined-basic" label="Poste du contact" variant="outlined" value={contactToAdd.contactPosition} onChange={handleChangeText("contactPosition")} />
-                <TextField id="outlined-basic" label="Commentaires" variant="outlined" value={contactToAdd.comments} onChange={handleChangeText("comments")} />       */}
+
+                {/* ///////// COMMENTAIRES ///////// */}
+                <TextField
+                    multiline
+                    id="outlined-basic"
+                    label="Commentaires"
+                    variant="outlined"
+                    value={contactToAddOrUpdate.comments}
+                    onChange={handleChangeText("comments")}
+                />
+
+                {/* ///////// FICHIERS ///////// */}
+                <Box sx={{ marginRight: "10px" }}>
+
+                    {/* <MuiFileInput
+                        value={contactToAddOrUpdate.filesSent}
+                        onChange={handleChangeFile}
+                    /> */}
+
+                    {/* => FormControl n'est pas conçu pour gérer les soumissions de formulaire. */}
+
+                    <form onSubmit={(e) => handleSubmitFiles(e, "filesSent")} >
+                        <Input type="file" />
+                        <Button
+                            sx={{ marginTop: "10px" }}
+                            //component="label"
+                            type="submit"
+                            variant="contained" startIcon={<CloudUploadIcon />}
+                        //onClick={handleChangeLogo}
+                        >
+                            Télécharger le fichier
+                        </Button>
+                    </form>
+                    <LinearProgress
+                        variant="determinate"
+                        value={progresspercent}
+                        sx={{ marginTop: "10px" }} />
+                    {contactToAddOrUpdate.filesSent &&
+                        <Button
+                            variant="contained"
+                            color="error"
+                            sx={{ marginTop: "10px" }}
+                            onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, filesSent: [] })} >Supprimer tous les fichiers</Button>}
+
+                    <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                        {contactToAddOrUpdate.filesSent.length} fichier(s)<br />
+                        {contactToAddOrUpdate.filesSent.map((file, index) => (
+                            <Button
+                                key={index}
+                                onClick={() => handleOpenFile(file)}
+                            >
+                                Fichier {index + 1} (cliquer pour ouvrir)<br />
+                            </Button>
+                        ))}
+                    </Typography>
+
+                    {/* <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                        {contactToAddOrUpdate.filesSent.length} fichier(s)<br />
+                        {contactToAddOrUpdate.filesSent.map((file, index) => (
+                            <React.Fragment key={index}>
+                                --{file instanceof File ? <a href={URL.createObjectURL(file)} target="_blank" rel="noopener noreferrer">{file.name}</a> : file.name}<br />
+                            </React.Fragment>
+                        ))}
+                    </Typography> */}
+                </Box>
 
 
                 {/* <IconButton>
@@ -325,7 +416,7 @@ export default function ContactCard({ contact, addContact, updateContact,
 
                 {addContact && <Button variant="contained" sx={{ width: '100%', mt: 1, mb: 2 }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
                 {updateContact && <Button variant="contained" color='pink' sx={{ width: '100%', mt: 1, mb: 2 }} onClick={() => updateContact(contactToAddOrUpdate)} >Mettre à jour le contact</Button>}
-            </FormControl>
+            </Box>
 
             {/* <Divider />
             <Stack
