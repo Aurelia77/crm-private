@@ -96,11 +96,18 @@ export default function ContactCard({ contact, addContact, updateContact,
         console.log("e", e)
         console.log("e.target", e.target)
         console.log("e.target", e.target.elements)
+        console.log("e.target", e.target.elements[0])
+        console.log("e.target", e.target.elements[0].files)
+        console.log("e.target", e.target.elements[0].files[0])
         //const file = e.target[0]?.files[0]
         const file = e.target.elements[0].files[0]
         if (!file) return;
         const storageRef = ref(storage, `${attribut}/${file.name}`);
+
         const uploadTask = uploadBytesResumable(storageRef, file);
+
+        console.log(uploadTask)
+
 
         uploadTask.on("state_changed",
             (snapshot) => {
@@ -116,7 +123,7 @@ export default function ContactCard({ contact, addContact, updateContact,
                     console.log("downloadURL", downloadURL)
                     attribut === "logo"
                         ? setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: downloadURL })
-                        : setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: [...contactToAddOrUpdate.filesSent, downloadURL] })
+                        : setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: [...contactToAddOrUpdate.filesSent, { fileName: file.name, fileRef: downloadURL }] })
                 });
             }
         );
@@ -125,16 +132,17 @@ export default function ContactCard({ contact, addContact, updateContact,
 
     const handleOpenFile = async (file: any) => {
 
-        console.log(file)
-        const segments = file.split('/');
-        const fileName = segments[segments.length - 1];
+        // console.log(file)
+        // const segments = file.split('/');
+        // const fileName = segments[segments.length - 1];
 
-        console.log('File name:', fileName);
+        // console.log('File name:', fileName);
 
-        const nameParts = fileName.split('.');
-        const extension = nameParts[nameParts.length - 1];
+        // const nameParts = fileName.split('.');
+        // const extension = nameParts[nameParts.length - 1];
 
-        console.log('File extension:', extension);
+        // console.log('File extension:', extension);
+
         const fileRef = ref(storage, `${file}`);
 
         const url = await getDownloadURL(fileRef);
@@ -392,9 +400,9 @@ export default function ContactCard({ contact, addContact, updateContact,
                         {contactToAddOrUpdate.filesSent.map((file, index) => (
                             <Button
                                 key={index}
-                                onClick={() => handleOpenFile(file)}
+                                onClick={() => handleOpenFile(file.fileRef)}
                             >
-                                Fichier {index + 1} (cliquer pour ouvrir)<br />
+                                Fichier {index + 1} - {file.fileName} (cliquer pour ouvrir)<br />
                             </Button>
                         ))}
                     </Typography>

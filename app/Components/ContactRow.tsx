@@ -1064,9 +1064,14 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 <Typography variant="caption" sx={{ color: "text.secondary" }}>
                     {contact.filesSent.length} fichier(s)<br />
                     {contact.filesSent.map((file, index) => (
-                        <React.Fragment key={index}>
-                            {file.name}<br />
-                        </React.Fragment>
+                        <TextField 
+                            key={index}
+                            value={file.fileName}
+                            disabled
+                        />
+                        // <React.Fragment key={index}>
+                        //     {file.fileName}<br />
+                        // </React.Fragment>
                     ))}
                 </Typography>
             </StyledTableCell>

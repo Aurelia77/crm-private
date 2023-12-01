@@ -3,6 +3,11 @@ type BusinessCatType = "NON DEFINI" | "Camping" | "Hôtel" | "Congiergerie" | "A
 
 type ContactTypeType= "NON DEFINI" | "Particulier" | "Entreprise" | "Partenaire";
 
+type FileNameAndRefType = {
+  fileName: string,
+  fileRef: string,
+}
+
 type Contact = {
   id: string,
   isClient: boolean,
@@ -24,7 +29,7 @@ type Contact = {
   contactPosition: string,
   hasBeenCalled: 0 | 1 | 2,       // 0="no" | 1="yes but no answer" | 2="yes and answered",
   hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3,  // 0="nothing" | 1="email sent" | 2="email sent and received" | 3="met up",
-  filesSent: File[],
+  filesSent: FileNameAndRefType[],
   //filesSent: File,
   //filesSent: File[] | null,
   tag: string[],
