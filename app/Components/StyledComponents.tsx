@@ -27,7 +27,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 
 const StyledTableRow = styled(TableRow)(({ theme } : any) => ({
-  className: "tableRowSelected",
+  //className: "tableRowSelected",
+  //height: "50px",
 
   '&:nth-of-type(odd)': {
     //backgroundColor: theme.palette.action.hover,

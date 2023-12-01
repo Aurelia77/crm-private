@@ -29,6 +29,7 @@ import { MuiFileInput } from 'mui-file-input';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import LinearProgress from '@mui/material/LinearProgress';
 import { Input } from '@mui/material';
+import {handleOpenFile} from '../utils/firebase'
 
 
 type ContactCardProps = {
@@ -130,24 +131,7 @@ export default function ContactCard({ contact, addContact, updateContact,
     }
 
 
-    const handleOpenFile = async (file: any) => {
-
-        // console.log(file)
-        // const segments = file.split('/');
-        // const fileName = segments[segments.length - 1];
-
-        // console.log('File name:', fileName);
-
-        // const nameParts = fileName.split('.');
-        // const extension = nameParts[nameParts.length - 1];
-
-        // console.log('File extension:', extension);
-
-        const fileRef = ref(storage, `${file}`);
-
-        const url = await getDownloadURL(fileRef);
-        window.open(url, '_blank');
-    };
+   
 
 
 

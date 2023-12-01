@@ -9,7 +9,7 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, set } from "firebase/database";
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from "firebase/auth";
-import { getStorage, ref, uploadBytes  } from "firebase/storage";
+import { getStorage, ref, uploadBytes, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 import { Timestamp } from 'firebase/firestore';
 import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, deleteDoc, updateDoc, doc } from "firebase/firestore";
@@ -444,7 +444,24 @@ const updatDataWholeContactOnFirebase = (contactToUpdate: Contact) => {
 
 
 
+const handleOpenFile = async (file: any) => {
 
+  // console.log(file)
+  // const segments = file.split('/');
+  // const fileName = segments[segments.length - 1];
+
+  // console.log('File name:', fileName);
+
+  // const nameParts = fileName.split('.');
+  // const extension = nameParts[nameParts.length - 1];
+
+  // console.log('File extension:', extension);
+
+  const fileRef = ref(storage, `${file}`);
+
+  const url = await getDownloadURL(fileRef);
+  window.open(url, '_blank');
+};
 
 
 
@@ -467,7 +484,8 @@ export {
   deleteAllDatasOnFirebaseAndReload,
   updatDataOnFirebase,
   updatDataWholeContactOnFirebase,
-  deleteDataOnFirebaseAndReload
+  deleteDataOnFirebaseAndReload,
+  handleOpenFile
 
 }
 

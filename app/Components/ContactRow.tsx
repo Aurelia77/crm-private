@@ -60,8 +60,8 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { grey } from '@mui/material/colors';
 
 import {sortedBusinessCategories, contactTypes} from '../utils/toolbox'
-
-
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 import { StyledTableRow, StyledTableCell } from './StyledComponents';
 import { Timestamp } from 'firebase/firestore';
@@ -80,6 +80,7 @@ import { timeStampObjToTimeStamp } from '../utils/toolbox';
 import { storage } from '../utils/firebase'
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { FormControl } from '@mui/material';
+import {handleOpenFile} from '../utils/firebase'
 
 // Pour les smileys du RATING 
 // => (dans le composant car besoin de connaitre la donnée pour ajuster la taille en fonction)  NON car sinon il faut cliquer 2 fois pour que ça valide !!!  
@@ -377,6 +378,14 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         setOpenCommentDialogue(false);
     };
 
+    const [openFilesDialogue, setOpenFilesDialogue] = React.useState(false);
+    const handleClickOpenFilesDialog = () => {
+        setOpenFilesDialogue(true);
+    };
+    const handleCloseFilesDialog = () => {
+        setOpenFilesDialogue(false);
+    };
+
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -405,7 +414,6 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
     const handleClickDeleteContact = () => {
         handleDeleteContact()
-        handleCloseCommentDialog()
     }
 
 
@@ -527,33 +535,33 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     function stringToColor(string: string) {
         let hash = 0;
         let i;
-      
+
         /* eslint-disable no-bitwise */
         for (i = 0; i < string.length; i += 1) {
-          hash = string.charCodeAt(i) + ((hash << 5) - hash);
+            hash = string.charCodeAt(i) + ((hash << 5) - hash);
         }
-      
+
         let color = '#';
-      
+
         for (i = 0; i < 3; i += 1) {
-          const value = (hash >> (i * 8)) & 0xff;
-          color += `00${value.toString(16)}`.slice(-2);
+            const value = (hash >> (i * 8)) & 0xff;
+            color += `00${value.toString(16)}`.slice(-2);
         }
         /* eslint-enable no-bitwise */
-      
+
         return color;
-      }
-      
-      function stringAvatar(name: string) {
+    }
+
+    function stringAvatar(name: string) {
         return {
-          sx: {
-            backgroundColor: stringToColor(name),
-            width: 100, 
-            height: 100 
-          },
-          children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+            sx: {
+                backgroundColor: stringToColor(name),
+                width: 100,
+                height: 100
+            },
+            children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
         };
-      }
+    }
       
 
 
@@ -1062,18 +1070,111 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         <VisuallyHiddenInput type="file" />
     </Button> */}
                 <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                    {contact.filesSent.length} fichier(s)<br />
-                    {contact.filesSent.map((file, index) => (
+                    {contact.filesSent.length} fichier(s)
+                    {/* <br /> */}
+                </Typography>
+
+                {contact.filesSent[0] && <Typography
+                    //key={0}
+                    // InputProps={{
+                    //     startAdornment: <ArrowRightIcon />,
+                    //     disableUnderline: true
+                    // }}
+                    onClick={() => handleOpenFile(contact.filesSent[0].fileRef)}
+                    sx={{ cursor: "pointer" }}
+                    align="left"
+                >
+                    {/* <ArrowRightIcon /> */}
+                    {contact.filesSent[0].fileName.length < 15
+                        ? contact.filesSent[0].fileName
+                        : contact.filesSent[0].fileName.substring(0, 15) + "..."
+                    }
+                </Typography>
+                }
+
+                {contact.filesSent[1] && <Typography
+                    //key={0}
+                    // InputProps={{
+                    //     startAdornment: <ArrowRightIcon />,
+                    //     disableUnderline: true
+                    // }}
+                    onClick={() => handleOpenFile(contact.filesSent[1].fileRef)}
+                    sx={{ cursor: "pointer" }}
+                    align="left"
+                >
+                    {/* <ArrowRightIcon /> */}
+                    {contact.filesSent[1].fileName.length < 15
+                        ? contact.filesSent[1].fileName
+                        : contact.filesSent[1].fileName.substring(0, 15) + "..."
+                    }
+                </Typography>
+                }
+
+                {/* {contact.filesSent.map((file, index) => (
                         <TextField 
                             key={index}
                             value={file.fileName}
                             disabled
+                            InputProps={{
+                                disableUnderline: true
+                            }}
                         />
                         // <React.Fragment key={index}>
                         //     {file.fileName}<br />
                         // </React.Fragment>
-                    ))}
-                </Typography>
+                    ))} */}
+                {contact.filesSent.length > 2 && <IconButton aria-label="files" color="primary" onClick={handleClickOpenFilesDialog}>
+                    <ZoomInIcon />
+                    <Typography
+                    // sx={{ overflow: "hidden", textOverflow: "ellipsis", fontSize: 14, }}
+                    >
+                        + {contact.filesSent.length - 2}
+                    </Typography>
+                </IconButton>
+                }
+
+                {/* Dialog pour modifier */}
+                <Dialog open={openFilesDialogue} onClose={handleCloseFilesDialog} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="lg" fullWidth
+                    disableRestoreFocus // sinon le focus ne se fait pas sur le TextField
+                >
+                    <DialogTitle id="alert-dialog-title">Commentaires pour {contact.businessName}</DialogTitle>
+                    <DialogContent
+                        dividers
+                    >
+                        {contact.filesSent.map((file, index) => (
+                            <Box key={index} sx={{ display:"flex"}} >
+                                <Avatar sx={{width:40, height:40, backgroundColor: stringToColor(file.fileName.slice(-3)),}} >{file.fileName.slice(-3)}</Avatar>
+                                <Typography
+                                    // InputProps={{
+                                    //     startAdornment: <ArrowRightIcon />,
+                                    //     disableUnderline: true
+                                    // }}
+                                    onClick={() => handleOpenFile(file.fileRef)}
+                                    sx={{ cursor: "pointer" }}
+                                >
+                                    {/* <ArrowRightIcon /> */}
+                                    {file.fileName}
+                                </Typography>
+                            </Box>
+
+
+                            // <TextField
+                            //     key={index}
+                            //     id="alert-dialog-description"
+                            //     margin="dense"
+                            //     //label="Commentaires" 
+                            //     type="comment" fullWidth variant="standard"
+                            //     multiline
+                            //     value={file.fileName}
+                            //     onClick={() => handleOpenFile(contact.filesSent[1].fileRef)}
+                            //     sx={{ cursor: "pointer", textAlign: 'left' }}
+                            // />
+                        ))}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button variant="contained" color='primary' onClick={handleCloseFilesDialog}>Ok</Button>
+                    </DialogActions>
+                </Dialog>
             </StyledTableCell>
 
             {/* dateOfFirstCall */}
