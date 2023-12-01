@@ -135,16 +135,23 @@ export default function ContactCard({ contact, addContact, updateContact,
                     gap: 7,
                 }}
             >
+                {/* ///////// NOM et LOGO ///////// */}
                 <Box sx={{
                     display: 'flex', justifyContent: "space-between" //width:"100%"
                     //alignItems: 'center', gap: 2, 
                 }}
                 >
-                    <TextField required id="outlined-basic" label="Nom" variant="outlined" value={contactToAddOrUpdate.businessName}
+                    <TextField 
+                        required 
+                        id="outlined-basic" 
+                        label="Nom" 
+                        variant="outlined" 
+                        value={contactToAddOrUpdate.businessName}
                         onChange={handleChangeText("businessName")} sx={{ width: "40%" }}
                         inputProps={{
                             style: { color: muiTheme.palette.primary.dark, }
                         }}
+                        color= {contactToAddOrUpdate.businessName ? "success" : "error" }
                     />
 
                     {/* <TextField id="outlined-basic" label="Secteur d'activité" variant="outlined" value={findLabelNafCodes(contactToAdd.businessActivity)} /> */}
@@ -174,21 +181,22 @@ export default function ContactCard({ contact, addContact, updateContact,
                             {/* <Box className='innerbar' sx={{ width: `${progresspercent}%`, backgroundColor: "red" }}>{progresspercent}%</Box>
                         </Box> */}
                             <LinearProgress variant="determinate" value={progresspercent} sx={{marginTop:"10px"}} />
-                            <Button variant="contained" color="error" sx={{marginTop:"10px"}} onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, logo: "" })} >Supprimer le logo</Button>
+                            {contactToAddOrUpdate.logo && <Button variant="contained" color="error" sx={{marginTop:"10px"}} onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, logo: "" })} >Supprimer le logo</Button>}
                         </Box>
-                        {contactToAddOrUpdate.logo
-                            ? <Avatar variant="rounded" src={contactToAddOrUpdate.logo}
-                                sx={{ width: 150, height: 150 }} />
-                            : <Avatar variant="rounded" sx={{ bgcolor: grey[500], fontSize: "9px", width: 150, height: 150 }} >{contactToAddOrUpdate.businessName}</Avatar>
-                        }
-
-
-
+                        <Avatar 
+                            variant="rounded" 
+                            src={contactToAddOrUpdate.logo
+                                ? contactToAddOrUpdate.logo 
+                                : ""}  
+                            sx={{ width:"150px", height:"150px" }}                 
+                        >
+                           {contactToAddOrUpdate.logo ? "" : "Pas de logo"} 
+                        </Avatar>  
                     </Box>
                 </Box>
 
 
-
+                {/* ///////// DATES ///////// */}
                 <Box sx={{ display: 'flex', justifyContent: "space-around", marginBottom: "30px" }} >
                     <Box sx={{}} >
                         <Box sx={{
@@ -239,6 +247,7 @@ export default function ContactCard({ contact, addContact, updateContact,
                     </ Box>
                 </Box>
 
+                {/* ///////// CLIENT - TYPE - CAT ///////// */}
                 <Box sx={{ display: 'flex', justifyContent: "space-between" }} >
                     <FormControlLabel control={<Switch
                         checked={contactToAddOrUpdate.isClient}
@@ -278,21 +287,30 @@ export default function ContactCard({ contact, addContact, updateContact,
                     </FormControl>
                 </Box>
 
+                {/* ///////// VILLE et ADRESSE ///////// */}
                 <Box sx={{ display: 'flex', justifyContent: "space-between" }} >
                     <TextField id="outlined-basic" label="Ville" variant="outlined" value={contactToAddOrUpdate.businessCity} onChange={handleChangeText("businessCity")} sx={{ width: "40%" }} />
                     <TextField id="outlined-basic" label="Adresse" variant="outlined" value={contactToAddOrUpdate.businessAddress} onChange={handleChangeText("businessAddress")} sx={{ width: "55%" }} />
                 </Box>
 
+                {/* ///////// NOM Contact, POSITION ///////// */}
                 <Box sx={{ display: 'flex', justifyContent: "space-between" }} >
-                    <TextField id="outlined-basic" label="Téléphone DIRECT" variant="outlined" value={contactToAddOrUpdate.contactPhone} onChange={handleChangeText("businessPhone")} sx={{ width: "48%" }} />
-                    <TextField id="outlined-basic" label="Téléphone STANDARD" variant="outlined" value={contactToAddOrUpdate.businessPhone} onChange={handleChangeText("businessPhone")} sx={{ width: "48%" }} />
+                    <TextField id="outlined-basic" label="Nom Contact DIRECT" variant="outlined" value={contactToAddOrUpdate.contactName} onChange={handleChangeText("contactName")} sx={{ width: "60%" }} />
+                    <TextField id="outlined-basic" label="Position" variant="outlined" value={contactToAddOrUpdate.contactPosition} onChange={handleChangeText("contactPosition")} sx={{ width: "30%" }} />
                 </Box>
 
-                <Box sx={{ display: 'flex', justifyContent: "space-between" }} >
 
-                    <TextField id="outlined-basic" label="Email DIRECT" variant="outlined" value={contactToAddOrUpdate.contactEmail} onChange={handleChangeText("businessEmail")} sx={{ width: "32%" }} />
-                    <TextField id="outlined-basic" label="Email ENTREPRISE" variant="outlined" value={contactToAddOrUpdate.businessEmail} onChange={handleChangeText("businessEmail")} sx={{ width: "32%" }} />
-                    <TextField id="outlined-basic" label="Website" variant="outlined" value={contactToAddOrUpdate.businessWebsite} onChange={handleChangeText("businessWebsite")} sx={{ width: "32%" }} />
+                {/* ///////// Tel Contact, Email ///////// */}
+                <Box sx={{ display: 'flex', justifyContent: "space-between" }} >
+                    <TextField id="outlined-basic" label="Téléphone DIRECT" variant="outlined" value={contactToAddOrUpdate.contactPhone} onChange={handleChangeText("contactPhone")} sx={{ width: "45%" }} />
+                    <TextField id="outlined-basic" label="Email DIRECT" variant="outlined" value={contactToAddOrUpdate.contactEmail} onChange={handleChangeText("businessEmail")} sx={{ width: "45%" }} />
+                </Box>
+
+                {/* ///////// Tel STANDARD, Email STANDARD et SITE WEB ///////// */}
+                <Box sx={{ display: 'flex', justifyContent: "space-between" }} >                    
+                    <TextField id="outlined-basic" label="Téléphone STANDARD" variant="outlined" value={contactToAddOrUpdate.businessPhone} onChange={handleChangeText("businessPhone")} sx={{ width: "30%" }} />                    
+                    <TextField id="outlined-basic" label="Email ENTREPRISE" variant="outlined" value={contactToAddOrUpdate.businessEmail} onChange={handleChangeText("businessEmail")} sx={{ width: "30%" }} />
+                    <TextField id="outlined-basic" label="Site WEB" variant="outlined" value={contactToAddOrUpdate.businessWebsite} onChange={handleChangeText("businessWebsite")} sx={{ width: "30%" }} />
                 </Box>
                 {/* <TextField id="outlined-basic" label="Nom du contact" variant="outlined" value={contactToAdd.contactName} onChange={handleChangeText("contactName")} />
                 <TextField id="outlined-basic" label="Téléphone du contact" variant="outlined" value={contactToAdd.contactPhone} onChange={handleChangeText("contactPhone")} />
