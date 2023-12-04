@@ -56,12 +56,14 @@ const CustomedTextField = ({ contactInfo, value, setValue }: { contactInfo: Cont
 
 type NewContactSearchForm = {
     emptyContact: Contact,
-    addContact: (contact: Contact) => void
+    addContact: (contact: Contact) => void,
+    currentUserId: string,
 }
 
 export default function NewContactSearchForm({    //contacts, setContacts }: { contacts: Contact[], setContacts: Function
     emptyContact,
-    addContact }: NewContactSearchForm) {
+    addContact,
+    currentUserId }: NewContactSearchForm) {
     const token = '613dca81-d71e-3b02-ac1a-b2170d2084c6'
     const apiAccessUrl = "https://api.insee.fr/entreprises/sirene/V3/siret?q="
 
@@ -511,7 +513,11 @@ export default function NewContactSearchForm({    //contacts, setContacts }: { c
                     <Box width={thereIsListToDisplay() ? "33.33%" : "50%"} >
                         {/* Est-ce bien de faire ça ci-dessous ? Car sans le "as Contact", memê si je mets ci-dessus la condition "Object.entries(infosContact).length > 0" (ifosContact n'est pas un objet vide, donc selon comme il est typé (Contact | {}) il est forcement de type Contact) => me met un erreur Impossible d'assigner le type '{} | Contact' au type 'Contact'.   */}
                         <Typography variant="h6" sx={{ p: 2, bgcolor: 'background.default' }}>Modifier/ajouter des infos si besoin :</Typography>
-                        <ContactCard contact={infosContact as Contact} addContact={addContact} />
+                        <ContactCard 
+                            contact={infosContact as Contact} 
+                            currentUserId={currentUserId}
+                            addContact={addContact}
+                        />
                         {
                             //(searchContactName !== '') && resultInseeSearch && 
                             // resultInseeSearch.map((business: any, index: number) => (

@@ -153,6 +153,8 @@ const guadeloupeRef = ref(storage, 'guadeloupe.jpg');
 //   //     unsub()
 //   // }
 // }
+
+
 const getContactsFromDatabase = async (currentUser: any) => {
   // const readDataFromFirebase = (currentUser: User | null) => {
   let contactsArr: Contact[] = []
@@ -176,6 +178,27 @@ const getContactsFromDatabase = async (currentUser: any) => {
   // return () => {           // ? dans une vidéo : https://www.youtube.com/watch?v=-yrnWnN0g9o&ab_channel=DevWorld
   //     unsub()
   // }
+}
+
+const getFilesFromDatabase = async (currentUserId: any) => {
+
+  console.log("getFilesFromDatabase", currentUserId)
+
+  // const readDataFromFirebase = (currentUser: User | null) => {
+  let filesArr: FileNameAndRefType[] = []
+  const filesCollectionRef = collection(fireStoreDb, "files");
+  const q =  query(filesCollectionRef, where("userId", "==", currentUserId))
+
+  const querySnapshot = await getDocs(q)
+
+  querySnapshot.forEach((doc) => {
+
+    console.log("doc.data()", doc.data())
+
+
+    filesArr.push({ ...doc.data() as FileNameAndRefType }) 
+  });
+  return filesArr
 }
 // const getCategoriesFromDatabase = async (currentUser: any) => {
 //   // const readDataFromFirebase = (currentUser: User | null) => {
@@ -234,7 +257,7 @@ const addContactOnFirebaseAndReload = async (currentUser: any, contact: Contact)
   console.log({ ...contact, id: uid() })
 
   try {
-    const docRef = await addDoc(collection(fireStoreDb, "contacts"), { ...contact, userId: currentUser?.uid });
+    const docRef = await addDoc(collection(fireStoreDb, "contacts"), { ...contact, userId: currentUser.uid });
     console.log("Document written with ID: ", docRef.id);
   } catch (error) {
     console.error("Error adding document: ", error);
@@ -243,6 +266,24 @@ const addContactOnFirebaseAndReload = async (currentUser: any, contact: Contact)
   console.log("****************//////////////FINI ///////////**********")
   
   window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
+}
+
+const addFileOnFirebaseDB = async (currentUserId: any, file: FileNameAndRefType) => {  
+
+  console.log(file.fileName)
+
+  try {
+    const docRef = await addDoc(collection(fireStoreDb, "files"), { ...file, userId: currentUserId });
+    console.log("File written with ID: ", docRef.id);
+  } catch (error) {
+    console.error("Error adding file: ", error);
+  }
+
+  console.log("****************//////////////FINI ///////////**********")
+
+  //alert("Fichier ajouté !")
+  
+  //window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
 }
 
 
@@ -478,9 +519,11 @@ export {
   storage,
   //readDataFromFirebaseAndSetContact,
   getContactsFromDatabase,
+  getFilesFromDatabase,
   //getCategoriesFromDatabase,
   addFakeDataOnFirebaseAndReload,
   addContactOnFirebaseAndReload,
+  addFileOnFirebaseDB,
   deleteAllDatasOnFirebaseAndReload,
   updatDataOnFirebase,
   updatDataWholeContactOnFirebase,

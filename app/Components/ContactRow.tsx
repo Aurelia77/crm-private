@@ -63,7 +63,7 @@ import {sortedBusinessCategories, contactTypes} from '../utils/toolbox'
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
-import { StyledTableRow, StyledTableCell } from './StyledComponents';
+import { StyledTableRow, StyledTableCell } from '../utils/StyledComponents';
 import { Timestamp } from 'firebase/firestore';
 
 import Rating, { IconContainerProps } from '@mui/material/Rating';

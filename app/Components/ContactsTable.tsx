@@ -29,7 +29,7 @@ import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
 
 
 
-import { StyledTableCell } from './StyledComponents';
+import { StyledTableCell } from '../utils/StyledComponents';
 import ContactRow from './ContactRow';
 import { Box, Typography } from '@mui/material';
 import { Timestamp } from 'firebase/firestore';
@@ -66,7 +66,7 @@ const headCells: readonly Column[] = [               // readonly ???
     { id: 'interestGauge', label: <FavoriteRoundedIcon fontSize='large' />, minWidth: "5em", },
     { id: 'filesSent', label: <AttachFileRoundedIcon fontSize='large' />, minWidth: "10em", },
     { id: 'dateOfFirstCall', label: 'Premier appel', minWidth: "13em", },
-    { id: 'businessCategory', label: 'Type', minWidth: "10em", },
+    { id: 'businessCategory', label: 'Catégorie', minWidth: "10em", },
     // { id: 'supprimer', label: 'Supprimer ?', minWidth: "5em", },
 ];
 

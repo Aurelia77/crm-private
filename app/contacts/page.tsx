@@ -78,43 +78,9 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import CalendarLittle from '../Components/CalendarLittle';
 import CalendarFull from '../Components/CalendarFull';
 import CalendarScheduler from '../Components/CalendarScheduler';
+import {TabPanel, TAB_WIDTH} from '../utils/StyledComponents';
 
-const TAB_WIDTH = 100
 
-interface TabPanelProps {
-    children?: React.ReactNode;
-    index: number;
-    value: number;
-}
-function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
-
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`vertical-tabpanel-${index}`}
-            aria-labelledby={`vertical-tab-${index}`}
-            style={{ width: `calc(100vw - ${TAB_WIDTH}px)` }}
-            {...other}
-        >
-            {value === index && (
-                <Box
-                // sx={{ p: 3 }}
-                >
-                    <Typography component={"div"}
-                    >{children}</Typography>
-                </Box>
-            )}
-        </div>
-    );
-}
-function a11yProps(index: number) {
-    return {
-        id: `vertical-tab-${index}`,
-        'aria-controls': `vertical-tabpanel-${index}`,
-    };
-}
 
 
 
@@ -364,7 +330,7 @@ export default function Contacts() {
                                         //label={title.label} 
                                         title={title.label}
                                         icon={title.icon}
-                                        {...a11yProps(index)}
+                                       // {...a11yProps(index)}
                                         sx={{ margin: '10px 0 10px 0' }}
                                     //sx={{ marginBottom:"10px" }} 
                                     />
@@ -484,12 +450,20 @@ export default function Contacts() {
 
                                 {/* ///////// Recherche INSEE ///////// */}
                                 <TabPanel key="0" value={tabNewContactValue} index={0}  >
-                                    <NewContactSearchForm emptyContact={emptyContact} addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)} />
+                                    <NewContactSearchForm 
+                                        emptyContact={emptyContact} 
+                                        addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)} 
+                                        currentUserId={currentUser.uid}
+                                    />
                                 </TabPanel>
 
                                 {/* ///////// Recherche de ZERO ///////// */}
                                 <TabPanel key="1" value={tabNewContactValue} index={1}  >
-                                    <ContactCard addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)} contact={emptyContact} />
+                                    <ContactCard 
+                                        contact={emptyContact}
+                                        currentUserId={currentUser.uid}
+                                        addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)} 
+                                     />
                                 </TabPanel>
                             </TabPanel>
 
@@ -501,21 +475,32 @@ export default function Contacts() {
                                     // updateContact={() => {console.log("updateContact")}} 
                                     //contactCardDisplayStatus={isContactCardDisplay} 
                                     //setContactCardDisplayStatus={setIsContactCardDisplay} 
+                                    currentUserId={currentUser.uid}
                                 />
                             </TabPanel>
 
                              {/* /////////////////////// Pour Version ESSAI /////////////////////// */}                      
                             <TabPanel key="4" value={tabValue} index={4}>
-                                <Box sx={{ display: "flex", justifyContent: "space-around", padding: "10px", border: "solid 3px blue", borderRadius: "10px", marginTop: "200px", width: "calc(100vw - 200px)" }}>
-                                    <Typography component="div" style={{
-                                        display: "block",
-                                        //width: "360px" 
-                                    }} >Pour Version TEST : </Typography>
-                                    <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>Ajouter Contacts Test</Button>
-                                    <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
-                                    <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button>
-                                    <Button variant="contained" color='error' sx={{ width: "300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUser)}>Supprimer tous mes contacts</Button>
-                                    <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer toutes les données !!!</Button>
+                                <Box sx={{ 
+                                    //display: "flex", justifyContent: "space-around", 
+                                    padding: "10px", border: "solid 3px blue", borderRadius: "10px", marginTop: "200px", width: "calc(100vw - 200px)" }}>
+                                    <Typography 
+                                        component="div" 
+                                        textAlign="center"
+                                        style={{
+                                            //display: "block",
+                                            marginBottom:"50px"
+                                            //width: "360px" 
+                                    }} >Pour Version TEST</Typography>
+                                    <Box sx={{display:"flex", justifyContent:"space-between", marginBottom:"20px" }} >
+                                        <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>Ajouter Contacts Test</Button>
+                                        <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
+                                        <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button>
+                                    </Box>
+                                    <Box sx={{display:"flex", justifyContent:"space-around", }} >
+                                        <Button variant="contained" color='error' sx={{ width: "300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUser)}>Supprimer tous mes contacts</Button>
+                                        <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer toutes les données !!!</Button>
+                                    </Box>
                                 </Box>
                             </TabPanel>
     

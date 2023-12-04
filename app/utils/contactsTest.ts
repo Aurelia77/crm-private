@@ -4,7 +4,7 @@ const contacts : Contact[] = [
         isClient : true,
         contactType : "Entreprise",
         // logo : "https://www.pierreetvacances.com/medias/sys_master/images/images/hf1/hf7/8805202177566.jpg",
-        logo : "https://logo.clearbit.com/pierreetvacances.com",
+        logo : "",//"https://logo.clearbit.com/pierreetvacances.com",
         businessName: "Pierre et vacances",
         denominationUsuelleEtablissement : [],
         businessCategory : "Centre de Loisirs",
@@ -34,7 +34,7 @@ const contacts : Contact[] = [
         id: "2",
         isClient : true,
         contactType : "Entreprise",
-        logo : "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/logo%2Ftiger.png?alt=media&token=b49e5087-91fa-4f55-b700-9f05125dcff8",
+        logo : "",//"https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/logo%2Ftiger.png?alt=media&token=b49e5087-91fa-4f55-b700-9f05125dcff8",
         businessName: "Camping Hyères",
         denominationUsuelleEtablissement : [],
         businessCategory : "Camping",
@@ -52,22 +52,22 @@ const contacts : Contact[] = [
         hasBeenCalled: 1,
         hasBeenSentEmailOrMeetUp: 3,
         filesSent: [
-            {
-                fileName: "2404499-Petit-manuel-de-preparation-aux-situations-durgence-ILYS(1).pdf",
-                fileRef: "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/filesSent%2F2404499-Petit-manuel-de-preparation-aux-situations-durgence-ILYS(1).pdf?alt=media&token=686ebf52-4388-4bd4-b51f-30d372291dca"
-            },
-            {
-                fileName: "40knots.jpg",
-                fileRef: "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/filesSent%2F40knots.jpg?alt=media&token=5f14869c-bbda-44c5-8bfb-b02f0cdfe79f"
-            },
-            {
-                fileName: "Bon_Usage_Antiseptiques_par_Cclin(1).pdf",
-                fileRef: "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/filesSent%2FBon_Usage_Antiseptiques_par_Cclin(1).pdf?alt=media&token=312bc947-6192-4e59-84ad-d008b5be3774"
-            },
-            {
-                fileName: "AutoConstructionPoeleDeMasseDoubleCombustion.pdf",
-                fileRef: "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/filesSent%2FAutoConstructionPoeleDeMasseDoubleCombustion.pdf?alt=media&token=12fc2b5f-b0ee-4c07-b1ee-35ec2348f8ed"
-            },
+            // {
+            //     fileName: "2404499-Petit-manuel-de-preparation-aux-situations-durgence-ILYS(1).pdf",
+            //     fileRef: "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/filesSent%2F2404499-Petit-manuel-de-preparation-aux-situations-durgence-ILYS(1).pdf?alt=media&token=686ebf52-4388-4bd4-b51f-30d372291dca"
+            // },
+            // {
+            //     fileName: "40knots.jpg",
+            //     fileRef: "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/filesSent%2F40knots.jpg?alt=media&token=5f14869c-bbda-44c5-8bfb-b02f0cdfe79f"
+            // },
+            // {
+            //     fileName: "Bon_Usage_Antiseptiques_par_Cclin(1).pdf",
+            //     fileRef: "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/filesSent%2FBon_Usage_Antiseptiques_par_Cclin(1).pdf?alt=media&token=312bc947-6192-4e59-84ad-d008b5be3774"
+            // },
+            // {
+            //     fileName: "AutoConstructionPoeleDeMasseDoubleCombustion.pdf",
+            //     fileRef: "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/filesSent%2FAutoConstructionPoeleDeMasseDoubleCombustion.pdf?alt=media&token=12fc2b5f-b0ee-4c07-b1ee-35ec2348f8ed"
+            // },
         ],
         tag: ["camping", "client"],
         dateOfFirstCall: new Date("2023-05-01"),
@@ -81,7 +81,7 @@ const contacts : Contact[] = [
         id: "3",
         isClient : false,
         contactType : "Partenaire",
-        logo : "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/logo%2Fshark-gb3168aabf_1920.png?alt=media&token=70659b4a-29d2-46e9-8d9c-2e3d2c477c68",
+        logo : "",// "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/logo%2Fshark-gb3168aabf_1920.png?alt=media&token=70659b4a-29d2-46e9-8d9c-2e3d2c477c68",
         businessName: "Centre de plongée",
         denominationUsuelleEtablissement : [],
         businessCategory : "Centre de Plongée",
@@ -186,10 +186,10 @@ const contacts : Contact[] = [
         hasBeenCalled: 1,
         hasBeenSentEmailOrMeetUp: 3,
         filesSent: [           
-            {
-                fileName: "40knots.jpg",
-                fileRef: "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/filesSent%2F40knots.jpg?alt=media&token=5078ffea-321d-438f-8550-8c7a2b7e0d25"
-            },           
+            // {
+            //     fileName: "40knots.jpg",
+            //     fileRef: "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/filesSent%2F40knots.jpg?alt=media&token=5078ffea-321d-438f-8550-8c7a2b7e0d25"
+            // },           
         ],
         tag: ["camping", "client"],
         dateOfFirstCall: new Date("2023-05-01"),
