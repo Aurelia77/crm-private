@@ -444,6 +444,7 @@ export default function Contacts() {
                                         //contacts={filteredContacts}   // ????????? 
                                         contacts={contacts}
                                         diplayContactCardToUpdate={diplayContactCardToUpdate}
+                                        updateContactInContactsAndDB={updateContactInContactsAndDB}
                                     />
                                 </TabPanel>
 
@@ -454,6 +455,7 @@ export default function Contacts() {
                                         //contacts={filteredContacts}   // ????????? 
                                         contacts={contacts}
                                         diplayContactCardToUpdate={diplayContactCardToUpdate}
+                                        updateContactInContactsAndDB={updateContactInContactsAndDB}
                                     />
                                 </TabPanel>
                             </TabPanel>

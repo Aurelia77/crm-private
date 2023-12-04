@@ -40,9 +40,9 @@ const contactTypes: ContactTypeType[] = ["NON DEFINI", "Particulier", "Entrepris
 
 const timeStampObjToTimeStamp = (timeStampObj: Timestamp): number => {
     if (timeStampObj) {
-        // console.log(timeStampObj)                           // Timestamp {seconds: 1700147570, nanoseconds: 377000000} 
+        // console.log(timeStampObj)                      // Timestamp {seconds: 1700147570, nanoseconds: 377000000} 
         // // Date format Objet       
-        // console.log(timeStampObj.toDate())                  // Thu Nov 16 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale)
+        // console.log(timeStampObj.toDate())            // Thu Nov 16 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale)
         // console.log(typeof timeStampObj.toDate());          // object
         // console.log(timeStampObj.toDate().getTime())        // 1698710400000 (timestamp)
         // // Date format string

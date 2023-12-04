@@ -31,6 +31,7 @@ import { Component, createElement } from '@fullcalendar/core/preact';
 import listPlugin from '@fullcalendar/list';
 import { title } from 'process';
 import { useTheme } from '@mui/material/styles';
+import { Timestamp } from 'firebase/firestore';
 
 
 
@@ -41,9 +42,10 @@ const CustomDayHeader = ({ text }: {text: string}) => <div>!{text}!</div>;
 type CalendarProps = {
   contacts: Contact[];
   diplayContactCardToUpdate: (contact: Contact) => void;
+  updateContactInContactsAndDB: (id: string, keyAndValue: { key: string, value: Timestamp }) => void;
 };
 
-export default function CalendarFull({ contacts, diplayContactCardToUpdate }: CalendarProps ) {
+export default function CalendarFull({ contacts, diplayContactCardToUpdate, updateContactInContactsAndDB }: CalendarProps ) {
  
 
   // const fetchHighlightedDays = (contacts: Contact[], date: Dayjs) => {
@@ -161,13 +163,29 @@ export default function CalendarFull({ contacts, diplayContactCardToUpdate }: Ca
       //   {title: 'event 2', start: '2023-10-02', end: '2023-10-02'},
       //   {title: 'event 3', start: '2023-10-03', end: '2023-10-03'}
       // ]
+
       eventClick: function (info) {
         //  alert('Event: ' + info.event.title + " " + info.event.extendedProps.contact.contactEmail);        
         //console.log('Event: ' + info.event.title + " " + info.event.extendedProps.contact.contactEmail);
         diplayContactCardToUpdate(info.event.extendedProps.contact) 
-      }
+      },
       // eventClick: function (info) {
       // }
+      eventDrop: function(dropInfo) {
+        const { event } = dropInfo;
+        console.log(event)
+        const start = event.start;
+        const end = event.end;
+
+        const contact = event.extendedProps.contact;
+
+        // Mettez à jour l'événement avec les nouvelles dates de début et de fin
+        // Vous pouvez également envoyer une requête à votre serveur ici pour mettre à jour l'événement dans votre base de données
+        start && console.log("Event dropped to " + start.toLocaleString());
+        end && console.log("Event dropped to " + end.toLocaleString());
+
+        start && updateContactInContactsAndDB(contact.id, {key: "dateOfNextCall", value: Timestamp.fromDate(start)}) 
+      },
     });
 
     calendar.render();

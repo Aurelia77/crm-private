@@ -11,6 +11,7 @@ import { Box } from '@mui/material';
 import { title } from 'process';
 import dayjs, { Dayjs } from 'dayjs';
 import { useTheme } from '@mui/material/styles';
+import { Timestamp } from 'firebase/firestore';
 
 
 // pnpm i (en + des autres dans CalendarFull)   @fullcalendar/premium-common @fullcalendar/resource @fullcalendar/resource-timeline @fullcalendar/timeline @fullcalendar/adaptive
@@ -18,10 +19,11 @@ import { useTheme } from '@mui/material/styles';
 type CalendarProps = {
     contacts: Contact[];
     diplayContactCardToUpdate: (contact: Contact) => void;
+    updateContactInContactsAndDB: (id: string, keyAndValue: { key: string, value: Timestamp }) => void;
   };
   
 
-export default function CalendarScheduler({ contacts, diplayContactCardToUpdate }: CalendarProps ) {
+export default function CalendarScheduler({ contacts, diplayContactCardToUpdate, updateContactInContactsAndDB }: CalendarProps ) {
     
     const calendarRef = React.useRef(null);
 
@@ -39,8 +41,9 @@ export default function CalendarScheduler({ contacts, diplayContactCardToUpdate 
     let events: eventType[] = [] 
     
     contacts.map((contact: Contact) => {
-      console.log(contact.businessName)
-      console.log(contact.dateOfNextCall)
+      //console.log(contact.businessName)
+      //console.log(contact.dateOfNextCall)
+
       // console.log(typeof contact.dateOfNextCall)
       
       // console.log(dayjs(contact.dateOfNextCall.toDate()))
@@ -49,8 +52,8 @@ export default function CalendarScheduler({ contacts, diplayContactCardToUpdate 
       // console.log(typeof dayjs(contact.dateOfNextCall.toDate()).format('YYYY-MM-DD'))    
   
       const formattedDate = contact.dateOfNextCall ? dayjs(contact.dateOfNextCall?.toDate()).format('YYYY-MM-DD') : ""
-      contact.dateOfNextCall && console.log(formattedDate)
-      console.log(contact.dateOfNextCall?.toDate().toLocaleDateString())    
+      //contact.dateOfNextCall && console.log(formattedDate)
+      //console.log(contact.dateOfNextCall?.toDate().toLocaleDateString())    
   
       // console.log(contact.dateOfNextCall?.toDate().toString().substring(0, 10))
       // console.log(contact.dateOfNextCall?.toDate())
@@ -65,7 +68,7 @@ export default function CalendarScheduler({ contacts, diplayContactCardToUpdate 
       })
     })
     
-      console.log(events)
+      //console.log(events)
 
     React.useEffect(() => {
       if (!calendarRef.current) return;
@@ -76,7 +79,7 @@ export default function CalendarScheduler({ contacts, diplayContactCardToUpdate 
         //initialView: 'resourceTimelineDay',
         initialView: 'multiMonthSixMonth',
         initialDate: dayjs().subtract(1, 'month').toDate(), // Définit la date initiale à un mois avant le mois en cours
-        // initialDate: new Date().toISOString().split('T')[0],
+        // initialDate: new Date().toISOString().split('T')[0], // !!! toISOString => 1h avant !!! Mettre plutôt toLocaleDateString !!!
         views: {
           multiMonthSixMonth: {
             type: 'multiMonth',
@@ -125,11 +128,41 @@ export default function CalendarScheduler({ contacts, diplayContactCardToUpdate 
         //     { id: '5', start: '2023-02-07T00:30:00', end: '2023-02-07T02:30:00', title: 'event 5' }
         //   ]
 
-        events: events,eventClick: function (info) {
+        events: events,
+        
+        eventClick: function (info) {
           //  alert('Event: ' + info.event.title + " " + info.event.extendedProps.contact.contactEmail);        
           //console.log('Event: ' + info.event.title + " " + info.event.extendedProps.contact.contactEmail);
           diplayContactCardToUpdate(info.event.extendedProps.contact) 
-        }
+        },
+
+        eventDrop: function(dropInfo) {
+          const { event } = dropInfo;
+          console.log(event)
+          const start = event.start;
+          const end = event.end;
+
+          const contact = event.extendedProps.contact;
+
+          // Mettez à jour l'événement avec les nouvelles dates de début et de fin
+          // Vous pouvez également envoyer une requête à votre serveur ici pour mettre à jour l'événement dans votre base de données
+          start && console.log("Event dropped to " + start.toLocaleString());
+          end && console.log("Event dropped to " + end.toLocaleString());
+
+          start && updateContactInContactsAndDB(contact.id, {key: "dateOfNextCall", value: Timestamp.fromDate(start)}) 
+        },
+
+        // eventResize: function(resizeInfo) {
+        //   const { event } = resizeInfo;
+        //   const start = event.start;
+        //   const end = event.end;
+
+        //   // Mettez à jour l'événement avec les nouvelles dates de début et de fin
+        //   // Vous pouvez également envoyer une requête à votre serveur ici pour mettre à jour l'événement dans votre base de données
+        //   console.log("Event resized to " + start.toLocaleString() + " to " + end.toLocaleString());
+        // },
+
+       
       });
 
       calendar.render();
