@@ -553,16 +553,21 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     }
 
     function stringAvatar(name: string) {
+        const words = name.split(' ');
+        const initials = words.length > 1 
+            ? `${words[0][0]}${words[1][0]}` 
+            : words[0][0];
+
         return {
             sx: {
                 backgroundColor: stringToColor(name),
                 width: 100,
                 height: 100
             },
-            children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+            children: initials,
         };
     }
-      
+  
 
 
     return (
@@ -680,8 +685,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 <Avatar 
                     variant="rounded" 
                     src={contact.logo
-                        ? contact.logo 
-                        : ""}
+                            ? contact.logo 
+                            : ""}
                     {...stringAvatar(contact.businessName)}                    
                 />
                 {/* {contact.logo

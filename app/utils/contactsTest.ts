@@ -140,7 +140,7 @@ const contacts : Contact[] = [
         isClient : false,
         contactType : "Entreprise",
         logo : "",
-        businessName: "Restaurant 5*",
+        businessName: "Restaurant5*",
         denominationUsuelleEtablissement : [],
         businessCategory : "Restaurant Plage",
         interestGauge: 5,

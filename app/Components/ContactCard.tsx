@@ -48,6 +48,8 @@ export default function ContactCard({ contact, addContact, updateContact,
     const [contactToAddOrUpdate, setContactToAddOrUpdate] = React.useState<Contact>(contact)
 
 
+    console.log("contactToAddOrUpdate", contactToAddOrUpdate)
+    
     const muiTheme = useTheme();
 
     ///////////// Encore besoin ??????????
