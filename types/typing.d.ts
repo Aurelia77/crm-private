@@ -1,5 +1,5 @@
 
-type BusinessCatType = "NON DEFINI" | "Camping" | "Hôtel" | "Congiergerie" | "Agence Event" | "Agence Artistique" | "Mairie" | "Lieu de réception" | "Wedding Planer" | "Restaurant Plage" | "Piscine Municipale" | "Yacht" | "Plage Privée" | "Agence Location Villa Luxe" | "Aquarium" | "Centre de Loisirs" | "Centre de Plongée" | "Agence Communication Audio Visuel" | "Autre" | "Mairie / médiathèque";
+// type BusinessCatType = "NON DEFINI" | "Camping" | "Hôtel" | "Conciergerie" | "Agence Event" | "Agence Artistique" | "Mairie" | "Lieu de réception" | "Wedding Planer" | "Restaurant Plage" | "Piscine Municipale" | "Yacht" | "Plage Privée" | "Agence Location Villa Luxe" | "Aquarium" | "Centre de Loisirs" | "Centre de Plongée" | "Agence Communication Audio Visuel" | "Autre" | "Mairie / médiathèque";
 
 type ContactTypeType= "NON DEFINI" | "Particulier" | "Entreprise" | "Partenaire";
 

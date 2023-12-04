@@ -31,7 +31,7 @@ const emptyContact: Contact = {
     userId: ''
 }
 
-const businessCategories: BusinessCatType[] = ["NON DEFINI", "Camping", "Hôtel", "Congiergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre", "Mairie / médiathèque"];
+const businessCategories: string[] = ["NON DEFINI", "Camping", "Hôtel", "Conciergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre", "Mairie / médiathèque"];
 
 const sortedBusinessCategories = [...businessCategories].sort();
 
@@ -123,6 +123,7 @@ const getUniqueSortedValues = (contacts: Contact[], key: keyof Contact) => {
 
 export { 
     emptyContact,
+    businessCategories, 
     sortedBusinessCategories,
     contactTypes,
     timeStampObjToTimeStamp,

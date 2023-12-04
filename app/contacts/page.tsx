@@ -26,7 +26,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import FormControl from '@mui/material/FormControl';
 import { Container, Tooltip, Paper } from '@mui/material';
 import { TextField, Select, MenuItem, Autocomplete, ListItem, List, InputLabel, Tabs, Tab, Box as CustomBox } from '@mui/material'
-
+import {businessCategories, sortedBusinessCategories} from '../utils/toolbox'
 
 import NewContactSearchForm from '../Components/NewContactSearchForm';
 import ContactCard from '../Components/ContactCard';
@@ -44,7 +44,7 @@ import contactsLaurianeCampings_x10 from '../utils/contactsLauriane x10';
 //import writeContactData from '../utils/firebase'
 //import firebase from 'firebase/app'
 //import firebaseConfig from '../utils/firebaseConfig'
-import { storage, addFakeDataOnFirebaseAndReload, addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, updatDataWholeContactOnFirebase, deleteDataOnFirebaseAndReload, getContactsFromDatabase } from '../utils/firebase'
+import { storage, addFakeDataOnFirebaseAndReload, addCategoriesOnFirebaseAndReload, addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, updatDataWholeContactOnFirebase, deleteDataOnFirebaseAndReload, getContactsFromDatabase } from '../utils/firebase'
 import { Timestamp } from 'firebase/firestore';
 import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, deleteDoc, updateDoc, doc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
@@ -97,7 +97,7 @@ export default function Contacts() {
     const [contactToDisplay, setContactToDisplay] = React.useState<Contact>(emptyContact)
     const [isContactCardDisplay, setIsContactCardDisplay] = React.useState(false)
 
-    const businessCategories: BusinessCatType[] = ["NON DEFINI", "Camping", "Hôtel", "Congiergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre", "Mairie / médiathèque"];
+   
 
    // console.log(isContactCardDisplay)
 
@@ -364,6 +364,7 @@ export default function Contacts() {
                                 <ContactsTable
                                     //contacts={contacts}
                                     contacts={filteredContacts}
+                                    currentUserId={currentUser.uid}
                                     selectedContactId={selectedContact.id}
                                     setSelectedContact={setSelectedContact}
                                     handleUpdateContact={updateContactInContactsAndDB}
@@ -496,7 +497,8 @@ export default function Contacts() {
                                             //width: "360px" 
                                     }} >Pour Version TEST</Typography>
                                     <Box sx={{display:"flex", justifyContent:"space-between", marginBottom:"20px" }} >
-                                        <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>Ajouter Contacts Test</Button>
+                                        <Button variant="contained" color='success' onClick={() => addCategoriesOnFirebaseAndReload(currentUser, businessCategories)}>1-Ajouter Catégories</Button>
+                                        <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>2-Ajouter Contacts Test</Button>
                                         <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
                                         <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button>
                                     </Box>

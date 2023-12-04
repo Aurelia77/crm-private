@@ -195,24 +195,28 @@ const getFilesFromDatabase = async (currentUserId: any) => {
 
     console.log("doc.data()", doc.data())
 
-
     filesArr.push({ ...doc.data() as FileNameAndRefType }) 
   });
   return filesArr
 }
-// const getCategoriesFromDatabase = async (currentUser: any) => {
-//   // const readDataFromFirebase = (currentUser: User | null) => {
-//   let catArr: BusinessCatType[] = []
-//   const categoriesCollectionRef = collection(fireStoreDb, "businessCategories");
-//   const q = query(categoriesCollectionRef);
-//   // const q = query(contactsCollectionRef, where("userId", "==", currentUser?.uid ?? "")); // aJOUTER + tard !!!!!!!!!!
-  
-//   const querySnapshot = await getDocs(q);
-//   querySnapshot.forEach((doc) => {
-//     catArr.push({ ...doc.data() as BusinessCatType });    
-//   });
-//   return catArr;
-// }
+
+const getCategoriesFromDatabase = async (currentUserId: any) => {
+
+  let catsArr: string[] = []
+  const filesCollectionRef = collection(fireStoreDb, "categories");
+  const q =  query(filesCollectionRef, where("userId", "==", currentUserId))
+
+  const querySnapshot = await getDocs(q)
+
+  querySnapshot.forEach((doc) => {
+
+    console.log("doc.data()", doc.data())
+
+    catsArr.push(doc.data().name) 
+  })
+  return catsArr
+}
+
 
 const addFakeDataOnFirebaseAndReload = (currentUser: any, fakeContactsData: Contact[]) => {
   // fakeContactsData.map((contact: Contact) => {
@@ -231,6 +235,27 @@ const addFakeDataOnFirebaseAndReload = (currentUser: any, fakeContactsData: Cont
   Promise.all(promises)
     .then(() => { window.location.reload() })
     .catch((error) => { console.error("Error reloading page: ", error); });
+}   
+
+const addCategoriesOnFirebaseAndReload = (currentUser: any, categories: string[]) => {
+
+  const promises = categories.map((cat: string) => {
+    return addDoc(collection(fireStoreDb, "categories"), { name: cat, userId: currentUser?.uid })
+      .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
+      .catch((error) => { console.error("Error adding document: ", error); });
+  })
+
+  Promise.all(promises)
+    .then(() => { window.location.reload() })
+    .catch((error) => { console.error("Error reloading page: ", error); });
+}   
+
+const addCategorieOnFirebase = (currentUserId: any, category: string) => {
+  console.log("add categorie", category)
+
+  addDoc(collection(fireStoreDb, "categories"), { name: category, userId: currentUserId })
+      .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
+      .catch((error) => { console.error("Error adding document: ", error); }); 
 }   
 
 // const addContactOnFirebase = (currentUser: any, contact: Contact) => {
@@ -520,8 +545,10 @@ export {
   //readDataFromFirebaseAndSetContact,
   getContactsFromDatabase,
   getFilesFromDatabase,
-  //getCategoriesFromDatabase,
+  getCategoriesFromDatabase,
   addFakeDataOnFirebaseAndReload,
+  addCategoriesOnFirebaseAndReload,
+  addCategorieOnFirebase,
   addContactOnFirebaseAndReload,
   addFileOnFirebaseDB,
   deleteAllDatasOnFirebaseAndReload,

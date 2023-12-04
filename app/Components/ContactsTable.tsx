@@ -208,6 +208,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 
 type ContactsTableProps = {
     contacts: Contact[],
+    currentUserId: string,
     //selectedContact: Contact,
     selectedContactId: string,
     setSelectedContact: (contact: Contact) => void
@@ -218,7 +219,7 @@ type ContactsTableProps = {
 
     //setSelectedContactId: (id: string) => void
 }
-export default function ContactsTable({ contacts, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, diplayContactCard}: ContactsTableProps) {
+export default function ContactsTable({ contacts, currentUserId, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, diplayContactCard}: ContactsTableProps) {
 
     //console.log("CONTACT TABLE")
     //console.log("CONTACT TABLE Contacts = ", contacts)
@@ -323,11 +324,12 @@ export default function ContactsTable({ contacts, selectedContactId, setSelected
                                 <ContactRow
                                     key={row.id}
                                     contact={row}
+                                    currentUserId={currentUserId}
                                     selectedContactId={selectedContactId}
                                     setSelectedContact={setSelectedContact}
                                     handleUpdateContact={handleUpdateContact}
                                     handleDeleteContact={() => handleDeleteContact(row.id)}  
-                                    diplayContactCard={diplayContactCard}                                 
+                                    diplayContactCard={diplayContactCard}
                                 //setContacts={setContacts} 
                                 />
                             );

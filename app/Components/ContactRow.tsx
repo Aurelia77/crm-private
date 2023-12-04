@@ -59,7 +59,7 @@ import { InputLabel, MenuItem } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { grey } from '@mui/material/colors';
 
-import {sortedBusinessCategories, contactTypes} from '../utils/toolbox'
+import {contactTypes} from '../utils/toolbox'
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
@@ -77,7 +77,7 @@ import { timeStamp } from 'console';
 
 import { timeStampObjToTimeStamp } from '../utils/toolbox';
 
-import { storage } from '../utils/firebase'
+import { storage, getCategoriesFromDatabase } from '../utils/firebase'
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { FormControl } from '@mui/material';
 import {handleOpenFile} from '../utils/firebase'
@@ -154,9 +154,10 @@ type ContactRowProps = {
     handleUpdateContact: (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => void   // obligé de mettre NULL pour la date ! (???)
     //handleUpdateContact: (contact: Contact) => void
     handleDeleteContact: () => void
-    diplayContactCard: (contact: Contact) => void
+    diplayContactCard: (contact: Contact) => void,
+    currentUserId: string
 }
-export default function ContactRow({ contact, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, diplayContactCard }: ContactRowProps) {
+export default function ContactRow({ contact, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, diplayContactCard, currentUserId }: ContactRowProps) {
 
     //console.log("CONTACT ROW")
     //console.log(alerts.alerts)
@@ -165,6 +166,16 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     // console.log("NOM", contact.businessName)
 
     const [contactInfo, setContactInfo] = React.useState<Contact>(contact)
+
+    const [categoriesList, setCategoriesList] = React.useState<string[]>([]);
+  
+  
+    React.useEffect(() => {
+     
+      getCategoriesFromDatabase(currentUserId).then((categories: string[]) => {
+        setCategoriesList(categories.sort((a, b) => a.localeCompare(b)));
+      })
+    }, [currentUserId]);
 
 
     const muiTheme = useTheme();
@@ -1226,7 +1237,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         //onChange={(e) => handleChangeSelect(e, "businessCategory")}
                         onChange={(e) => handleChangeSelect(e, "businessCategory")}
                     >
-                         {sortedBusinessCategories.map((cat) => (
+                         {categoriesList.map((cat) => (
                             <MenuItem key={cat} value={cat}>{cat}</MenuItem>
                         ))}                       
                     </Select>

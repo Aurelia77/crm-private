@@ -15,7 +15,7 @@ import { grey } from '@mui/material/colors';
 import Image from 'next/image'
 import { TextField, Stack, Button, FormControl, InputLabel, MenuItem, Autocomplete, Chip, ListItem, List, OutlinedInput, Checkbox, ListItemText, FormControlLabel, Tooltip } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { sortedBusinessCategories, contactTypes } from '../utils/toolbox'
+import { contactTypes } from '../utils/toolbox'
 import dayjs, { Dayjs } from 'dayjs';       // npm install dayjs
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -23,7 +23,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 //import { ClearIcon, DatePicker } from '@mui/x-date-pickers';      // Bizarre ça a l'air de marcher aussi comme ça !!!???
 import { Timestamp } from 'firebase/firestore';
 import { useTheme } from '@mui/material/styles';
-import { storage, addFileOnFirebaseDB } from '../utils/firebase'
+import { storage, addFileOnFirebaseDB, getCategoriesFromDatabase } from '../utils/firebase'
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { MuiFileInput } from 'mui-file-input';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -64,9 +64,17 @@ export default function ContactCard({ contact, currentUserId, addContact, update
     const [progresspercentFile, setProgresspercentFile] = React.useState(0);
     const [filesFirebaseArray, setFilesFirebaseArray] = React.useState<FileNameAndRefType[]>([])
     const [firebaseFileSelected, setFirebaseFileSelected] = React.useState<FileNameAndRefType>({fileName:"", fileRef:""})
+    const [categoriesList, setCategoriesList] = React.useState<string[]>([]);
+  
+  
+    React.useEffect(() => {
+     
+      getCategoriesFromDatabase(currentUserId).then((categories: string[]) => {
+        setCategoriesList(categories.sort((a, b) => a.localeCompare(b)));
+      })
+    }, [currentUserId]);
 
 
-    console.log("fileFirebaseSelected", firebaseFileSelected)
 
     React.useEffect(() => {
         //console.log("User Effect READ")
@@ -99,7 +107,7 @@ export default function ContactCard({ contact, currentUserId, addContact, update
         // handleUpdateContact({ ...contact, [attribut]: event.target.value })
     }
     const handleChangeSelect = (event: SelectChangeEvent, attribut: keyof Contact) => {
-        const type: BusinessCatType = event.target.value as BusinessCatType       // obligé de mettre as businessCategory car sinon type = string, on peut faire autrement ???
+        const type: string = event.target.value as string       // obligé de mettre as businessCategory car sinon type = string, on peut faire autrement ???
         setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: type })
     };
     const handleChangeDate = (newDate: Dayjs | null, attribut: keyof Contact) => {
@@ -353,7 +361,7 @@ export default function ContactCard({ contact, currentUserId, addContact, update
                             value={contactToAddOrUpdate.businessCategory}
                             onChange={(e) => handleChangeSelect(e, "businessCategory")}
                         >
-                            {sortedBusinessCategories.map((cat) => (
+                            {categoriesList.map((cat) => (
                                 <MenuItem key={cat} value={cat}>{cat}</MenuItem>
                             ))}
                         </Select>
