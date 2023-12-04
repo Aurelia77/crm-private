@@ -125,7 +125,7 @@ export default function CalendarFull({ contacts, diplayContactCardToUpdate, upda
     const calendar = new Calendar(calendarRef.current, {
       height: "calc(100vh - 200px)",  // pas possible de choisir la largeur ici
       plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, multiMonthPlugin],
-      initialView: 'multiMonthSixMonth',
+      //initialView: 'multiMonthSixMonth',
       initialDate: dayjs().subtract(1, 'month').toDate(), // Définit la date initiale à un mois avant le mois en cours
       views: {
         multiMonthSixMonth: {

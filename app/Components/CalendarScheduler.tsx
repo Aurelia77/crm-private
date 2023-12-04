@@ -77,7 +77,7 @@ export default function CalendarScheduler({ contacts, diplayContactCardToUpdate,
         height: "calc(100vh - 200px)",  // pas possible de choisir la largeur ici
         plugins: [ adaptivePlugin, interactionPlugin, dayGridPlugin, listPlugin, timeGridPlugin, resourceTimelinePlugin, multiMonthPlugin ],
         //initialView: 'resourceTimelineDay',
-        initialView: 'multiMonthSixMonth',
+        //initialView: 'multiMonthSixMonth',
         initialDate: dayjs().subtract(1, 'month').toDate(), // Définit la date initiale à un mois avant le mois en cours
         // initialDate: new Date().toISOString().split('T')[0], // !!! toISOString => 1h avant !!! Mettre plutôt toLocaleDateString !!!
         views: {
