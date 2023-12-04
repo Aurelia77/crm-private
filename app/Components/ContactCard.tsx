@@ -23,14 +23,13 @@ import ClearIcon from '@mui/icons-material/Clear';
 //import { ClearIcon, DatePicker } from '@mui/x-date-pickers';      // Bizarre ça a l'air de marcher aussi comme ça !!!???
 import { Timestamp } from 'firebase/firestore';
 import { useTheme } from '@mui/material/styles';
-import { storage } from '../utils/firebase'
+import { storage, addFileOnFirebaseDB } from '../utils/firebase'
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { MuiFileInput } from 'mui-file-input';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import LinearProgress from '@mui/material/LinearProgress';
 import { Input } from '@mui/material';
 import {handleOpenFile} from '../utils/firebase'
-import {addFileOnFirebaseDB} from '../utils/firebase'
 import { Tab, Tabs } from '@mui/material';
 import { TabPanel } from '../utils/StyledComponents';
 import {getFilesFromDatabase} from '../utils/firebase'

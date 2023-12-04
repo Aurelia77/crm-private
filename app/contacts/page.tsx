@@ -97,6 +97,8 @@ export default function Contacts() {
     const [contactToDisplay, setContactToDisplay] = React.useState<Contact>(emptyContact)
     const [isContactCardDisplay, setIsContactCardDisplay] = React.useState(false)
 
+    const businessCategories: BusinessCatType[] = ["NON DEFINI", "Camping", "Hôtel", "Congiergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre", "Mairie / médiathèque"];
+
    // console.log(isContactCardDisplay)
 
     const emptySearchCriteria: SearchContactCriteria = {
@@ -481,6 +483,7 @@ export default function Contacts() {
 
                              {/* /////////////////////// Pour Version ESSAI /////////////////////// */}                      
                             <TabPanel key="4" value={tabValue} index={4}>
+                                <Admin currentUser={currentUser} />
                                 <Box sx={{ 
                                     //display: "flex", justifyContent: "space-around", 
                                     padding: "10px", border: "solid 3px blue", borderRadius: "10px", marginTop: "200px", width: "calc(100vw - 200px)" }}>
