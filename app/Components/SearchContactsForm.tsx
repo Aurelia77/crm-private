@@ -17,9 +17,9 @@ import NavigationIcon from '@mui/icons-material/Navigation';
 
 
 interface SearchFormProps {
-    onSearchChange: (search: SearchContactCriteria) => void;
-    emptySearchCriteria: SearchContactCriteria;
     contacts: Contact[];
+    emptySearchCriteria: SearchContactCriteria;
+    onSearchChange: (search: SearchContactCriteria) => void;
 }
 
 const MenuSelectProps = {
@@ -32,7 +32,7 @@ const MenuSelectProps = {
 };
 
 
-export default function SearchContactsForm({ onSearchChange, emptySearchCriteria, contacts }: SearchFormProps) {
+export default function SearchContactsForm({ contacts, emptySearchCriteria, onSearchChange  }: SearchFormProps) {
     const [search, setSearch] = React.useState<SearchContactCriteria>({ isClient: "all", contactType: [], businessName: '', businessCity: [], businessCategory: [] });
 
     //console.log(search)

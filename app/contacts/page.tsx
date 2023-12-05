@@ -78,7 +78,8 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import CalendarLittle from '../Components/CalendarLittle';
 import CalendarFull from '../Components/CalendarFull';
 import CalendarScheduler from '../Components/CalendarScheduler';
-import {TabPanel, TAB_WIDTH} from '../utils/StyledComponents';
+import {TabPanel, TABS_WIDTH} from '../utils/StyledComponents';
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 
@@ -289,7 +290,9 @@ export default function Contacts() {
             {/* <Typography variant="h3" component="div" gutterBottom>User Auth = {currentUser?.email}</Typography> */}
 
             {loading
-                ? <Container>Chargement...</Container>
+                ? <Container sx={{ ml:"50%", mt:"20%" }} >
+                    <CircularProgress />
+                </Container>
                 : !currentUser
                     //  {/* ///////// CONNEXION / INSCRIPTION ///////// */}
                     ? <Box sx={{
@@ -325,7 +328,7 @@ export default function Contacts() {
                                 value={tabValue}
                                 onChange={(e, newValue) => setTabValue(newValue)}
                                 aria-label="Vertical tabs"
-                                sx={{ borderRight: 1, borderColor: 'divider', width: TAB_WIDTH }}
+                                sx={{ borderRight: 1, borderColor: 'divider', width: TABS_WIDTH }}
                             >
                                 {/* J'ai voulu ajouter un DIVIDER mais pour ça j'ai ajouter une BOX et alors plus poss de cliquer sur les tab => rien ne se passe !!! */}
                                 {titles.map((title, index) => (                                    
@@ -343,7 +346,11 @@ export default function Contacts() {
 
                             {/* ///////// LISTE DE CONTACTS + recherche) ///////// */}
                             <TabPanel key="0" value={tabValue} index={0}  >
-                                <SearchContactsForm onSearchChange={setContactsSearchCriteria} emptySearchCriteria={emptySearchCriteria} contacts={contacts} />
+                                <SearchContactsForm 
+                                    contacts={contacts} 
+                                    emptySearchCriteria={emptySearchCriteria} 
+                                    onSearchChange={setContactsSearchCriteria} 
+                                />
 
                                 <Box 
                                     sx={{ display: "flex", alignItems: "center", margin:"13px 0 7px 15px",  }}
@@ -353,13 +360,14 @@ export default function Contacts() {
                                             ? `Recherche : ${filteredContacts.length} contacts trouvé(s) (sur ${contacts.length})`
                                             : `${contacts.length} contacts : `
                                         }
-                                    </Typography>
-                                    <Typography variant="h6" color="warning.main" sx={{ px: 2 }}>
+                                        <Typography variant="h5" component="span" color="warning.main" sx={{ px: 2 }}>
                                         {alerts.nbContactsWithDatePassed} relance(s) passée(s)
+                                        </Typography>
+                                        <Typography variant="h5" component="span" color="primary.main">
+                                            et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jour(s).
+                                        </Typography>
                                     </Typography>
-                                    <Typography variant="h6" color="primary.main">
-                                        et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jour(s)
-                                    </Typography>
+                                    
                                 </Box>                                
                                 
 
@@ -476,6 +484,7 @@ export default function Contacts() {
                             <TabPanel key="3" value={tabValue} index={3}>
                                 <ContactCard contact={contactToDisplay}
                                     //updateContact={setContactToDisplay} 
+                                    handleDeleteContact={deleteDataOnFirebaseAndReload}
                                     updateContact={updateWholeContactInContactsAndDB}
                                     // updateContact={() => {console.log("updateContact")}} 
                                     //contactCardDisplayStatus={isContactCardDisplay} 

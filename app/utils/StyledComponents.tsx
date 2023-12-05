@@ -32,7 +32,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 const StyledTableRow = styled(TableRow)(({ theme } : any) => ({
   //className: "tableRowSelected",
-  //height: "50px",
 
   '&:nth-of-type(odd)': {
     //backgroundColor: theme.palette.action.hover,
@@ -59,7 +58,7 @@ const StyledTableRow = styled(TableRow)(({ theme } : any) => ({
 
 }));
 
-const TAB_WIDTH = 100
+const TABS_WIDTH = 100
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -75,7 +74,7 @@ function TabPanel(props: TabPanelProps) {
           hidden={value !== index}
           id={`vertical-tabpanel-${index}`}
           aria-labelledby={`vertical-tab-${index}`}
-          style={{ width: `calc(100vw - ${TAB_WIDTH}px)` }}
+          style={{ width: `calc(100vw - ${TABS_WIDTH}px)` }}
           {...other}
       >
           {value === index && (
@@ -96,4 +95,16 @@ function TabPanel(props: TabPanelProps) {
 //   };
 // }
 
-export { StyledTableCell, StyledTableRow, TabPanel, TAB_WIDTH }
+const deleteModalStyle = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',     // ???
+  width: 400,
+  bgcolor: 'white',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
+export { StyledTableCell, StyledTableRow, TabPanel, TABS_WIDTH, deleteModalStyle }

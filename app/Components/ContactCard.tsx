@@ -13,7 +13,7 @@ import Edit from '@mui/icons-material/Edit';
 import LocationOn from '@mui/icons-material/LocationOn';
 import { grey } from '@mui/material/colors';
 import Image from 'next/image'
-import { TextField, Stack, Button, FormControl, InputLabel, MenuItem, Autocomplete, Chip, ListItem, List, OutlinedInput, Checkbox, ListItemText, FormControlLabel, Tooltip } from '@mui/material'
+import { TextField, Stack, Button, FormControl, InputLabel, MenuItem, Autocomplete, Chip, ListItem, List, OutlinedInput, Checkbox, ListItemText, FormControlLabel, Tooltip, Modal } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { contactTypes } from '../utils/toolbox'
 import dayjs, { Dayjs } from 'dayjs';       // npm install dayjs
@@ -29,25 +29,28 @@ import { MuiFileInput } from 'mui-file-input';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import LinearProgress from '@mui/material/LinearProgress';
 import { Input } from '@mui/material';
-import {handleOpenFile} from '../utils/firebase'
+import { handleOpenFile } from '../utils/firebase'
 import { Tab, Tabs } from '@mui/material';
 import { TabPanel } from '../utils/StyledComponents';
-import {getFilesFromDatabase} from '../utils/firebase'
+import { getFilesFromDatabase } from '../utils/firebase'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import {deleteModalStyle} from '../utils/StyledComponents'
 
 
 type ContactCardProps = {
     contact: Contact;
     currentUserId: any
+    handleDeleteContact?: (id: string) => void
     addContact?: (contact: Contact) => void
     updateContact?: (contact: Contact) => void
     //contactCardDisplayStatus?: boolean
     //setContactCardDisplayStatus?: (status: boolean) => void
 }
 
-export default function ContactCard({ contact, currentUserId, addContact, updateContact, 
+export default function ContactCard({ contact, currentUserId, handleDeleteContact, addContact, updateContact,
     //contactCardDisplayStatus=true, 
     //setContactCardDisplayStatus
 }: ContactCardProps) {
@@ -63,15 +66,23 @@ export default function ContactCard({ contact, currentUserId, addContact, update
     const [progresspercentLogo, setProgresspercentLogo] = React.useState(0);
     const [progresspercentFile, setProgresspercentFile] = React.useState(0);
     const [filesFirebaseArray, setFilesFirebaseArray] = React.useState<FileNameAndRefType[]>([])
-    const [firebaseFileSelected, setFirebaseFileSelected] = React.useState<FileNameAndRefType>({fileName:"", fileRef:""})
+    const [firebaseFileSelected, setFirebaseFileSelected] = React.useState<FileNameAndRefType>({ fileName: "", fileRef: "" })
     const [categoriesList, setCategoriesList] = React.useState<string[]>([]);
-  
-  
+
+    
+    const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
+    const handleOpenDeleteModal = () => setOpenDeleteModal(true);
+    const handleCloseDeleteModal = () => setOpenDeleteModal(false);
+
+    const handleClickDeleteContact = () => {
+        handleDeleteContact && handleDeleteContact(contact.id)
+    }
+
     React.useEffect(() => {
-     
-      getCategoriesFromDatabase(currentUserId).then((categories: string[]) => {
-        setCategoriesList(categories.sort((a, b) => a.localeCompare(b)));
-      })
+
+        getCategoriesFromDatabase(currentUserId).then((categories: string[]) => {
+            setCategoriesList(categories.sort((a, b) => a.localeCompare(b)));
+        })
     }, [currentUserId]);
 
 
@@ -81,7 +92,7 @@ export default function ContactCard({ contact, currentUserId, addContact, update
 
         getFilesFromDatabase(currentUserId).then((filesList) => {
             setFilesFirebaseArray(filesList)
-            filesList.length > 0 && setFirebaseFileSelected({fileName:filesList[0].fileName, fileRef:filesList[0].fileRef})
+            filesList.length > 0 && setFirebaseFileSelected({ fileName: filesList[0].fileName, fileRef: filesList[0].fileRef })
         });
 
     }, [currentUserId])
@@ -129,7 +140,7 @@ export default function ContactCard({ contact, currentUserId, addContact, update
 
 
 
-   
+
 
     const handleSubmitFiles = (e: any, attribut: string) => {
         e.preventDefault()
@@ -153,9 +164,9 @@ export default function ContactCard({ contact, currentUserId, addContact, update
             (snapshot) => {
                 const progress =
                     Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    attribut === "logo"
-                        ? setProgresspercentLogo(progress)
-                        : setProgresspercentFile(progress)
+                attribut === "logo"
+                    ? setProgresspercentLogo(progress)
+                    : setProgresspercentFile(progress)
             },
             (error) => {
                 alert(error);
@@ -163,7 +174,7 @@ export default function ContactCard({ contact, currentUserId, addContact, update
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                     addFileOnFirebaseDB(currentUserId, { fileName: file.name, fileRef: downloadURL })
-                    
+
                     console.log("downloadURL", downloadURL)
                     attribut === "logo"
                         ? setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: downloadURL })
@@ -185,10 +196,10 @@ export default function ContactCard({ contact, currentUserId, addContact, update
     }
 
 
-  
 
-    
-   
+
+
+
 
 
 
@@ -404,16 +415,16 @@ export default function ContactCard({ contact, currentUserId, addContact, update
                 />
 
                 {/* ///////// FICHIERS ///////// */}
-                <Box sx={{ marginRight: "10px", position:"relative" }}>
+                <Box sx={{ marginRight: "10px", position: "relative" }}>
                     <Typography variant="h6">Fichiers associés au contact ({contactToAddOrUpdate.filesSent.length})</Typography>
 
-                    <Typography 
+                    <Typography
                         //variant="caption" 
                         component="div"
                         sx={{ color: "text.secondary" }}
                     >
                         {contactToAddOrUpdate.filesSent.map((file, index) => (
-                            <Box key={index} sx={{ display:"flex", alignItems:"center" }} >
+                            <Box key={index} sx={{ display: "flex", alignItems: "center" }} >
                                 <ArrowRightIcon sx={{ color: "text.secondary" }} />
                                 <Button
                                     onClick={() => handleOpenFile(file.fileRef)}
@@ -422,9 +433,9 @@ export default function ContactCard({ contact, currentUserId, addContact, update
                                 </Button>
                                 <Tooltip title="Désassocier ce fichier du contact">
                                     <IconButton
-                                        size="small" 
-                                        color="error"                                         
-                                        onClick={() => removeFile(file)} 
+                                        size="small"
+                                        color="error"
+                                        onClick={() => removeFile(file)}
                                     >
                                         <ClearIcon />
                                     </IconButton>
@@ -449,7 +460,7 @@ export default function ContactCard({ contact, currentUserId, addContact, update
 
 
                     <Tabs
-                        sx={{ marginTop:"30px" }}
+                        sx={{ marginTop: "30px" }}
                         value={tabValue}
                         onChange={(e, newValue: number) => setTabValue(newValue)}
                         aria-label="Horizontal tabs"
@@ -463,22 +474,22 @@ export default function ContactCard({ contact, currentUserId, addContact, update
                         <Tab key={1} label="Ajout nouveau fichier"
                         //icon={title.icon}
                         // {...a11yProps(index)} 
-                        />                       
+                        />
                     </Tabs>
 
                     <TabPanel key="0" value={tabValue} index={0}  >
-                        <FormControl sx={{ margin:"30px", width: "50%"}} >
+                        <FormControl sx={{ margin: "30px", width: "50%" }} >
                             <InputLabel id="checkbox-type-label">Choisir un fichier existant</InputLabel>
                             <Select
                                 id="checkbox-type-label"
                                 //sx={{ width: "200px" }}
                                 value={firebaseFileSelected.fileRef}
                                 name={firebaseFileSelected.fileName}
-                                onChange={(e) => setFirebaseFileSelected({fileName:e.target.name, fileRef:e.target.value})}                               
+                                onChange={(e) => setFirebaseFileSelected({ fileName: e.target.name, fileRef: e.target.value })}
                             >
                                 {filesFirebaseArray.map((file) => (
-                                 
-                                   
+
+
                                     //     <Tooltip title="Associer au contact">
                                     //         <IconButton color="secondary" sx={{
                                     //             //padding: 0, 
@@ -512,15 +523,15 @@ export default function ContactCard({ contact, currentUserId, addContact, update
                                                     />
                                                 </IconButton>
                                             </Tooltip> */}
-                                            {file.fileName}
+                                        {file.fileName}
                                         {/* </Box> */}
                                     </MenuItem>
                                 ))}
                             </Select>
-                            <Box sx={{ display:"flex", justifyContent:"space-between" }} >
+                            <Box sx={{ display: "flex", justifyContent: "space-between" }} >
                                 <Button
                                     sx={{ marginTop: "10px" }}
-                                    color= "secondary"
+                                    color="secondary"
                                     //component="label"
                                     type="submit"
                                     variant="contained" startIcon={<VisibilityIcon />}
@@ -538,12 +549,12 @@ export default function ContactCard({ contact, currentUserId, addContact, update
                                     Associer ce fichier
                                 </Button>
                             </Box>
-                        </FormControl>                       
+                        </FormControl>
                     </TabPanel>
 
                     <TabPanel key="1" value={tabValue} index={1}  >
-                         {/* => FormControl n'est pas conçu pour gérer les soumissions de formulaire. */}
-                        <form style={{ margin:"30px"}} onSubmit={(e) => handleSubmitFiles(e, "filesSent")} >
+                        {/* => FormControl n'est pas conçu pour gérer les soumissions de formulaire. */}
+                        <form style={{ margin: "30px" }} onSubmit={(e) => handleSubmitFiles(e, "filesSent")} >
                             <Input type="file" />
                             <Button
                                 sx={{ marginTop: "10px" }}
@@ -558,15 +569,15 @@ export default function ContactCard({ contact, currentUserId, addContact, update
                         <LinearProgress
                             variant="determinate"
                             value={progresspercentFile}
-                            sx={{ marginTop: "10px" }} />                       
+                            sx={{ marginTop: "10px" }} />
                     </TabPanel>
-                   
+
                     {contactToAddOrUpdate.filesSent &&
                         <Button
                             variant="contained"
                             color="error"
-                            sx={{ marginTop: "10px", position:"absolute", top:0, right:0 }}
-                            onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, filesSent: [] })} >Supprimer tous les fichiers associés</Button>} 
+                            sx={{ marginTop: "10px", position: "absolute", top: 0, right: 0 }}
+                            onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, filesSent: [] })} >Supprimer tous les fichiers associés</Button>}
                 </Box>
 
 
@@ -576,6 +587,37 @@ export default function ContactCard({ contact, currentUserId, addContact, update
 
                 {addContact && <Button variant="contained" sx={{ width: '100%', mt: 1, mb: 2 }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
                 {updateContact && <Button variant="contained" color='pink' sx={{ width: '100%', mt: 1, mb: 2 }} onClick={() => updateContact(contactToAddOrUpdate)} >Mettre à jour le contact</Button>}
+            </Box>
+
+            <Box sx={{display:"flex"}} >
+                {/* ///////// SUPPRIMER ///////// */}
+                <Button 
+                    variant="contained" 
+                    color='error' 
+                    onClick={handleOpenDeleteModal} 
+                    sx={{ mt:5, mr:0, ml:"auto",  }} 
+                >
+                    <DeleteForeverIcon />
+                    Supprimer le contact
+                </Button>
+
+                <Modal
+                    open={openDeleteModal}
+                    onClose={handleCloseDeleteModal}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={deleteModalStyle} >
+                    <Typography id="modal-modal-title" variant="h6" component="h2" sx={{mb:5}} >
+                            Supprimer le contact : <span style={{ fontWeight: "bold" }}>{contact.businessName}</span> ?
+                        </Typography>
+                        {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
+                        <Box sx={{ display:"flex", justifyContent:"space-between" }} >
+                            <Button variant="contained" color='warning' onClick={handleClickDeleteContact} sx={{ marginRight: "15px" }} >Oui !</Button>
+                            <Button variant="contained" color='primary' onClick={handleCloseDeleteModal} >Non</Button>
+                        </Box>
+                    </Box>
+                </Modal>
             </Box>
 
             {/* <Divider />

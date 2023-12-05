@@ -28,7 +28,7 @@ export default function AuthDetails() {
     return (
         <Box>
             {authUserInfo
-            ? <Box sx={{display:"flex", justifyContent:'space-between', height:"22px" }} >
+            && <Box sx={{display:"flex", justifyContent:'space-between', height:"22px" }} >
                     <Typography 
                         variant="h6" 
                         color="primary"
@@ -42,7 +42,8 @@ export default function AuthDetails() {
                         </IconButton>
                     </Tooltip>
                 </Box>          
-            : <Typography variant="h6" color="warning">Déconnecté</Typography>}
+            // : <Typography variant="h6" color="warning">Déconnecté</Typography>
+        }
         </Box>
     )
 }

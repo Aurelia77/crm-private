@@ -33,6 +33,13 @@ const emptyContact: Contact = {
 
 const businessCategories: string[] = ["NON DEFINI", "Camping", "Hôtel", "Conciergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre", "Mairie / médiathèque"];
 
+// const businessCategories2 = [
+//     {
+//         id: "1",
+//     label: "Camping",
+// }
+// ]
+
 const sortedBusinessCategories = [...businessCategories].sort();
 
 const contactTypes: ContactTypeType[] = ["NON DEFINI", "Particulier", "Entreprise", "Partenaire"];

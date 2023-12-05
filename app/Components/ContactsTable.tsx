@@ -50,8 +50,8 @@ const headCells: readonly Column[] = [               // readonly ???
     { id: 'isClient', label: <HandshakeOutlinedIcon />, minWidth: "2em", },  
     { id: 'businessCategory', label: 'Catégorie', minWidth: "8em", },
     { id: 'dateOfNextCall', label: <Box sx={{ display: 'flex', alignItems: 'center', }}
-    ><AccessAlarmRoundedIcon fontSize='large' sx={{ marginRight: "20px" }} />Relance</Box>, minWidth: "13em", },
-    { id: 'logo', label: 'Logo', minWidth: "5em", },
+    ><AccessAlarmRoundedIcon fontSize='large' sx={{ marginRight: "20px" }} />Relance</Box>, minWidth: "9em", },
+    { id: 'logo', label: 'Logo', minWidth: "4em", },
     { id: 'businessName', label: 'Nom', minWidth: "10em", },
     { id: 'contactPhone', label: <CallRoundedIcon fontSize='large' />, minWidth: "10em", },
     { id: 'contactName', label: <AccountCircleRoundedIcon fontSize='large' />, minWidth: "10em",
@@ -67,7 +67,7 @@ const headCells: readonly Column[] = [               // readonly ???
     { id: 'comments', label: <CommentRoundedIcon fontSize='large' />, minWidth: "5em", },
     { id: 'interestGauge', label: <FavoriteRoundedIcon fontSize='large' />, minWidth: "5em", },
     { id: 'filesSent', label: <AttachFileRoundedIcon fontSize='large' />, minWidth: "10em", },
-    { id: 'dateOfFirstCall', label: 'Premier appel', minWidth: "13em", },
+    { id: 'dateOfFirstCall', label: 'Premier appel', minWidth: "9em", },
     { id: 'contactType', label: 'Type', minWidth: "7em", },    
 
     // { id: 'supprimer', label: 'Supprimer ?', minWidth: "5em", },

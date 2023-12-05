@@ -81,6 +81,8 @@ import { storage, getCategoriesFromDatabase } from '../utils/firebase'
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { FormControl } from '@mui/material';
 import { handleOpenFile } from '../utils/firebase'
+import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
+import {deleteModalStyle} from '../utils/StyledComponents'
 
 // Pour les smileys du RATING 
 // => (dans le composant car besoin de connaitre la donnée pour ajuster la taille en fonction)  NON car sinon il faut cliquer 2 fois pour que ça valide !!!  
@@ -118,6 +120,7 @@ const customIcons: {
     },
     5: {
         icon: <SentimentVerySatisfiedIcon color="success"
+        //icon: <EmojiEmotionsIcon  color="success"
         //fontSize={contact.interestGauge === 5 ? 'large' : 'small'} 
         />,
         label: 'Very Satisfied',
@@ -407,17 +410,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
 
-    const style = {
-        position: 'absolute' as 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',     // ???
-        width: 400,
-        bgcolor: 'background.paper',
-        border: '2px solid #000',
-        boxShadow: 24,
-        p: 4,
-    };
+    
 
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
     const handleOpenDeleteModal = () => setOpenDeleteModal(true);
@@ -572,8 +565,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         return {
             sx: {
                 backgroundColor: logo ? '' : stringToColor(name),
-                width: 80,
-                height:80, 
+                width: 70,
+                height:70, 
                 margin:"auto"
             },
             children: initials,
@@ -640,7 +633,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
             {/* dateOfNextCall */}
             <StyledTableCell
-                style={{
+                sx={{
+                    //padding:0,
                     backgroundColor: isDatePassed(contact.dateOfNextCall)
                         ? muiTheme.palette.warning.light
                         : isDateSoon(contact.dateOfNextCall)
@@ -655,19 +649,20 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
                 {/* The general recommendation is to declare the LocalizationProvider once, wrapping your entire application. Then, you don't need to repeat the boilerplate code for every Date and Time Picker in your application. */}
                 {/* <LocalizationProvider dateAdapter={AdapterDayjs}> */}
-                <Container
+                <Box sx={{ pl:0 }}
                 //components={['DateTimePicker']}       // ???
                 >
                     <Box sx={{
                         display: "flex",
                         justifyContent: "end",           //"space-between", 
-                        marginBottom: "10px"
+                        //marginBottom: "10px"
                     }}> {/* Sinon on pouvait mettre un float:right sur le bouton ci-dessous */}
                         {/* <NotificationsNoneOutlinedIcon sx={{ color: pink[800] }} /> */}
                         {isDatePassed(contact.dateOfNextCall) && <NotificationsNoneOutlinedIcon color="error"
-                            sx={{ marginRight:"80%" }} 
-                            fontSize='large' />}
-                        <Tooltip title="Supprimer la date">
+                            sx={{ marginRight:"70%" }} 
+                            //fontSize='large' 
+                            />}
+                        <Tooltip arrow title="Supprimer la date" placement='left' >
                             <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
                                 onClick={() => handleChangeDate(null, "dateOfNextCall")} >
                                 <ClearIcon
@@ -676,33 +671,44 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             </IconButton>
                         </Tooltip>
                     </Box>
-                    <DatePicker
-                        // <DateTimePicker
-                        //defaultValue={null}
-                        //label="Date de relance"
-                        //ampm={false}          // Si on met TIME aussi
-                        // format="DD/MM/YYYY HH:mm"
-                        format="DD MMM YYYY"
+                    <Box 
+                        sx={{ '& .MuiInput-underline:before': { display: 
+                        contact.dateOfNextCall === null ? "block" : "none" } }}>
+                        <DatePicker
+                            // <DateTimePicker
+                            //defaultValue={null}
+                            //label="Date de relance"
+                            //ampm={false}          // Si on met TIME aussi
+                            // format="DD/MM/YYYY HH:mm"
+                            format="DD MMM YYYY"
+                            //minDate={dayjs(new Date())}   // à remettre !!!!!!!!!!!
 
-                        //minDate={dayjs(new Date())}   // à remettre !!!!!!!!!!!
-
-                        // viewRenderers={{  hours: renderTimeViewClock,
-                        //     minutes: renderTimeViewClock,
-                        //     seconds: renderTimeViewClock, }}
-                        //value={dayjs(contact.dateOfNextCall)}   // => Avant FIREBASE ça fonctionnait avec ça (car FIREBASE transforme les dates en objet Timestamp(?))
-                        //{dayjs(new Date("01/01/2000"))}
-                        //value={dayjs(contact.dateOfNextCall.toDate())}        // Erreur si date = null
-                        //value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : undefined}  // Si on met UNDEFINED =>  A component is changing the uncontrolled value of a picker to be controlled. Elements should not switch from uncontrolled to controlled (or vice versa). It's considered controlled if the value is not `undefined`.
-                        // Impossible de mettre une date vide ???
-                        //value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : dayjs(new Date("01/01/2023"))}
-                        value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : null}
-                        label={contact.dateOfNextCall === null ? "JJ mmm AAAA" : ""}
-                        onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfNextCall")}
-                        slotProps={{
-                            //textField: { variant: 'standard', }       // Fait quoi ?
-                        }}
-                    />
-                </ Container>
+                            // viewRenderers={{  hours: renderTimeViewClock,
+                            //     minutes: renderTimeViewClock,
+                            //     seconds: renderTimeViewClock, }}
+                            //value={dayjs(contact.dateOfNextCall)}   // => Avant FIREBASE ça fonctionnait avec ça (car FIREBASE transforme les dates en objet Timestamp(?))
+                            //{dayjs(new Date("01/01/2000"))}
+                            //value={dayjs(contact.dateOfNextCall.toDate())}        // Erreur si date = null
+                            //value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : undefined}  // Si on met UNDEFINED =>  A component is changing the uncontrolled value of a picker to be controlled. Elements should not switch from uncontrolled to controlled (or vice versa). It's considered controlled if the value is not `undefined`.
+                            // Impossible de mettre une date vide ???
+                            //value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : dayjs(new Date("01/01/2023"))}
+                            value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : null}
+                            label=" "
+                            sx={{
+                              '& .MuiInputBase-root': {
+                                //fontSize: '0.8rem', // Réduire la taille de la police
+                                padding: 0, // Enlever le padding
+                                margin: 0, // Enlever la marge
+                              },
+                            }}
+                            //label={contact.dateOfNextCall === null ? "JJ mmm AAAA" : ""}
+                            onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfNextCall")}
+                            slotProps={{
+                                //textField: { variant: 'standard', }       // Fait quoi ?
+                            }}
+                        />
+                    </Box>
+                </ Box>
                 {/* </LocalizationProvider> */}
                 {/* {contact.dateOfNextCall.toLocaleDateString()} {contact.dateOfNextCall.getHours().toString().padStart(2, '0')}:{contact.dateOfNextCall.getMinutes().toString().padStart(2, '0')} */}
             </StyledTableCell>
@@ -791,7 +797,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
             {/* contactPhone + businessPhone */}
             <StyledTableCell component="td" align="center">
-                <Tooltip title="Tél direct" placement='top'>
+                <Tooltip arrow title="Tél direct" placement='top'>
                     <TextField id="standard-basic" //label="Téléphone" 
                         value={contact.contactPhone}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactPhone')}
@@ -802,7 +808,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         inputProps={{ style: { textAlign: 'center' } }}
                     />
                 </Tooltip>
-                <Tooltip title="Tél standard">                
+                <Tooltip arrow title="Tél standard">                
                     <TextField id="standard-basic" //label="Téléphone" 
                         value={contact.businessPhone}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessPhone')}
@@ -843,11 +849,11 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
             {/* contactEmail */}
             <StyledTableCell component="td" 
-            //sx={{ paddingLeft:"7px"}} 
+                sx={{ py:0}} 
             >
                 {/* <Box sx={{ display: "flex", gap: 2 }}> */}
                 {/* <MailOutlineOutlinedIcon /> */}
-                <Tooltip title="Contact direct"  placement='top'>
+                <Tooltip arrow title="Contact direct"  placement='top'>
                     <TextField id="standard-basic" //label="Email du contact" 
                         value={contact.contactEmail} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactEmail')}
                         InputProps={{
@@ -860,7 +866,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     {/* <Box><CustomTextField attribut="contactEmail"/></Box> */}
                 </Tooltip>
                 {/* </Box> */}
-                <Tooltip title="Contact entreprise"  placement='left'>
+                <Tooltip arrow title="Contact entreprise"  placement='left'>
                     <TextField id="standard-basic"
                         value={contact.businessEmail} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessEmail')}
                         InputProps={{
@@ -871,7 +877,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     />
                     {/* <Box><CustomTextField attribut="businessEmail" smallLighter /></Box> */}
                 </Tooltip>
-                <Tooltip title="Site Web de l'entreprise">
+                <Tooltip arrow title="Site Web">
                     <TextField id="standard-basic"
                         value={contact.businessWebsite} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessWebsite')}
                         InputProps={{
@@ -926,7 +932,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     // sx={{ bgcolor: "white", border: `4px solid ${getIconStyle(contact.hasBeenCalled)}`, }}
                     //className={classes.avatar}
                     >
-                        <Tooltip title={getPhoneIconText(contact.hasBeenCalled)}>
+                        <Tooltip arrow title={getPhoneIconText(contact.hasBeenCalled)}>
                             <IconButton color="primary" onClick={handleClickHasBeenCalled}>
                                 <CallRoundedIcon fontSize="large"
                                     sx={{
@@ -972,7 +978,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         }}
                     //className={classes.avatar}
                     >
-                        <Tooltip title={getEmailIconText(contact.hasBeenSentEmailOrMeetUp)}>
+                        <Tooltip arrow title={getEmailIconText(contact.hasBeenSentEmailOrMeetUp)}>
                             <IconButton color="primary" onClick={handleClickhasBeenSentEmailOrMeetUp}>
                                 <RightMailIcon hasBeenSentEmailOrMeetUp={contact.hasBeenSentEmailOrMeetUp} />
                                 {/* <MailOutlineIcon fontSize="large" sx={{ color: "white" }} /> */}
@@ -1224,14 +1230,18 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             </StyledTableCell>
 
             {/* dateOfFirstCall */}
-            <StyledTableCell >
-                <Container>
+            <StyledTableCell 
+                sx={{
+                   // padding:0 
+                }}
+            >
+                <Box>
                     <Box sx={{
                         display: "flex",
                         justifyContent: "end",
-                        marginBottom: "10px"
+                        //marginBottom: "10px"
                     }}>
-                        <Tooltip title="Supprimer la date">
+                        <Tooltip arrow title="Supprimer la date"  placement='left' >
                             <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
                                 onClick={() => handleChangeDate(null, "dateOfFirstCall")} >
                                 <ClearIcon
@@ -1240,14 +1250,27 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             </IconButton>
                         </Tooltip>
                     </Box>
-                    <DatePicker
-                        //format="DD/MM/YYYY"
-                        format="DD MMM YYYY"
-                        value={contact.dateOfFirstCall !== null ? dayjs(contact.dateOfFirstCall.toDate()) : null}
-                        onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfFirstCall")}
-                        label={contact.dateOfFirstCall === null ? "JJ mmm AAAA" : ""}
-                    />
-                </ Container>
+                  
+                    <Box 
+                        sx={{ '& .MuiInput-underline:before': { display: 
+                        contact.dateOfFirstCall === null ? "block" : "none" } }}>
+                        <DatePicker
+                            //format="DD/MM/YYYY"
+                            format="DD MMM YYYY"
+                            value={contact.dateOfFirstCall !== null ? dayjs(contact.dateOfFirstCall.toDate()) : null}
+                            onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfFirstCall")}
+                            //label={contact.dateOfFirstCall === null ? "JJ mmm AAAA" : ""}                        
+                            label=" "
+                            sx={{
+                              '& .MuiInputBase-root': {
+                                //fontSize: '0.8rem', // Réduire la taille de la police
+                                padding: 0, // Enlever le padding
+                                margin: 0, // Enlever la marge
+                              },
+                            }}
+                        />
+                    </Box>
+                </Box>
             </StyledTableCell>
 
             {/* Type */}
@@ -1268,7 +1291,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
             {/* Supprimer contact ? */}
             <StyledTableCell align="center" >
-                <Tooltip title="Supprimer le contact"
+                <Tooltip arrow title="Supprimer le contact"
                 // placement="top"
                 >
                     <IconButton onClick={handleOpenDeleteModal}>
@@ -1281,13 +1304,15 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >
-                    <Box sx={style}>
-                        <Typography id="modal-modal-title" variant="h6" component="h2">
-                            Supprimer le contact : <br /> <span style={{ fontWeight: "bold" }}>{contact.businessName}</span> ?
+                    <Box sx={deleteModalStyle}>
+                        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{mb:5}} >
+                            Supprimer le contact : <span style={{ fontWeight: "bold" }}>{contact.businessName}</span> ?
                         </Typography>
                         {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
-                        <Button variant="contained" color='warning' onClick={handleClickDeleteContact} sx={{ marginRight: "15px" }} >Oui !</Button>
-                        <Button variant="contained" color='primary' onClick={handleCloseDeleteModal} >Non</Button>
+                        <Box sx={{ display:"flex", justifyContent:"space-between" }} >
+                            <Button variant="contained" color='warning' onClick={handleClickDeleteContact} sx={{ marginRight: "15px" }} >Oui !</Button>
+                            <Button variant="contained" color='primary' onClick={handleCloseDeleteModal} >Non</Button>
+                        </Box>
                     </Box>
                 </Modal>
             </StyledTableCell>
