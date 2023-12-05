@@ -79,7 +79,7 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
     }, [search, onSearchChange])
 
     return (
-        <Paper sx={{ margin: "1em", marginTop: "2em", padding: "1em", bgcolor: 'primary.light', }} >
+        <Paper sx={{ margin: "0 1em 0 1em", padding: "0.7em", bgcolor: 'primary.light', }} >
             <FormControl sx={{
                 position: "relative", 
                 bgcolor: 'lightCyan.light', 
@@ -100,15 +100,16 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
                         size="small" 
                         color="error" 
                         sx={{
-                            width:"10px",
-                            height:"10px",
+                            //width:"20px",
+                            //height:"20px",
                             position: "absolute",
-                            top: 0,
-                            right: 0,
+                            bottom: -15,
+                            right: -15,
                             padding: 0   // Car les boutons ont automatiquement un padding
                         }}
-                        onClick={resetSearch} >
-                        <ClearIcon />
+                        onClick={resetSearch} 
+                    >
+                        <ClearIcon fontSize='small' />
                     </Fab>
                 </Tooltip>
 
@@ -126,9 +127,9 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
                             value={search.isClient}
                             onChange={handleChangeRadio}
                         >
-                            <FormControlLabel value="yes" control={<Radio />} label="Clients" sx={{ height:"22px" }} />
-                            <FormControlLabel value="no" control={<Radio />} label="Prospects" sx={{ height:"22px" }} />
-                            <FormControlLabel value="all" control={<Radio />} label="TOUS" sx={{ height:"22px" }} />
+                            <FormControlLabel value="yes" control={<Radio />} label="Clients" sx={{ height:"21px" }} />
+                            <FormControlLabel value="no" control={<Radio />} label="Prospects" sx={{ height:"21px" }} />
+                            <FormControlLabel value="all" control={<Radio />} label="TOUS" sx={{ height:"21px" }} />
                         </RadioGroup>
                     </FormControl>
 

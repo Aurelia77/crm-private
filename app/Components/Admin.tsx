@@ -11,6 +11,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListSubheader from '@mui/material/ListSubheader';
+import { useTheme } from '@mui/material/styles';
 
 
 
@@ -26,6 +27,7 @@ export default function Admin({ currentUser }: AdminType) {
   const [newCat, setNewCat] = React.useState<string>("");
   const [progresspercentFile, setProgresspercentFile] = React.useState(0);
 
+  const muiTheme = useTheme();
 
   console.log("newCat", newCat)
 
@@ -68,7 +70,8 @@ export default function Admin({ currentUser }: AdminType) {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           addFileOnFirebaseDB(currentUser.uid, { fileName: file.name, fileRef: downloadURL }).then(() => {
-            window.location.reload();
+            setFilesList([...filesList, { fileName: file.name, fileRef: downloadURL }]);
+            //window.location.reload();
           });
         });
       }
@@ -98,7 +101,7 @@ export default function Admin({ currentUser }: AdminType) {
             <ListItemText
               key={index}
               onClick={() => handleOpenFile(file.fileRef)}
-              sx={{ cursor: "pointer" }}
+              sx={{ cursor: "pointer", backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
             >
               {file.fileName}
             </ListItemText>
@@ -136,6 +139,7 @@ export default function Admin({ currentUser }: AdminType) {
           {categoriesList.map((category, index) => (
             <ListItemText
               key={index}
+              sx={{ cursor: "pointer", backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
             >
               {category}
             </ListItemText>

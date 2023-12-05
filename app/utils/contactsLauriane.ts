@@ -163,7 +163,7 @@ const contactsLaurianeCampings: Contact[] = [
         "hasBeenCalled": 0,
         "hasBeenSentEmailOrMeetUp": 0,
         "comments": "mail envoyer au directeur- Pas aimable - revoir si l'an prochain il a changé ou changement de direction",
-        "dateOfFirstCall": new Date("2023-12-04")
+        "dateOfFirstCall": new Date("2019-12-04")
     },
     {
         ...emptyContact,
@@ -245,6 +245,7 @@ const contactsLaurianeCampings: Contact[] = [
         "comments": "pas de piscine",
         "dateOfFirstCall": new Date("2019-01-22")
     },
+    
     {
         ...emptyContact,
         "businessCategory": "Camping",
@@ -253,18 +254,17 @@ const contactsLaurianeCampings: Contact[] = [
         "dateOfNextCall": null,
         "logo": "",
         "businessName": "Lou Pantaï",
-        "businessPhone": "04 94 75 10 77",
+        "businessPhone": "06 07 76 31 05",
         "contactPhone": "",
         "contactEmail": "contact@campingloupantai.com",
         "contactName": "Mr Demarais",
-        "contactPosition": "Directi",
-        "businessAddress": "le pradet",
-        "businessCity": "Le Pradet",
+        "contactPosition": "Directeur",
+        "businessAddress": "Le Pradet",
         "hasBeenCalled": 0,
         "hasBeenSentEmailOrMeetUp": 0,
-        "comments": "\"mail envoyer au directeur/pas interesser , bizar la facon dont il a répondu \"\"une sirene à l'état naturelle n'a rien a faire dans un camping\"",
-        "dateOfFirstCall": new Date("2023-02-01")
-    },
+        "comments": "mail envoyer au directeur/pas interesser , bizar la facon dont il a répondu une sirene à l'état naturelle n'a rien a faire dans un camping",
+        "dateOfFirstCall": null
+    },  
     {
         ...emptyContact,
         "businessCategory": "Camping",
@@ -728,12 +728,12 @@ const contactsLaurianeCampings: Contact[] = [
         "dateOfNextCall": new Date("07/12/2023"),
         "logo": "",
         "businessName": "La croix du sud 3*",
-        "businessPhone": " 04 94 79 00 00",
+        "businessPhone": "04 94 55 51 23",
         "contactPhone": "",
         "contactEmail": "",
         "contactName": "Marie Christine",
         "contactPosition": "",
-        "businessAddress": "RAmatuelle",
+        "businessAddress": "Ramatuelle",
         "hasBeenCalled": 0,
         "hasBeenSentEmailOrMeetUp": 3,
         "comments": "PARTENARIAT tous les ans, fidéles",
@@ -908,25 +908,6 @@ const contactsLaurianeCampings: Contact[] = [
         "hasBeenCalled": 0,
         "hasBeenSentEmailOrMeetUp": 0,
         "comments": "AUCUNE ANIMATION",
-        "dateOfFirstCall": null
-    },
-    {
-        ...emptyContact,
-        "businessCategory": "Camping",
-        "isClient": false,
-        "contactType": "Entreprise",
-        "dateOfNextCall": null,
-        "logo": "",
-        "businessName": "Lou Pantaï",
-        "businessPhone": "06 07 76 31 05",
-        "contactPhone": "",
-        "contactEmail": "contact@campingloupantai.com",
-        "contactName": "Mr Demarais",
-        "contactPosition": "",
-        "businessAddress": "Le Pradet",
-        "hasBeenCalled": 0,
-        "hasBeenSentEmailOrMeetUp": 0,
-        "comments": "\"pas interesser , bizar la facon dont il a répondu \"\"une sirene à l'état naturelle n'a rien a faire dans un camping\"",
         "dateOfFirstCall": null
     },
     {

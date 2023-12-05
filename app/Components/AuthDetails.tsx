@@ -2,7 +2,7 @@ import React from 'react'
 import { auth } from './../utils/firebase'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { Sign } from 'crypto'
-import { Box, Button, IconButton, Typography } from '@mui/material'
+import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material'
 import LogoutIcon from '@mui/icons-material/Logout';
 
 export default function AuthDetails() {
@@ -28,12 +28,19 @@ export default function AuthDetails() {
     return (
         <Box>
             {authUserInfo
-            ? <Box sx={{display:"flex"}} >
-                    <Typography variant="h6" color="primary">{authUserInfo.email}</Typography>
+            ? <Box sx={{display:"flex", justifyContent:'space-between' }} >
+                    <Typography 
+                        variant="h6" 
+                        color="primary"
+                        sx={{ ml: 2 }}
+                    >{authUserInfo.email}</Typography>
                     {/* <Button variant="contained" color="primary" onClick={() => auth.signOut()}>Déconnexion</Button> Marche aussi !!!*/}
-                    <IconButton onClick={userSignOut} color="error" >
-                        <LogoutIcon />
-                    </IconButton>
+                    
+                    <Tooltip title="Déconnexion" placement="left">
+                        <IconButton onClick={userSignOut} color="error" >
+                            <LogoutIcon />
+                        </IconButton>
+                    </Tooltip>
                 </Box>          
             : <Typography variant="h6" color="warning">Déconnecté</Typography>}
         </Box>

@@ -59,7 +59,7 @@ import { InputLabel, MenuItem } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { grey } from '@mui/material/colors';
 
-import {contactTypes} from '../utils/toolbox'
+import { contactTypes } from '../utils/toolbox'
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
@@ -80,7 +80,7 @@ import { timeStampObjToTimeStamp } from '../utils/toolbox';
 import { storage, getCategoriesFromDatabase } from '../utils/firebase'
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { FormControl } from '@mui/material';
-import {handleOpenFile} from '../utils/firebase'
+import { handleOpenFile } from '../utils/firebase'
 
 // Pour les smileys du RATING 
 // => (dans le composant car besoin de connaitre la donnée pour ajuster la taille en fonction)  NON car sinon il faut cliquer 2 fois pour que ça valide !!!  
@@ -168,13 +168,13 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     const [contactInfo, setContactInfo] = React.useState<Contact>(contact)
 
     const [categoriesList, setCategoriesList] = React.useState<string[]>([]);
-  
-  
+
+
     React.useEffect(() => {
-     
-      getCategoriesFromDatabase(currentUserId).then((categories: string[]) => {
-        setCategoriesList(categories.sort((a, b) => a.localeCompare(b)));
-      })
+
+        getCategoriesFromDatabase(currentUserId).then((categories: string[]) => {
+            setCategoriesList(categories.sort((a, b) => a.localeCompare(b)));
+        })
     }, [currentUserId]);
 
 
@@ -563,22 +563,23 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         return color;
     }
 
-    function stringAvatar(name: string) {
+    function stringAvatar(name: string, logo: string) {
         const words = name.split(' ');
-        const initials = words.length > 1 
-            ? `${words[0][0]}${words[1][0]}` 
+        const initials = words.length > 1
+            ? `${words[0][0]}${words[1][0]}`
             : words[0][0];
 
         return {
             sx: {
-                backgroundColor: stringToColor(name),
-                width: 100,
-                height: 100
+                backgroundColor: logo ? '' : stringToColor(name),
+                width: 80,
+                height:80, 
+                margin:"auto"
             },
             children: initials,
         };
     }
-  
+
 
 
     return (
@@ -605,8 +606,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 />
             </StyledTableCell>
 
-              {/* catégorie */}
-              <StyledTableCell component="td" scope="row" >
+            {/* catégorie */}
+            <StyledTableCell component="td" scope="row" >
                 {/* <TextField id="standard-basic"
                     value={contact.businessCategory}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessCategory')}
@@ -619,12 +620,19 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     <Select
                         id="checkbox-type-label"
                         value={contact.businessCategory}
+                        variant="standard"
+                        disableUnderline={true}
                         //onChange={(e) => handleChangeSelect(e, "businessCategory")}
                         onChange={(e) => handleChangeSelect(e, "businessCategory")}
+                        sx={{ overflow: "hidden",textOverflow: "ellipsis",  width: 180 }}
                     >
-                         {categoriesList.map((cat) => (
-                            <MenuItem key={cat} value={cat}>{cat}</MenuItem>
-                        ))}                       
+                        {categoriesList.map((cat, index) => (
+                            <MenuItem
+                                key={cat}
+                                value={cat}
+                                sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
+                            >{cat}</MenuItem>
+                        ))}
                     </Select>
                 </FormControl>
                 {/* <CustomTextField attribut="businessCategory" /> */}
@@ -643,9 +651,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 {/* {contact.dateOfNextCall && <Typography variant="caption" display="block" gutterBottom>{Date.parse(contact.dateOfNextCall.toDate())}</Typography>}
                 {contact.dateOfNextCall && <Typography variant="caption" display="block" gutterBottom>{Date.parse(new Date().toString())}</Typography> } */}
 
-                {isDatePassed(contact.dateOfNextCall) && <NotificationsNoneOutlinedIcon color="error"
-                    //sx={{ color: pink[800] }} 
-                    fontSize='large' />}
+
 
                 {/* The general recommendation is to declare the LocalizationProvider once, wrapping your entire application. Then, you don't need to repeat the boilerplate code for every Date and Time Picker in your application. */}
                 {/* <LocalizationProvider dateAdapter={AdapterDayjs}> */}
@@ -658,6 +664,9 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         marginBottom: "10px"
                     }}> {/* Sinon on pouvait mettre un float:right sur le bouton ci-dessous */}
                         {/* <NotificationsNoneOutlinedIcon sx={{ color: pink[800] }} /> */}
+                        {isDatePassed(contact.dateOfNextCall) && <NotificationsNoneOutlinedIcon color="error"
+                            sx={{ marginRight:"80%" }} 
+                            fontSize='large' />}
                         <Tooltip title="Supprimer la date">
                             <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
                                 onClick={() => handleChangeDate(null, "dateOfNextCall")} >
@@ -700,16 +709,16 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
             {/* LOGO */}
             <StyledTableCell component="td" scope="row"
-            //sx={{ padding:0 }}  
+                sx={{ padding:0 }}  
             >
                 {/* <TextField type="file" onChange={handleChangeLogo2} /> */}
                 {/* {contact.logo && <Image src={contact.logo} alt={contact.businessName} width={100} height={100} style={{ borderRadius: "10%" }}  />} */}
-                <Avatar 
-                    variant="rounded" 
+                <Avatar
+                    variant="rounded"
                     src={contact.logo
-                            ? contact.logo 
-                            : ""}
-                    {...stringAvatar(contact.businessName)}                    
+                        ? contact.logo
+                        : ""}
+                    {...stringAvatar(contact.businessName, contact.logo)}
                 />
                 {/* {contact.logo
                     ? <Avatar variant="rounded" src={contact.logo}
@@ -720,7 +729,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     width: 100, height: 100 
                 }} >{contact.businessName}</Avatar> 
                 }                */}
-               
+
                 {/* <MuiFileInput
                     value={contact.logo}
                     //onChange={ (file) => handleChangeFile(file)} />
@@ -740,8 +749,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     //onClick={handleChangeLogo}
                     >
                         Upload file */}
-                        {/* <VisuallyHiddenInput type="file" /> */}
-                    {/* </Button>
+                {/* <VisuallyHiddenInput type="file" /> */}
+                {/* </Button>
                 </form> */}
                 {/* <div className="App">
                     {!imgUrl && <div className='outerbar'>
@@ -781,34 +790,40 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             </StyledTableCell>
 
             {/* contactPhone + businessPhone */}
-            <StyledTableCell align="center">
-                <TextField id="standard-basic" //label="Téléphone" 
-                    value={contact.contactPhone}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactPhone')}
-                    InputProps={{
-                        startAdornment: "Direct ",
-                        disableUnderline: contact.businessPhone.length > 0
-                    }}
-                    inputProps={{ style: { textAlign: 'center' } }}
-                />
-                <TextField id="standard-basic" //label="Téléphone" 
-                    value={contact.businessPhone}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessPhone')}
-                    color="secondary"
-                    size='small'
-                    InputProps={{
-                        // startAdornment: "Standard: ",
-                        startAdornment: <span style={{ color: 'gray', fontSize: "0.8em" }}>Standard </span>,
-                        disableUnderline: contact.businessPhone.length > 0
-                    }}
-                    inputProps={{ style: { textAlign: 'center', color: "gray", fontSize: "0.8em" } }}
-                />
+            <StyledTableCell component="td" align="center">
+                <Tooltip title="Tél direct" placement='top'>
+                    <TextField id="standard-basic" //label="Téléphone" 
+                        value={contact.contactPhone}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactPhone')}
+                        InputProps={{
+                            //startAdornment: "Direct ",
+                            disableUnderline: contact.businessPhone.length > 0
+                        }}
+                        inputProps={{ style: { textAlign: 'center' } }}
+                    />
+                </Tooltip>
+                <Tooltip title="Tél standard">                
+                    <TextField id="standard-basic" //label="Téléphone" 
+                        value={contact.businessPhone}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessPhone')}
+                        color="secondary"
+                        size='small'
+                        InputProps={{
+                            // startAdornment: "Standard: ",
+                            //startAdornment: <span style={{ color: 'gray', fontSize: "0.8em" }}>Standard </span>,
+                            disableUnderline: contact.businessPhone.length > 0
+                        }}
+                        inputProps={{ style: { textAlign: 'center', color: "gray", fontSize: "0.8em" } }}
+                    />
+                </Tooltip>
                 {/* <CustomTextField attribut="contactPhone" startAdornment="Direct" center={true} />
                  <CustomTextField attribut="businessPhone" startAdornment= {<span style={{ color: 'gray', fontSize: "0.8em" }}>Standard </span>} center smallLighter /> */}
             </StyledTableCell>
 
             {/* ContactName */}
-            <StyledTableCell>
+            <StyledTableCell 
+            //sx={{ paddingLeft:"7px"}} 
+            >
                 <TextField id="standard-basic" //label="Nom du contact" 
                     value={contact.contactName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactName')}
                     InputProps={{
@@ -827,32 +842,32 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             </StyledTableCell>
 
             {/* contactEmail */}
-            <StyledTableCell
-            //align="right"
+            <StyledTableCell component="td" 
+            //sx={{ paddingLeft:"7px"}} 
             >
                 {/* <Box sx={{ display: "flex", gap: 2 }}> */}
                 {/* <MailOutlineOutlinedIcon /> */}
-                <Tooltip title="Contact direct">
+                <Tooltip title="Contact direct"  placement='top'>
                     <TextField id="standard-basic" //label="Email du contact" 
                         value={contact.contactEmail} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactEmail')}
                         InputProps={{
                             disableUnderline: contact.contactEmail.length > 0
                         }}
                         //sx={{height:"5px", padding:0}}
-                        inputProps={{ style: { padding:0 } }}
+                        inputProps={{ style: { padding: 0 } }}
                     />
                     {/*  Je met le CustomTextField dans une DIV car le composant enfant de Tooltip doit être capable d'accepter une ref */}
                     {/* <Box><CustomTextField attribut="contactEmail"/></Box> */}
                 </Tooltip>
                 {/* </Box> */}
-                <Tooltip title="Contact entreprise">
+                <Tooltip title="Contact entreprise"  placement='left'>
                     <TextField id="standard-basic"
                         value={contact.businessEmail} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessEmail')}
                         InputProps={{
                             startAdornment: contact.businessEmail.length === 0 && "...",
                             disableUnderline: true//contact.businessEmail.length > 0
                         }}
-                        inputProps={{ style: { fontSize: "0.8em", color: "gray", padding:0  } }}
+                        inputProps={{ style: { fontSize: "0.8em", color: "gray", padding: 0 } }}
                     />
                     {/* <Box><CustomTextField attribut="businessEmail" smallLighter /></Box> */}
                 </Tooltip>
@@ -863,14 +878,16 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             startAdornment: contact.businessWebsite.length === 0 && "...",
                             disableUnderline: true//contact.businessWebsite.length > 0
                         }}
-                        inputProps={{ style: { fontSize: "0.8em", color: "gray", padding:0  } }}
+                        inputProps={{ style: { fontSize: "0.8em", color: "gray", padding: 0 } }}
                     />
                     {/* <Box><CustomTextField attribut="businessWebsite" smallLighter />  </Box> */}
                 </Tooltip>
             </StyledTableCell>
 
             {/* businessCity */}
-            <StyledTableCell component="td" scope="row" >
+            <StyledTableCell 
+            //sx={{ paddingLeft:"7px"}} 
+            component="td" scope="row" >
                 <TextField id="standard-basic"
                     value={contact.businessCity}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessCity')}
@@ -1171,8 +1188,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         dividers
                     >
                         {contact.filesSent.map((file, index) => (
-                            <Box key={index} sx={{ display:"flex"}} >
-                                <Avatar sx={{width:40, height:40, backgroundColor: stringToColor(file.fileName.slice(-3)),}} >{file.fileName.slice(-3)}</Avatar>
+                            <Box key={index} sx={{ display: "flex" }} >
+                                <Avatar sx={{ width: 40, height: 40, backgroundColor: stringToColor(file.fileName.slice(-3)), }} >{file.fileName.slice(-3)}</Avatar>
                                 <Typography
                                     // InputProps={{
                                     //     startAdornment: <ArrowRightIcon />,
@@ -1233,10 +1250,12 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 </ Container>
             </StyledTableCell>
 
-               {/* Type */}
-               <StyledTableCell component="td" scope="row" >
+            {/* Type */}
+            <StyledTableCell component="td" scope="row" >
                 <FormControl >
-                    <Select
+                    <Select                        
+                        variant="standard"
+                        disableUnderline={true}        
                         value={contact.contactType}
                         onChange={(e) => handleChangeSelect(e, "contactType")}
                     >

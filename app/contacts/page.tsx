@@ -282,7 +282,9 @@ export default function Contacts() {
         }}>
 
             {/* /////////////////////// Info USER /////////////////////// */}
-            <Box sx={{ position: "absolute", right: "5px", top: 0 }} ><AuthDetails /></Box>
+            <Box sx={{ 
+                //position: "absolute", right: "5px", top: 0 
+            }} ><AuthDetails /></Box>
             {/* On affiche le nom de l'utilisateur */}
             {/* <Typography variant="h3" component="div" gutterBottom>User Auth = {currentUser?.email}</Typography> */}
 
@@ -319,7 +321,7 @@ export default function Contacts() {
                         >
                             <Tabs
                                 orientation="vertical"
-                                variant="scrollable"
+                                //variant="scrollable"
                                 value={tabValue}
                                 onChange={(e, newValue) => setTabValue(newValue)}
                                 aria-label="Vertical tabs"
@@ -343,9 +345,9 @@ export default function Contacts() {
                             <TabPanel key="0" value={tabValue} index={0}  >
                                 <SearchContactsForm onSearchChange={setContactsSearchCriteria} emptySearchCriteria={emptySearchCriteria} contacts={contacts} />
 
-                                <Box sx={{ display: "flex", alignItems: "center",
-                                 marginLeft:"20px", 
-                            }}>
+                                <Box 
+                                    sx={{ display: "flex", alignItems: "center", margin:"15px 0 10px 15px",  }}
+                                >
                                     <Typography variant="h5">
                                         {isSearchCriteriaEmpty
                                             ? `Recherche : ${filteredContacts.length} contacts trouvé(s) (sur ${contacts.length})`

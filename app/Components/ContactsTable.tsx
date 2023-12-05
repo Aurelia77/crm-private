@@ -47,18 +47,18 @@ interface Column {
 
 
 const headCells: readonly Column[] = [               // readonly ???
-    { id: 'isClient', label: <HandshakeOutlinedIcon />, minWidth: "3em", },  
-    { id: 'businessCategory', label: 'Catégorie', minWidth: "10em", },
+    { id: 'isClient', label: <HandshakeOutlinedIcon />, minWidth: "2em", },  
+    { id: 'businessCategory', label: 'Catégorie', minWidth: "8em", },
     { id: 'dateOfNextCall', label: <Box sx={{ display: 'flex', alignItems: 'center', }}
     ><AccessAlarmRoundedIcon fontSize='large' sx={{ marginRight: "20px" }} />Relance</Box>, minWidth: "13em", },
     { id: 'logo', label: 'Logo', minWidth: "5em", },
-    { id: 'businessName', label: 'Entreprise', minWidth: "10em", },
-    { id: 'contactPhone', label: <CallRoundedIcon fontSize='large' />, minWidth: "15em", },
-    { id: 'contactName', label: <AccountCircleRoundedIcon fontSize='large' />, minWidth: "15em",
+    { id: 'businessName', label: 'Nom', minWidth: "10em", },
+    { id: 'contactPhone', label: <CallRoundedIcon fontSize='large' />, minWidth: "10em", },
+    { id: 'contactName', label: <AccountCircleRoundedIcon fontSize='large' />, minWidth: "10em",
         //align: 'right', 
         //format: (value: number) => value.toLocaleString('en-US'),
     },
-    { id: 'contactEmail', label: <MailIcon fontSize='large' />, minWidth: "15em", },    
+    { id: 'contactEmail', label: <MailIcon fontSize='large' />, minWidth: "10em", },    
     { id: 'businessCity', label: 'Ville', minWidth: "10em", },
     { id: 'hasBeenCalled', label: <Box><CallRoundedIcon fontSize='large' /><QuestionMarkIcon /></Box>, minWidth: "5em", },
     { id: 'hasBeenSentEmailOrMeetUp', label: 
@@ -82,7 +82,9 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     }
     return 0;
 }
+
 type Order = 'asc' | 'desc';
+
 function getComparator<Key extends keyof any>(
     order: Order,
     orderBy: Key,
@@ -320,7 +322,7 @@ export default function ContactsTable({ contacts, currentUserId, selectedContact
                     <TableBody>
                         {visibleRows.map((row, index) => {
                             //const isItemSelected = isSelected(row.id);
-                            const labelId = `enhanced-table-checkbox-${index}`;
+                            //const labelId = `enhanced-table-checkbox-${index}`;
                             //console.log(row)
 
                             return (
