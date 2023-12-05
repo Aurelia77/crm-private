@@ -827,6 +827,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         InputProps={{
                             disableUnderline: contact.contactEmail.length > 0
                         }}
+                        //sx={{height:"5px", padding:0}}
+                        inputProps={{ style: { padding:0 } }}
                     />
                     {/*  Je met le CustomTextField dans une DIV car le composant enfant de Tooltip doit être capable d'accepter une ref */}
                     {/* <Box><CustomTextField attribut="contactEmail"/></Box> */}
@@ -839,7 +841,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             startAdornment: contact.businessEmail.length === 0 && "...",
                             disableUnderline: true//contact.businessEmail.length > 0
                         }}
-                        inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
+                        inputProps={{ style: { fontSize: "0.8em", color: "gray", padding:0  } }}
                     />
                     {/* <Box><CustomTextField attribut="businessEmail" smallLighter /></Box> */}
                 </Tooltip>
@@ -850,7 +852,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             startAdornment: contact.businessWebsite.length === 0 && "...",
                             disableUnderline: true//contact.businessWebsite.length > 0
                         }}
-                        inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
+                        inputProps={{ style: { fontSize: "0.8em", color: "gray", padding:0  } }}
                     />
                     {/* <Box><CustomTextField attribut="businessWebsite" smallLighter />  </Box> */}
                 </Tooltip>

@@ -8,6 +8,8 @@ import Box from '@mui/material/Box';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
   border: '1px solid #CCC',
+  padding: "5px",
+
 
   [`&.${tableCellClasses.head}`]: {
     //backgroundColor: theme.palette.common.black,

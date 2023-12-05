@@ -96,12 +96,17 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
                 </Fab> */}
 
                 <Tooltip title="Supprimer la recherche">
-                    <Fab size="small" color="error" sx={{
-                        position: "absolute",
-                        top: 0,
-                        right: 0,
-                        padding: 0   // Car les boutons ont automatiquement un padding
-                    }}
+                    <Fab 
+                        size="small" 
+                        color="error" 
+                        sx={{
+                            width:"10px",
+                            height:"10px",
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                            padding: 0   // Car les boutons ont automatiquement un padding
+                        }}
                         onClick={resetSearch} >
                         <ClearIcon />
                     </Fab>
