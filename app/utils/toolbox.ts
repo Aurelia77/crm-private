@@ -4,6 +4,7 @@ import { uid } from 'uid';
 const emptyContact: Contact = {
     id: uid(),
     isClient: false,
+    priority: null, 
     contactType : "NON DEFINI", 
     logo: '',
     businessName: '',

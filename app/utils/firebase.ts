@@ -210,7 +210,7 @@ const getCategoriesFromDatabase = async (currentUserId: any) => {
 
   querySnapshot.forEach((doc) => {
 
-    console.log("doc.data()", doc.data())
+    //console.log("doc.data()", doc.data())
 
     catsArr.push(doc.data().name) 
   })

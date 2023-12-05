@@ -1,7 +1,10 @@
+import { emptyContact } from '../utils/toolbox'
+
 const contacts : Contact[] = [
     {
-        id: "1",
+        ...emptyContact,
         isClient : true,
+        priority: 3,
         contactType : "Entreprise",
         // logo : "https://www.pierreetvacances.com/medias/sys_master/images/images/hf1/hf7/8805202177566.jpg",
         logo : "",//"https://logo.clearbit.com/pierreetvacances.com",
@@ -31,7 +34,7 @@ const contacts : Contact[] = [
         userId: "",
     },
     {
-        id: "2",
+        ...emptyContact,
         isClient : true,
         contactType : "Entreprise",
         logo : "",//"https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/logo%2Ftiger.png?alt=media&token=b49e5087-91fa-4f55-b700-9f05125dcff8",
@@ -78,8 +81,9 @@ const contacts : Contact[] = [
 
     },
     {
-        id: "3",
+        ...emptyContact,
         isClient : false,
+        priority: 2,
         contactType : "Partenaire",
         logo : "",// "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/logo%2Fshark-gb3168aabf_1920.png?alt=media&token=70659b4a-29d2-46e9-8d9c-2e3d2c477c68",
         businessName: "Centre de plongée",
@@ -107,8 +111,9 @@ const contacts : Contact[] = [
         userId: "",
     },
     {
-        id: "4",
+        ...emptyContact,
         isClient : false,
+        priority: 1,
         contactType : "Partenaire",
         logo : "",
         businessName: "Les Trésors de Lily",
@@ -136,7 +141,7 @@ const contacts : Contact[] = [
         userId: "",
     },
     {
-        id: "5",
+        ...emptyContact,
         isClient : false,
         contactType : "Entreprise",
         logo : "",
@@ -165,8 +170,9 @@ const contacts : Contact[] = [
         userId: "",
     }, 
     {
-        id: "6",
+        ...emptyContact,
         isClient : true,
+        priority: 3,
         contactType : "NON DEFINI",
         logo : "",
         businessName: "Camping St Tropez",
@@ -199,8 +205,9 @@ const contacts : Contact[] = [
         userId: "",
     },  
     {
-        id: "7",
+        ...emptyContact,
         isClient : true,
+        priority: 2,
         contactType : "Particulier",
         logo : "",
         businessName: "Entreprise de maquillage xxx",

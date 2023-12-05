@@ -112,8 +112,8 @@ const SignUp = () => {
             <FormControl>
                 <Typography variant='h3' component='h2' color='secondary' sx={{ textShadow: "1px 1px 2px blue", marginBottom:"25px" }} >Création de compte</Typography>
                 <TextField type="email" label="Email" name="email" value={authUserInfoSignUp.email} onChange={authUserInfoSignUpHandler} />
-                <TextField id="standard-basic" label="Password" name="password" value={authUserInfoSignUp.password} onChange={authUserInfoSignUpHandler} />
-                <TextField id="standard-basic" label="Confirm Password" name="confirmPassword" value={authUserInfoSignUp.confirmPassword} onChange={authUserInfoSignUpHandler} />
+                <TextField id="standard-basic" type="password" label="Password" name="password" value={authUserInfoSignUp.password} onChange={authUserInfoSignUpHandler} />
+                <TextField id="standard-basic" type="password" label="Confirm Password" name="confirmPassword" value={authUserInfoSignUp.confirmPassword} onChange={authUserInfoSignUpHandler} />
                 <TextField id="standard-basic" label="Name" name="name" value={authUserInfoSignUp.name} onChange={authUserInfoSignUpHandler} />
                 <Button variant="contained" color="primary" sx={{ marginTop:"25px" }} onClick={submitHandler}>Valider</Button>              
             </FormControl>

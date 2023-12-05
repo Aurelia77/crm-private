@@ -28,6 +28,7 @@ import { Container, Tooltip, Paper } from '@mui/material';
 import { TextField, Select, MenuItem, Autocomplete, ListItem, List, InputLabel, Tabs, Tab, Box as CustomBox } from '@mui/material'
 import {businessCategories, sortedBusinessCategories} from '../utils/toolbox'
 
+import {Fab} from '@mui/material'
 import NewContactSearchForm from '../Components/NewContactSearchForm';
 import ContactCard from '../Components/ContactCard';
 import ContactsTable from '../Components/ContactsTable';
@@ -36,6 +37,7 @@ import SignUp from '../Components/auth/SignUp';
 import AuthDetails from '../Components/AuthDetails';
 import SearchContactsForm from '../Components/SearchContactsForm';
 import Admin from '../Components/Admin';
+import SearchIcon from '@mui/icons-material/Search';
 
 import fakeContactsData from '../utils/contactsTest'
 import contactsLaurianeCampings from '../utils/contactsLauriane';
@@ -112,7 +114,7 @@ export default function Contacts() {
     const [contactsSearchCriteria, setContactsSearchCriteria] = React.useState<SearchContactCriteria>(emptySearchCriteria)
     //const [contactsSearchCriteria, setContactsSearchCriteria] = React.useState({})
 
-    const isSearchCriteriaEmpty = JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)
+    const isSearchCriteriaEmpty = JSON.stringify(contactsSearchCriteria) === JSON.stringify(emptySearchCriteria)
 
     const [tabValue, setTabValue] = React.useState(0);
     const [tabNewContactValue, setTabNewContactValue] = React.useState(0);
@@ -356,16 +358,24 @@ export default function Contacts() {
                                     sx={{ display: "flex", alignItems: "center", margin:"13px 0 7px 15px",  }}
                                 >
                                     <Typography variant="h5">
-                                        {isSearchCriteriaEmpty
+                                        {contacts.length} contacts :
+
+                                        {/* {!isSearchCriteriaEmpty
                                             ? `Recherche : ${filteredContacts.length} contacts trouvé(s) (sur ${contacts.length})`
                                             : `${contacts.length} contacts : `
-                                        }
+                                        } */}
                                         <Typography variant="h5" component="span" color="warning.main" sx={{ px: 2 }}>
                                         {alerts.nbContactsWithDatePassed} relance(s) passée(s)
                                         </Typography>
                                         <Typography variant="h5" component="span" color="primary.main">
-                                            et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jour(s).
+                                            et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jour(s)
                                         </Typography>
+                                        {!isSearchCriteriaEmpty && <Fab disabled size="small" color="primary" sx={{
+                                               ml:2
+                                            }} >
+                                                <SearchIcon />
+                                            </Fab>                                        
+                                        }
                                     </Typography>
                                     
                                 </Box>                                

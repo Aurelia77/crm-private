@@ -27,7 +27,7 @@ import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
-
+import GradeIcon from '@mui/icons-material/Grade';
 
 
 import { StyledTableCell } from '../utils/StyledComponents';
@@ -53,6 +53,7 @@ const headCells: readonly Column[] = [               // readonly ???
     ><AccessAlarmRoundedIcon fontSize='large' sx={{ marginRight: "20px" }} />Relance</Box>, minWidth: "9em", },
     { id: 'logo', label: 'Logo', minWidth: "4em", },
     { id: 'businessName', label: 'Nom', minWidth: "10em", },
+    { id: 'priority', label: <GradeIcon />, minWidth: "2em", },
     { id: 'contactPhone', label: <CallRoundedIcon fontSize='large' />, minWidth: "10em", },
     { id: 'contactName', label: <AccountCircleRoundedIcon fontSize='large' />, minWidth: "10em",
         //align: 'right', 
@@ -68,8 +69,7 @@ const headCells: readonly Column[] = [               // readonly ???
     { id: 'interestGauge', label: <FavoriteRoundedIcon fontSize='large' />, minWidth: "5em", },
     { id: 'filesSent', label: <AttachFileRoundedIcon fontSize='large' />, minWidth: "10em", },
     { id: 'dateOfFirstCall', label: 'Premier appel', minWidth: "9em", },
-    { id: 'contactType', label: 'Type', minWidth: "7em", },    
-
+    { id: 'contactType', label: 'Type', minWidth: "7em", }, 
     // { id: 'supprimer', label: 'Supprimer ?', minWidth: "5em", },
 ];
 

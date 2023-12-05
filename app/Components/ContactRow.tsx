@@ -83,6 +83,7 @@ import { FormControl } from '@mui/material';
 import { handleOpenFile } from '../utils/firebase'
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import {deleteModalStyle} from '../utils/StyledComponents'
+import { parse } from 'path';
 
 // Pour les smileys du RATING 
 // => (dans le composant car besoin de connaitre la donnée pour ajuster la taille en fonction)  NON car sinon il faut cliquer 2 fois pour que ça valide !!!  
@@ -130,6 +131,7 @@ function IconContainer(props: IconContainerProps) {
     const { value, ...other } = props;
     return <span {...other}>{customIcons[value].icon}</span>;
 }
+
 
 
 
@@ -198,7 +200,15 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         }
     }
 
-
+    const getPriorityTextAndColor = (priority: number | null) => {
+        switch (priority) {
+            case 1: return { text: "Faible", color: muiTheme.palette.error.main }
+            case 2: return { text: "Moyenne", color: "gray" }
+            case 3: return { text: "Haute", color: muiTheme.palette.primary.main }
+            default: return { text: "Aucune", color: null }
+        }
+    }
+  
 
     //console.log(contact)
     //console.log("xxxhandleUpdateContact", handleUpdateContact)
@@ -369,13 +379,14 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     }
 
 
-    const handleChangeInterestGauge = (newGauge: number | null) => {
-        console.log(newGauge);      // Obligé de mettre ; sinon erreur !!! (Uncaught TypeError: console.log(...) is not a function)
+    const handleChangeNumber = (number: number | null, attribut: string) => {
+        console.log(number);      // Obligé de mettre ; sinon erreur !!! (Uncaught TypeError: console.log(...) is not a function)
         //newGauge && console.log(newGauge)
 
-        (newGauge && (newGauge > 5 || newGauge < 0))
-            ? alert("Doit être entre 0 et 5 !")
-            : handleUpdateContact(contact.id, { key: "interestGauge", value: newGauge })
+        // (number && (number > 5 || number < 0))
+        //     ? alert("Doit être entre 0 et 5 !")
+        //    : 
+            handleUpdateContact(contact.id, { key: attribut, value: number })
     }
     // const handleChangeInterestGauge2 = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     //     console.log(event.target.value)
@@ -775,8 +786,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             </StyledTableCell>
 
             {/* businessName */}
-            <StyledTableCell component="td" scope="row" >
-                <TextField  //label="Nom de l'entreprise"    
+            <StyledTableCell component="td" scope="row" >              
+                <TextField  //label="Nom de l'entreprise" 
                     value={contact.businessName}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessName')}
                     InputProps={{
@@ -788,11 +799,45 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             fontSize='large' />,
                         disableUnderline: contact.businessName.length > 0,
                     }}
+                    inputProps={{ 
+                        style: 
+                            {color: getPriorityTextAndColor(contact.priority).color ?? ""}
+                    }}
                 />
                 {/* <CustomTextField attribut="businessName"  startAdornment={contact.isClient 
                         ? <HandshakeOutlinedIcon color='success' fontSize='large' /> 
                         : <PsychologyAltIcon sx={{ color: muiTheme.palette.gray.main, }} fontSize='large' />} 
                 />             */}
+            </StyledTableCell>
+
+            {/* Priorité */}
+            <StyledTableCell component="td" scope="row" sx={{ position:"relative", border:  `5px solid ${getPriorityTextAndColor(contact.priority).color}`
+         }} >
+            {/* <Tooltip title={`Priorité ${getPriorityTextAndColor(contact.priority).text}`} placement='top'   > */}
+                {contact.priority && <Tooltip 
+                    arrow 
+                    title="Supprimer la priorité" 
+                    placement='left'
+                >
+                    <IconButton color="primary" sx={{ padding: 0, position:"absolute", top:0, right:0}}        // Car les boutons ont automatiquement un padding
+                        onClick={() => handleChangeNumber(null, "priority")} >
+                        <ClearIcon fontSize='small' color='error' />
+                    </IconButton>
+                </Tooltip>}
+                <Tooltip arrow title={`Priorité ${getPriorityTextAndColor(contact.priority).text}`} placement='top'   >
+                    <TextField
+                        type="number"  //label="Nom de l'entreprise" 
+                        value={contact.priority ?? ""}
+                        onChange={(e) => handleChangeNumber(parseInt(e.target.value), "priority")}
+                        InputProps={{
+                            disableUnderline: true,
+                        }}
+                        inputProps={{
+                            min: "1",
+                            max: "3"
+                        }}
+                    />
+                </Tooltip>
             </StyledTableCell>
 
             {/* contactPhone + businessPhone */}
@@ -813,11 +858,12 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         value={contact.businessPhone}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessPhone')}
                         color="secondary"
-                        size='small'
+                        size='small'                       
                         InputProps={{
+                            startAdornment: contact.businessPhone.length === 0 && <span style={{ color: 'gray', fontSize: "0.8em", marginLeft:"40%" }}>... </span>,
                             // startAdornment: "Standard: ",
                             //startAdornment: <span style={{ color: 'gray', fontSize: "0.8em" }}>Standard </span>,
-                            disableUnderline: contact.businessPhone.length > 0
+                            disableUnderline: true//contact.businessPhone.length > 0
                         }}
                         inputProps={{ style: { textAlign: 'center', color: "gray", fontSize: "0.8em" } }}
                     />
@@ -870,10 +916,10 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     <TextField id="standard-basic"
                         value={contact.businessEmail} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessEmail')}
                         InputProps={{
-                            startAdornment: contact.businessEmail.length === 0 && "...",
+                            startAdornment: contact.businessEmail.length === 0 && <span style={{ color: 'gray', fontSize: "0.8em", marginLeft:"40%" }}>... </span>,
                             disableUnderline: true//contact.businessEmail.length > 0
                         }}
-                        inputProps={{ style: { fontSize: "0.8em", color: "gray", padding: 0 } }}
+                        inputProps={{ style: { fontSize: "0.8em", color: "gray", padding: 0, margin:'auto' } }}
                     />
                     {/* <Box><CustomTextField attribut="businessEmail" smallLighter /></Box> */}
                 </Tooltip>
@@ -881,7 +927,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     <TextField id="standard-basic"
                         value={contact.businessWebsite} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessWebsite')}
                         InputProps={{
-                            startAdornment: contact.businessWebsite.length === 0 && "...",
+                            startAdornment: contact.businessWebsite.length === 0 && <span style={{ color: 'gray', fontSize: "0.8em", marginLeft:"40%" }}>... </span>,
                             disableUnderline: true//contact.businessWebsite.length > 0
                         }}
                         inputProps={{ style: { fontSize: "0.8em", color: "gray", padding: 0 } }}
@@ -910,9 +956,10 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 {/* <CustomTextField attribut="businessCity" />                     */}
 
                 <TextField id="standard-basic"
-                    value={contact.businessAddress} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessAddress')}
+                    value={contact.businessAddress} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessAddress')}                  
                     InputProps={{
-                        disableUnderline: contact.businessAddress.length > 0
+                        startAdornment: contact.businessAddress.length === 0 && <span style={{ color: 'gray', fontSize: "0.8em", marginLeft:"40%" }}>... </span>,                        
+                        disableUnderline: true//contact.businessAddress.length > 0
                     }}
                     inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
                 />
@@ -1091,7 +1138,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     //defaultValue={2}
                     sx={{ alignItems: 'center' }}
                     value={contact.interestGauge}
-                    onChange={(event, newValue) => handleChangeInterestGauge(newValue)}
+                    onChange={(e, newValue) => handleChangeNumber(newValue, "interestGauge")}
                     IconContainerComponent={IconContainer}
                     getLabelText={(value: number) => customIcons[value].label}
                     highlightSelectedOnly

@@ -29,6 +29,15 @@ export default function CalendarScheduler({ contacts, diplayContactCardToUpdate,
 
     const muiTheme = useTheme();
 
+    const getPriorityColor = (priority: number | null) => {
+      switch (priority) {
+          case 1: return muiTheme.palette.error.main 
+          case 2: return "gray" 
+          case 3: return muiTheme.palette.primary.main 
+          default: return null 
+      }
+  }
+
    
 
     type eventType = {
@@ -128,7 +137,19 @@ export default function CalendarScheduler({ contacts, diplayContactCardToUpdate,
         //     { id: '5', start: '2023-02-07T00:30:00', end: '2023-02-07T02:30:00', title: 'event 5' }
         //   ]
 
-        events: events,
+
+        //events: events,
+        // events: events.map(event => ({
+        //   console.log(event.contact.priority)
+        //   ...event,
+        //   //color: getPriorityColor(event.contact.priority) ?? "black"
+        // })),
+      
+        events: events.map(event => ({
+          ...event,
+          color: getPriorityColor(event.contact.priority) ?? "black"
+        })),
+
         
         eventClick: function (info) {
           //  alert('Event: ' + info.event.title + " " + info.event.extendedProps.contact.contactEmail);        

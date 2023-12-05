@@ -11,6 +11,7 @@ type FileNameAndRefType = {
 type Contact = {
   id: string,
   isClient: boolean,
+  priority: 1 | 2 | 3 | null, // 3=very important
   contactType: ContactTypeType,
   logo: string,
   businessName: string,

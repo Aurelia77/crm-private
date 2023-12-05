@@ -35,7 +35,7 @@ const SignIn = () => {
             <FormControl>
                 <Typography variant='h3' component='h2' color='primary' sx={{ textShadow: "1px 1px 2px blue", marginBottom:"25px" }}>Connexion</Typography>
                 <TextField type="email" label="Email" value={authUserInfoSignIn.email} onChange={(e) => setAuthUserInfoSignIn({ ...authUserInfoSignIn, email: e.target.value })} />             
-                <TextField id="standard-basic" label="Mot de passe" value={authUserInfoSignIn.password} onChange={(e) => setAuthUserInfoSignIn({ ...authUserInfoSignIn, password: e.target.value })} />     
+                <TextField id="standard-basic" type="password" label="Mot de passe" value={authUserInfoSignIn.password} onChange={(e) => setAuthUserInfoSignIn({ ...authUserInfoSignIn, password: e.target.value })} />     
                 <Button variant="contained" color="primary" sx={{ marginTop:"25px" }} onClick={signIn}>Connexion</Button>
                 {/* <Typography variant="body2" color="error">
                     Pas encore de compte ? 
