@@ -605,18 +605,29 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 />
             </StyledTableCell>
 
-            {/* Type */}
-            <StyledTableCell component="td" scope="row" >
+              {/* catégorie */}
+              <StyledTableCell component="td" scope="row" >
+                {/* <TextField id="standard-basic"
+                    value={contact.businessCategory}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessCategory')}
+                    InputProps={{
+                        startAdornment: contact.businessCategory.length === 0 && "...",
+                        disableUnderline: true
+                    }}
+                /> */}
                 <FormControl >
                     <Select
-                        value={contact.contactType}
-                        onChange={(e) => handleChangeSelect(e, "contactType")}
+                        id="checkbox-type-label"
+                        value={contact.businessCategory}
+                        //onChange={(e) => handleChangeSelect(e, "businessCategory")}
+                        onChange={(e) => handleChangeSelect(e, "businessCategory")}
                     >
-                        {contactTypes.map((type) => (
-                            <MenuItem key={type} value={type}>{type}</MenuItem>
-                        ))}
+                         {categoriesList.map((cat) => (
+                            <MenuItem key={cat} value={cat}>{cat}</MenuItem>
+                        ))}                       
                     </Select>
                 </FormControl>
+                {/* <CustomTextField attribut="businessCategory" /> */}
             </StyledTableCell>
 
             {/* dateOfNextCall */}
@@ -1222,29 +1233,18 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 </ Container>
             </StyledTableCell>
 
-            {/* catégorie */}
-            <StyledTableCell component="td" scope="row" >
-                {/* <TextField id="standard-basic"
-                    value={contact.businessCategory}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessCategory')}
-                    InputProps={{
-                        startAdornment: contact.businessCategory.length === 0 && "...",
-                        disableUnderline: true
-                    }}
-                /> */}
+               {/* Type */}
+               <StyledTableCell component="td" scope="row" >
                 <FormControl >
                     <Select
-                        id="checkbox-type-label"
-                        value={contact.businessCategory}
-                        //onChange={(e) => handleChangeSelect(e, "businessCategory")}
-                        onChange={(e) => handleChangeSelect(e, "businessCategory")}
+                        value={contact.contactType}
+                        onChange={(e) => handleChangeSelect(e, "contactType")}
                     >
-                         {categoriesList.map((cat) => (
-                            <MenuItem key={cat} value={cat}>{cat}</MenuItem>
-                        ))}                       
+                        {contactTypes.map((type) => (
+                            <MenuItem key={type} value={type}>{type}</MenuItem>
+                        ))}
                     </Select>
                 </FormControl>
-                {/* <CustomTextField attribut="businessCategory" /> */}
             </StyledTableCell>
 
             {/* Supprimer contact ? */}
