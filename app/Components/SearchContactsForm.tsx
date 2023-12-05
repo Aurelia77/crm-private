@@ -81,23 +81,25 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
     return (
         <Paper sx={{ margin: "1em", marginTop: "2em", padding: "1em", bgcolor: 'primary.light', }} >
             <FormControl sx={{
-                position: "relative", bgcolor: 'lightCyan.light', padding: "25px",
-                width: "calc(100vw - 263px)",
+                position: "relative", 
+                bgcolor: 'lightCyan.light', 
+                padding: "1%",
+                width: "98%",
                 //maxWidth: "1200px"    // A voir si très grand écran !!!
             }} >
-                <Fab disabled size="small" color="primary" sx={{
+                {/* <Fab disabled size="small" color="primary" sx={{
                     position: "absolute",
                     top: "5px",
                     left: "5px"
                 }} >
                     <SearchIcon />
-                </Fab>
+                </Fab> */}
 
                 <Tooltip title="Supprimer la recherche">
                     <Fab size="small" color="error" sx={{
                         position: "absolute",
-                        top: "5px",
-                        right: "5px",
+                        top: 0,
+                        right: 0,
                         padding: 0   // Car les boutons ont automatiquement un padding
                     }}
                         onClick={resetSearch} >
