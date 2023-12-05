@@ -26,6 +26,7 @@ import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
+import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 
 
 
@@ -44,13 +45,14 @@ interface Column {
 }
 
 
+
 const headCells: readonly Column[] = [               // readonly ???
-    { id: 'isClient', label: 'Client ?', minWidth: "7em", },    
+    { id: 'isClient', label: <HandshakeOutlinedIcon />, minWidth: "3em", },    
     { id: 'contactType', label: 'Type', minWidth: "7em", },    
     { id: 'dateOfNextCall', label: <Box sx={{ display: 'flex', alignItems: 'center', }}
     ><AccessAlarmRoundedIcon fontSize='large' sx={{ marginRight: "20px" }} />Relance</Box>, minWidth: "13em", },
     { id: 'logo', label: 'Logo', minWidth: "5em", },
-    { id: 'businessName', label: 'Entreprise', minWidth: "15em", },
+    { id: 'businessName', label: 'Entreprise', minWidth: "10em", },
     { id: 'contactPhone', label: <CallRoundedIcon fontSize='large' />, minWidth: "15em", },
     { id: 'contactName', label: <AccountCircleRoundedIcon fontSize='large' />, minWidth: "15em",
         //align: 'right', 
