@@ -28,7 +28,7 @@ export default function AuthDetails() {
     return (
         <Box>
             {authUserInfo
-            ? <Box sx={{display:"flex", justifyContent:'space-between' }} >
+            ? <Box sx={{display:"flex", justifyContent:'space-between', height:"22px" }} >
                     <Typography 
                         variant="h6" 
                         color="primary"

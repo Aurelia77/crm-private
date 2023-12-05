@@ -79,7 +79,7 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
     }, [search, onSearchChange])
 
     return (
-        <Paper sx={{ margin: "0 1em 0 1em", padding: "0.7em", bgcolor: 'primary.light', }} >
+        <Paper sx={{ margin: "0 1em 0 1em", padding: "0.6em", bgcolor: 'primary.light', }} >
             <FormControl sx={{
                 position: "relative", 
                 bgcolor: 'lightCyan.light', 

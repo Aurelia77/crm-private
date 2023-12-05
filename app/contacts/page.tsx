@@ -346,7 +346,7 @@ export default function Contacts() {
                                 <SearchContactsForm onSearchChange={setContactsSearchCriteria} emptySearchCriteria={emptySearchCriteria} contacts={contacts} />
 
                                 <Box 
-                                    sx={{ display: "flex", alignItems: "center", margin:"15px 0 10px 15px",  }}
+                                    sx={{ display: "flex", alignItems: "center", margin:"13px 0 7px 15px",  }}
                                 >
                                     <Typography variant="h5">
                                         {isSearchCriteriaEmpty
