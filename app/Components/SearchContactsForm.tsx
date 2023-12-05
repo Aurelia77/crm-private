@@ -145,28 +145,32 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
                     {/* <TextField id="search-city" label="Ville" name='businessCity' value={search.businessCity} onChange={handleChange} 
                             sx={{ width: '200px', marginRight: "30px" }} />*/}
 
-                    {/* //////////// TYPE ///////////// */}
-                    <FormControl sx={{width:"20%"}} >
-                        <InputLabel>Type(s)</InputLabel>
+                    
+                      {/* //////////// CAT ///////////// */}
+                      <FormControl sx={{width:"20%"}} >
+                        <InputLabel id="multiple-checkbox-type-label">Catégorie(s)</InputLabel>
                         <Select
+                            id="multiple-checkbox-type-label"
                             multiple={true}
-                            value={search.contactType}
-                            onChange={(e) => handleChangeMultipleSelect(e, "contactType")}
-                            input={<OutlinedInput label="Types"         // ici le label est utilisé pour l'accessibilité et non pour l'affichage.
-                            //sx={{ width: '300px' }} 
+                            value={search.businessCategory}
+                            onChange={(e) => handleChangeMultipleSelect(e, "businessCategory")}
+                            input={<OutlinedInput label="Catégories"
+                            //sx={{ width: '300px', border: "solid 1px black" }} 
                             />}
                             renderValue={(selected) => selected.join(', ')}
                             sx={{ width: '100%' }}
                             MenuProps={MenuSelectProps}
                         >
-                            {allDifferentsContactTypesValues.map((type) => (
-                                <MenuItem key={type} value={type}>
-                                    <Checkbox checked={search.contactType.indexOf(type) > -1} />
-                                    <ListItemText primary={type} />
+                            {allDifferentsBusinessCategoryValues.map((cat) => (
+                                <MenuItem key={cat} value={cat}>
+                                    <Checkbox checked={search.businessCategory.indexOf(cat) > -1} />
+                                    <ListItemText primary={cat} />
                                 </MenuItem>
                             ))}
                         </Select>
                     </FormControl>
+
+
 
                     {/* //////////// VILLE ///////////// */}
                     <FormControl sx={{width:"20%"}} >
@@ -190,29 +194,30 @@ export default function SearchContactsForm({ onSearchChange, emptySearchCriteria
                         </Select>
                     </FormControl>
 
-                    {/* //////////// CAT ///////////// */}
+                    {/* //////////// TYPE ///////////// */}
                     <FormControl sx={{width:"20%"}} >
-                        <InputLabel id="multiple-checkbox-type-label">Catégorie(s)</InputLabel>
+                        <InputLabel>Type(s)</InputLabel>
                         <Select
-                            id="multiple-checkbox-type-label"
                             multiple={true}
-                            value={search.businessCategory}
-                            onChange={(e) => handleChangeMultipleSelect(e, "businessCategory")}
-                            input={<OutlinedInput label="Catégories"
-                            //sx={{ width: '300px', border: "solid 1px black" }} 
+                            value={search.contactType}
+                            onChange={(e) => handleChangeMultipleSelect(e, "contactType")}
+                            input={<OutlinedInput label="Types"         // ici le label est utilisé pour l'accessibilité et non pour l'affichage.
+                            //sx={{ width: '300px' }} 
                             />}
                             renderValue={(selected) => selected.join(', ')}
                             sx={{ width: '100%' }}
                             MenuProps={MenuSelectProps}
                         >
-                            {allDifferentsBusinessCategoryValues.map((cat) => (
-                                <MenuItem key={cat} value={cat}>
-                                    <Checkbox checked={search.businessCategory.indexOf(cat) > -1} />
-                                    <ListItemText primary={cat} />
+                            {allDifferentsContactTypesValues.map((type) => (
+                                <MenuItem key={type} value={type}>
+                                    <Checkbox checked={search.contactType.indexOf(type) > -1} />
+                                    <ListItemText primary={type} />
                                 </MenuItem>
                             ))}
                         </Select>
                     </FormControl>
+
+                  
 
 
 
