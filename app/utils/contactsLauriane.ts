@@ -8,7 +8,7 @@ import { emptyContact } from '../utils/toolbox'
 const contactsLaurianeCampings: Contact[] = [
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": true,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -28,7 +28,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": true,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -48,7 +48,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": true,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -68,7 +68,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": true,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -88,7 +88,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -108,7 +108,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise", "dateOfNextCall": null,
         "logo": "",
@@ -127,7 +127,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -147,7 +147,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -167,7 +167,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -187,7 +187,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -207,7 +207,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -227,7 +227,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -248,7 +248,7 @@ const contactsLaurianeCampings: Contact[] = [
     
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -267,7 +267,7 @@ const contactsLaurianeCampings: Contact[] = [
     },  
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -286,7 +286,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -305,7 +305,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -324,7 +324,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -343,7 +343,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -362,7 +362,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": true,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -381,7 +381,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -400,7 +400,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -419,7 +419,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": true,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -444,7 +444,7 @@ const contactsLaurianeCampings: Contact[] = [
 
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -463,7 +463,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -482,7 +482,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -508,7 +508,7 @@ const contactsLaurianeCampings: Contact[] = [
 
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -527,7 +527,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": true,
         "contactType": "Entreprise",
         "dateOfNextCall": new Date("07/12/2023"),
@@ -546,7 +546,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -565,7 +565,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -584,7 +584,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -608,7 +608,7 @@ const contactsLaurianeCampings: Contact[] = [
 
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -627,7 +627,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": true,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -646,7 +646,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -665,7 +665,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -684,7 +684,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -703,7 +703,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -722,7 +722,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": true,
         "contactType": "Entreprise",
         "dateOfNextCall": new Date("07/12/2023"),
@@ -741,7 +741,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -760,7 +760,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -779,7 +779,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -798,7 +798,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -817,7 +817,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -836,7 +836,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -855,7 +855,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -874,7 +874,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -893,7 +893,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -912,7 +912,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -931,7 +931,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -950,7 +950,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -969,7 +969,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -988,7 +988,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -1007,7 +1007,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -1026,7 +1026,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -1045,7 +1045,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -1062,7 +1062,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,
@@ -1081,7 +1081,7 @@ const contactsLaurianeCampings: Contact[] = [
     },
     {
         ...emptyContact,
-        "businessCategory": "Camping",
+        //"businessCategory": "Camping",
         "isClient": false,
         "contactType": "Entreprise",
         "dateOfNextCall": null,

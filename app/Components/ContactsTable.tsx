@@ -48,7 +48,7 @@ interface Column {
 
 const headCells: readonly Column[] = [               // readonly ???
     { id: 'isClient', label: <HandshakeOutlinedIcon />, minWidth: "2em", },  
-    { id: 'businessCategory', label: 'Catégorie', minWidth: "8em", },
+    { id: 'businessCategoryId', label: 'Catégorie', minWidth: "8em", },
     { id: 'dateOfNextCall', label: <Box sx={{ display: 'flex', alignItems: 'center', }}
     ><AccessAlarmRoundedIcon fontSize='large' sx={{ marginRight: "20px" }} />Relance</Box>, minWidth: "9em", },
     { id: 'logo', label: 'Logo', minWidth: "4em", },

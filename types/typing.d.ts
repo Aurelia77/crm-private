@@ -3,6 +3,11 @@
 
 type ContactTypeType= "NON DEFINI" | "Particulier" | "Entreprise" | "Partenaire";
 
+type ContactCategorieType= {
+  id: string,
+  label: string,
+}
+
 type FileNameAndRefType = {
   fileName: string,
   fileRef: string,
@@ -12,11 +17,10 @@ type Contact = {
   id: string,
   isClient: boolean,
   priority: 1 | 2 | 3 | null, // 3=very important
-  contactType: ContactTypeType,
   logo: string,
   businessName: string,
+  businessCategoryId: string,
   denominationUsuelleEtablissement: string[],
-  businessCategory: BusinessCatType,
   interestGauge: 1 | 2 | 3 | 4 | 5 | null, // 5=very interested  // Marche ps ???1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, 
   businessActivity: string,
   businessAddress: string,
@@ -37,6 +41,7 @@ type Contact = {
   dateOfFirstCall: timestamp,
   dateOfLastCall: timestamp,
   dateOfNextCall: timestamp,
+  contactType: ContactTypeType,
   comments: string,
   userId: string,
 }
@@ -74,5 +79,5 @@ type SearchContactCriteria = {
   contactType : ContactTypeType[],
   businessName: string,
   businessCity: string[],
-  businessCategory: string[],
+  businessCategoryId: string[],
 }

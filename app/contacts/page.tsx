@@ -26,7 +26,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import FormControl from '@mui/material/FormControl';
 import { Container, Tooltip, Paper } from '@mui/material';
 import { TextField, Select, MenuItem, Autocomplete, ListItem, List, InputLabel, Tabs, Tab, Box as CustomBox } from '@mui/material'
-import {businessCategories, sortedBusinessCategories} from '../utils/toolbox'
+import {contactCategories} from '../utils/toolbox'
 
 import {Fab} from '@mui/material'
 import NewContactSearchForm from '../Components/NewContactSearchForm';
@@ -109,7 +109,7 @@ export default function Contacts() {
         contactType: [],
         businessName: '',
         businessCity: [],
-        businessCategory: []
+        businessCategoryId: []
     }
     const [contactsSearchCriteria, setContactsSearchCriteria] = React.useState<SearchContactCriteria>(emptySearchCriteria)
     //const [contactsSearchCriteria, setContactsSearchCriteria] = React.useState({})
@@ -213,7 +213,11 @@ export default function Contacts() {
 
             const searchIsClient = contactsSearchCriteria.isClient === "yes" ? true : contactsSearchCriteria.isClient === "no" ? false : null
             const searchOnCity = contactsSearchCriteria.businessCity.length > 0 ? contactsSearchCriteria.businessCity : ['']
-            const searchOnCategory = contactsSearchCriteria.businessCategory.length > 0 ? contactsSearchCriteria.businessCategory : ['']
+
+
+
+
+            //const searchOnCategory = contactsSearchCriteria.businessCategory.length > 0 ? contactsSearchCriteria.businessCategory : ['']
             const searchOnType = contactsSearchCriteria.contactType.length > 0 ? contactsSearchCriteria.contactType : ['']
 
 
@@ -238,7 +242,10 @@ export default function Contacts() {
                     // })         // On met INCLUDES et non === pour gérer le cas où  searchOnCity = [""]   
                     && searchOnCity.some((city) => contact.businessCity.toLowerCase().includes(city.toLowerCase()))         // On met INCLUDES et non === pour gérer le cas où searchOnCity = [""]   
 
-                    && searchOnCategory.some((cat) => contact.businessCategory.includes(cat)) 
+
+
+                    
+                    //&& searchOnCategory.some((cat) => contact.businessCategory.includes(cat)) 
                     // && searchOnCategory.some((cat) =>{ 
                     //     console.log("cat", cat)
                     //     console.log(contact.businessCategory)
@@ -349,7 +356,8 @@ export default function Contacts() {
                             {/* ///////// LISTE DE CONTACTS + recherche) ///////// */}
                             <TabPanel key="0" value={tabValue} index={0}  >
                                 <SearchContactsForm 
-                                    contacts={contacts} 
+                                    contacts={contacts}
+                                    currentUserId={currentUser.uid} 
                                     emptySearchCriteria={emptySearchCriteria} 
                                     onSearchChange={setContactsSearchCriteria} 
                                 />
@@ -518,7 +526,7 @@ export default function Contacts() {
                                             //width: "360px" 
                                     }} >Pour Version TEST</Typography>
                                     <Box sx={{display:"flex", justifyContent:"space-between", marginBottom:"20px" }} >
-                                        <Button variant="contained" color='success' onClick={() => addCategoriesOnFirebaseAndReload(currentUser, businessCategories)}>1-Ajouter Catégories</Button>
+                                        <Button variant="contained" color='success' onClick={() => addCategoriesOnFirebaseAndReload(currentUser, contactCategories)}>1-Ajouter Catégories</Button>
                                         <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>2-Ajouter Contacts Test</Button>
                                         <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
                                         <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button>

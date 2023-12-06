@@ -85,6 +85,7 @@ import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import {deleteModalStyle} from '../utils/StyledComponents'
 import { parse } from 'path';
 
+
 // Pour les smileys du RATING 
 // => (dans le composant car besoin de connaitre la donnée pour ajuster la taille en fonction)  NON car sinon il faut cliquer 2 fois pour que ça valide !!!  
 const StyledRating = styled(Rating)(({ theme }) => ({
@@ -164,7 +165,7 @@ type ContactRowProps = {
 }
 export default function ContactRow({ contact, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, diplayContactCard, currentUserId }: ContactRowProps) {
 
-    //console.log("CONTACT ROW")
+    //console.log("CONTACT ROW", contact)
     //console.log(alerts.alerts)
     //console.log("contact")
     //console.log("LOGO", contact.logo)
@@ -172,18 +173,26 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
     const [contactInfo, setContactInfo] = React.useState<Contact>(contact)
 
-    const [categoriesList, setCategoriesList] = React.useState<string[]>([]);
+    const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[]>([]);
 
+    const muiTheme = useTheme();
 
     React.useEffect(() => {
 
-        getCategoriesFromDatabase(currentUserId).then((categories: string[]) => {
-            setCategoriesList(categories.sort((a, b) => a.localeCompare(b)));
-        })
+        getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
+            //console.log("categories", categories)
+      
+            // Pas besoin de l'attribut userId donc on garde juste ce qu'on veut
+            const newCategoriesList = categories.map(category => ({
+              id: category.id,
+              label: category.label
+            }));
+            setCategoriesList(newCategoriesList);
+          })
+       
     }, [currentUserId]);
 
 
-    const muiTheme = useTheme();
 
     const isDatePassed = (timeStampObj: Timestamp) => {
         const nowTimestamp = new Date().getTime()
@@ -621,23 +630,30 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     }}
                 /> */}
                 <FormControl >
-                    <Select
-                        id="checkbox-type-label"
-                        value={contact.businessCategory}
-                        variant="standard"
-                        disableUnderline={true}
-                        //onChange={(e) => handleChangeSelect(e, "businessCategory")}
-                        onChange={(e) => handleChangeSelect(e, "businessCategory")}
-                        sx={{ overflow: "hidden",textOverflow: "ellipsis",  width: 180 }}
-                    >
-                        {categoriesList.map((cat, index) => (
-                            <MenuItem
-                                key={cat}
-                                value={cat}
-                                sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
-                            >{cat}</MenuItem>
-                        ))}
-                    </Select>
+                    {/* Si on ne fait pas cette vérification, les options n'étant pas chargées au premier rendu => on a une indication (en jaune) dans la console : You have provided an out-of-range value for the select component" */}
+                    {categoriesList.length > 0 
+                        ?  <Select
+                            id="checkbox-type-label"
+                            value={contact.businessCategoryId}
+                            variant="standard"
+                            disableUnderline={true}
+                            //onChange={(e) => handleChangeSelect(e, "businessCategory")}
+                            onChange={(e) => handleChangeSelect(e, "businessCategoryId")}
+                            sx={{ overflow: "hidden", textOverflow: "ellipsis", width: 180 }}
+                        >
+                            <MenuItem key="0" value="">NON DEFINIE</MenuItem>
+                            {categoriesList
+                                .sort((a, b) => a.label.localeCompare(b.label))
+                                .map((cat, index) => (
+                                <MenuItem
+                                    key={cat.id}
+                                    value={cat.id}
+                                    sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
+                                >{cat.label}</MenuItem>
+                            ))}
+                        </Select>
+                        : null
+                    }
                 </FormControl>
                 {/* <CustomTextField attribut="businessCategory" /> */}
             </StyledTableCell>

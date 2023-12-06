@@ -193,7 +193,7 @@ const getFilesFromDatabase = async (currentUserId: any) => {
 
   querySnapshot.forEach((doc) => {
 
-    console.log("doc.data()", doc.data())
+    //console.log("doc.data()", doc.data())
 
     filesArr.push({ ...doc.data() as FileNameAndRefType }) 
   });
@@ -202,7 +202,7 @@ const getFilesFromDatabase = async (currentUserId: any) => {
 
 const getCategoriesFromDatabase = async (currentUserId: any) => {
 
-  let catsArr: string[] = []
+  let catsArr: any[] = []
   const filesCollectionRef = collection(fireStoreDb, "categories");
   const q =  query(filesCollectionRef, where("userId", "==", currentUserId))
 
@@ -212,7 +212,7 @@ const getCategoriesFromDatabase = async (currentUserId: any) => {
 
     //console.log("doc.data()", doc.data())
 
-    catsArr.push(doc.data().name) 
+    catsArr.push(doc.data()) 
   })
   return catsArr
 }
@@ -236,46 +236,6 @@ const addFakeDataOnFirebaseAndReload = (currentUser: any, fakeContactsData: Cont
     .then(() => { window.location.reload() })
     .catch((error) => { console.error("Error reloading page: ", error); });
 }   
-
-const addCategoriesOnFirebaseAndReload = (currentUser: any, categories: string[]) => {
-
-  const promises = categories.map((cat: string) => {
-    return addDoc(collection(fireStoreDb, "categories"), { name: cat, userId: currentUser?.uid })
-      .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
-      .catch((error) => { console.error("Error adding document: ", error); });
-  })
-
-  Promise.all(promises)
-    .then(() => { window.location.reload() })
-    .catch((error) => { console.error("Error reloading page: ", error); });
-}   
-
-const addCategorieOnFirebase = (currentUserId: any, category: string) => {
-  console.log("add categorie", category)
-
-  addDoc(collection(fireStoreDb, "categories"), { name: category, userId: currentUserId })
-      .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
-      .catch((error) => { console.error("Error adding document: ", error); }); 
-}   
-
-// const addContactOnFirebase = (currentUser: any, contact: Contact) => {
-//   console.log("add contact", contact)
-//   console.log({ ...contact, id: uid() })
-
-//   return addDoc(collection(fireStoreDb, "contacts"), { ...contact, userId: currentUser?.uid })
-//     .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
-//     .catch((error) => { console.error("Error adding document: ", error); });
-// }
-
-// const addContactOnFirebaseAndReload = async (currentUser: any, contact: Contact) => {
-//   console.log("add contact", contact)
-//   console.log({ ...contact, id: uid() })
-
-//   await addContactOnFirebase(currentUser, contact)
-//   window.location.reload()
-// }
-
-
 
 const addContactOnFirebaseAndReload = async (currentUser: any, contact: Contact) => {
   console.log("add contact", contact)
@@ -310,6 +270,59 @@ const addFileOnFirebaseDB = async (currentUserId: any, file: FileNameAndRefType)
   
   //window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
 }
+
+const addCategorieOnFirebase = (currentUserId: any, category: ContactCategorieType) => {
+  console.log("add categorie", category)
+
+  // Il faut bien mettre un RETURN ici sinon qd on appelle cette fonction dans addCategoriesOnFirebaseAndReload ça n'attend pas la fin du chargement
+  return addDoc(collection(fireStoreDb, "categories"), { id: uid(), label: category.label, userId: currentUserId })
+      .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
+      .catch((error) => { console.error("Error adding document: ", error); }); 
+} 
+
+const addCategoriesOnFirebaseAndReload = (currentUser: any, categories: ContactCategorieType[]) => {
+
+  const promises = categories.map((cat: ContactCategorieType) => {
+    console.log("cat", cat)
+    return addCategorieOnFirebase(currentUser?.uid, cat)
+  })
+
+  // const promises = categories.map((cat: ContactCategorieType) => {
+  //   console.log("cat", cat)
+
+  //   return addDoc(collection(fireStoreDb, "categories"), {id: uid(), label: cat.label, userId: currentUser?.uid })
+  //     .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
+  //     .catch((error) => { console.error("Error adding document: ", error); });
+  // })
+
+  Promise.all(promises)
+    .then(() => { window.location.reload() })
+    .catch((error) => { console.error("Error reloading page: ", error); });
+}  
+
+
+
+
+// const addContactOnFirebase = (currentUser: any, contact: Contact) => {
+//   console.log("add contact", contact)
+//   console.log({ ...contact, id: uid() })
+
+//   return addDoc(collection(fireStoreDb, "contacts"), { ...contact, userId: currentUser?.uid })
+//     .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
+//     .catch((error) => { console.error("Error adding document: ", error); });
+// }
+
+// const addContactOnFirebaseAndReload = async (currentUser: any, contact: Contact) => {
+//   console.log("add contact", contact)
+//   console.log({ ...contact, id: uid() })
+
+//   await addContactOnFirebase(currentUser, contact)
+//   window.location.reload()
+// }
+
+
+
+
 
 
 
@@ -349,6 +362,125 @@ const addFileOnFirebaseDB = async (currentUserId: any, file: FileNameAndRefType)
 //   addContactOnFirebase(currentUser, contact)
 //   window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
 // }
+
+
+
+// const updateContactInContactsAndDB = (updatingContact: Contact) => {     // ou selectedContact
+//     console.log("updatingContact", updatingContact)
+//
+//     // if (movieEdited.name === '') {
+//     //     alert("Ajouter un nom de film")
+//     // }
+//     // else if (movieEdited.category === '') {
+//     //     alert("Ajouter une catégorie de film")
+//     // }
+//     // else if (movieEdited.year === 0) {
+//     //     alert("Ajouter une année de visionnage")
+//     // }
+//     // else {
+//
+//     // On met à jour le tableau en remplaçant le contact qui a le même id que celui qu'on a sélectionné par le film sélectionné
+//     let updatedContacts = contacts.map(contact => contact.id === updatingContact.id ? updatingContact : contact)
+//     //setmoviesList(sortArrayBy(updatedMovies, orderedBy))
+//     setContacts(updatedContacts)
+
+//     //writeContactData(updatingContact)
+//     // On met à jour le contact dans la BDD fireStore : firestoreDB
+//     const q = query(collection(fireStoreDb, "contacts"), where("id", "==", updatingContact.id));
+//     let docID = '';
+//
+//     getDocs(q).then((querySnapshot) => {
+//         querySnapshot.forEach((doc) => {
+//             console.log(doc.data())
+//             console.log(doc.ref)
+//
+//             docID = doc.id;
+//             //set(doc.ref, updatingContact)
+//         })
+//         const contact = doc(fireStoreDb, "contacts", docID);
+//
+//         // Set the "capital" field of the city 'DC'
+//         updateDoc(contact, {
+//             ...updatingContact
+//         });
+//     })   
+// }
+
+// 2 fonctions pour mettre à jour le contact dans le tableau contacts et dans la BDD fireStore : firestoreDB
+
+
+
+const updatDataOnFirebase = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
+  // const contactToUpdateRef = doc(fireStoreDb, "contacts", id);
+  // console.log(contactToUpdateRef)
+
+  // // Set the "capital" field of the city 'DC'
+  // updateDoc(contactToUpdateRef, {
+  //     [keyAndValue.key]: keyAndValue.value
+  // });
+  const q = query(collection(fireStoreDb, "contacts"), where("id", "==", id));
+
+  getDocs(q).then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {        // besoin du FOREACH alors qu'il n'y en a qu'un ???
+      //console.log(doc.data())
+      //console.log(doc.ref)
+      //console.log(doc.id)
+      console.log("FIREBASE", keyAndValue.key, keyAndValue.value)
+      //docID = doc.id;
+      updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
+        [keyAndValue.key]: keyAndValue.value
+      });
+      //set(doc.ref, updatingContact)
+    })
+  })
+}
+
+const updatDataWholeContactOnFirebase = (contactToUpdate: Contact) => {
+  // const contactToUpdateRef = doc(fireStoreDb, "contacts", id);
+  // console.log(contactToUpdateRef)
+
+  // // Set the "capital" field of the city 'DC'
+  // updateDoc(contactToUpdateRef, {
+  //     [keyAndValue.key]: keyAndValue.value
+  // });
+  const q = query(collection(fireStoreDb, "contacts"), where("id", "==", contactToUpdate.id));
+
+  getDocs(q).then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {        // besoin du FOREACH alors qu'il n'y en a qu'un ???
+      //console.log(doc.data())
+      //console.log(doc.ref)
+      //console.log(doc.id)
+     // console.log("FIREBASE", keyAndValue.key, keyAndValue.value)
+      //docID = doc.id;
+
+      updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
+        ...contactToUpdate
+        });
+
+      // updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
+      //   [keyAndValue.key]: keyAndValue.value
+      // });
+      //set(doc.ref, updatingContact)
+    })
+  })
+}
+
+const updateCategorieOnFirebase = (cat: ContactCategorieType) => {
+ 
+    const q = query(collection(fireStoreDb, "categories"), where("id", "==", cat.id));
+  
+    getDocs(q).then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {        // besoin du FOREACH alors qu'il n'y en a qu'un ???
+      
+        updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
+          label: cat.label
+        });
+        //set(doc.ref, updatingContact)
+      })
+    })
+  }  
+
+
 
 const deleteAllDatasOnFirebaseAndReload = (currentUser: any = null, ) => {
 
@@ -409,104 +541,62 @@ const deleteDataOnFirebaseAndReload = (contactId: string) => {
   })
 }
 
+// const deleteCategorieOnFirebase = async (catId: string) => {
+//   if (catId === 'invalid') {
+//     throw new Error('Une erreur est survenue');
+//   }
 
-// const updateContactInContactsAndDB = (updatingContact: Contact) => {     // ou selectedContact
-//     console.log("updatingContact", updatingContact)
-//
-//     // if (movieEdited.name === '') {
-//     //     alert("Ajouter un nom de film")
-//     // }
-//     // else if (movieEdited.category === '') {
-//     //     alert("Ajouter une catégorie de film")
-//     // }
-//     // else if (movieEdited.year === 0) {
-//     //     alert("Ajouter une année de visionnage")
-//     // }
-//     // else {
-//
-//     // On met à jour le tableau en remplaçant le contact qui a le même id que celui qu'on a sélectionné par le film sélectionné
-//     let updatedContacts = contacts.map(contact => contact.id === updatingContact.id ? updatingContact : contact)
-//     //setmoviesList(sortArrayBy(updatedMovies, orderedBy))
-//     setContacts(updatedContacts)
+//   // Reste de la logique de la fonction
+// };
 
-//     //writeContactData(updatingContact)
-//     // On met à jour le contact dans la BDD fireStore : firestoreDB
-//     const q = query(collection(fireStoreDb, "contacts"), where("id", "==", updatingContact.id));
-//     let docID = '';
-//
-//     getDocs(q).then((querySnapshot) => {
-//         querySnapshot.forEach((doc) => {
-//             console.log(doc.data())
-//             console.log(doc.ref)
-//
-//             docID = doc.id;
-//             //set(doc.ref, updatingContact)
-//         })
-//         const contact = doc(fireStoreDb, "contacts", docID);
-//
-//         // Set the "capital" field of the city 'DC'
-//         updateDoc(contact, {
-//             ...updatingContact
-//         });
-//     })   
-// }
-
-// 2 fonctions pour mettre à jour le contact dans le tableau contacts et dans la BDD fireStore : firestoreDB
+const deleteCategorieOnFirebase2 = (catId: string) => {
+  return new Promise((resolve, reject) => {
+    // Simuler une opération asynchrone
+    setTimeout(() => {
+      if (catId !== 'invalid') {
+        reject('Une erreur est survenue');
+      } else {
+        resolve('Succès');
+      }
+    }, 1000);
+  });
+};
 
 
-const updatDataOnFirebase = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
-  // const contactToUpdateRef = doc(fireStoreDb, "contacts", id);
-  // console.log(contactToUpdateRef)
 
-  // // Set the "capital" field of the city 'DC'
-  // updateDoc(contactToUpdateRef, {
-  //     [keyAndValue.key]: keyAndValue.value
+const deleteCategorieOnFirebase = (catId: string) => {
+  console.log("catId", catId) 
+
+  const q = query(collection(fireStoreDb, "contacts"), where("businessCategoryId", "==", catId));
+
+  return getDocs(q).then((querySnapshot) => {
+    console.log("querySnapshot", querySnapshot.docs)
+
+    if (!querySnapshot.empty) {
+      throw new Error("Un contact est associé à cette catégorie.");
+    } else {
+      const q = query(collection(fireStoreDb, "categories"), where("id", "==", catId));
+      return getDocs(q).then((querySnapshot) => {
+        return querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
+        // Marche aussi mais pas besoin de Promise.all car une seule cat à supp !
+        // const deletePromises = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
+        // return Promise.all(deletePromises);
+      })
+      // Chat copilote : mais marche pas !!! :
+      // const docRef = doc(fireStoreDb, "categories", catId);
+      // return deleteDoc(docRef);
+    }
+   })
+   // Ne pas mettre le CATCH ici sinon si on ut cette fonction ailleurs, on ne pourra pas gérer l'erreur => il faut mettre le CATCH dans l'autre fonciton !!!
+   //.catch((error) => {
+  //   console.error("Erreur lors de la suppression de la catégorie : ", error);
   // });
-  const q = query(collection(fireStoreDb, "contacts"), where("id", "==", id));
-
-  getDocs(q).then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {        // besoin du FOREACH alors qu'il n'y en a qu'un ???
-      //console.log(doc.data())
-      //console.log(doc.ref)
-      //console.log(doc.id)
-      console.log("FIREBASE", keyAndValue.key, keyAndValue.value)
-      //docID = doc.id;
-      updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
-        [keyAndValue.key]: keyAndValue.value
-      });
-      //set(doc.ref, updatingContact)
-    })
-  })
 }
-const updatDataWholeContactOnFirebase = (contactToUpdate: Contact) => {
-  // const contactToUpdateRef = doc(fireStoreDb, "contacts", id);
-  // console.log(contactToUpdateRef)
 
-  // // Set the "capital" field of the city 'DC'
-  // updateDoc(contactToUpdateRef, {
-  //     [keyAndValue.key]: keyAndValue.value
-  // });
-  const q = query(collection(fireStoreDb, "contacts"), where("id", "==", contactToUpdate.id));
 
-  getDocs(q).then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {        // besoin du FOREACH alors qu'il n'y en a qu'un ???
-      //console.log(doc.data())
-      //console.log(doc.ref)
-      //console.log(doc.id)
-     // console.log("FIREBASE", keyAndValue.key, keyAndValue.value)
-      //docID = doc.id;
+     
 
-      updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
-        ...contactToUpdate
-        });
 
-      // updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
-      //   [keyAndValue.key]: keyAndValue.value
-      // });
-      //set(doc.ref, updatingContact)
-    })
-  })
-}
 
 
 
@@ -529,9 +619,17 @@ const handleOpenFile = async (file: any) => {
   window.open(url, '_blank');
 };
 
+const getCatLabelFromId = (catId: string) => {
+  const q = query(collection(fireStoreDb, "categories"), where("id", "==", catId));
+  let label = '';
 
-
-
+  getDocs(q).then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      label = doc.data().label;
+    })
+  })
+  return label;
+}
 
 
 
@@ -547,16 +645,18 @@ export {
   getFilesFromDatabase,
   getCategoriesFromDatabase,
   addFakeDataOnFirebaseAndReload,
-  addCategoriesOnFirebaseAndReload,
-  addCategorieOnFirebase,
   addContactOnFirebaseAndReload,
   addFileOnFirebaseDB,
-  deleteAllDatasOnFirebaseAndReload,
+  addCategoriesOnFirebaseAndReload,
+  addCategorieOnFirebase,
   updatDataOnFirebase,
   updatDataWholeContactOnFirebase,
+  updateCategorieOnFirebase,
+  deleteAllDatasOnFirebaseAndReload,
   deleteDataOnFirebaseAndReload,
-  handleOpenFile
-
+  deleteCategorieOnFirebase,
+  handleOpenFile,
+  //getCatLabelFromId
 }
 
 

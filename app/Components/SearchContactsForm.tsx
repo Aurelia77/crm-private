@@ -14,10 +14,12 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import NavigationIcon from '@mui/icons-material/Navigation';
-
+import { useTheme } from '@mui/material/styles';
+import {getCategoriesFromDatabase} from '../utils/firebase'
 
 interface SearchFormProps {
     contacts: Contact[];
+    currentUserId: string;
     emptySearchCriteria: SearchContactCriteria;
     onSearchChange: (search: SearchContactCriteria) => void;
 }
@@ -32,15 +34,38 @@ const MenuSelectProps = {
 };
 
 
-export default function SearchContactsForm({ contacts, emptySearchCriteria, onSearchChange  }: SearchFormProps) {
-    const [search, setSearch] = React.useState<SearchContactCriteria>({ isClient: "all", contactType: [], businessName: '', businessCity: [], businessCategory: [] });
+export default function SearchContactsForm({ contacts, currentUserId, emptySearchCriteria, onSearchChange  }: SearchFormProps) {
+    const [search, setSearch] = React.useState<SearchContactCriteria>({ isClient: "all", contactType: [], businessName: '', businessCity: [], businessCategoryId: [] });
+
+    const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[]>([]);
+
+    const muiTheme = useTheme();
+
 
     //console.log(search)
     // const businessCategorys = ["Camping", "Hôtel", "Congiergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre"];
 
-    const allDifferentsBusinessCategoryValues = getUniqueSortedValues(contacts, 'businessCategory')
+    const allDifferentsBusinessCategoryValues = getUniqueSortedValues(contacts, 'businessCategoryId')
+
+    //console.log(allDifferentsBusinessCategoryValues)
+
     const allDifferentsBusinessCitiesValues = getUniqueSortedValues(contacts, 'businessCity')
     const allDifferentsContactTypesValues = getUniqueSortedValues(contacts, 'contactType')
+
+    React.useEffect(() => {
+
+        getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
+            //console.log("categories", categories)
+      
+            // Pas besoin de l'attribut userId donc on garde juste ce qu'on veut
+            const newCategoriesList = categories.map(category => ({
+              id: category.id,
+              label: category.label
+            }));
+            setCategoriesList(newCategoriesList);
+          })
+       
+    }, [currentUserId]);
 
 
     const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,7 +75,7 @@ export default function SearchContactsForm({ contacts, emptySearchCriteria, onSe
         // setSearch({ ...search, [event.target.name]: event.target.checked });
     }
 
-    const handleChangeMultipleSelect = (event: SelectChangeEvent<string[]>, attribut: keyof SearchContactCriteria) => {
+    const handleMultipleChangeSelect = (event: SelectChangeEvent<string[]>, attribut: keyof SearchContactCriteria) => {
         // const { target: { value }, } = event;
         const value = event.target.value;
 
@@ -150,11 +175,12 @@ export default function SearchContactsForm({ contacts, emptySearchCriteria, onSe
                       {/* //////////// CAT ///////////// */}
                       <FormControl sx={{width:"20%"}} >
                         <InputLabel id="multiple-checkbox-type-label">Catégorie(s)</InputLabel>
-                        <Select
+                        {categoriesList.length > 0 
+                        ?  <Select
                             id="multiple-checkbox-type-label"
                             multiple={true}
-                            value={search.businessCategory}
-                            onChange={(e) => handleChangeMultipleSelect(e, "businessCategory")}
+                            value={search.businessCategoryId}
+                            onChange={(e) => handleMultipleChangeSelect(e, "businessCategoryId")}
                             input={<OutlinedInput label="Catégories"
                             //sx={{ width: '300px', border: "solid 1px black" }} 
                             />}
@@ -162,13 +188,22 @@ export default function SearchContactsForm({ contacts, emptySearchCriteria, onSe
                             sx={{ width: '100%' }}
                             MenuProps={MenuSelectProps}
                         >
-                            {allDifferentsBusinessCategoryValues.map((cat) => (
-                                <MenuItem key={cat} value={cat}>
-                                    <Checkbox checked={search.businessCategory.indexOf(cat) > -1} />
-                                    <ListItemText primary={cat} />
-                                </MenuItem>
+                            <MenuItem key="0" value="">NON DEFINIE</MenuItem>
+                                {categoriesList
+                                    .filter(cat => allDifferentsBusinessCategoryValues.includes(cat.id))
+                                    .sort((a, b) => a.label.localeCompare(b.label))
+                                    .map((cat, index) => (
+                            //{categoriesList.filter(cat => allDifferentsBusinessCategoryValues.includes(cat.id)).map((cat, index) => (
+                            // {categoriesList.sort((a, b) => a.label.localeCompare(b.label)).map((cat, index) => (
+                                <MenuItem
+                                    key={cat.id}
+                                    value={cat.label}
+                                    sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
+                                >{cat.label}</MenuItem>
                             ))}
                         </Select>
+                        : null
+                    }
                     </FormControl>
 
 
@@ -180,7 +215,7 @@ export default function SearchContactsForm({ contacts, emptySearchCriteria, onSe
                             id="multiple-checkbox-city-label"
                             multiple={true}
                             value={search.businessCity}
-                            onChange={(e) => handleChangeMultipleSelect(e, "businessCity")}
+                            onChange={(e) => handleMultipleChangeSelect(e, "businessCity")}
                             input={<OutlinedInput label="Villes"         // ici le label est utilisé pour l'accessibilité et non pour l'affichage.                            
                             />}
                             renderValue={(selected) => selected.join(', ')}
@@ -201,7 +236,7 @@ export default function SearchContactsForm({ contacts, emptySearchCriteria, onSe
                         <Select
                             multiple={true}
                             value={search.contactType}
-                            onChange={(e) => handleChangeMultipleSelect(e, "contactType")}
+                            onChange={(e) => handleMultipleChangeSelect(e, "contactType")}
                             input={<OutlinedInput label="Types"         // ici le label est utilisé pour l'accessibilité et non pour l'affichage.
                             //sx={{ width: '300px' }} 
                             />}

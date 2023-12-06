@@ -59,7 +59,7 @@ export default function ContactCard({ contact, currentUserId, handleDeleteContac
     const [tabValue, setTabValue] = React.useState(0);
 
 
-    console.log("contactToAddOrUpdate", contactToAddOrUpdate)
+    //console.log("contactToAddOrUpdate", contactToAddOrUpdate)
 
     const muiTheme = useTheme();
 
@@ -67,7 +67,7 @@ export default function ContactCard({ contact, currentUserId, handleDeleteContac
     const [progresspercentFile, setProgresspercentFile] = React.useState(0);
     const [filesFirebaseArray, setFilesFirebaseArray] = React.useState<FileNameAndRefType[]>([])
     const [firebaseFileSelected, setFirebaseFileSelected] = React.useState<FileNameAndRefType>({ fileName: "", fileRef: "" })
-    const [categoriesList, setCategoriesList] = React.useState<string[]>([]);
+    const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[]>([]);
 
     
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
@@ -80,25 +80,26 @@ export default function ContactCard({ contact, currentUserId, handleDeleteContac
 
     React.useEffect(() => {
 
-        getCategoriesFromDatabase(currentUserId).then((categories: string[]) => {
-            setCategoriesList(categories.sort((a, b) => a.localeCompare(b)));
-        })
-    }, [currentUserId]);
-
-
-
-    React.useEffect(() => {
-        //console.log("User Effect READ")
-
         getFilesFromDatabase(currentUserId).then((filesList) => {
             setFilesFirebaseArray(filesList)
             filesList.length > 0 && setFirebaseFileSelected({ fileName: filesList[0].fileName, fileRef: filesList[0].fileRef })
         });
 
-    }, [currentUserId])
+        getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
+            //console.log("categories", categories)
+      
+            // Pas besoin de l'attribut userId donc on garde juste ce qu'on veut
+            const newCategoriesList = categories.map(category => ({
+              id: category.id,
+              label: category.label
+            }));
+            setCategoriesList(newCategoriesList);
+          })
+       
+    }, [currentUserId]);
 
+   
 
-    console.log("filesArray", filesFirebaseArray)
 
     ///////////// Encore besoin ??????????
     React.useEffect(() => {
@@ -363,19 +364,27 @@ export default function ContactCard({ contact, currentUserId, handleDeleteContac
                                 <MenuItem key={type} value={type}>{type}</MenuItem>
                             ))}
                         </Select>
-                    </FormControl>
+                    </FormControl>         
 
                     <FormControl sx={{ width: "40%" }} >
                         <InputLabel id="checkbox-type-label">Catégorie</InputLabel>
-                        <Select
+                        {categoriesList.length > 0 
+                        ? <Select
                             id="checkbox-type-label"
-                            value={contactToAddOrUpdate.businessCategory}
-                            onChange={(e) => handleChangeSelect(e, "businessCategory")}
+                            value={contactToAddOrUpdate.businessCategoryId}
+                            onChange={(e) => handleChangeSelect(e, "businessCategoryId")}
                         >
-                            {categoriesList.map((cat) => (
-                                <MenuItem key={cat} value={cat}>{cat}</MenuItem>
+                            <MenuItem key="0" value="">NON DEFINIE</MenuItem>
+                            {categoriesList.sort((a, b) => a.label.localeCompare(b.label)).map((cat, index) => (
+                                <MenuItem
+                                    key={cat.id}
+                                    value={cat.id}
+                                    sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
+                                >{cat.label}</MenuItem>
                             ))}
                         </Select>
+                        : null 
+                        }
                     </FormControl>
                 </Box>
 

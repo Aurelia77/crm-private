@@ -79,6 +79,15 @@ export default function CalendarFull({ contacts, diplayContactCardToUpdate, upda
 
   const muiTheme = useTheme();
 
+  const getPriorityColor = (priority: number | null) => {
+    switch (priority) {
+        case 1: return muiTheme.palette.error.main 
+        case 2: return "gray" 
+        case 3: return muiTheme.palette.primary.main 
+        default: return null 
+    }
+}
+
   const calendarRef = React.useRef(null);
 
   type eventType = {
@@ -156,13 +165,18 @@ export default function CalendarFull({ contacts, diplayContactCardToUpdate, upda
         //onClick={() => {console.log("coucou")}}
          />;
       },
-      events: events,
+      //events: events,
       // events: [
       //   {title: 'event 0', start: '2023/10/11', end: '2023/10/11'},
       //   {title: 'event 1', start: '2023-10-01', end: '2023-10-01'},
       //   {title: 'event 2', start: '2023-10-02', end: '2023-10-02'},
       //   {title: 'event 3', start: '2023-10-03', end: '2023-10-03'}
       // ]
+
+      events: events.map(event => ({
+        ...event,
+        color: getPriorityColor(event.contact.priority) ?? "black"
+      })),
 
       eventClick: function (info) {
         //  alert('Event: ' + info.event.title + " " + info.event.extendedProps.contact.contactEmail);        
