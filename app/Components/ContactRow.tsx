@@ -85,6 +85,15 @@ import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import {deleteModalStyle} from '../utils/StyledComponents'
 import { parse } from 'path';
 
+// Pour les étoiles de la PRIORITé 
+const StyledPriorityRating = styled(Rating)({
+    '& .MuiRating-iconFilled': {
+      color: '#ff6d75',
+    },
+    '& .MuiRating-iconHover': {
+      color: '#ff3d47',
+    },
+  });
 
 // Pour les smileys du RATING 
 // => (dans le composant car besoin de connaitre la donnée pour ajuster la taille en fonction)  NON car sinon il faut cliquer 2 fois pour que ça valide !!!  
@@ -166,6 +175,8 @@ type ContactRowProps = {
 export default function ContactRow({ contact, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, diplayContactCard, currentUserId }: ContactRowProps) {
 
     //console.log("CONTACT ROW", contact)
+ 
+
     //console.log(alerts.alerts)
     //console.log("contact")
     //console.log("LOGO", contact.logo)
@@ -827,7 +838,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             </StyledTableCell>
 
             {/* Priorité */}
-            <StyledTableCell component="td" scope="row" sx={{ position:"relative", border:  `5px solid ${getPriorityTextAndColor(contact.priority).color}`
+            <StyledTableCell component="td" scope="row" sx={{ position:"relative", border:  `7px solid ${getPriorityTextAndColor(contact.priority).color}`
          }} >
             {/* <Tooltip title={`Priorité ${getPriorityTextAndColor(contact.priority).text}`} placement='top'   > */}
                 {contact.priority && <Tooltip 
@@ -835,12 +846,21 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     title="Supprimer la priorité" 
                     placement='left'
                 >
-                    <IconButton color="primary" sx={{ padding: 0, position:"absolute", top:0, right:0}}        // Car les boutons ont automatiquement un padding
+                    <IconButton color="primary" sx={{ padding: 0, position:"absolute", top:-3, right:-3}}        // Car les boutons ont automatiquement un padding
                         onClick={() => handleChangeNumber(null, "priority")} >
                         <ClearIcon fontSize='small' color='error' />
                     </IconButton>
                 </Tooltip>}
-                <Tooltip arrow title={`Priorité ${getPriorityTextAndColor(contact.priority).text}`} placement='top'   >
+
+                <Box sx={{ '& > legend': { mt: 2 }, }} >
+                    <Rating
+                        name="customized-10"
+                        value={contact.priority ?? 0}
+                        onChange={(e, newValue) => handleChangeNumber(newValue, "priority")}
+                        max={3} />
+                </Box>
+
+                {/* <Tooltip arrow title={`Priorité ${getPriorityTextAndColor(contact.priority).text}`} placement='top'   >
                     <TextField
                         type="number"  //label="Nom de l'entreprise" 
                         value={contact.priority ?? ""}
@@ -853,7 +873,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             max: "3"
                         }}
                     />
-                </Tooltip>
+                </Tooltip> */}
             </StyledTableCell>
 
             {/* contactPhone + businessPhone */}
