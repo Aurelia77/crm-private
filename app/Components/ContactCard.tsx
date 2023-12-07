@@ -25,7 +25,6 @@ import { Timestamp } from 'firebase/firestore';
 import { useTheme } from '@mui/material/styles';
 import { storage, addFileOnFirebaseDB, getCategoriesFromDatabase } from '../utils/firebase'
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { MuiFileInput } from 'mui-file-input';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import LinearProgress from '@mui/material/LinearProgress';
 import { Input } from '@mui/material';
@@ -200,19 +199,15 @@ export default function ContactCard({ contact, currentUserId, handleDeleteContac
 
 
 
-
-
-
-
     return (
         //JSON.stringify(contact) === '{}' ? <div></div> :
         <Card key={contact.id} elevation={3}
             sx={{
-                my: "3%",
+                m: "3%",
                 position: "relative",
-                mx: "auto",
+                //mx: "auto",
                 padding: "5%",
-                maxWidth: "850px",
+                //maxWidth: "850px",
                 bgcolor: 'lightCyan.light',
                 //backgroundColor: muiTheme.palette.primary.light,
             }}        // my = 0.5rem (donc 1/2 taille de la police de la racine (em pour l'élément))
@@ -224,6 +219,55 @@ export default function ContactCard({ contact, currentUserId, handleDeleteContac
                     gap: 7,
                 }}
             >
+                  {/* ///////// CLIENT - TYPE - CAT ///////// */}
+                  <Box sx={{ display: 'flex', justifyContent: "space-between" }} >
+                    <FormControlLabel control={<Switch
+                        checked={contactToAddOrUpdate.isClient}
+                        onChange={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, isClient: !contactToAddOrUpdate.isClient })}
+                        color="success"
+                        inputProps={{ 'aria-label': 'controlled' }}
+                    />} label={contactToAddOrUpdate.isClient ? "Client" : "Prospect"} />
+
+                    <FormControl sx={{ width: "40%" }} >
+                        <InputLabel id="checkbox-type-label">Type</InputLabel>
+                        <Select
+                            id="checkbox-type-label"
+                            value={contactToAddOrUpdate.contactType}
+                            onChange={(e) => handleChangeSelect(e, "contactType")}
+
+                            inputProps={{
+                                style: { color: muiTheme.palette.primary.dark, }
+                            }}
+                        >
+                            {contactTypes.map((type) => (
+                                <MenuItem key={type} value={type}>{type}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>         
+
+                    <FormControl sx={{ width: "40%" }} >
+                        <InputLabel id="checkbox-type-label">Catégorie</InputLabel>
+                        {categoriesList.length > 0 
+                        ? <Select
+                            id="checkbox-type-label"
+                            value={contactToAddOrUpdate.businessCategoryId}
+                            onChange={(e) => handleChangeSelect(e, "businessCategoryId")}
+                        >
+                            <MenuItem key="0" value="">NON DEFINIE</MenuItem>
+                            {categoriesList.sort((a, b) => a.label.localeCompare(b.label)).map((cat, index) => (
+                                <MenuItem
+                                    key={cat.id}
+                                    value={cat.id}
+                                    sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
+                                >{cat.label}</MenuItem>
+                            ))}
+                        </Select>
+                        : null 
+                        }
+                    </FormControl>
+                </Box>
+
+
                 {/* ///////// NOM et LOGO ///////// */}
                 <Box sx={{
                     display: 'flex', justifyContent: "space-between" //width:"100%"
@@ -340,54 +384,7 @@ export default function ContactCard({ contact, currentUserId, handleDeleteContac
                     </ Box>
                 </Box>
 
-                {/* ///////// CLIENT - TYPE - CAT ///////// */}
-                <Box sx={{ display: 'flex', justifyContent: "space-between" }} >
-                    <FormControlLabel control={<Switch
-                        checked={contactToAddOrUpdate.isClient}
-                        onChange={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, isClient: !contactToAddOrUpdate.isClient })}
-                        color="success"
-                        inputProps={{ 'aria-label': 'controlled' }}
-                    />} label={contactToAddOrUpdate.isClient ? "Client" : "Prospect"} />
-
-                    <FormControl sx={{ width: "40%" }} >
-                        <InputLabel id="checkbox-type-label">Type</InputLabel>
-                        <Select
-                            id="checkbox-type-label"
-                            value={contactToAddOrUpdate.contactType}
-                            onChange={(e) => handleChangeSelect(e, "contactType")}
-
-                            inputProps={{
-                                style: { color: muiTheme.palette.primary.dark, }
-                            }}
-                        >
-                            {contactTypes.map((type) => (
-                                <MenuItem key={type} value={type}>{type}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>         
-
-                    <FormControl sx={{ width: "40%" }} >
-                        <InputLabel id="checkbox-type-label">Catégorie</InputLabel>
-                        {categoriesList.length > 0 
-                        ? <Select
-                            id="checkbox-type-label"
-                            value={contactToAddOrUpdate.businessCategoryId}
-                            onChange={(e) => handleChangeSelect(e, "businessCategoryId")}
-                        >
-                            <MenuItem key="0" value="">NON DEFINIE</MenuItem>
-                            {categoriesList.sort((a, b) => a.label.localeCompare(b.label)).map((cat, index) => (
-                                <MenuItem
-                                    key={cat.id}
-                                    value={cat.id}
-                                    sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
-                                >{cat.label}</MenuItem>
-                            ))}
-                        </Select>
-                        : null 
-                        }
-                    </FormControl>
-                </Box>
-
+              
                 {/* ///////// VILLE et ADRESSE ///////// */}
                 <Box sx={{ display: 'flex', justifyContent: "space-between" }} >
                     <TextField id="outlined-basic" label="Ville" variant="outlined" value={contactToAddOrUpdate.businessCity} onChange={handleChangeText("businessCity")} sx={{ width: "40%" }} />
