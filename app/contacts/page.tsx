@@ -71,7 +71,6 @@ import Collapse from '@mui/material';
 import { unsubscribe } from 'diagnostics_channel';
 
 import { countContactsByAlertDates, updatedContactsInLocalList, updatedContactsInLocalListWithWholeContact } from '../utils/toolbox';
-import { MuiFileInput } from 'mui-file-input';
 import Diversity3Icon from '@mui/icons-material/Diversity3';
 import PersonIcon from '@mui/icons-material/Person';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
