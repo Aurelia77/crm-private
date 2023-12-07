@@ -66,7 +66,11 @@ import { StyledTableRow, StyledTableCell } from '../utils/StyledComponents';
 import { Timestamp } from 'firebase/firestore';
 
 import Rating, { IconContainerProps } from '@mui/material/Rating';
-
+import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
+import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
+import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAltOutlined';
+import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
 import Tooltip from '@mui/material/Tooltip';
 import { timeStamp } from 'console';
 
@@ -90,7 +94,52 @@ const StyledPriorityRating = styled(Rating)({
     },
   });
 
-
+// Pour les smileys du RATING 
+// => (dans le composant car besoin de connaitre la donnée pour ajuster la taille en fonction)  NON car sinon il faut cliquer 2 fois pour que ça valide !!!  
+const StyledRating = styled(Rating)(({ theme }) => ({
+    '& .MuiRating-iconEmpty .MuiSvgIcon-root': {
+        color: theme.palette.action.disabled,
+    },
+}))
+const customIcons: {
+    [index: string]: { icon: React.ReactElement; label: string; };
+} = {
+    1: {
+        icon: <SentimentVeryDissatisfiedIcon color="error"
+        //fontSize={contact.interestGauge === 1 ? 'large' : 'small'} 
+        />,
+        label: 'Very Dissatisfied',
+    },
+    2: {
+        icon: <SentimentDissatisfiedIcon color="warning"
+        //fontSize={contact.interestGauge === 2 ? 'large' : 'small'} 
+        />,
+        label: 'Dissatisfied',
+    },
+    3: {
+        icon: <SentimentSatisfiedIcon color="secondary"
+        //fontSize={contact.interestGauge === 3 ? 'large' : 'small'} 
+        />,
+        label: 'Neutral',
+    },
+    4: {
+        icon: <SentimentSatisfiedAltIcon color="primary"
+        //fontSize={contact.interestGauge === 4 ? 'large' : 'small'} 
+        />,
+        label: 'Satisfied',
+    },
+    5: {
+        icon: <SentimentVerySatisfiedIcon color="success"
+        //icon: <EmojiEmotionsIcon  color="success"
+        //fontSize={contact.interestGauge === 5 ? 'large' : 'small'} 
+        />,
+        label: 'Very Satisfied',
+    },
+};
+function IconContainer(props: IconContainerProps) {
+    const { value, ...other } = props;
+    return <span {...other}>{customIcons[value].icon}</span>;
+}
 
 
 
