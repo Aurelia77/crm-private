@@ -58,12 +58,15 @@ type NewContactSearchForm = {
     emptyContact: Contact,
     addContact: (contact: Contact) => void,
     currentUserId: string,
+    getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
 }
 
 export default function NewContactSearchForm({    //contacts, setContacts }: { contacts: Contact[], setContacts: Function
     emptyContact,
     addContact,
-    currentUserId }: NewContactSearchForm) {
+    currentUserId,
+    getPriorityTextAndColor
+ }: NewContactSearchForm) {
     const token = '613dca81-d71e-3b02-ac1a-b2170d2084c6'
     const apiAccessUrl = "https://api.insee.fr/entreprises/sirene/V3/siret?q="
 
@@ -517,6 +520,7 @@ export default function NewContactSearchForm({    //contacts, setContacts }: { c
                             contact={infosContact as Contact} 
                             currentUserId={currentUserId}
                             addContact={addContact}
+                            getPriorityTextAndColor={getPriorityTextAndColor}
                         />
                         {
                             //(searchContactName !== '') && resultInseeSearch && 

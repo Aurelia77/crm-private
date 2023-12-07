@@ -561,6 +561,7 @@ export default function Contacts() {
                                         emptyContact={emptyContact} 
                                         addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)} 
                                         currentUserId={currentUser.uid}
+                                        getPriorityTextAndColor={getPriorityTextAndColor}
                                     />
                                 </TabPanel>
 
