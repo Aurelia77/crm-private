@@ -15,7 +15,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import NavigationIcon from '@mui/icons-material/Navigation';
 import { useTheme } from '@mui/material/styles';
-import {getCategoriesFromDatabase} from '../utils/firebase'
+import {getCategoriesFromDatabase, getCatLabelFromId} from '../utils/firebase'
 
 interface SearchFormProps {
     contacts: Contact[];
@@ -35,14 +35,30 @@ const MenuSelectProps = {
 
 
 export default function SearchContactsForm({ contacts, currentUserId, emptySearchCriteria, onSearchChange  }: SearchFormProps) {
-    const [search, setSearch] = React.useState<SearchContactCriteria>({ isClient: "all", contactType: [], businessName: '', businessCity: [], businessCategoryId: [] });
+
+    const [search, setSearch] = React.useState<SearchContactCriteria>(emptySearchCriteria);
 
     const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[]>([]);
 
+    const [selectedCatIds, setCatSelectedIds] = React.useState<string[]>([]);
+    const [selectedCatLabels, setCatSelectedLabels] = React.useState<string[]>([]);
+
+    React.useEffect(() => {
+        if (selectedCatIds.length > 0) {
+            Promise.all(selectedCatIds.map(catId => getCatLabelFromId(catId)))
+                .then(labels => setCatSelectedLabels(labels));
+        } else {
+            setCatSelectedLabels([]);
+        }
+    }, [selectedCatIds]);
+
     const muiTheme = useTheme();
 
+  
+   
 
-    //console.log(search)
+    console.log(search)
+
     // const businessCategorys = ["Camping", "Hôtel", "Congiergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre"];
 
     const allDifferentsBusinessCategoryValues = getUniqueSortedValues(contacts, 'businessCategoryId')
@@ -78,6 +94,10 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
     const handleMultipleChangeSelect = (event: SelectChangeEvent<string[]>, attribut: keyof SearchContactCriteria) => {
         // const { target: { value }, } = event;
         const value = event.target.value;
+
+        console.log(value)
+
+        setCatSelectedIds(value as string[]);
 
         setSearch({ ...search, [attribut]: typeof value === 'string' ? [value] : value });
         //setSearch({ ...search, businessCategory: value });            // me dit que Value peut être de type String mais pourtant je ne vois pas quand c'est possible !!!???
@@ -180,15 +200,25 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             id="multiple-checkbox-type-label"
                             multiple={true}
                             value={search.businessCategoryId}
+                            // value={search.businessCategoryId.map(
+                            //         (catId: string) => getCatLabelFromId(catId)                            
+                            //     ) }
                             onChange={(e) => handleMultipleChangeSelect(e, "businessCategoryId")}
                             input={<OutlinedInput label="Catégories"
                             //sx={{ width: '300px', border: "solid 1px black" }} 
                             />}
-                            renderValue={(selected) => selected.join(', ')}
+
+
+
+                            //renderValue={(selected) => selected).join(', ')}
+                            renderValue={(selectedIds) => selectedCatLabels.join(', ')  }
                             sx={{ width: '100%' }}
                             MenuProps={MenuSelectProps}
                         >
-                            <MenuItem key="0" value="">NON DEFINIE</MenuItem>
+
+
+                            {/* <MenuItem key="0" value="">NON DEFINIE</MenuItem> */}                       
+
                                 {categoriesList
                                     .filter(cat => allDifferentsBusinessCategoryValues.includes(cat.id))
                                     .sort((a, b) => a.label.localeCompare(b.label))
@@ -197,9 +227,12 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             // {categoriesList.sort((a, b) => a.label.localeCompare(b.label)).map((cat, index) => (
                                 <MenuItem
                                     key={cat.id}
-                                    value={cat.label}
+                                    value={cat.id}
                                     sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
-                                >{cat.label}</MenuItem>
+                                >                                    
+                                    <Checkbox checked={search.businessCategoryId.indexOf(cat.id) > -1} />
+                                    <ListItemText primary={cat.label} />                                    
+                                </MenuItem>
                             ))}
                         </Select>
                         : null

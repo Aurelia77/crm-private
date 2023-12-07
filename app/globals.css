@@ -40,3 +40,10 @@ body {
   background-position: 50px 50px;
 } */
 
+/* Pour les entête du calendrier (sinon trop gras) */
+.fc-col-header-cell {
+  background-color: #aaa;
+  color: white;
+  font-weight: 500;
+}
+

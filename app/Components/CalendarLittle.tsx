@@ -11,6 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
+import { Grow } from '@mui/material';
 
 
 // function getRandomNumber(min: number, max: number) {
@@ -154,6 +155,72 @@ export default function CalendarLittle({ contacts, diplayContactCardToUpdate }: 
 
   const muiTheme = useTheme();
 
+  const [checked, setChecked] = React.useState(false);
+
+  const handleMonthChange = (date: Dayjs) => {
+    console.log("date", date)
+    //if (requestAbortController.current) {
+    // make sure that you are aborting useless requests
+    // because it is possible to switch between months pretty quickly
+    //  requestAbortController.current.abort();
+    //}
+    //setIsLoading(true);
+
+    setDateToSeeOnTheCalendar(date)
+
+    setContactsToCallThisMonthAndToHighlight([]);
+
+    //fetchHighlightedDays(contacts, date);
+    setContactsToCallThisMonthAndToHighlight(getDaysOfNextCallsForMonth(contacts, date));
+  };
+
+  const icon1 = (
+    <DateCalendar
+        //defaultValue={dateToSeeOnTheCalendar} // seulement si cette valeur ne change jamais => ici : erreur : MUI: A component is changing the default value state of an uncontrolled DateCalendar after being initialized.
+        value={dateToSeeOnTheCalendar}
+        //loading={isLoading}
+        onMonthChange={handleMonthChange}
+        renderLoading={() => <DayCalendarSkeleton />}
+        slots={{
+          day: MarkedDay,
+        }} 
+        slotProps={{
+          day: {
+            highlightedDays: contactsToCallThisMonthAndToHighlight,
+          } as any,
+        }}
+      />
+
+     
+  );
+
+  const icon2 = (
+
+    <Box sx={{ border: '1px solid #CCC', p: 2, ml: 2, width: 300 }} >
+
+    <Typography align="center" sx={{ mb: 2, }} >{dayAndContactsToCallThisDay.day?.toLocaleString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}</Typography>
+    <Typography sx={{ mb: 2, color: 'primary.main', fontWeight: 700 }} >
+      Contact(s) à appeler ce jour ({dayAndContactsToCallThisDay.contactsToCallThisDay.length})
+    </Typography>
+   
+
+    {dayAndContactsToCallThisDay.contactsToCallThisDay.length === 0
+      ? <Typography variant="body2" sx={{ mt: 2 }} >Aucun !</Typography> 
+      : dayAndContactsToCallThisDay.contactsToCallThisDay.map((contact, index) => (
+      <Typography key={index} variant="body2" sx={{ mt: 2, cursor: 'pointer' }}
+        onClick={() => diplayContactCardToUpdate(contact) }            
+      >
+        {contact.businessName}
+      </Typography>
+    ))}
+  </Box>
+    
+  );
+
+  React.useEffect(() => {
+    setChecked(true);
+  }, []);
+
 
   interface MarkedDayProps extends PickersDayProps<Dayjs> {
     highlightedDays?: Contact[];
@@ -277,26 +344,21 @@ export default function CalendarLittle({ contacts, diplayContactCardToUpdate }: 
     //return () => requestAbortController.current?.abort();
   }, [contacts, dateToSeeOnTheCalendar]);
 
-  const handleMonthChange = (date: Dayjs) => {
-    console.log("date", date)
-    //if (requestAbortController.current) {
-    // make sure that you are aborting useless requests
-    // because it is possible to switch between months pretty quickly
-    //  requestAbortController.current.abort();
-    //}
-    //setIsLoading(true);
 
-    setDateToSeeOnTheCalendar(date)
-
-    setContactsToCallThisMonthAndToHighlight([]);
-
-    //fetchHighlightedDays(contacts, date);
-    setContactsToCallThisMonthAndToHighlight(getDaysOfNextCallsForMonth(contacts, date));
-  };
 
   return (
     <Box style={{ display: "flex", backgroundColor: muiTheme.palette.lightCyan.light, width:"800px", margin:"auto", marginTop:"50px", padding:"20px" }} >
-      <DateCalendar
+      <Grow in={checked}>{icon1}</Grow>
+        {/* Conditionally applies the timeout prop to change the entry speed. */}
+        <Grow
+          in={checked}
+          style={{ transformOrigin: '0 0 0' }}
+          {...(checked ? { timeout: 1000 } : {})}
+        >
+          {icon2}
+        </Grow>
+
+      {/* <DateCalendar
         //defaultValue={dateToSeeOnTheCalendar} // seulement si cette valeur ne change jamais => ici : erreur : MUI: A component is changing the default value state of an uncontrolled DateCalendar after being initialized.
         value={dateToSeeOnTheCalendar}
         //loading={isLoading}
@@ -313,21 +375,12 @@ export default function CalendarLittle({ contacts, diplayContactCardToUpdate }: 
       />
 
       <Box sx={{ border: '1px solid #CCC', p: 2, ml: 2, width: 300 }} >
-        {/* <Typography align="center" sx={{ mb: 2, }} >
-          {contactsToCallThisDay[0] && contactsToCallThisDay[0].dateOfNextCall.toDate().toLocaleString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
-        </Typography> */}
 
         <Typography align="center" sx={{ mb: 2, }} >{dayAndContactsToCallThisDay.day?.toLocaleString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}</Typography>
         <Typography sx={{ mb: 2, color: 'primary.main', fontWeight: 700 }} >
           Contact(s) à appeler ce jour ({dayAndContactsToCallThisDay.contactsToCallThisDay.length})
         </Typography>
-        {/* {contactsToCallThisDay.map((contact, index) => (
-          <Typography key={index} variant="body2" sx={{ mt: 2 }}
-            onClick={() => diplayContactCardToUpdate(contact) }            
-          >
-            {contact.businessName}
-          </Typography>
-        ))} */}
+       
 
         {dayAndContactsToCallThisDay.contactsToCallThisDay.length === 0
           ? <Typography variant="body2" sx={{ mt: 2 }} >Aucun !</Typography> 
@@ -338,7 +391,7 @@ export default function CalendarLittle({ contacts, diplayContactCardToUpdate }: 
             {contact.businessName}
           </Typography>
         ))}
-      </Box>
+      </Box> */}
     </Box>
   );
 }

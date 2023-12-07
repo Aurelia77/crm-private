@@ -82,7 +82,7 @@ import CalendarFull from '../Components/CalendarFull';
 import CalendarScheduler from '../Components/CalendarScheduler';
 import {TabPanel, TABS_WIDTH} from '../utils/StyledComponents';
 import CircularProgress from '@mui/material/CircularProgress';
-
+import {getCatIdFromLabel} from '../utils/firebase'
 
 
 
@@ -171,6 +171,72 @@ export default function Contacts() {
         setIsContactCardDisplay(true)
     }
 
+    const fakeContactsNameAndCatLabel = [
+        {
+            name: "Camping Hyères",
+            catLabel: "Camping"
+        },
+        {
+            name: "Camping St Tropez",
+            catLabel: "Camping"
+        },
+        {
+            name: "Centre de plongée",
+            catLabel: "Centre de Plongée"
+        },
+        {
+            name: "Entreprise de maquillage GLOW",
+            catLabel: "Autre"
+        },
+        {
+            name: "Les Trésors de Lily",
+            catLabel: "NON DEFINI"
+        },
+        {
+            name: "Pierre et vacances",
+            catLabel: "Centre de Loisirs"
+        },
+        {
+            name: "Restaurant 5* LE BONHEUR",
+            catLabel: "Restaurant Plage"
+        },
+    ]
+
+    const addCatToFakeContacts = (fakeContactsData: Contact[]) => {
+        // fakeContactsData.forEach((contact) => {
+        //     contact.businessCategoryId = contact.businessCategory.map((cat) => getCatIdFromLabel(cat))
+        //     console.log(contact.businessCategoryId)
+        //     updateWholeContactInContactsAndDB(contact)
+        // })
+
+
+        fakeContactsData.forEach((contact) => {
+            fakeContactsNameAndCatLabel.forEach((contactNameAndCatLabel) => {
+                if (contact.businessName === contactNameAndCatLabel.name) {
+                    // console.log(contact.businessName)
+                    // console.log(contactNameAndCatLabel.catLabel)
+                    // console.log(getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel))
+
+                    getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel)
+                        .then((catId: string) => {                            
+                            // Bien utiliser .map car .foreach ne retourne rien (filteredContacts.map() crée un tableau de promesses. Promise.all(promises) renvoie une nouvelle promesse qui est résolue lorsque toutes les promesses dans le tableau promises sont résolues.)
+                            const promises = filteredContacts.map((filteredContact) => {
+                                if (filteredContact.businessName === contact.businessName) {
+                                    console.log(filteredContact, catId)
+                                    return updatDataOnFirebase(filteredContact.id, { key: "businessCategoryId", value: catId })
+                                }
+                            })
+                            return Promise.all(promises)              
+                        })
+                        .then(() => {
+                            window.location.reload()
+                        }) 
+                }
+            })
+        })
+
+    }
+
 
     React.useEffect(() => {
         //console.log("User Effect READ")
@@ -214,10 +280,7 @@ export default function Contacts() {
             const searchIsClient = contactsSearchCriteria.isClient === "yes" ? true : contactsSearchCriteria.isClient === "no" ? false : null
             const searchOnCity = contactsSearchCriteria.businessCity.length > 0 ? contactsSearchCriteria.businessCity : ['']
 
-
-
-
-            //const searchOnCategory = contactsSearchCriteria.businessCategory.length > 0 ? contactsSearchCriteria.businessCategory : ['']
+            const searchOnCategory = contactsSearchCriteria.businessCategoryId.length > 0 ? contactsSearchCriteria.businessCategoryId : ['']
             const searchOnType = contactsSearchCriteria.contactType.length > 0 ? contactsSearchCriteria.contactType : ['']
 
 
@@ -244,8 +307,8 @@ export default function Contacts() {
 
 
 
-                    
-                    //&& searchOnCategory.some((cat) => contact.businessCategory.includes(cat)) 
+
+                    && searchOnCategory.some((cat) => contact.businessCategoryId.includes(cat)) 
                     // && searchOnCategory.some((cat) =>{ 
                     //     console.log("cat", cat)
                     //     console.log(contact.businessCategory)
@@ -255,9 +318,9 @@ export default function Contacts() {
 
 
                     && searchOnType.some((type) => {
-                        console.log("type", type)
-                        console.log(contact.contactType)
-                        console.log(contact.contactType.includes(type))
+                        // console.log("type", type)
+                        // console.log(contact.contactType)
+                        // console.log(contact.contactType.includes(type))
                         return contact.contactType.includes(type)
                     })
                 )
@@ -435,7 +498,7 @@ export default function Contacts() {
                                 </TabPanel>
 
                                  {/* ///////// Grand Calendrier ///////// */}
-                                 <TabPanel key="1" value={tabCalendarValue} index={1}  >
+                                 <TabPanel key="1" value={tabCalendarValue} index={1}  >                               
                                     <CalendarFull
                                         //contacts={fakeContactsData}
                                         //contacts={filteredContacts}   // ????????? 
@@ -528,12 +591,13 @@ export default function Contacts() {
                                     <Box sx={{display:"flex", justifyContent:"space-between", marginBottom:"20px" }} >
                                         <Button variant="contained" color='success' onClick={() => addCategoriesOnFirebaseAndReload(currentUser, contactCategories)}>1-Ajouter Catégories</Button>
                                         <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>2-Ajouter Contacts Test</Button>
+                                        <Button variant="contained" color='warning' onClick={() => addCatToFakeContacts(fakeContactsData)}>3-Ajouter catégories aux contacts</Button>
                                         <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
                                         <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button>
                                     </Box>
                                     <Box sx={{display:"flex", justifyContent:"space-around", }} >
                                         <Button variant="contained" color='error' sx={{ width: "300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUser)}>Supprimer tous mes contacts</Button>
-                                        <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer toutes les données !!!</Button>
+                                        <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer TOUS les contacts de l'appli !!!</Button>
                                     </Box>
                                 </Box>
                             </TabPanel>

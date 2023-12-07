@@ -10,6 +10,7 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import frLocale from '@fullcalendar/core/locales/fr'
 
 
 
@@ -21,7 +22,6 @@ import Typography from '@mui/material/Typography';
 // Site officiel : https://fullcalendar.io/docs/initialize-es6
 // (p)npm install  @fullcalendar/core  @fullcalendar/daygrid  @fullcalendar/timegrid  @fullcalendar/list
 
-import Fullcalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -32,9 +32,7 @@ import listPlugin from '@fullcalendar/list';
 import { title } from 'process';
 import { useTheme } from '@mui/material/styles';
 import { Timestamp } from 'firebase/firestore';
-
-
-
+import { Collapse } from '@mui/material';
 
 
 const CustomDayHeader = ({ text }: {text: string}) => <div>!{text}!</div>;
@@ -79,16 +77,33 @@ export default function CalendarFull({ contacts, diplayContactCardToUpdate, upda
 
   const muiTheme = useTheme();
 
+  const [checked, setChecked] = React.useState(false);
+
+  const calendarRef = React.useRef(null);
+
+  const icon = (
+    <Box id="calendar" ref={calendarRef} sx={{ width: "calc(100vw - 250px)", margin: "auto", marginTop: "3%", backgroundColor: muiTheme.palette.lightCyan.light }}
+    ></Box>
+  );
+
+  React.useEffect(() => {  
+    setChecked(true);
+  }, []);
+
+  const hightPriorityColor = muiTheme.palette.primary.main
+  const mediumPriorityColor = muiTheme.palette.gray.main
+  const lowPriorityColor = muiTheme.palette.error.main
+  const noPriorityColor = "black"
+
   const getPriorityColor = (priority: number | null) => {
     switch (priority) {
-        case 1: return muiTheme.palette.error.main 
-        case 2: return "gray" 
-        case 3: return muiTheme.palette.primary.main 
-        default: return null 
+        case 1: return lowPriorityColor
+        case 2: return mediumPriorityColor
+        case 3: return hightPriorityColor
+        default: return noPriorityColor
     }
 }
 
-  const calendarRef = React.useRef(null);
 
   type eventType = {
     contact: Contact;
@@ -100,8 +115,8 @@ export default function CalendarFull({ contacts, diplayContactCardToUpdate, upda
   let events: eventType[] = [] 
   
   contacts.map((contact: Contact) => {
-    console.log(contact.businessName)
-    console.log(contact.dateOfNextCall)
+    //console.log(contact.businessName)
+    //console.log(contact.dateOfNextCall)
     // console.log(typeof contact.dateOfNextCall)
     
     // console.log(dayjs(contact.dateOfNextCall.toDate()))
@@ -111,7 +126,7 @@ export default function CalendarFull({ contacts, diplayContactCardToUpdate, upda
 
     const formattedDate = contact.dateOfNextCall ? dayjs(contact.dateOfNextCall?.toDate()).format('YYYY-MM-DD') : ""
     contact.dateOfNextCall && console.log(formattedDate)
-    console.log(contact.dateOfNextCall?.toDate().toLocaleDateString())    
+    //console.log(contact.dateOfNextCall?.toDate().toLocaleDateString())    
 
     // console.log(contact.dateOfNextCall?.toDate().toString().substring(0, 10))
     // console.log(contact.dateOfNextCall?.toDate())
@@ -134,7 +149,8 @@ export default function CalendarFull({ contacts, diplayContactCardToUpdate, upda
     const calendar = new Calendar(calendarRef.current, {
       height: "calc(100vh - 200px)",  // pas possible de choisir la largeur ici
       plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, multiMonthPlugin],
-      //initialView: 'multiMonthSixMonth',
+      //initialView: 'multiMonthSixMonth',      
+      locale:frLocale,
       initialDate: dayjs().subtract(1, 'month').toDate(), // Définit la date initiale à un mois avant le mois en cours
       views: {
         multiMonthSixMonth: {
@@ -142,18 +158,24 @@ export default function CalendarFull({ contacts, diplayContactCardToUpdate, upda
           duration: { months: 6 }
         }
       },
+
+      //weekNumbers: true,
+      selectable: true,
+
       buttonText: {
-        timeGridDay: 'Jour',
+        //timeGridDay: 'Jour',
         timeGridWeek: 'Semaine',
         dayGridMonth: 'Mois',
         //yearGrid: 'Année',
-        listWeek: 'Liste',
+        //listWeek: 'Liste',
         multiMonthSixMonth: '6 mois' 
       },
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',
-        right: 'multiMonthSixMonth,dayGridMonth,timeGridWeek,timeGridDay,listWeek,' // marche pas : yearGrid
+        right: 'multiMonthSixMonth,dayGridMonth,timeGridWeek'
+        //timeGridDay,listMonth,'     // Pas besoin
+        // yearGrid   // marche pas
       },
       //initialDate: new Date().toISOString().split('T')[0],
       // initialDate: '2018-01-12',
@@ -175,7 +197,8 @@ export default function CalendarFull({ contacts, diplayContactCardToUpdate, upda
 
       events: events.map(event => ({
         ...event,
-        color: getPriorityColor(event.contact.priority) ?? "black"
+        color: getPriorityColor(event.contact.priority) ?? "black",
+        fontWeight: 'bold' 
       })),
 
       eventClick: function (info) {
@@ -200,6 +223,7 @@ export default function CalendarFull({ contacts, diplayContactCardToUpdate, upda
 
         start && updateContactInContactsAndDB(contact.id, {key: "dateOfNextCall", value: Timestamp.fromDate(start)}) 
       },
+    
     });
 
     calendar.render();
@@ -211,7 +235,17 @@ export default function CalendarFull({ contacts, diplayContactCardToUpdate, upda
 
 
   return (
-    <Box id="calendar" ref={calendarRef} sx={{ width: "calc(100vw - 250px)", margin: "auto", marginTop:"3%", backgroundColor: muiTheme.palette.lightCyan.light }}
-    ></Box>
+    <Box>
+      <Box sx={{ display: "flex", justifyContent: "space-between", width: "60%", ml:"40%" }}>
+        <Typography sx={{ p:0.3, textAlign:"center", borderRadius: "10px", backgroundColor: hightPriorityColor, color: 'white', width:"20%" }}>Priorité Haute (3)</Typography>
+        <Typography sx={{ p:0.3, textAlign:"center", borderRadius: "10px", backgroundColor: mediumPriorityColor, width:"20%" }}>Priorité Moyenne (2)</Typography>
+        <Typography sx={{ p:0.3, textAlign:"center", borderRadius: "10px", backgroundColor: lowPriorityColor, color: 'white', width:"20%" }}>Priorité Basse (1)</Typography>
+        <Typography sx={{ p:0.3, textAlign:"center", borderRadius: "10px", backgroundColor: noPriorityColor, color: 'white', width:"20%" }}>Aucune</Typography>
+      </Box>
+
+      <Collapse in={checked}>{icon}</Collapse>
+      {/* <Box id="calendar" ref={calendarRef} sx={{ width: "calc(100vw - 250px)", margin: "auto", marginTop: "3%", backgroundColor: muiTheme.palette.lightCyan.light }}
+      ></Box> */}
+    </Box>
   );
 }

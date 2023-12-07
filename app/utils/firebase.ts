@@ -218,6 +218,39 @@ const getCategoriesFromDatabase = async (currentUserId: any) => {
 }
 
 
+// Bien mettre ASYNC / AWAIT sinon return catId sera exécuté avant que getDocs(q) ait terminé
+const getCatIdFromLabel = async (currentUserId: any, catLabel: string) => {
+  console.log("catLabel FIREBASE", catLabel)
+  console.log(currentUserId)
+
+  const filesCollectionRef = collection(fireStoreDb, "categories");
+  const q = query(filesCollectionRef, where("userId", "==", currentUserId), where("label", "==", catLabel))
+
+  const querySnapshot = await getDocs(q);
+
+  console.log(querySnapshot)
+  
+  let catId = ''
+  querySnapshot.forEach((doc) => {
+    catId = doc.data().id
+  })
+
+  return catId
+}
+
+const getCatLabelFromId = async (catId: string) => {
+  const q = query(collection(fireStoreDb, "categories"), where("id", "==", catId));
+
+  const querySnapshot = await getDocs(q);
+
+  let label = ''
+  querySnapshot.forEach((doc) => {
+    label = doc.data().label
+  })
+ 
+  return label;
+}
+
 const addFakeDataOnFirebaseAndReload = (currentUser: any, fakeContactsData: Contact[]) => {
   // fakeContactsData.map((contact: Contact) => {
   //   console.log(contact)
@@ -410,18 +443,18 @@ const addCategoriesOnFirebaseAndReload = (currentUser: any, categories: ContactC
 
 
 
-const updatDataOnFirebase = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
+const updatDataOnFirebase = async (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
   // const contactToUpdateRef = doc(fireStoreDb, "contacts", id);
   // console.log(contactToUpdateRef)
 
-  // // Set the "capital" field of the city 'DC'
   // updateDoc(contactToUpdateRef, {
   //     [keyAndValue.key]: keyAndValue.value
   // });
   const q = query(collection(fireStoreDb, "contacts"), where("id", "==", id));
 
-  getDocs(q).then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {        // besoin du FOREACH alors qu'il n'y en a qu'un ???
+  const querySnapshot = await getDocs(q);
+  //getDocs(q).then((querySnapshot) => {    // A la place de la ligne ci-dessus si on vt fonction NON Async !
+  querySnapshot.forEach((doc) => {        // besoin du FOREACH alors qu'il n'y en a qu'un ???
       //console.log(doc.data())
       //console.log(doc.ref)
       //console.log(doc.id)
@@ -432,7 +465,7 @@ const updatDataOnFirebase = (id: string, keyAndValue: { key: string, value: stri
       });
       //set(doc.ref, updatingContact)
     })
-  })
+  // })
 }
 
 const updatDataWholeContactOnFirebase = (contactToUpdate: Contact) => {
@@ -619,17 +652,8 @@ const handleOpenFile = async (file: any) => {
   window.open(url, '_blank');
 };
 
-const getCatLabelFromId = (catId: string) => {
-  const q = query(collection(fireStoreDb, "categories"), where("id", "==", catId));
-  let label = '';
 
-  getDocs(q).then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-      label = doc.data().label;
-    })
-  })
-  return label;
-}
+
 
 
 
@@ -656,7 +680,8 @@ export {
   deleteDataOnFirebaseAndReload,
   deleteCategorieOnFirebase,
   handleOpenFile,
-  //getCatLabelFromId
+  getCatLabelFromId, 
+  getCatIdFromLabel
 }
 
 

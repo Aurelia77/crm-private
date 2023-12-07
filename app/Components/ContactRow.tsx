@@ -8,7 +8,6 @@ import dayjs, { Dayjs } from 'dayjs';       // npm install dayjs
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { MuiFileInput } from 'mui-file-input'
 import { pink } from '@mui/material/colors';
 import MailOutlineOutlinedIcon from '@mui/icons-material/MailOutlineOutlined';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
@@ -30,7 +29,6 @@ import StarCheckedFilled from '@mui/icons-material/Star';
 import { darken } from '@mui/material/styles';
 import { lighten } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
-import GaugeComponent from 'react-gauge-component'  // npm install react-gauge-component --save
 // ??? GaugeChart => npm install react-gauge-chart + dependency : npm i d3 (marche pas !!!)
 import Container from '@mui/material/Container';
 import AccountCircle from '@mui/icons-material/AccountCircle';
@@ -223,9 +221,9 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     const getPriorityTextAndColor = (priority: number | null) => {
         switch (priority) {
             case 1: return { text: "Faible", color: muiTheme.palette.error.main }
-            case 2: return { text: "Moyenne", color: "gray" }
+            case 2: return { text: "Moyenne", color: muiTheme.palette.gray.main }
             case 3: return { text: "Haute", color: muiTheme.palette.primary.main }
-            default: return { text: "Aucune", color: null }
+            default: return { text: "Aucune", color: "black" }
         }
     }
   
@@ -1357,7 +1355,17 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             </StyledTableCell>
 
             {/* Type */}
-            <StyledTableCell component="td" scope="row" >
+            <StyledTableCell 
+                component="td" 
+                scope="row" 
+                sx={{
+                    backgroundColor: contact.contactType === "Entreprise" 
+                        ? muiTheme.palette.primary.light 
+                        : contact.contactType === "Particulier"
+                            ? muiTheme.palette.ochre.light
+                            : muiTheme.palette.gray.light
+                }} 
+            >
                 <FormControl >
                     <Select                        
                         variant="standard"
