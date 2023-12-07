@@ -1,6 +1,7 @@
 import { Timestamp } from 'firebase/firestore';
 import { uid } from 'uid';
 
+
 const emptyContact: Contact = {
     id: uid(),
     isClient: false,
@@ -37,7 +38,7 @@ const emptyContact: Contact = {
 const contactCategories: ContactCategorieType[] = [
     {
         id: "",
-        label: "NON DEFINI",
+        label: "-NON DEFINI",
     },
     {
         id: "",
@@ -203,6 +204,7 @@ const getUniqueSortedValues = (contacts: Contact[], key: keyof Contact) => {
 
     return uniqueValues
 }
+
 
 
 export { 

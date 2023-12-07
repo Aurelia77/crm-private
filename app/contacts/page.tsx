@@ -82,6 +82,7 @@ import CalendarScheduler from '../Components/CalendarScheduler';
 import {TabPanel, TABS_WIDTH} from '../utils/StyledComponents';
 import CircularProgress from '@mui/material/CircularProgress';
 import {getCatIdFromLabel} from '../utils/firebase'
+import { useTheme } from '@mui/material/styles';
 
 
 
@@ -100,6 +101,7 @@ export default function Contacts() {
     const [isContactCardDisplay, setIsContactCardDisplay] = React.useState(false)
 
    
+    const muiTheme = useTheme()
 
    // console.log(isContactCardDisplay)
 
@@ -234,6 +236,16 @@ export default function Contacts() {
             })
         })
 
+    }
+
+    // Je ne peux pas mettre cette fonction dans ToolBox car je peux utiliser les thème seulement dans un composant  (React Hooks must be called in a React function component or a custom React Hook function.)
+    const getPriorityTextAndColor = (priority: number | null) => {
+        switch (priority) {
+            case 1: return { text: "Faible", color: muiTheme.palette.error.main }
+            case 2: return { text: "Moyenne", color: muiTheme.palette.gray.main }
+            case 3: return { text: "Haute", color: muiTheme.palette.primary.main }
+            default: return { text: "Aucune", color: "black" }
+        }
     }
 
 
@@ -460,6 +472,8 @@ export default function Contacts() {
                                     handleUpdateContact={updateContactInContactsAndDB}
                                     handleDeleteContact={deleteDataOnFirebaseAndReload}
                                     diplayContactCard={diplayContactCardToUpdate}
+                                    getPriorityTextAndColor={getPriorityTextAndColor}
+
                                 />
                             </TabPanel>
 
@@ -555,6 +569,7 @@ export default function Contacts() {
                                     <ContactCard 
                                         contact={emptyContact}
                                         currentUserId={currentUser.uid}
+                                        getPriorityTextAndColor={getPriorityTextAndColor}
                                         addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)} 
                                      />
                                 </TabPanel>
@@ -562,14 +577,15 @@ export default function Contacts() {
 
                             {/* ///////// Un CONTACT ///////// */}
                             <TabPanel key="3" value={tabValue} index={3}>
-                                <ContactCard contact={contactToDisplay}
-                                    //updateContact={setContactToDisplay} 
+                                <ContactCard 
+                                    contact={contactToDisplay}
+                                    currentUserId={currentUser.uid}
+                                    getPriorityTextAndColor={getPriorityTextAndColor}
                                     handleDeleteContact={deleteDataOnFirebaseAndReload}
                                     updateContact={updateWholeContactInContactsAndDB}
                                     // updateContact={() => {console.log("updateContact")}} 
                                     //contactCardDisplayStatus={isContactCardDisplay} 
                                     //setContactCardDisplayStatus={setIsContactCardDisplay} 
-                                    currentUserId={currentUser.uid}
                                 />
                             </TabPanel>
 

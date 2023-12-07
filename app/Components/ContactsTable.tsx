@@ -221,10 +221,12 @@ type ContactsTableProps = {
     // handleUpdateContact: (updatingContact: Contact) => void
     handleDeleteContact: (id: string) => void
     diplayContactCard: (contact: Contact) => void
+    getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
+
 
     //setSelectedContactId: (id: string) => void
 }
-export default function ContactsTable({ contacts, currentUserId, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, diplayContactCard}: ContactsTableProps) {
+export default function ContactsTable({ contacts, currentUserId, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, diplayContactCard, getPriorityTextAndColor}: ContactsTableProps) {
 
     //console.log("CONTACT TABLE")
     //console.log("CONTACT TABLE Contacts = ", contacts)
@@ -335,6 +337,7 @@ export default function ContactsTable({ contacts, currentUserId, selectedContact
                                     handleUpdateContact={handleUpdateContact}
                                     handleDeleteContact={() => handleDeleteContact(row.id)}  
                                     diplayContactCard={diplayContactCard}
+                                    getPriorityTextAndColor={getPriorityTextAndColor}
                                 //setContacts={setContacts} 
                                 />
                             );
