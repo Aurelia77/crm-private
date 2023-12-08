@@ -86,7 +86,6 @@ import { useTheme } from '@mui/material/styles';
 
 
 
-
 export default function Contacts() {
     const [contacts, setContacts] = React.useState<Contact[]>([])
     const [filteredContacts, setFilteredContacts] = React.useState<Contact[]>([])
@@ -242,11 +241,14 @@ export default function Contacts() {
     const getPriorityTextAndColor = (priority: number | null) => {
         switch (priority) {
             case 1: return { text: "Faible", color: muiTheme.palette.error.main }
-            case 2: return { text: "Moyenne", color: muiTheme.palette.gray.main }
-            case 3: return { text: "Haute", color: muiTheme.palette.primary.main }
-            default: return { text: "Aucune", color: "black" }
+            case 2: return { text: "Moyenne", color: muiTheme.palette.gray.dark }
+            case 3: return { text: "Haute", color: muiTheme.palette.primary.dark }
+            default: return { text: "Aucune", color: "" }
+            // default: return { text: "Aucune", color: "black" }
         }
     }
+
+    
 
 
     React.useEffect(() => {
@@ -344,7 +346,7 @@ export default function Contacts() {
     }, [
         //emptySearchCriteria,      // Boucle infinie !!! Pourquoi ??? Pourtant sa valeur ne change jamais... 
         contactsSearchCriteria,
-        //contacts  
+        contacts  
     ])      // !!!!!!!!!!!!!!! laisser contact ? car si modif ça peut disparaitre !!!!!! NON on ne veut pas ! + boucle infinie !!!
 
     // React.useEffect(() => {
@@ -440,7 +442,7 @@ export default function Contacts() {
                                     sx={{ display: "flex", alignItems: "center", margin:"13px 0 7px 15px",  }}
                                 >
                                     <Typography variant="h5">
-                                        {contacts.length} contacts :
+                                        {filteredContacts.length} contacts :
 
                                         {/* {!isSearchCriteriaEmpty
                                             ? `Recherche : ${filteredContacts.length} contacts trouvé(s) (sur ${contacts.length})`
@@ -458,10 +460,8 @@ export default function Contacts() {
                                                 <SearchIcon />
                                             </Fab>                                        
                                         }
-                                    </Typography>
-                                    
-                                </Box>                                
-                                
+                                    </Typography>                                    
+                                </Box>  
 
                                 <ContactsTable
                                     //contacts={contacts}

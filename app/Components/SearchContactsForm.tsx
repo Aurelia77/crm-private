@@ -15,7 +15,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import NavigationIcon from '@mui/icons-material/Navigation';
 import { useTheme } from '@mui/material/styles';
-import {getCategoriesFromDatabase, getCatLabelFromId} from '../utils/firebase'
+import { getCategoriesFromDatabase, getCatLabelFromId } from '../utils/firebase'
 
 interface SearchFormProps {
     contacts: Contact[];
@@ -34,7 +34,7 @@ const MenuSelectProps = {
 };
 
 
-export default function SearchContactsForm({ contacts, currentUserId, emptySearchCriteria, onSearchChange  }: SearchFormProps) {
+export default function SearchContactsForm({ contacts, currentUserId, emptySearchCriteria, onSearchChange }: SearchFormProps) {
 
     const [search, setSearch] = React.useState<SearchContactCriteria>(emptySearchCriteria);
 
@@ -43,23 +43,13 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
     const [selectedCatIds, setCatSelectedIds] = React.useState<string[]>([]);
     const [selectedCatLabels, setCatSelectedLabels] = React.useState<string[]>([]);
 
-    console.log("search", search)
-
-    React.useEffect(() => {
-        if (selectedCatIds.length > 0) {
-            Promise.all(selectedCatIds.map(catId => getCatLabelFromId(catId)))
-                .then(labels => setCatSelectedLabels(labels));
-        } else {
-            setCatSelectedLabels([]);
-        }
-    }, [selectedCatIds]);
-
     const muiTheme = useTheme();
 
-  
-   
+    console.log("search", search)
+    //console.log(selectedCatIds)
+    //console.log(selectedCatLabels)
 
-    console.log(search)
+ 
 
     // const businessCategorys = ["Camping", "Hôtel", "Congiergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre"];
 
@@ -70,21 +60,40 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
     const allDifferentsBusinessCitiesValues = getUniqueSortedValues(contacts, 'businessCity')
     const allDifferentsContactTypesValues = getUniqueSortedValues(contacts, 'contactType')
 
-    React.useEffect(() => {
+  
 
+    React.useEffect(() => {
         getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
             //console.log("categories", categories)
-      
+
             // Pas besoin de l'attribut userId donc on garde juste ce qu'on veut
             const newCategoriesList = categories.map(category => ({
-              id: category.id,
-              label: category.label
+                id: category.id,
+                label: category.label
             }));
             setCategoriesList(newCategoriesList);
-          })
-       
+        })
     }, [currentUserId]);
 
+     // Je me demandais s'il ne fallait pas mieux mettre onSearchChange dans handleChange et handleChangeType, mais apparemment non !!!
+    // Si vous déplacez l'appel à onSearchChange dans handleChange et handleChangeType, il sera appelé avant que l'état search ne soit mis à jour, car setState est asynchrone. Cela signifie que onSearchChange recevrait l'ancien état search, pas le nouvel état.
+    // => Mais non !!!!!!!!!!!!!!!!! ?????????????
+    React.useEffect(() => {
+        onSearchChange(search)
+
+        console.log("!!!!!!!!!! USEEFFECT")
+    }, [search, onSearchChange, 
+        //contacts
+    ])
+
+    React.useEffect(() => {
+        if (selectedCatIds.length > 0) {
+            Promise.all(selectedCatIds.map(catId => getCatLabelFromId(catId)))
+                .then(labels => setCatSelectedLabels(labels));
+        } else {
+            setCatSelectedLabels([]);
+        }
+    }, [selectedCatIds]);
 
     const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>) => {
         console.log(event.target.name, event.target.value)
@@ -99,7 +108,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
 
         console.log(value)
 
-        setCatSelectedIds(value as string[]);
+        attribut === "businessCategoryId" &&  setCatSelectedIds(value as string[]);
 
         setSearch({ ...search, [attribut]: typeof value === 'string' ? [value] : value });
         //setSearch({ ...search, businessCategory: value });            // me dit que Value peut être de type String mais pourtant je ne vois pas quand c'est possible !!!???
@@ -118,18 +127,13 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
 
 
 
-    // Je me demandais s'il ne fallait pas mieux mettre onSearchChange dans handleChange et handleChangeType, mais apparemment non !!!
-    // Si vous déplacez l'appel à onSearchChange dans handleChange et handleChangeType, il sera appelé avant que l'état search ne soit mis à jour, car setState est asynchrone. Cela signifie que onSearchChange recevrait l'ancien état search, pas le nouvel état.
-    // => Mais non !!!!!!!!!!!!!!!!! ?????????????
-    React.useEffect(() => {
-        onSearchChange(search)
-    }, [search, onSearchChange])
+   
 
     return (
         <Paper sx={{ margin: "0 1em 0 1em", padding: "0.6em", bgcolor: 'primary.light', }} >
             <FormControl sx={{
-                position: "relative", 
-                bgcolor: 'lightCyan.light', 
+                position: "relative",
+                bgcolor: 'lightCyan.light',
                 padding: "1%",
                 width: "98%",
                 //maxWidth: "1200px"    // A voir si très grand écran !!!
@@ -143,9 +147,9 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                 </Fab> */}
 
                 <Tooltip title="Supprimer la recherche">
-                    <Fab 
-                        size="small" 
-                        color="error" 
+                    <Fab
+                        size="small"
+                        color="error"
                         sx={{
                             //width:"20px",
                             //height:"20px",
@@ -154,7 +158,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             right: -15,
                             padding: 0   // Car les boutons ont automatiquement un padding
                         }}
-                        onClick={resetSearch} 
+                        onClick={resetSearch}
                     >
                         <ClearIcon fontSize='small' />
                     </Fab>
@@ -164,7 +168,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                 <Box sx={{
                     display: 'flex',
                     justifyContent: 'space-around'// 
-                   // gap: "5%"
+                    // gap: "5%"
                 }}>
                     <FormControl>
                         <RadioGroup
@@ -174,9 +178,9 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             value={search.isClient}
                             onChange={handleChangeRadio}
                         >
-                            <FormControlLabel value="yes" control={<Radio />} label="Clients" sx={{ height:"21px" }} />
-                            <FormControlLabel value="no" control={<Radio />} label="Prospects" sx={{ height:"21px" }} />
-                            <FormControlLabel value="all" control={<Radio />} label="TOUS" sx={{ height:"21px" }} />
+                            <FormControlLabel value="yes" control={<Radio />} label="Clients" sx={{ height: "25px" }} />
+                            <FormControlLabel value="no" control={<Radio />} label="Prospects" sx={{ height: "25px" }} />
+                            <FormControlLabel value="all" control={<Radio />} label="TOUS" sx={{ height: "25px" }} />
                         </RadioGroup>
                     </FormControl>
 
@@ -187,64 +191,60 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                         name='businessName'
                         value={search.businessName}
                         onChange={handleChangeText}
-                        sx={{ 
+                        sx={{
                             //width: '100%', 
-                            marginRight: "30px" }} />
+                            marginRight: "30px"
+                        }} />
                     {/* <TextField id="search-city" label="Ville" name='businessCity' value={search.businessCity} onChange={handleChange} 
                             sx={{ width: '200px', marginRight: "30px" }} />*/}
 
-                    
-                      {/* //////////// CAT ///////////// */}
-                      <FormControl sx={{width:"20%"}} >
+
+                    {/* //////////// CAT ///////////// */}
+                    <FormControl sx={{ width: "20%" }} >
                         <InputLabel id="multiple-checkbox-type-label">Catégorie(s)</InputLabel>
-                        {categoriesList.length > 0 
-                        ?  <Select
-                            id="multiple-checkbox-type-label"
-                            multiple={true}
-                            value={search.businessCategoryId}
-                            // value={search.businessCategoryId.map(
-                            //         (catId: string) => getCatLabelFromId(catId)                            
-                            //     ) }
-                            onChange={(e) => handleMultipleChangeSelect(e, "businessCategoryId")}
-                            input={<OutlinedInput label="Catégories"
-                            //sx={{ width: '300px', border: "solid 1px black" }} 
-                            />}
-
-
-
-                            //renderValue={(selected) => selected).join(', ')}
-                            renderValue={(selectedIds) => selectedCatLabels.join(', ')  }
-                            sx={{ width: '100%' }}
-                            MenuProps={MenuSelectProps}
-                        >
-
-
-                            {/* <MenuItem key="0" value="">NON DEFINIE</MenuItem> */}                       
+                        {categoriesList.length > 0
+                            ? <Select
+                                id="multiple-checkbox-type-label"
+                                multiple={true}
+                                value={search.businessCategoryId}
+                                // value={search.businessCategoryId.map(
+                                //         (catId: string) => getCatLabelFromId(catId)                            
+                                //     ) }
+                                onChange={(e) => handleMultipleChangeSelect(e, "businessCategoryId")}
+                                input={<OutlinedInput label="Catégories"
+                                //sx={{ width: '300px', border: "solid 1px black" }} 
+                                />}
+                                //renderValue={(selected) => selected).join(', ')}
+                                renderValue={(selectedIds) => selectedCatLabels.join(', ')}
+                                sx={{ width: '100%' }}
+                                MenuProps={MenuSelectProps}
+                            >
+                                {/* <MenuItem key="0" value="">NON DEFINIE</MenuItem> */}
 
                                 {categoriesList
                                     .filter(cat => allDifferentsBusinessCategoryValues.includes(cat.id))
                                     .sort((a, b) => a.label.localeCompare(b.label))
                                     .map((cat, index) => (
-                            //{categoriesList.filter(cat => allDifferentsBusinessCategoryValues.includes(cat.id)).map((cat, index) => (
-                            // {categoriesList.sort((a, b) => a.label.localeCompare(b.label)).map((cat, index) => (
-                                <MenuItem
-                                    key={cat.id}
-                                    value={cat.id}
-                                    sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
-                                >                                    
-                                    <Checkbox checked={search.businessCategoryId.indexOf(cat.id) > -1} />
-                                    <ListItemText primary={cat.label} />                                    
-                                </MenuItem>
-                            ))}
-                        </Select>
-                        : null
-                    }
+                                        //{categoriesList.filter(cat => allDifferentsBusinessCategoryValues.includes(cat.id)).map((cat, index) => (
+                                        // {categoriesList.sort((a, b) => a.label.localeCompare(b.label)).map((cat, index) => (
+                                        <MenuItem
+                                            key={cat.id}
+                                            value={cat.id}
+                                            sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
+                                        >
+                                            <Checkbox checked={search.businessCategoryId.indexOf(cat.id) > -1} />
+                                            <ListItemText primary={cat.label} />
+                                        </MenuItem>
+                                    ))}
+                            </Select>
+                            : null
+                        }
                     </FormControl>
 
 
 
                     {/* //////////// VILLE ///////////// */}
-                    <FormControl sx={{width:"20%"}} >
+                    <FormControl sx={{ width: "20%" }} >
                         <InputLabel id="multiple-checkbox-city-label">Ville(s)</InputLabel>
                         <Select
                             id="multiple-checkbox-city-label"
@@ -266,7 +266,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                     </FormControl>
 
                     {/* //////////// TYPE ///////////// */}
-                    <FormControl sx={{width:"20%"}} >
+                    <FormControl sx={{ width: "20%" }} >
                         <InputLabel>Type(s)</InputLabel>
                         <Select
                             multiple={true}
@@ -288,7 +288,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                         </Select>
                     </FormControl>
 
-                  
+
 
 
 

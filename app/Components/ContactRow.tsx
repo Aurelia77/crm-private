@@ -66,11 +66,7 @@ import { StyledTableRow, StyledTableCell } from '../utils/StyledComponents';
 import { Timestamp } from 'firebase/firestore';
 
 import Rating, { IconContainerProps } from '@mui/material/Rating';
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
-import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
-import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
-import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAltOutlined';
-import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
+
 import Tooltip from '@mui/material/Tooltip';
 import { timeStamp } from 'console';
 
@@ -81,7 +77,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { FormControl } from '@mui/material';
 import { handleOpenFile } from '../utils/firebase'
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
-import {deleteModalStyle} from '../utils/StyledComponents'
+import {deleteModalStyle, StyledRating, customIcons, IconContainer} from '../utils/StyledComponents'
 import { parse } from 'path';
 
 import {isDatePassed, isDateSoon} from '../utils/toolbox'
@@ -96,52 +92,6 @@ const StyledPriorityRating = styled(Rating)({
     },
   });
 
-// Pour les smileys du RATING 
-// => (dans le composant car besoin de connaitre la donnée pour ajuster la taille en fonction)  NON car sinon il faut cliquer 2 fois pour que ça valide !!!  
-const StyledRating = styled(Rating)(({ theme }) => ({
-    '& .MuiRating-iconEmpty .MuiSvgIcon-root': {
-        color: theme.palette.action.disabled,
-    },
-}))
-const customIcons: {
-    [index: string]: { icon: React.ReactElement; label: string; };
-} = {
-    1: {
-        icon: <SentimentVeryDissatisfiedIcon color="error"
-        //fontSize={contact.interestGauge === 1 ? 'large' : 'small'} 
-        />,
-        label: 'Very Dissatisfied',
-    },
-    2: {
-        icon: <SentimentDissatisfiedIcon color="warning"
-        //fontSize={contact.interestGauge === 2 ? 'large' : 'small'} 
-        />,
-        label: 'Dissatisfied',
-    },
-    3: {
-        icon: <SentimentSatisfiedIcon color="secondary"
-        //fontSize={contact.interestGauge === 3 ? 'large' : 'small'} 
-        />,
-        label: 'Neutral',
-    },
-    4: {
-        icon: <SentimentSatisfiedAltIcon color="primary"
-        //fontSize={contact.interestGauge === 4 ? 'large' : 'small'} 
-        />,
-        label: 'Satisfied',
-    },
-    5: {
-        icon: <SentimentVerySatisfiedIcon color="success"
-        //icon: <EmojiEmotionsIcon  color="success"
-        //fontSize={contact.interestGauge === 5 ? 'large' : 'small'} 
-        />,
-        label: 'Very Satisfied',
-    },
-};
-function IconContainer(props: IconContainerProps) {
-    const { value, ...other } = props;
-    return <span {...other}>{customIcons[value].icon}</span>;
-}
 
 
 
@@ -810,7 +760,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     }}
                     inputProps={{ 
                         style: 
-                            {color: getPriorityTextAndColor(contact.priority).color ?? ""}
+                            {color: getPriorityTextAndColor(contact.priority).color}
+                            // {color: getPriorityTextAndColor(contact.priority).color ?? ""}
                     }}
                 />
                 {/* <CustomTextField attribut="businessName"  startAdornment={contact.isClient 
@@ -820,8 +771,12 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             </StyledTableCell>
 
             {/* Priorité */}
-            <StyledTableCell component="td" scope="row" sx={{ position:"relative", border:  `7px solid ${getPriorityTextAndColor(contact.priority).color}`
-         }} >
+            <StyledTableCell component="td" scope="row" 
+                sx={{ 
+                    position:"relative", 
+                    border: contact.priority && `7px solid ${getPriorityTextAndColor(contact.priority).color}`
+                }}
+            >
             {/* <Tooltip title={`Priorité ${getPriorityTextAndColor(contact.priority).text}`} placement='top'   > */}
                 {contact.priority && <Tooltip 
                     arrow 
@@ -866,7 +821,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactPhone')}
                         InputProps={{
                             //startAdornment: "Direct ",
-                            disableUnderline: contact.businessPhone.length > 0
+                            disableUnderline: contact.contactPhone.length > 0
                         }}
                         inputProps={{ style: { textAlign: 'center' } }}
                     />
@@ -902,8 +857,9 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 />
                 <TextField id="standard-basic" //label="Nom du contact" 
                     value={contact.contactPosition} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactPosition')}
-                    InputProps={{
-                        disableUnderline: contact.contactPosition.length > 0
+                    InputProps={{  
+                        startAdornment: contact.contactPosition.length === 0 && <span style={{ color: 'gray', fontSize: "0.8em", marginLeft:"40%" }}>... </span>,                        
+                        disableUnderline: true//contact.contactPosition.length > 0
                     }}
                     inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
                 />
@@ -1126,7 +1082,17 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
             {/* interestGauge */}
             {/* https://bernii.github.io/gauge.js/#! ??? Avec CANVAS ??? */}
-            <StyledTableCell align="center">
+            <StyledTableCell align="center" sx={{ position: 'relative' }}>
+                {contact.interestGauge && <Tooltip 
+                    arrow 
+                    title="Supprimer la gauge d'intérêt" 
+                    placement='left'
+                >
+                    <IconButton color="primary" sx={{ padding: 0, position:"absolute", top:-3, right:-3}}        // Car les boutons ont automatiquement un padding
+                        onClick={() => handleChangeNumber(null, "interestGauge")} >
+                        <ClearIcon fontSize='small' color='error' />
+                    </IconButton>
+                </Tooltip>}
                 {/* <IconButton aria-label="comment" color="primary" sx={{ padding: 0, float: "right" }}       // Car les boutons ont automatiquement un padding
                     onClick={() => handleChangeInterestGauge(null)} >
                     <ClearIcon color='warning' />

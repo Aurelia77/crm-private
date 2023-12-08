@@ -2,6 +2,7 @@ import { Timestamp } from 'firebase/firestore';
 import { uid } from 'uid';
 
 
+
 const emptyContact: Contact = {
     id: uid(),
     isClient: false,
@@ -120,7 +121,7 @@ const contactCategories: ContactCategorieType[] = [
 
 //const sortedBusinessCategories = [...businessCategories].sort();
 
-const contactTypes: ContactTypeType[] = ["NON DEFINI", "Particulier", "Entreprise", "Partenaire"];
+const contactTypes: ContactTypeType[] = ["NON DEFINI", "Entreprise", "Particulier", "Partenaire"];
 
 
 const timeStampObjToTimeStamp = (timeStampObj: Timestamp): number => {
@@ -219,6 +220,7 @@ const isDateSoon = (timeStampObj: Timestamp | null) => {
         return (timeStamp > nowTimestamp) && (timeStamp < inAWeekTimeStamp)
     }
 }
+
 
 
 

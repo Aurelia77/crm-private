@@ -13,7 +13,7 @@ import Edit from '@mui/icons-material/Edit';
 import LocationOn from '@mui/icons-material/LocationOn';
 import { grey } from '@mui/material/colors';
 import Image from 'next/image'
-import { TextField, Stack, Button, FormControl, InputLabel, MenuItem, Autocomplete, Chip, ListItem, List, OutlinedInput, Checkbox, ListItemText, FormControlLabel, Tooltip, Modal, Rating, Link } from '@mui/material'
+import { TextField, Stack, Button, FormControl, InputLabel, MenuItem, Autocomplete, Chip, ListItem, List, OutlinedInput, Checkbox, ListItemText, FormControlLabel, Tooltip, Modal, Rating, Link, InputAdornment } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { contactTypes } from '../utils/toolbox'
 import dayjs, { Dayjs } from 'dayjs';       // npm install dayjs
@@ -42,8 +42,9 @@ import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import MailIcon from '@mui/icons-material/Mail';
 import LanguageIcon from '@mui/icons-material/Language';
 import PsychologyAlt from '@mui/icons-material/PsychologyAlt';
+import { StyledRating, IconContainer, customIcons } from '../utils/StyledComponents';
 
-import {isDatePassed, isDateSoon} from '../utils/toolbox'
+import { isDatePassed, isDateSoon } from '../utils/toolbox'
 
 
 type ContactCardProps = {
@@ -249,7 +250,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         }}
                         onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, isClient: !contactToAddOrUpdate.isClient })}
                     >
-                        <Tooltip arrow title={`${contactToAddOrUpdate.isClient ? "Client" : "Prospect" } (Cliquer pour changer)`}>
+                        <Tooltip arrow title={`${contactToAddOrUpdate.isClient ? "Client" : "Prospect"} (Cliquer pour changer)`}>
                             {contactToAddOrUpdate.isClient
                                 ? <HandshakeOutlinedIcon color='success' fontSize='large' sx={{ width: 80, height: 80 }} />
                                 : <PsychologyAltIcon
@@ -304,8 +305,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     </FormControl>
 
                 </Box>
-                {/* ///////// TYPE - CAT ///////// */}
 
+                {/* ///////// TYPE - CAT- FICHIERS ///////// */}
                 <Box sx={{
                     display: 'flex', justifyContent: "space-around",
                     //position:"relative" 
@@ -368,23 +369,55 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             ))}
                         </Select>
                     </FormControl>
+
+                    {/* ///////// FICHIERS */}
+                    <Box>
+                        <Typography variant="h6">Fichiers associés au contact ({contactToAddOrUpdate.filesSent.length})</Typography>
+                        <Typography
+                            //variant="caption" 
+                            component="div"
+                            sx={{ color: "text.secondary" }}
+                        >
+                            {contactToAddOrUpdate.filesSent.map((file, index) => (
+                                <Box key={index} sx={{ display: "flex", alignItems: "center" }} >
+                                    <ArrowRightIcon sx={{ color: "text.secondary" }} />
+                                    <Button
+                                        onClick={() => handleOpenFile(file.fileRef)}
+                                    >
+                                        {index + 1} - {file.fileName}<br />
+                                    </Button>
+                                    <Tooltip title="Désassocier ce fichier du contact">
+                                        <IconButton
+                                            size="small"
+                                            color="error"
+                                            onClick={() => removeFile(file)}
+                                        >
+                                            <ClearIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </Box>
+                            ))}
+                        </Typography>
+                    </Box>
+                 
                 </Box>
 
 
-                {/* ///////// LOGO et NOM + dates  ///////// */}
+                {/* ///////// LOGO et NOM + dates + Boutons TELECHARGEMENT fichier LOGO et SMILEYS  ///////// */}
                 <Box>
+                    {/* ///////// LOGO et NOM + dates  ///////// */}
                     <Box sx={{
                         display: 'flex', justifyContent: "space-between"
                         //alignItems: 'center', gap: 2, 
                     }}>
                         {/* ///////// LOGO  */}
-                        <Box sx={{ width: "20%" }} >
+                        <Box sx={{ width: "20%", mt: "auto" }} >
                             <Avatar
                                 variant="rounded"
                                 src={contactToAddOrUpdate.logo
                                     ? contactToAddOrUpdate.logo
                                     : ""}
-                                sx={{ width: "200px", height: "200px" }}
+                                sx={{ width: "250px", height: "250px" }}
                             >
                                 {contactToAddOrUpdate.logo ? "" : "Aucun logo"}
                             </Avatar>
@@ -399,13 +432,13 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 required
                                 id="outlined-basic"
                                 //label="Nom"
-                                //variant="outlined"
+                                //
                                 value={contactToAddOrUpdate.businessName}
                                 onChange={handleChangeText("businessName")}
                                 inputProps={{
                                     style: {
                                         //color: muiTheme.palette.primary.dark, 
-                                        color: getPriorityTextAndColor(contactToAddOrUpdate.priority).color ?? "",
+                                        color: getPriorityTextAndColor(contactToAddOrUpdate.priority).color,
                                         fontSize: "2.5em",
                                         fontWeight: "bold",
                                         textAlign: "center"
@@ -413,7 +446,9 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 }}
                                 color={contactToAddOrUpdate.businessName ? "success" : "error"}
                                 InputProps={{
-                                    disableUnderline: contactToAddOrUpdate.businessName.length > 0,
+                                    startAdornment: contactToAddOrUpdate.businessName.length === 0 && <span style={{ fontSize: "2.5em", marginLeft: "40%" }}>... </span>,
+                                    disableUnderline: true
+                                    //contactToAddOrUpdate.businessName.length > 0,
                                 }}
                             // inputProps={{ 
                             //     style: 
@@ -421,7 +456,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             // }}
                             />
 
-                            {/* <TextField id="outlined-basic" label="Secteur d'activité" variant="outlined" value={findLabelNafCodes(contactToAdd.businessActivity)} /> */}
+                            {/* <TextField id="outlined-basic" label="Secteur d'activité"  value={findLabelNafCodes(contactToAdd.businessActivity)} /> */}
 
                             {/* ///////// DATES ///////// */}
                             <Box sx={{ display: 'flex', justifyContent: "space-around", marginTop: "50px" }} >
@@ -451,7 +486,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 </Box>
 
                                 {/* ///////// Dernier APPEL */}
-                                <Box sx={{ width: "25%" }} >
+                                {/* <Box sx={{ width: "25%" }} >
                                     <Box sx={{
                                         display: "flex",
                                         justifyContent: "space-between",
@@ -473,7 +508,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         }}
                                         label={contactToAddOrUpdate.dateOfFirstCall === null ? "JJ mmm AAAA" : ""}
                                     />
-                                </Box>
+                                </Box> */}
 
                                 {/* ///////// RELANCE */}
                                 <Box sx={{
@@ -495,7 +530,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         marginBottom: "10px",
                                     }}> {/* Sinon on pouvait mettre un float:right sur le bouton ci-dessous */}
                                         {/* <NotificationsNoneOutlinedIcon sx={{ color: pink[800] }} /> */}
-                                        <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, color:"darkRed" }}>RELANCE</Typography>
+                                        <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, color: "darkRed" }}>RELANCE</Typography>
                                         <Tooltip title="Supprimer la date" placement='top' >
                                             <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
                                                 onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, dateOfNextCall: null })} >
@@ -511,13 +546,21 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         }}
                                         label={contactToAddOrUpdate.dateOfNextCall === null ? "JJ mmm AAAA" : ""}
                                     />
+                                    <Typography variant="caption" sx={{ color: "text.warning" }}>
+                                        {isDatePassed(contactToAddOrUpdate.dateOfNextCall)
+                                            ? "Attention : La date est passée !!!"
+                                            : isDateSoon(contactToAddOrUpdate.dateOfNextCall)
+                                                ? "Attention : Relance dans les 7 jours !"
+                                                : ""
+                                        }
+                                    </Typography>
                                 </Box>
                             </Box>
                         </Box>
                     </Box>
 
                     {/* ////////////// Boutons TELECHARGEMENT fichier LOGO et SMILEYS /// */}
-                    <Box>
+                    <Box sx={{ display: "flex", justifyContent: "space-between" }} >
                         {/* ////////////// Boutons TELECHARGEMENT */}
                         <Box sx={{ width: "30%", marginTop: "15px" }}>
                             {/* => FormControl n'est pas conçu pour gérer les soumissions de formulaire. */}
@@ -557,122 +600,167 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         </Box>
 
                         {/* ////////////// SMILEYS */}
-                        <Box>
-                            {/* <StyledRating
+                        <Box
+                            sx={{
+                                m: 3,
+                                //width:"50%",
+                                position: 'relative',
+                                mr: "40%"
+                            }}
+                        >
+
+                            {contactToAddOrUpdate.interestGauge && <Tooltip
+                                arrow
+                                title="Supprimer la gauge d'intérêt"
+                                placement='left'
+                            >
+                                <IconButton color="primary" sx={{ padding: 0, position: "absolute", top: -5, right: -15 }}        // Car les boutons ont automatiquement un padding
+                                    onClick={() => handleChangeNumber(null, "interestGauge")} >
+                                    <ClearIcon fontSize='small' color='error' />
+                                </IconButton>
+                            </Tooltip>}
+                            <StyledRating
                                 name="highlight-selected-only"
                                 //defaultValue={2}
-                                sx={{ alignItems: 'center' }}
-                                value={contact.interestGauge}
+                                sx={{
+                                    alignItems: 'center',
+                                    fontSize: "5.5em",
+                                }}
+                                value={contactToAddOrUpdate.interestGauge}
                                 onChange={(e, newValue) => handleChangeNumber(newValue, "interestGauge")}
                                 IconContainerComponent={IconContainer}
                                 getLabelText={(value: number) => customIcons[value].label}
                                 highlightSelectedOnly
-                            /> */}
-                        
+                            />
+
                         </Box>
                     </Box>
                 </Box>
 
 
 
+                <Box sx={{ display: 'flex', justifyContent: "space-between", gap: "4%" }} >
+                    {/* ///////// NOM Contact, POSITION, VILLE et ADRESSE ///////// */}
+                    <Box
+                        sx={{ width: "48%" }}
+                    >
+                        <Box>
+                            <TextField 
+                            id="outlined-basic" label="Nom DIRIGEANT" value="A AJOUTER !!!" onChange={handleChangeText("contactName")}
+                                sx={{ width: "48%" }}
+                            />
+                            <TextField
+                                id="outlined-basic"
+                                label="Site WEB"
+                                value={contactToAddOrUpdate.businessWebsite}
+                                onChange={handleChangeText("businessWebsite")}
+                                sx={{ width: "48%", ml:"4%" }}
+                                InputProps={{
+                                    startAdornment: contactToAddOrUpdate.businessWebsite && <Link
+                                        href={contactToAddOrUpdate.businessWebsite}
+                                        target="_blank"
+                                        underline="none" //color="inherit" 
+                                        sx={{
+                                            mr: 1,
+                                            //fontSize: "0.8em" 
+                                        }}
+                                    >
+                                        <LanguageIcon style={{ color: muiTheme.palette.gray.dark }} />
+                                        {/* <LanguageIcon style={{ color: 'red' }} /> */}
+                                    </Link>
+                                }}
+                            />
+                        </Box>
 
-                {/* ///////// VILLE et ADRESSE ///////// */}
-                <Box sx={{ display: 'flex', justifyContent: "space-between" }} >
-                    <TextField id="outlined-basic" label="Ville" variant="outlined" value={contactToAddOrUpdate.businessCity} onChange={handleChangeText("businessCity")} sx={{ width: "40%" }} />
-                    <TextField id="outlined-basic" label="Adresse" variant="outlined" value={contactToAddOrUpdate.businessAddress} onChange={handleChangeText("businessAddress")} sx={{ width: "55%" }} />
+                        <Box sx={{ mt: 2 }} >
+                            <TextField id="outlined-basic" label="Nom Contact DIRECT"  value={contactToAddOrUpdate.contactName} onChange={handleChangeText("contactName")}
+                                sx={{ width: "48%" }}
+                            />
+                            <TextField id="outlined-basic" label="Position"  value={contactToAddOrUpdate.contactPosition} onChange={handleChangeText("contactPosition")}
+                                sx={{ width: "48%", ml: "4%" }}
+                            />
+                        </Box>
+
+                        <Box sx={{ mt: 2 }} >
+                            <TextField id="outlined-basic" label="Ville"  value={contactToAddOrUpdate.businessCity} onChange={handleChangeText("businessCity")} sx={{ width: "48%" }} />
+                            <TextField id="outlined-basic" label="Adresse"  value={contactToAddOrUpdate.businessAddress} onChange={handleChangeText("businessAddress")} sx={{ width: "48%", ml: "4%" }} />
+                        </Box>
+
+                        <Box sx={{ mt: 2 }} >
+                            <TextField id="outlined-basic" label="Téléphone STANDARD"  value={contactToAddOrUpdate.businessPhone} onChange={handleChangeText("businessPhone")} sx={{ width: "48%" }} />
+                            <TextField
+                                id="outlined-basic"
+                                label="Téléphone DIRECT"
+                                
+                                value={contactToAddOrUpdate.contactPhone}
+                                onChange={handleChangeText("contactPhone")}
+                                sx={{ width: "48%", ml: "4%" }}
+                            />
+                        </Box>
+
+                        <Box sx={{ mt: 2 }} >
+                            <TextField
+                                id="outlined-basic"
+                                label="Email ENTREPRISE"
+                                
+                                value={contactToAddOrUpdate.businessEmail}
+                                onChange={handleChangeText("businessEmail")}
+                                sx={{ width: "48%" }}
+                                InputProps={{
+                                    startAdornment: contactToAddOrUpdate.businessEmail && <Link href={`mailto:${contactToAddOrUpdate.businessEmail}`} underline="none" //color="inherit" 
+                                        sx={{
+                                            mr: 1,
+                                            //fontSize: "0.8em" 
+                                        }}
+                                    >
+                                        <MailIcon color="secondary" />
+                                    </Link>
+                                }}
+                            />
+
+                            <TextField
+                                id="outlined-basic"
+                                label="Email DIRECT"
+                                
+                                value={contactToAddOrUpdate.contactEmail}
+                                onChange={handleChangeText("businessEmail")}
+                                sx={{ width: "48%", ml: "4%" }}
+                                InputProps={{
+                                    startAdornment: contactToAddOrUpdate.contactEmail && <Link href={`mailto:${contactToAddOrUpdate.contactEmail}`} underline="none" //color="inherit" 
+                                        sx={{
+                                            mr: 1,
+                                            fontSize: "0.8em"
+                                        }}
+                                    >
+                                        <MailIcon />
+                                    </Link>
+                                }}
+                            />
+
+                        </Box>
+
+
+
+                    </Box>
+
+                    {/* ///////// COMMENTAIRES ///////// */}
+                    <TextField
+                        variant="outlined"
+                        sx={{ width: "48%" }}
+                        multiline
+                        id="outlined-basic"
+                        label="Commentaires"
+                        
+                        value={contactToAddOrUpdate.comments}
+                        onChange={handleChangeText("comments")}
+                    />
                 </Box>
 
-                {/* ///////// NOM Contact, POSITION ///////// */}
-                <Box sx={{ display: 'flex', justifyContent: "space-between" }} >
-                    <TextField id="outlined-basic" label="Nom Contact DIRECT" variant="outlined" value={contactToAddOrUpdate.contactName} onChange={handleChangeText("contactName")} sx={{ width: "60%" }} /> 
-                    <TextField id="outlined-basic" label="Position" variant="outlined" value={contactToAddOrUpdate.contactPosition} onChange={handleChangeText("contactPosition")} sx={{ width: "30%" }} />
-                </Box>
 
-                {/* ///////// Tel Contact, Email ///////// */}
-                <Box sx={{ display: 'flex', justifyContent: "space-between" }} >
-                        <TextField 
-                            id="outlined-basic" 
-                            label="Téléphone DIRECT" 
-                            variant="outlined" 
-                            value={contactToAddOrUpdate.contactPhone} 
-                            onChange={handleChangeText("contactPhone")} 
-                            sx={{ width: "45%" }}                                                
-                    />
+            
 
-                    <TextField 
-                        id="outlined-basic" 
-                        label="Email DIRECT" 
-                        variant="outlined" 
-                        value={contactToAddOrUpdate.contactEmail} 
-                        onChange={handleChangeText("businessEmail")} 
-                        sx={{ width: "100%" }}
-                        InputProps={{
-                            startAdornment: contactToAddOrUpdate.contactEmail && <Link href={`mailto:${contactToAddOrUpdate.contactEmail}`} underline="none" //color="inherit" 
-                            sx={{ 
-                                mr:1,
-                                fontSize: "0.8em" }}                             
-                            >
-                                    <MailIcon />
-                                </Link>
-                        }}  
-                    />
-                </Box>
+              
 
-                {/* ///////// Tel STANDARD, Email STANDARD et SITE WEB ///////// */}
-                <Box sx={{ display: 'flex', justifyContent: "space-between" }} >
-                    <TextField id="outlined-basic" label="Téléphone STANDARD" variant="outlined" value={contactToAddOrUpdate.businessPhone} onChange={handleChangeText("businessPhone")} sx={{ width: "30%" }} />
-                    <TextField 
-                        id="outlined-basic" 
-                        label="Email ENTREPRISE" 
-                        variant="outlined" 
-                        value={contactToAddOrUpdate.businessEmail} 
-                        onChange={handleChangeText("businessEmail")} 
-                        sx={{ width: "30%" }} 
-                        InputProps={{
-                            startAdornment: contactToAddOrUpdate.businessEmail &&  <Link href={`mailto:${contactToAddOrUpdate.businessEmail}`} underline="none" //color="inherit" 
-                            sx={{ 
-                                mr:1,
-                                //fontSize: "0.8em" 
-                            }}                             
-                            >
-                                    <MailIcon color="secondary" />
-                                </Link>
-                        }}
-                    />
-
-                    <TextField 
-                        id="outlined-basic" 
-                        label="Site WEB" 
-                        variant="outlined" 
-                        value={contactToAddOrUpdate.businessWebsite} 
-                        onChange={handleChangeText("businessWebsite")} 
-                        sx={{ width: "30%" }} 
-                        InputProps={{
-                            startAdornment: contactToAddOrUpdate.businessWebsite &&  <Link 
-                                href={contactToAddOrUpdate.businessWebsite} 
-                                target="_blank" 
-                                underline="none" //color="inherit" 
-                                sx={{ 
-                                    mr:1,
-                                    //fontSize: "0.8em" 
-                                }}                             
-                                >
-                                    <LanguageIcon style={{ color: muiTheme.palette.gray.dark}} />
-                                    {/* <LanguageIcon style={{ color: 'red' }} /> */}
-                                </Link>
-                        }}
-                    />
-                </Box>
-
-                {/* ///////// COMMENTAIRES ///////// */}
-                <TextField
-                    multiline
-                    id="outlined-basic"
-                    label="Commentaires"
-                    variant="outlined"
-                    value={contactToAddOrUpdate.comments}
-                    onChange={handleChangeText("comments")}
-                />
 
                 {/* ///////// FICHIERS ///////// */}
                 <Box sx={{ marginRight: "10px", position: "relative" }}>
