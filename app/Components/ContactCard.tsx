@@ -330,7 +330,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 variant="standard"
                                 disableUnderline={true}
                             >
-                                {/* <MenuItem key="0" value="">NON DEFINIE</MenuItem> */}
+                                <MenuItem key="0" value="0">NON DEFINIE</MenuItem>
                                 {categoriesList.sort((a, b) => a.label.localeCompare(b.label)).map((cat, index) => (
                                     <MenuItem
                                         key={cat.id}

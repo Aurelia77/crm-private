@@ -584,7 +584,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             onChange={(e) => handleChangeSelect(e, "businessCategoryId")}
                             sx={{ overflow: "hidden", textOverflow: "ellipsis", width: 180 }}
                         >
-                            {/* <MenuItem key="0" value="">NON DEFINIE</MenuItem> */}
+                            <MenuItem key="0" value="0">NON DEFINIE</MenuItem>
                             {categoriesList
                                 .sort((a, b) => a.label.localeCompare(b.label))
                                 .map((cat, index) => (

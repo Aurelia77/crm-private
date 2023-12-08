@@ -189,10 +189,6 @@ export default function Contacts() {
             catLabel: "Autre"
         },
         {
-            name: "Les Trésors de Lily",
-            catLabel: "NON DEFINI"
-        },
-        {
             name: "Pierre et vacances",
             catLabel: "Centre de Loisirs"
         },
@@ -211,7 +207,8 @@ export default function Contacts() {
 
 
         fakeContactsData.forEach((contact) => {
-            fakeContactsNameAndCatLabel.forEach((contactNameAndCatLabel) => {
+            fakeContactsNameAndCatLabel.forEach((contactNameAndCatLabel) => {             
+
                 if (contact.businessName === contactNameAndCatLabel.name) {
                     // console.log(contact.businessName)
                     // console.log(contactNameAndCatLabel.catLabel)
@@ -549,7 +546,7 @@ export default function Contacts() {
                                     //icon={title.icon}
                                     // {...a11yProps(index)} 
                                     />
-                                    <Tab key={1} label="Recherche de zéro"
+                                    <Tab key={1} label="Ajout à partir de zéro"
                                     //icon={title.icon}
                                     // {...a11yProps(index)} 
                                     />
@@ -608,12 +605,12 @@ export default function Contacts() {
                                         <Button variant="contained" color='success' onClick={() => addCategoriesOnFirebaseAndReload(currentUser, contactCategories)}>1-Ajouter Catégories</Button>
                                         <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>2-Ajouter Contacts Test</Button>
                                         <Button variant="contained" color='warning' onClick={() => addCatToFakeContacts(fakeContactsData)}>3-Ajouter catégories aux contacts</Button>
-                                        <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
-                                        <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button>
+                                        {/* <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
+                                        <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button> */}
                                     </Box>
                                     <Box sx={{display:"flex", justifyContent:"space-around", }} >
                                         <Button variant="contained" color='error' sx={{ width: "300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUser)}>Supprimer tous mes contacts</Button>
-                                        <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer TOUS les contacts de l'appli !!!</Button>
+                                        {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer TOUS les contacts de l'appli !!!</Button> */}
                                     </Box>
                                 </Box>
                             </TabPanel>

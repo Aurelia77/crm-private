@@ -11,7 +11,7 @@ const emptyContact: Contact = {
     logo: '',
     businessName: '',
     denominationUsuelleEtablissement: [],
-    businessCategoryId: "",
+    businessCategoryId: "0",
     businessActivity: '',
     businessAddress: '',
     businessWebsite: '',
@@ -37,10 +37,6 @@ const emptyContact: Contact = {
 // const businessCategories: string[] = ["NON DEFINI", "Camping", "Hôtel", "Conciergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre", "Mairie / médiathèque"];
 
 const contactCategories: ContactCategorieType[] = [
-    {
-        id: "",
-        label: "-NON DEFINI",
-    },
     {
         id: "",
         label: "Camping",
