@@ -621,7 +621,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 {/* <LocalizationProvider dateAdapter={AdapterDayjs}> */}
                 <Box sx={{ pl:0 }}
                 //components={['DateTimePicker']}       // ???
-                >
+                >                    
                     <Box sx={{
                         display: "flex",
                         justifyContent: "end",           //"space-between", 
@@ -641,43 +641,50 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             </IconButton>
                         </Tooltip>
                     </Box>
-                    <Box 
-                        sx={{ '& .MuiInput-underline:before': { display: 
-                        contact.dateOfNextCall === null ? "block" : "none" } }}>
-                        <DatePicker
-                            // <DateTimePicker
-                            //defaultValue={null}
-                            //label="Date de relance"
-                            //ampm={false}          // Si on met TIME aussi
-                            // format="DD/MM/YYYY HH:mm"
-                            format="DD MMM YYYY"
-                            //minDate={dayjs(new Date())}   // à remettre !!!!!!!!!!!
+                    <Tooltip arrow title={isDatePassed(contact.dateOfNextCall)
+                                            ? "Attention : La date est passée !!!"
+                                            : isDateSoon(contact.dateOfNextCall)
+                                                ? "Attention : Relance dans les 7 jours !"
+                                                : ""
+                                        } placement='top' >
+                        <Box 
+                            sx={{ '& .MuiInput-underline:before': { display: 
+                            contact.dateOfNextCall === null ? "block" : "none" } }}>
+                            <DatePicker
+                                // <DateTimePicker
+                                //defaultValue={null}
+                                //label="Date de relance"
+                                //ampm={false}          // Si on met TIME aussi
+                                // format="DD/MM/YYYY HH:mm"
+                                format="DD MMM YYYY"
+                                //minDate={dayjs(new Date())}   // à remettre !!!!!!!!!!!
 
-                            // viewRenderers={{  hours: renderTimeViewClock,
-                            //     minutes: renderTimeViewClock,
-                            //     seconds: renderTimeViewClock, }}
-                            //value={dayjs(contact.dateOfNextCall)}   // => Avant FIREBASE ça fonctionnait avec ça (car FIREBASE transforme les dates en objet Timestamp(?))
-                            //{dayjs(new Date("01/01/2000"))}
-                            //value={dayjs(contact.dateOfNextCall.toDate())}        // Erreur si date = null
-                            //value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : undefined}  // Si on met UNDEFINED =>  A component is changing the uncontrolled value of a picker to be controlled. Elements should not switch from uncontrolled to controlled (or vice versa). It's considered controlled if the value is not `undefined`.
-                            // Impossible de mettre une date vide ???
-                            //value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : dayjs(new Date("01/01/2023"))}
-                            value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : null}
-                            label=" "
-                            sx={{
-                              '& .MuiInputBase-root': {
-                                //fontSize: '0.8rem', // Réduire la taille de la police
-                                padding: 0, // Enlever le padding
-                                margin: 0, // Enlever la marge
-                              },
-                            }}
-                            //label={contact.dateOfNextCall === null ? "JJ mmm AAAA" : ""}
-                            onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfNextCall")}
-                            slotProps={{
-                                //textField: { variant: 'standard', }       // Fait quoi ?
-                            }}
-                        />
-                    </Box>
+                                // viewRenderers={{  hours: renderTimeViewClock,
+                                //     minutes: renderTimeViewClock,
+                                //     seconds: renderTimeViewClock, }}
+                                //value={dayjs(contact.dateOfNextCall)}   // => Avant FIREBASE ça fonctionnait avec ça (car FIREBASE transforme les dates en objet Timestamp(?))
+                                //{dayjs(new Date("01/01/2000"))}
+                                //value={dayjs(contact.dateOfNextCall.toDate())}        // Erreur si date = null
+                                //value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : undefined}  // Si on met UNDEFINED =>  A component is changing the uncontrolled value of a picker to be controlled. Elements should not switch from uncontrolled to controlled (or vice versa). It's considered controlled if the value is not `undefined`.
+                                // Impossible de mettre une date vide ???
+                                //value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : dayjs(new Date("01/01/2023"))}
+                                value={contact.dateOfNextCall !== null ? dayjs(contact.dateOfNextCall.toDate()) : null}
+                                label=" "
+                                sx={{
+                                '& .MuiInputBase-root': {
+                                    //fontSize: '0.8rem', // Réduire la taille de la police
+                                    padding: 0, // Enlever le padding
+                                    margin: 0, // Enlever la marge
+                                },
+                                }}
+                                //label={contact.dateOfNextCall === null ? "JJ mmm AAAA" : ""}
+                                onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfNextCall")}
+                                slotProps={{
+                                    //textField: { variant: 'standard', }       // Fait quoi ?
+                                }}
+                            />
+                        </Box>
+                    </Tooltip>
                 </ Box>
                 {/* </LocalizationProvider> */}
                 {/* {contact.dateOfNextCall.toLocaleDateString()} {contact.dateOfNextCall.getHours().toString().padStart(2, '0')}:{contact.dateOfNextCall.getMinutes().toString().padStart(2, '0')} */}
@@ -1304,6 +1311,50 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 </Box>
             </StyledTableCell>
 
+              {/* dateOfLastCall */}
+              <StyledTableCell 
+                sx={{
+                   // padding:0 
+                }}
+            >
+                <Box>
+                    <Box sx={{
+                        display: "flex",
+                        justifyContent: "end",
+                        //marginBottom: "10px"
+                    }}>
+                        <Tooltip arrow title="Supprimer la date"  placement='left' >
+                            <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
+                                onClick={() => handleChangeDate(null, "dateOfLastCall")} >
+                                <ClearIcon
+                                //color='warning'
+                                />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                  
+                    <Box 
+                        sx={{ '& .MuiInput-underline:before': { display: 
+                        contact.dateOfLastCall === null ? "block" : "none" } }}>
+                        <DatePicker
+                            //format="DD/MM/YYYY"
+                            format="DD MMM YYYY"
+                            value={contact.dateOfLastCall !== null ? dayjs(contact.dateOfLastCall.toDate()) : null}
+                            onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfLastCall")}
+                            //label={contact.dateOfLastCall === null ? "JJ mmm AAAA" : ""}                        
+                            label=" "
+                            sx={{
+                              '& .MuiInputBase-root': {
+                                //fontSize: '0.8rem', // Réduire la taille de la police
+                                padding: 0, // Enlever le padding
+                                margin: 0, // Enlever la marge
+                              },
+                            }}
+                        />
+                    </Box>
+                </Box>
+            </StyledTableCell>
+
             {/* Type */}
             <StyledTableCell 
                 component="td" 
@@ -1313,7 +1364,9 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         ? muiTheme.palette.primary.light 
                         : contact.contactType === "Particulier"
                             ? muiTheme.palette.ochre.light
-                            : muiTheme.palette.gray.light
+                            : contact.contactType === "Partenaire"
+                                ? muiTheme.palette.secondary.light
+                                : muiTheme.palette.gray.light
                 }} 
             >
                 <FormControl >

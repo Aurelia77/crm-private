@@ -470,7 +470,6 @@ export default function Contacts() {
                                     handleDeleteContact={deleteDataOnFirebaseAndReload}
                                     diplayContactCard={diplayContactCardToUpdate}
                                     getPriorityTextAndColor={getPriorityTextAndColor}
-
                                 />
                             </TabPanel>
 
@@ -487,14 +486,14 @@ export default function Contacts() {
                                     //icon={title.icon}
                                     // {...a11yProps(index)} 
                                     />
-                                    <Tab key={1} label="Grand Calendrier"
+                                    <Tab key={1} label="Grand Calendrier"   // Scheduler
                                     //icon={title.icon}
                                     // {...a11yProps(index)} 
                                     />
-                                    <Tab key={2} label="Scheduler Calendrier"
+                                    {/* <Tab key={2} label="Grand Calendrier"
                                     //icon={title.icon}
                                     // {...a11yProps(index)} 
-                                    />
+                                    /> */}
                                 </Tabs>                               
 
                                 {/* ///////// Petit Calendrier ///////// */}
@@ -505,11 +504,11 @@ export default function Contacts() {
                                         contacts={contacts}
                                         diplayContactCardToUpdate={diplayContactCardToUpdate}
                                     />
-                                </TabPanel>
+                                </TabPanel>                               
 
-                                 {/* ///////// Grand Calendrier ///////// */}
-                                 <TabPanel key="1" value={tabCalendarValue} index={1}  >                               
-                                    <CalendarFull
+                                {/* ///////// Scheduler Calendrier ///////// */}
+                                <TabPanel key="1" value={tabCalendarValue} index={1}  >
+                                    <CalendarScheduler
                                         //contacts={fakeContactsData}
                                         //contacts={filteredContacts}   // ????????? 
                                         contacts={contacts}
@@ -518,9 +517,9 @@ export default function Contacts() {
                                     />
                                 </TabPanel>
 
-                                {/* ///////// Scheduler Calendrier ///////// */}
-                                <TabPanel key="2" value={tabCalendarValue} index={2}  >
-                                    <CalendarScheduler
+                                  {/* ///////// Grand Calendrier ///////// */}
+                                  <TabPanel key="2" value={tabCalendarValue} index={2}  >                               
+                                    <CalendarFull
                                         //contacts={fakeContactsData}
                                         //contacts={filteredContacts}   // ????????? 
                                         contacts={contacts}

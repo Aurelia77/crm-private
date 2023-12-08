@@ -227,11 +227,11 @@ export default function Admin({ currentUser }: AdminType) {
           sx={{ marginTop: "10px" }} />
       </Box>
 
-      <Box sx={{ marginTop: "30px" }} >
+      <Box sx={{ marginTop: "100px" }} >
         <Typography variant="h6">Catégories dans ma base de données ({categoriesList.length}) </Typography>
         <List
           sx={{
-            //width: '100%',
+            width: '50%',
             overflow: 'auto',
             maxHeight: "50vh",
           }}

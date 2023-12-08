@@ -69,6 +69,7 @@ const headCells: readonly Column[] = [               // readonly ???
     { id: 'interestGauge', label: <FavoriteRoundedIcon fontSize='large' />, minWidth: "5em", },
     { id: 'filesSent', label: <AttachFileRoundedIcon fontSize='large' />, minWidth: "10em", },
     { id: 'dateOfFirstCall', label: 'Premier appel', minWidth: "9em", },
+    { id: 'dateOfLastCall', label: 'Dernier appel', minWidth: "9em", },
     { id: 'contactType', label: 'Type', minWidth: "7em", }, 
     // { id: 'supprimer', label: 'Supprimer ?', minWidth: "5em", },
 ];

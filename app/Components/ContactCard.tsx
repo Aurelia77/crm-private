@@ -222,7 +222,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         //JSON.stringify(contact) === '{}' ? <div></div> :
         <Card key={contact.id} elevation={3}
             sx={{
-                m: "3%",
+                m: "1%",
                 position: "relative",
                 //mx: "auto",
                 padding: "2% 4%",
@@ -486,7 +486,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 </Box>
 
                                 {/* ///////// Dernier APPEL */}
-                                {/* <Box sx={{ width: "25%" }} >
+                                <Box sx={{ width: "25%" }} >
                                     <Box sx={{
                                         display: "flex",
                                         justifyContent: "space-between",
@@ -495,20 +495,20 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}>DERNIER appel</Typography>
                                         <Tooltip title="Supprimer la date" placement='top' >
                                             <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
-                                                onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, dateOfFirstCall: null })} >
+                                                onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, dateOfLastCall: null })} >
                                                 <ClearIcon />
                                             </IconButton>
                                         </Tooltip>
                                     </Box>
                                     <DatePicker
                                         format="DD MMM YYYY"
-                                        value={contactToAddOrUpdate.dateOfFirstCall !== null ? dayjs(contactToAddOrUpdate.dateOfFirstCall.toDate()) : null}
-                                        onChange={(newDate: Dayjs | null) => setContactToAddOrUpdate({ ...contactToAddOrUpdate, dateOfFirstCall: newDate ? Timestamp.fromDate(newDate.toDate()) : null })}
+                                        value={contactToAddOrUpdate.dateOfLastCall !== null ? dayjs(contactToAddOrUpdate.dateOfLastCall.toDate()) : null}
+                                        onChange={(newDate: Dayjs | null) => setContactToAddOrUpdate({ ...contactToAddOrUpdate, dateOfLastCall: newDate ? Timestamp.fromDate(newDate.toDate()) : null })}
                                         slotProps={{
                                         }}
-                                        label={contactToAddOrUpdate.dateOfFirstCall === null ? "JJ mmm AAAA" : ""}
+                                        label={contactToAddOrUpdate.dateOfLastCall === null ? "JJ mmm AAAA" : ""}
                                     />
-                                </Box> */}
+                                </Box>
 
                                 {/* ///////// RELANCE */}
                                 <Box sx={{
@@ -933,12 +933,12 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     <Edit sx={{ fontSize: 14 }} />
                 </IconButton> */}
 
-                {addContact && <Button variant="contained" sx={{ width: '100%', mt: 1, mb: 2 }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
-                {updateContact && <Button variant="contained" color='pink' sx={{ width: '100%', mt: 1, mb: 2 }} onClick={() => updateContact(contactToAddOrUpdate)} >Mettre à jour le contact</Button>}
+                {addContact && <Button variant="contained" sx={{ width: '100%', height:"80px", mt: 1, mb: 2 }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
+                {updateContact && <Button variant="contained" color='pink' sx={{ width: '100%', height:"80px",  mt: 1, mb: 2 }} onClick={() => updateContact(contactToAddOrUpdate)} >Mettre à jour le contact</Button>}
             </Box>
 
-            <Box sx={{ display: "flex" }} >
-                {/* ///////// SUPPRIMER ///////// */}
+            {/* ///////// SUPPRIMER ///////// */}
+            {handleDeleteContact && <Box sx={{ display: "flex" }} >
                 <Button
                     variant="contained"
                     color='error'
@@ -966,7 +966,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         </Box>
                     </Box>
                 </Modal>
-            </Box>
+            </Box>}
 
             {/* <Divider />
             <Stack

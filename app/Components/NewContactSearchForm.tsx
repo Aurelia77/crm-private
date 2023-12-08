@@ -338,10 +338,6 @@ export default function NewContactSearchForm({    //contacts, setContacts }: { c
 
         });
 
-
-
-
-
         // resultInseeSearchToKeep.forEach((business1: Contact, index1: number) => {
         //     // console.log("*123123business1", index1, business1)
 
@@ -426,11 +422,11 @@ export default function NewContactSearchForm({    //contacts, setContacts }: { c
                 <FormControl
                     variant='filled'
                     sx={{
-                        width: thereIsListToDisplay() ? "33.33%" : "50%",
+                        width: thereIsListToDisplay() ? "20%" : "50%",
                         backgroundColor: "#ccc", //"primary.light",
                         padding: 2,
                     }} >
-                    <p>La recherche se fait sur le siret OU sur le reste (enlever le SIRET pour qu'elle se fasse sur le reste) <br/> Je sais que tu m'as dit que tu faisais pas de recherche par SIRET, on changera !!! :)</p>
+                    <p>La recherche se fait sur le siret OU sur le reste (enlever le SIRET pour qu'elle se fasse sur le reste)</p>
                     <Box my={6} sx={{ display: 'flex', alignItems: 'flex-end' }}>
                         <DialpadRoundedIcon id='siret' sx={{ color: 'action.active', mr: 1, mb: 2 }} />
                         {/* {withLabelAndOnchangeTexfield("SIRET", `e => setQuery({ ...query, siret: e.target.value.trim().replaceAll(" ", "") })`)} */}
@@ -479,31 +475,45 @@ export default function NewContactSearchForm({    //contacts, setContacts }: { c
 {/* Faire une fonction pour  Object.entries(infosContact).length > 0 => utilisée 2 fois !!!  */}
                 {/* ////////////////// RESULTATS ////////////////// */}
                 {thereIsListToDisplay() &&
-                    <Box sx={{ width: Object.entries(infosContact).length > 0 ? "33.33%" : "66.66%", }}
+                    <Box sx={{ 
+                        width: Object.entries(infosContact).length > 0 ? "20%" : "80%", 
+                    }}
                         //border={2} color='primary.dark' 
                         //borderColor={'secondary.main'} 
                         bgcolor={'ochre.light'} // bgcolor="#ddd"
                          >
-                        <List>
+                        <List
+                            sx={{
+                                //width: '100%',
+                                overflow: 'auto',
+                                maxHeight: "100vh",
+                            }}
+                            subheader={<li />}
+                        >
                             {resultInseeSearchToKeepPlusDomainAndLogo.map((business: any, index: number) => (
                                 <ListItem key={business.id} disablePadding onClick={() => handleOnClickBusiness(business)}>
                                     <ListItemButton>
-                                        <AccountCircle sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
                                         {/* <ListItemIcon><BusinessIcon /></ListItemIcon> */}
                                         {/* Pourquoi IMAGE ne marche pas ??? */}
                                         {/* <img src={getLogoAndDomain(business.businessName).logo} alt="" width={50} height={50}/>  */}
-                                        {business.logo && <Image alt="Random image" src={business.logo} width={50} height={50} style={{
+                                        {business.logo 
+                                            ? <Image alt="Random image" src={business.logo} width={50} height={50} style={{
                                             width: '50px',
                                             height: '50px',
                                             objectFit: 'cover',
-                                        }} />}
+                                        }} />
+                                        : <AccountCircle sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
+                                        }
                                         <ListItemText primary={business.businessName} />
                                         <div>
-                                            {/* <DialpadRoundedIcon id='siret' sx={{ color: 'action.active', mr: 1, mb: 1 }} /> */}
-                                            {business.id} -
-                                            {/* <LocationCityRoundedIcon sx={{ color: 'action.active', mx: 1, mb: 1 }} /> */}
-                                            {business.businessAddress}
+                                            {business.city}
                                         </div>
+                                        {/* <div>
+                                            <DialpadRoundedIcon id='siret' sx={{ color: 'action.active', mr: 1, mb: 1 }} />
+                                            {business.id} -
+                                            <LocationCityRoundedIcon sx={{ color: 'action.active', mx: 1, mb: 1 }} />
+                                            {business.businessAddress}
+                                        </div> */}
                                     </ListItemButton>
                                 </ListItem>
                             ))}
@@ -513,9 +523,12 @@ export default function NewContactSearchForm({    //contacts, setContacts }: { c
 
                 {/* ////////////////// Affichage d'UN CONTACT ////////////////// */}
                 {Object.entries(infosContact).length > 0 &&
-                    <Box width={thereIsListToDisplay() ? "33.33%" : "50%"} >
+                    <Box 
+                    width="60%"
+                    //</Stack>width={thereIsListToDisplay() ? "33.33%" : "50%"} 
+                    >
                         {/* Est-ce bien de faire ça ci-dessous ? Car sans le "as Contact", memê si je mets ci-dessus la condition "Object.entries(infosContact).length > 0" (ifosContact n'est pas un objet vide, donc selon comme il est typé (Contact | {}) il est forcement de type Contact) => me met un erreur Impossible d'assigner le type '{} | Contact' au type 'Contact'.   */}
-                        <Typography variant="h6" sx={{ p: 2, bgcolor: 'background.default' }}>Modifier/ajouter des infos si besoin :</Typography>
+                        {/* <Typography variant="h6" sx={{ p: 2, bgcolor: 'background.default' }}>Modifier/ajouter des infos si besoin :</Typography> */}
                         <ContactCard 
                             contact={infosContact as Contact} 
                             currentUserId={currentUserId}
