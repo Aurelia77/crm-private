@@ -205,6 +205,21 @@ const getUniqueSortedValues = (contacts: Contact[], key: keyof Contact) => {
     return uniqueValues
 }
 
+const isDatePassed = (timeStampObj: Timestamp) => {
+    const nowTimestamp = new Date().getTime()
+    return timeStampObj && timeStampObjToTimeStamp(timeStampObj) < nowTimestamp
+}
+const isDateSoon = (timeStampObj: Timestamp | null) => {
+    if (timeStampObj) {
+        const date = timeStampObj?.toDate().toString()
+        const timeStamp = Date.parse(date)
+        const nowTimestamp = Date.parse(new Date().toString())
+        const inAWeekTimeStamp = new Date().setDate(new Date().getDate() + 7)//.toString()           
+
+        return (timeStamp > nowTimestamp) && (timeStamp < inAWeekTimeStamp)
+    }
+}
+
 
 
 export { 
@@ -219,5 +234,7 @@ export {
     countContactsByAlertDates,
     updatedContactsInLocalList,
     updatedContactsInLocalListWithWholeContact,
-    getUniqueSortedValues
+    getUniqueSortedValues,
+    isDatePassed,
+    isDateSoon
  }

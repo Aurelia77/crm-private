@@ -84,6 +84,8 @@ import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import {deleteModalStyle} from '../utils/StyledComponents'
 import { parse } from 'path';
 
+import {isDatePassed, isDateSoon} from '../utils/toolbox'
+
 // Pour les étoiles de la PRIORITé 
 const StyledPriorityRating = styled(Rating)({
     '& .MuiRating-iconFilled': {
@@ -205,20 +207,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
 
 
-    const isDatePassed = (timeStampObj: Timestamp) => {
-        const nowTimestamp = new Date().getTime()
-        return timeStampObj && timeStampObjToTimeStamp(timeStampObj) < nowTimestamp
-    }
-    const isDateSoon = (timeStampObj: Timestamp | null) => {
-        if (timeStampObj) {
-            const date = timeStampObj?.toDate().toString()
-            const timeStamp = Date.parse(date)
-            const nowTimestamp = Date.parse(new Date().toString())
-            const inAWeekTimeStamp = new Date().setDate(new Date().getDate() + 7)//.toString()           
-
-            return (timeStamp > nowTimestamp) && (timeStamp < inAWeekTimeStamp)
-        }
-    }
+   
 
   
   

@@ -43,6 +43,8 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
     const [selectedCatIds, setCatSelectedIds] = React.useState<string[]>([]);
     const [selectedCatLabels, setCatSelectedLabels] = React.useState<string[]>([]);
 
+    console.log("search", search)
+
     React.useEffect(() => {
         if (selectedCatIds.length > 0) {
             Promise.all(selectedCatIds.map(catId => getCatLabelFromId(catId)))
