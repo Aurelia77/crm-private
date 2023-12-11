@@ -5,7 +5,7 @@ revoir tt le code, l'améliorer :
 nommage des var, 
 (https://www.youtube.com/watch?v=-yIsQPp31L0&ab_channel=ByteGrad)
 (14'') necessité USEEFFECT à chaque fois ? (pas si dérivés de noms existants)
-(18'') !! useeffect pt s'éxecuter à chaque fois meme si les dépendances ne changent pas => si elles sont des obj ou taab (car c des ref !!!)
+(18'') !! useeffect pt s'éxecuter à chaque fois meme si les dépendances ne changent pas => si elles sont des obj ou tab (car c des ref !!!)
 
 HOC ??? (pour TEXTFIELD ???)
 */
@@ -68,7 +68,8 @@ export default function NewContactSearchForm({    //contacts, setContacts }: { c
     getPriorityTextAndColor
  }: NewContactSearchForm) {
     const token = '613dca81-d71e-3b02-ac1a-b2170d2084c6'
-    const apiAccessUrl = "https://api.insee.fr/entreprises/sirene/V3/siret?q="
+    const nbResultInsee = 50
+    const apiAccessUrl = `https://api.insee.fr/entreprises/sirene/V3/siret?nombre=${nbResultInsee}&q=`
 
     const codesNaf = require('../nafCodes.json');       // donc codesNaf = à ce qu'on a dans nafCodes.json => un tableau d'objets   
 
@@ -478,11 +479,15 @@ export default function NewContactSearchForm({    //contacts, setContacts }: { c
                 {thereIsListToDisplay() &&
                     <Box sx={{ 
                         width: Object.entries(infosContact).length > 0 ? "20%" : "80%", 
-                    }}
+                    }}                  
                         //border={2} color='primary.dark' 
                         //borderColor={'secondary.main'} 
                         bgcolor={'ochre.light'} // bgcolor="#ddd"
                          >
+                        {resultInseeSearchToKeepPlusDomainAndLogo.length === nbResultInsee &&
+                            <Typography variant="h6" sx={{ p: 2, bgcolor: 'background.default' }}>Plus de {nbResultInsee} résultats, veuillez affiner votre recherche
+                            </Typography>
+                        }
                         <List
                             sx={{
                                 //width: '100%',

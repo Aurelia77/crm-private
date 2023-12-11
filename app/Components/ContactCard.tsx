@@ -42,7 +42,7 @@ import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import MailIcon from '@mui/icons-material/Mail';
 import LanguageIcon from '@mui/icons-material/Language';
 import PsychologyAlt from '@mui/icons-material/PsychologyAlt';
-import { StyledRating, IconContainer, customIcons } from '../utils/StyledComponents';
+import { StyledRating, StyledRatingStars, IconContainer, customIcons } from '../utils/StyledComponents';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 
@@ -258,7 +258,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         //JSON.stringify(contact) === '{}' ? <div></div> :
         <Card key={contact.id} elevation={3}
             sx={{
-                m: "1%",
+                //m: "1%",
                 position: "relative",
                 //mx: "auto",
                 padding: "2% 4%",
@@ -343,12 +343,19 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             //'& > legend': { mt: 2 }, 
                             //width:"auto" 
                             }} >
-                            <Rating
+                            {/* <Rating
                                 sx={{ fontSize: '3rem' }}
                                 name="customized-10"
                                 value={contactToAddOrUpdate.priority ?? 0}
                                 onChange={(e, newValue) => handleChangeNumber(newValue, "priority")}
                                 max={3}
+                            /> */}
+                            <StyledRatingStars
+                                sx={{ fontSize: '3rem' }}
+                                value={contactToAddOrUpdate.priority ?? 0}
+                                onChange={(e, newValue) => handleChangeNumber(newValue, "priority")}
+                                max={3}
+                                color={getPriorityTextAndColor(contactToAddOrUpdate.priority).color}
                             />
                         </Box>
                     </FormControl>
@@ -683,11 +690,9 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         </IconButton>
                                     </Tooltip>} */}
                                     <StyledRating
-                                        name="highlight-selected-only"
                                         //defaultValue={2}
                                         sx={{
                                             alignItems: 'center',
-                                            fontSize: "5.5em",
                                         }}
                                         value={contactToAddOrUpdate.interestGauge}
                                         onChange={(e, newValue) => handleChangeNumber(newValue, "interestGauge")}

@@ -86,8 +86,7 @@ function TabPanel(props: TabPanelProps) {
           {...other}
       >
           {value === index && (
-              <Box
-              // sx={{ p: 3 }}
+              <Box m={1}
               >
                   <Typography component={"div"}
                   >{children}</Typography>
@@ -140,14 +139,14 @@ const StyledRatingStars = styled(Rating)(({ theme, color }) => ({
 const StyledRating = styled(Rating)(({ theme }) => ({
   '& .MuiRating-iconEmpty .MuiSvgIcon-root': {
       color: theme.palette.action.disabled,
-      fontSize: '1.1rem'
+      fontSize: '1.5rem'
   },
 }))
 const customIcons: {
   [index: string]: { icon: React.ReactElement; label: string;  };
 } = {
   1: {
-      icon: <SentimentVeryDissatisfiedIcon color="error" sx={{fontSize:"3rem"}}
+      icon: <SentimentVeryDissatisfiedIcon color="error" sx={{fontSize:"2.5rem"}}
       // fontSize="large"
       //fontSize={contact.interestGauge === 1 ? 'large' : 'small'} 
       />,
@@ -155,25 +154,25 @@ const customIcons: {
       label: 'Very Dissatisfied',
   },
   2: {
-      icon: <SentimentDissatisfiedIcon color="warning" sx={{fontSize:"3rem"}}
+      icon: <SentimentDissatisfiedIcon color="warning" sx={{fontSize:"2.5rem"}}
       //fontSize={contact.interestGauge === 2 ? 'large' : 'small'} 
       />,
       label: 'Dissatisfied',
   },
   3: {
-      icon: <SentimentSatisfiedIcon color="secondary" sx={{fontSize:"3rem"}}
+      icon: <SentimentSatisfiedIcon color="secondary" sx={{fontSize:"2.5rem"}}
       //fontSize={contact.interestGauge === 3 ? 'large' : 'small'} 
       />,
       label: 'Neutral',
   },
   4: {
-      icon: <SentimentSatisfiedAltIcon color="success" sx={{fontSize:"3rem"}}
+      icon: <SentimentSatisfiedAltIcon color="success" sx={{fontSize:"2.5rem"}}
       //fontSize={contact.interestGauge === 4 ? 'large' : 'small'} 
       />,
       label: 'Satisfied',
   },
   5: {
-      icon: <SentimentVerySatisfiedIcon color="primary" sx={{fontSize:"3rem"}}
+      icon: <SentimentVerySatisfiedIcon color="primary" sx={{fontSize:"2.5rem"}}
       //icon: <EmojiEmotionsIcon  color="success"
       //fontSize={contact.interestGauge === 5 ? 'large' : 'small'} 
       />,

@@ -619,7 +619,7 @@ export default function Contacts() {
                                 </TabPanel>
 
                                 {/* ///////// Recherche de ZERO ///////// */}
-                                <TabPanel key="1" value={tabNewContactValue} index={1}  >
+                                <TabPanel key="1" value={tabNewContactValue} index={1} style={{margin:1}}  >
                                     <ContactCard
                                         contact={emptyContact}
                                         currentUserId={currentUser.uid}
