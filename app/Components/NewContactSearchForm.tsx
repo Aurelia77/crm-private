@@ -101,7 +101,7 @@ export default function NewContactSearchForm({    //contacts, setContacts }: { c
 
     //console.log("*123////////////////infosContact/////////////////",infosContact)  
     
-    //console.log("resultInseeSearchToKeepPlusDomainAndLogo", resultInseeSearchToKeepPlusDomainAndLogo) 
+    console.log("resultInseeSearchToKeepPlusDomainAndLogo", resultInseeSearchToKeepPlusDomainAndLogo) 
 
     //console.log("***1***-resultInseeSearch", resultInseeSearch)
     //console.log("*********resultInseeSearchToKeep", resultInseeSearchToKeep)
@@ -425,17 +425,10 @@ export default function NewContactSearchForm({    //contacts, setContacts }: { c
                         width: thereIsListToDisplay() ? "20%" : "50%",
                         backgroundColor: "#ccc", //"primary.light",
                         padding: 2,
-                    }} >
-                    <p>La recherche se fait sur le siret OU sur le reste (enlever le SIRET pour qu'elle se fasse sur le reste)</p>
-                    <Box my={6} sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                        <DialpadRoundedIcon id='siret' sx={{ color: 'action.active', mr: 1, mb: 2 }} />
-                        {/* {withLabelAndOnchangeTexfield("SIRET", `e => setQuery({ ...query, siret: e.target.value.trim().replaceAll(" ", "") })`)} */}
-                        {/* Avant */}
-                        <TextField id='siret' type="text" variant='outlined' color='primary' label="SIRET" onChange={e => setQuery({ ...query, siret: e.target.value.trim().replaceAll(" ", "") })} fullWidth />
-                    </Box>
+                    }} >                    
                     <Stack spacing={2}
                         //direction="row" 
-                        sx={{ mb: 4 }} >
+                        sx={{ my: 4 }} >
                         <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                             <BadgeRoundedIcon sx={{ color: 'action.active', mr: 1, mb: 2 }} />
                             <TextField type="text" variant='outlined' color='primary' label="Nom" onChange={e => setQuery({ ...query, name: `*${e.target.value.trim().replaceAll(" ", "* AND denominationUniteLegale:*")}*` })}
@@ -469,6 +462,14 @@ export default function NewContactSearchForm({    //contacts, setContacts }: { c
                             renderInput={(params) => <TextField {...params} label="Activité" placeholder="FilmPlaceholder" />}     // si le paramètre options est un objet => affiche les labels de l'objet
                         /> */}
                     </Stack>
+                    <p>Si recherche par SIRET le reste n'est pas pris en compte (enlever le SIRET pour qu'elle se fasse sur le reste)</p>
+                    <Box 
+                        sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                            <DialpadRoundedIcon id='siret' sx={{ color: 'action.active', mr: 1, mb: 2 }} />
+                            {/* {withLabelAndOnchangeTexfield("SIRET", `e => setQuery({ ...query, siret: e.target.value.trim().replaceAll(" ", "") })`)} */}
+                        {/* Avant */}
+                        <TextField id='siret' type="text" variant='outlined' color='primary' label="SIRET" onChange={e => setQuery({ ...query, siret: e.target.value.trim().replaceAll(" ", "") })} fullWidth />
+                    </Box>
                 </FormControl>
                 {/* } */}
 
@@ -490,7 +491,7 @@ export default function NewContactSearchForm({    //contacts, setContacts }: { c
                             }}
                             subheader={<li />}
                         >
-                            {resultInseeSearchToKeepPlusDomainAndLogo.map((business: any, index: number) => (
+                            {resultInseeSearchToKeepPlusDomainAndLogo.map((business: Contact) => (
                                 <ListItem key={business.id} disablePadding onClick={() => handleOnClickBusiness(business)}>
                                     <ListItemButton>
                                         {/* <ListItemIcon><BusinessIcon /></ListItemIcon> */}
@@ -504,10 +505,12 @@ export default function NewContactSearchForm({    //contacts, setContacts }: { c
                                         }} />
                                         : <AccountCircle sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
                                         }
-                                        <ListItemText primary={business.businessName} />
-                                        <div>
-                                            {business.city}
-                                        </div>
+                                        <ListItemText sx={{ ml:1 }}
+                                        //primary={business.businessName}
+                                        >{business.businessName} 
+                                            <span style={{ color: 'gray', fontSize:'0.8em' }}> ({business.businessCity})</span>
+                                        </ListItemText>
+                                       
                                         {/* <div>
                                             <DialpadRoundedIcon id='siret' sx={{ color: 'action.active', mr: 1, mb: 1 }} />
                                             {business.id} -

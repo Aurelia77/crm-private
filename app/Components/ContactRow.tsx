@@ -77,7 +77,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { FormControl } from '@mui/material';
 import { handleOpenFile } from '../utils/firebase'
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
-import {deleteModalStyle, StyledRating, customIcons, IconContainer} from '../utils/StyledComponents'
+import {deleteModalStyle, StyledRating, StyledRatingStars, customIcons, IconContainer} from '../utils/StyledComponents'
 import { parse } from 'path';
 
 import {isDatePassed, isDateSoon} from '../utils/toolbox'
@@ -781,7 +781,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             <StyledTableCell component="td" scope="row" 
                 sx={{ 
                     position:"relative", 
-                    border: contact.priority && `7px solid ${getPriorityTextAndColor(contact.priority).color}`
+                    //border: contact.priority && `7px solid ${getPriorityTextAndColor(contact.priority).color}`
                 }}
             >
             {/* <Tooltip title={`Priorité ${getPriorityTextAndColor(contact.priority).text}`} placement='top'   > */}
@@ -797,11 +797,17 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 </Tooltip>} */}
 
                 <Box sx={{ '& > legend': { mt: 2 }, }} >
-                    <Rating
-                        name="customized-10"
+                    <StyledRatingStars 
                         value={contact.priority ?? 0}
                         onChange={(e, newValue) => handleChangeNumber(newValue, "priority")}
-                        max={3} />
+                        max={3} 
+                        color= {getPriorityTextAndColor(contact.priority).color}
+                     />
+                    {/* <StyledRatingStars
+                        value={contact.priority ?? 0}
+                        onChange={(e, newValue) => handleChangeNumber(newValue, "priority")}
+                        max={3} 
+                    /> */}
                 </Box>
 
                 {/* <Tooltip arrow title={`Priorité ${getPriorityTextAndColor(contact.priority).text}`} placement='top'   >

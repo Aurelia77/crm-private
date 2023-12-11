@@ -115,6 +115,25 @@ const deleteModalStyle = {
   p: 4,
 };
 
+// Pour les ETOILES de la PRIORITY
+const StyledRatingStars = styled(Rating)(({ theme, color }) => ({
+  '& .MuiRating-iconFilled': {
+    color: color 
+  },
+  '& .MuiRating-iconHover': {
+    color: theme.palette.primary.main, 
+  },
+}));
+
+// Pour les ETOILES de la PRIORITY
+// const StyledRatingStars = styled(Rating)({
+//   '& .MuiRating-iconFilled': {
+//     color: '#ff6d75',
+//   },
+//   '& .MuiRating-iconHover': {
+//     color: 'cyan',
+//   },
+// });
 
 // Pour les smileys du RATING 
 // => (dans le composant car besoin de connaitre la donnée pour ajuster la taille en fonction)  NON car sinon il faut cliquer 2 fois pour que ça valide !!!  
@@ -166,4 +185,4 @@ function IconContainer(props: IconContainerProps) {
   return <span {...other}>{customIcons[value].icon}</span>;
 }
 
-export { StyledTableCell, StyledTableRow, TabPanel, TABS_WIDTH, deleteModalStyle, StyledRating, customIcons, IconContainer }
+export { StyledTableCell, StyledTableRow, TabPanel, TABS_WIDTH, deleteModalStyle, StyledRatingStars, StyledRating, customIcons, IconContainer }

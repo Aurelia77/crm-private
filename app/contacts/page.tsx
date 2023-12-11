@@ -93,16 +93,26 @@ export default function Contacts() {
     const [selectedContact, setSelectedContact] = React.useState<Contact | { id: string }>({ id: "0" })
     const [loading, setLoading] = React.useState(true)
     const [alerts, setAlerts] = React.useState<Alerts>({ nbContactsWithDatePassed: 0, nbContactsWithDateSoon: 0 })
+    const [isContactTableFilled, setIsContactTableFilled] = React.useState(0)
+    // const [isContactTableFilled, setIsContactTableFilled] = React.useState(false)
 
+    console.log("isContactTableFilled", isContactTableFilled)
 
-    const [displayNewContactForms, setDisplayNewContactForms] = React.useState(false)
+    // const [displayNewContactForms, setDisplayNewContactForms] = React.useState(false)
     const [contactToDisplay, setContactToDisplay] = React.useState<Contact>(emptyContact)
-    const [isContactCardDisplay, setIsContactCardDisplay] = React.useState(false)
+
+    const [messageNoContact, setMessageNoContact] = React.useState("") //Aucun contact pour l'instant, veuillez en ajouter ici :")
 
 
     const muiTheme = useTheme()
 
     // console.log(isContactCardDisplay)
+
+
+  
+
+ 
+
 
     const emptySearchCriteria: SearchContactCriteria = {
         isClient: "all",
@@ -158,18 +168,16 @@ export default function Contacts() {
 
         setTabValue(0)
         setContactToDisplay(emptyContact)
-        //setIsContactCardDisplay(false)
     }
 
     const diplayContactCardToUpdate = (contact: Contact) => {
         setContactToDisplay(contact)
-        setIsContactCardDisplay(true)
         setTabValue(3)
     }
-    const diplayContactCardNew = () => {
-        setContactToDisplay(emptyContact)
-        setIsContactCardDisplay(true)
-    }
+    // const diplayContactCardNew = () => {
+    //     setContactToDisplay(emptyContact)
+    //     setIsContactCardDisplay(true)
+    // }
 
     const fakeContactsNameAndCatLabel = [
         {
@@ -252,6 +260,13 @@ export default function Contacts() {
 
 
 
+ // Créez une référence pour suivre le premier rendu
+    const firstRender = React.useRef(true);
+
+    console.log("firstRender", firstRender)
+    console.log("firstRender", firstRender.current)
+
+
 
     React.useEffect(() => {
         //console.log("User Effect READ")
@@ -260,21 +275,51 @@ export default function Contacts() {
             setContacts(contactsList);
             setFilteredContacts(contactsList);
             setAlerts(countContactsByAlertDates(contactsList))
-            setLoading(false);
-        });
+            setLoading(false); 
+        })         
 
     }, [currentUser])
     // }, [currentUser?.uid])
 
+     
+    React.useEffect(() => {
+        // Si c'est le premier rendu, ne faites rien et mettez à jour firstRender pour les rendus suivants
+
+        console.log("1111111111111")
+        if (firstRender.current) {
+            firstRender.current = false;
+            return;
+        }
+
+        console.log("2222222222222222222")
+
+       
+
+        // Mettez à jour votre variable ici
+        setIsContactTableFilled(isContactTableFilled + 1);
+    }, [contacts]);
+  
+    //   React.useEffect(() => {
+    //       // Si c'est le premier rendu, ne faites rien et mettez à jour firstRender pour les rendus suivants
+    //       if (firstRender.current) {
+    //           firstRender.current = false;
+    //           return;
+    //       }
+    //   }, [contacts]);     // 
+
+   
 
     React.useEffect(() => {
         setAlerts(countContactsByAlertDates(filteredContacts))
-    }, [filteredContacts])
+        //{filteredContacts.length === 0 && setMessageNoContact("Aucun contact trouvé")}
+        
+    }, [filteredContacts, 
+    ])
 
 
     React.useEffect(() => {
-        console.log("User Effect RECHERCHE")
-        console.log(contactsSearchCriteria)
+        // console.log("User Effect RECHERCHE")
+        // console.log(contactsSearchCriteria)
 
         //if (contactsSearchCriteria && (contactsSearchCriteria?.businessName !== '' || contactsSearchCriteria.businessCity !== '' || contactsSearchCriteria.businessCategory.length > 0)) {      // metre diff de empty !!!!!!!!!!
         if (JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)) {
@@ -464,7 +509,8 @@ export default function Contacts() {
                                         </Fab>
                                         }
                                     </Typography>
-                                    : <Typography variant="h5" color="error.main">
+                                    : (isContactTableFilled >= 2) && <Typography variant="h5" color="error.main">
+                                        {messageNoContact}
                                         Aucun contact pour l'instant, veuillez en ajouter ici :
                                         <Button variant="contained" color="primary" onClick={() => { setTabValue(2); setTabNewContactValue(0) }} sx={{ ml: 2 }}>Nouveau contact</Button>
                                     </Typography>
@@ -637,8 +683,8 @@ export default function Contacts() {
 
 
                         {/* /////////////////////// On affiche les FORMULAIRES DE CREATION CONTACTS -ou- LA RECHERCHE + LISTE DE CONTACTS /////////////////////// */}
-                        {displayNewContactForms
-                            ? <Box>
+                        {/* {displayNewContactForms
+                            ? <Box> */}
                                 {/* <Accordion sx={{
                                     //my: 2
                                 }}>
@@ -671,9 +717,9 @@ export default function Contacts() {
                                     </AccordionDetails>
                                 </Accordion>
                                 <Button variant="contained" color="secondary" onClick={() => setDisplayNewContactForms(!displayNewContactForms)}>Tableau des contacts</Button> */}
-                            </Box>
+                            {/* </Box>
 
-                            : <Box sx={{ marginTop: "2em", position: "relative" }} >
+                            : <Box sx={{ marginTop: "2em", position: "relative" }} > */}
 
                                 {/* ///////// CALENDRIER ///////// */}
                                 {/* <Accordion sx={{
@@ -738,10 +784,10 @@ export default function Contacts() {
                             <Typography variant="h5" component="div" sx={{ p: 2 }}>Vous avez ({contacts.length}) contacts</Typography>
                         </Collapse> */}
 
-                                <Box sx={{
+                                {/* <Box sx={{
                                     marginTop: "20px",
                                     position: "relative"
-                                }} >
+                                }} > */}
 
 
                                     {/* <Box sx={{ position: "absolute", right: 0, top: 0 }} >
@@ -773,9 +819,9 @@ export default function Contacts() {
                                     //orderedBy={orderedBy} 
                                     /> */}
                                     {/* <TestTableSortLabel2 contacts={contacts} selectedContactId={selectedContact.id} setSelectedContact={setSelectedContact} handleUpdateContact={updateContactInContactsAndDB} handleDeleteContact={deleteContact} /> */}
-                                </Box>
-                            </Box>
-                        }
+                                {/* </Box> */}
+                            {/* </Box>
+                        } */}
                     </Box>
             }
         </Box>

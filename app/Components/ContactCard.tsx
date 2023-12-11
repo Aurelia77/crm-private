@@ -237,7 +237,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     }
 
     const handleChangeNumber = (number: number | null, attribut: string) => {
-        console.log(number);      // Obligé de mettre ; sinon erreur !!! (Uncaught TypeError: console.log(...) is not a function)
+        //console.log(number);      // Obligé de mettre ; sinon erreur !!! (Uncaught TypeError: console.log(...) is not a function)
         //newGauge && console.log(newGauge)
 
         // (number && (number > 5 || number < 0))
@@ -499,8 +499,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         {/* 1- Choisir */}
                                     </Button>
 
-                                    <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center" }} >
-                                        {logoChoosen &&  
+                                    {logoChoosen &&
+                                        <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }} >
                                             <Button
                                                 color="pink"
                                                 //sx={{ marginLeft: "10px", }}
@@ -511,10 +511,10 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                             >
                                                 Télécharger/afficher le logo
                                                 {/* <VisuallyHiddenInput type="file" /> */}
-                                            </Button> 
-                                        }
-                                        <LinearProgress variant="determinate" value={progresspercentLogo} sx={{ marginTop: "10px" }} />
-                                    </Box>
+                                            </Button>
+                                            <LinearProgress variant="determinate" value={progresspercentLogo} sx={{ marginTop: "10px" }} />
+                                        </Box>
+                                    }
                                    
                                 </form>
                                 {/* <Box className='innerbar' sx={{ width: `${progresspercent}%`, backgroundColor: "red" }}>{progresspercent}%</Box>
