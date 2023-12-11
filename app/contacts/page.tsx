@@ -26,9 +26,9 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import FormControl from '@mui/material/FormControl';
 import { Container, Tooltip, Paper } from '@mui/material';
 import { TextField, Select, MenuItem, Autocomplete, ListItem, List, InputLabel, Tabs, Tab, Box as CustomBox } from '@mui/material'
-import {contactCategories} from '../utils/toolbox'
+import { contactCategories } from '../utils/toolbox'
 
-import {Fab} from '@mui/material'
+import { Fab } from '@mui/material'
 import NewContactSearchForm from '../Components/NewContactSearchForm';
 import ContactCard from '../Components/ContactCard';
 import ContactsTable from '../Components/ContactsTable';
@@ -79,9 +79,9 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import CalendarLittle from '../Components/CalendarLittle';
 import CalendarFull from '../Components/CalendarFull';
 import CalendarScheduler from '../Components/CalendarScheduler';
-import {TabPanel, TABS_WIDTH} from '../utils/StyledComponents';
+import { TabPanel, TABS_WIDTH } from '../utils/StyledComponents';
 import CircularProgress from '@mui/material/CircularProgress';
-import {getCatIdFromLabel} from '../utils/firebase'
+import { getCatIdFromLabel } from '../utils/firebase'
 import { useTheme } from '@mui/material/styles';
 
 
@@ -99,10 +99,10 @@ export default function Contacts() {
     const [contactToDisplay, setContactToDisplay] = React.useState<Contact>(emptyContact)
     const [isContactCardDisplay, setIsContactCardDisplay] = React.useState(false)
 
-   
+
     const muiTheme = useTheme()
 
-   // console.log(isContactCardDisplay)
+    // console.log(isContactCardDisplay)
 
     const emptySearchCriteria: SearchContactCriteria = {
         isClient: "all",
@@ -118,8 +118,8 @@ export default function Contacts() {
 
     const [tabValue, setTabValue] = React.useState(0);
     const [tabNewContactValue, setTabNewContactValue] = React.useState(0);
-    const [tabCalendarValue, setTabCalendarValue] = React.useState(0); 
-  
+    const [tabCalendarValue, setTabCalendarValue] = React.useState(0);
+
 
     const titles = [
         { label: "Contacts", icon: <Diversity3Icon /> },
@@ -129,7 +129,7 @@ export default function Contacts() {
         { label: "Modification BDD", icon: <SettingsIcon /> },
         // { label: "Admin", icon: <SettingsIcon /> },
     ]
-   
+
 
     //console.log("PAGE Contacts",contacts)
     //console.log(selectedContact)
@@ -205,29 +205,34 @@ export default function Contacts() {
         //     updateWholeContactInContactsAndDB(contact)
         // })
 
+        let promises: any = [];
 
         fakeContactsData.forEach((contact) => {
-            fakeContactsNameAndCatLabel.forEach((contactNameAndCatLabel) => {             
+            fakeContactsNameAndCatLabel.forEach((contactNameAndCatLabel) => {
 
                 if (contact.businessName === contactNameAndCatLabel.name) {
                     // console.log(contact.businessName)
                     // console.log(contactNameAndCatLabel.catLabel)
                     // console.log(getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel))
 
-                    getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel)
-                        .then((catId: string) => {                            
+                    const promise = getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel)
+                        .then((catId: string) => {
                             // Bien utiliser .map car .foreach ne retourne rien (filteredContacts.map() crée un tableau de promesses. Promise.all(promises) renvoie une nouvelle promesse qui est résolue lorsque toutes les promesses dans le tableau promises sont résolues.)
-                            const promises = filteredContacts.map((filteredContact) => {
+                            return filteredContacts.map((filteredContact) => {
                                 if (filteredContact.businessName === contact.businessName) {
                                     console.log(filteredContact, catId)
                                     return updatDataOnFirebase(filteredContact.id, { key: "businessCategoryId", value: catId })
                                 }
                             })
-                            return Promise.all(promises)              
+                            promises.push(promise);
+                            //return Promise.all(promises)              
                         })
-                        .then(() => {
-                            //window.location.reload()
-                        }) 
+                    // .then(() => {
+                    //     window.location.reload()
+                    // }) 
+                    Promise.all(promises)
+                        .then(() => { window.location.reload() })
+                        .catch((error) => { console.error("Error reloading page: ", error); });
                 }
             })
         })
@@ -245,7 +250,7 @@ export default function Contacts() {
         }
     }
 
-    
+
 
 
     React.useEffect(() => {
@@ -297,7 +302,7 @@ export default function Contacts() {
             //console.log(searchOnCategory)
 
             const searchedContacts: Contact[] = contacts.filter((contact) => {
-               
+
                 return (
                     // Dans la méthode filter, si une condition est fausse pour un élément spécifique (dans ce cas, un contact), le reste des conditions pour cet élément ne sera pas vérifié.
                     contact.businessName.toLowerCase().includes(contactsSearchCriteria.businessName.toLowerCase())
@@ -318,7 +323,7 @@ export default function Contacts() {
 
 
 
-                    && searchOnCategory.some((cat) => contact.businessCategoryId.includes(cat)) 
+                    && searchOnCategory.some((cat) => contact.businessCategoryId.includes(cat))
                     // && searchOnCategory.some((cat) =>{ 
                     //     console.log("cat", cat)
                     //     console.log(contact.businessCategory)
@@ -343,7 +348,7 @@ export default function Contacts() {
     }, [
         //emptySearchCriteria,      // Boucle infinie !!! Pourquoi ??? Pourtant sa valeur ne change jamais... 
         contactsSearchCriteria,
-        contacts  
+        contacts
     ])      // !!!!!!!!!!!!!!! laisser contact ? car si modif ça peut disparaitre !!!!!! NON on ne veut pas ! + boucle infinie !!!
 
     // React.useEffect(() => {
@@ -365,21 +370,21 @@ export default function Contacts() {
         }}>
 
             {/* /////////////////////// Info USER /////////////////////// */}
-            <Box sx={{ 
+            <Box sx={{
                 //position: "absolute", right: "5px", top: 0 
             }} ><AuthDetails /></Box>
             {/* On affiche le nom de l'utilisateur */}
             {/* <Typography variant="h3" component="div" gutterBottom>User Auth = {currentUser?.email}</Typography> */}
 
             {loading
-                ? <Container sx={{ ml:"50%", mt:"20%" }} >
+                ? <Container sx={{ ml: "50%", mt: "20%" }} >
                     <CircularProgress />
                 </Container>
                 : !currentUser
                     //  {/* ///////// CONNEXION / INSCRIPTION ///////// */}
                     ? <Box sx={{
-                        display: "flex", justifyContent: "space-around", 
-                        margin: "20px", 
+                        display: "flex", justifyContent: "space-around",
+                        margin: "20px",
                         padding: "20px",
                         //border: "solid 3px blue", borderRadius: "10px" 
                     }}>
@@ -391,18 +396,19 @@ export default function Contacts() {
                         <SignUp />
                         {/* </UserAuthContextProvider> */}
                     </Box>
-                    
-                    : <Box sx={{ 
+
+                    : <Box sx={{
                         //marginTop: "20px" 
-                    }} > 
+                    }} >
                         {/* /////////////////////// Pour REALTIME DB /////////////////////// */}
                         {/* <input type="text" value={todo} onChange={handleTodoChange} />
                     <Button variant="contained" onClick={writeContactData2}>Ajouter dans REALTIME DB</Button> */}
 
-    {/* ///////////////////////ONGLETS - Tabs /////////////////////// */}
+                        {/* ///////////////////////ONGLETS - Tabs /////////////////////// */}
                         <Box
-                            sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100vh', 
-                        }}
+                            sx={{
+                                flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100vh',
+                            }}
                         >
                             <Tabs
                                 orientation="vertical"
@@ -413,32 +419,32 @@ export default function Contacts() {
                                 sx={{ borderRight: 1, borderColor: 'divider', width: TABS_WIDTH }}
                             >
                                 {/* J'ai voulu ajouter un DIVIDER mais pour ça j'ai ajouter une BOX et alors plus poss de cliquer sur les tab => rien ne se passe !!! */}
-                                {titles.map((title, index) => (                                    
+                                {titles.map((title, index) => (
                                     <Tab
                                         key={index}
                                         //label={title.label} 
                                         title={title.label}
                                         icon={title.icon}
-                                       // {...a11yProps(index)}
+                                        // {...a11yProps(index)}
                                         sx={{ margin: '10px 0 10px 0' }}
                                     //sx={{ marginBottom:"10px" }} 
                                     />
-                                ))}                                
+                                ))}
                             </Tabs>
 
                             {/* ///////// LISTE DE CONTACTS + recherche) ///////// */}
                             <TabPanel key="0" value={tabValue} index={0}  >
-                                <SearchContactsForm 
+                                <SearchContactsForm
                                     contacts={contacts}
-                                    currentUserId={currentUser.uid} 
-                                    emptySearchCriteria={emptySearchCriteria} 
-                                    onSearchChange={setContactsSearchCriteria} 
+                                    currentUserId={currentUser.uid}
+                                    emptySearchCriteria={emptySearchCriteria}
+                                    onSearchChange={setContactsSearchCriteria}
                                 />
 
-                                <Box 
-                                    sx={{ display: "flex", alignItems: "center", margin:"13px 0 7px 15px",  }}
-                                >
-                                    <Typography variant="h5">
+                                <Box
+                                    sx={{ display: "flex", alignItems: "center", margin: "13px 0 7px 15px", }}
+                                >{filteredContacts.length > 0
+                                    ? <Typography variant="h5">
                                         {filteredContacts.length} contacts :
 
                                         {/* {!isSearchCriteriaEmpty
@@ -446,19 +452,24 @@ export default function Contacts() {
                                             : `${contacts.length} contacts : `
                                         } */}
                                         <Typography variant="h5" component="span" color="warning.main" sx={{ px: 2 }}>
-                                        {alerts.nbContactsWithDatePassed} relance(s) passée(s)
+                                            {alerts.nbContactsWithDatePassed} relance(s) passée(s)
                                         </Typography>
                                         <Typography variant="h5" component="span" color="primary.main">
                                             et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jour(s)
                                         </Typography>
                                         {!isSearchCriteriaEmpty && <Fab disabled size="small" color="primary" sx={{
-                                               ml:2
-                                            }} >
-                                                <SearchIcon />
-                                            </Fab>                                        
+                                            ml: 2
+                                        }} >
+                                            <SearchIcon />
+                                        </Fab>
                                         }
-                                    </Typography>                                    
-                                </Box>  
+                                    </Typography>
+                                    : <Typography variant="h5" color="error.main">
+                                        Aucun contact pour l'instant, veuillez en ajouter ici :
+                                        <Button variant="contained" color="primary" onClick={() => { setTabValue(2); setTabNewContactValue(0) }} sx={{ ml: 2 }}>Nouveau contact</Button>
+                                    </Typography>
+                                    }
+                                </Box>
 
                                 <ContactsTable
                                     //contacts={contacts}
@@ -477,9 +488,9 @@ export default function Contacts() {
                             <TabPanel key="1" value={tabValue} index={1}>
                                 <Tabs
                                     value={tabCalendarValue}
-                                    onChange={(e, newValue: number) => setTabCalendarValue(newValue) }
+                                    onChange={(e, newValue: number) => setTabCalendarValue(newValue)}
                                     aria-label="Horizontal tabs"
-                                    //sx={{ borderRight: 1, borderColor: 'divider', width: "120px" }}
+                                //sx={{ borderRight: 1, borderColor: 'divider', width: "120px" }}
                                 >
 
                                     <Tab key={0} label="Petit Calendrier"
@@ -494,7 +505,7 @@ export default function Contacts() {
                                     //icon={title.icon}
                                     // {...a11yProps(index)} 
                                     /> */}
-                                </Tabs>                               
+                                </Tabs>
 
                                 {/* ///////// Petit Calendrier ///////// */}
                                 <TabPanel key="0" value={tabCalendarValue} index={0}  >
@@ -504,7 +515,7 @@ export default function Contacts() {
                                         contacts={contacts}
                                         diplayContactCardToUpdate={diplayContactCardToUpdate}
                                     />
-                                </TabPanel>                               
+                                </TabPanel>
 
                                 {/* ///////// Scheduler Calendrier ///////// */}
                                 <TabPanel key="1" value={tabCalendarValue} index={1}  >
@@ -517,8 +528,8 @@ export default function Contacts() {
                                     />
                                 </TabPanel>
 
-                                  {/* ///////// Grand Calendrier ///////// */}
-                                  <TabPanel key="2" value={tabCalendarValue} index={2}  >                               
+                                {/* ///////// Grand Calendrier ///////// */}
+                                <TabPanel key="2" value={tabCalendarValue} index={2}  >
                                     <CalendarFull
                                         //contacts={fakeContactsData}
                                         //contacts={filteredContacts}   // ????????? 
@@ -538,7 +549,7 @@ export default function Contacts() {
                                     onChange={(e, newValue) => setTabNewContactValue(newValue)}
                                     // onChange={handleChangeTabNewContact}
                                     aria-label="Horizontal tabs"
-                                    //sx={{ borderRight: 1, borderColor: 'divider', width: "120px" }}
+                                //sx={{ borderRight: 1, borderColor: 'divider', width: "120px" }}
                                 >
 
                                     <Tab key={0} label="Recherche INSEE"
@@ -553,9 +564,9 @@ export default function Contacts() {
 
                                 {/* ///////// Recherche INSEE ///////// */}
                                 <TabPanel key="0" value={tabNewContactValue} index={0}  >
-                                    <NewContactSearchForm 
-                                        emptyContact={emptyContact} 
-                                        addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)} 
+                                    <NewContactSearchForm
+                                        emptyContact={emptyContact}
+                                        addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)}
                                         currentUserId={currentUser.uid}
                                         getPriorityTextAndColor={getPriorityTextAndColor}
                                     />
@@ -563,57 +574,58 @@ export default function Contacts() {
 
                                 {/* ///////// Recherche de ZERO ///////// */}
                                 <TabPanel key="1" value={tabNewContactValue} index={1}  >
-                                    <ContactCard 
+                                    <ContactCard
                                         contact={emptyContact}
                                         currentUserId={currentUser.uid}
                                         getPriorityTextAndColor={getPriorityTextAndColor}
-                                        addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)} 
-                                     />
+                                        addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)}
+                                    />
                                 </TabPanel>
                             </TabPanel>
 
                             {/* ///////// Un CONTACT ///////// */}
                             <TabPanel key="3" value={tabValue} index={3}>
-                                <ContactCard 
+                                <ContactCard
                                     contact={contactToDisplay}
                                     currentUserId={currentUser.uid}
                                     getPriorityTextAndColor={getPriorityTextAndColor}
                                     handleDeleteContact={deleteDataOnFirebaseAndReload}
                                     updateContact={updateWholeContactInContactsAndDB}
-                                    // updateContact={() => {console.log("updateContact")}} 
-                                    //contactCardDisplayStatus={isContactCardDisplay} 
-                                    //setContactCardDisplayStatus={setIsContactCardDisplay} 
+                                // updateContact={() => {console.log("updateContact")}} 
+                                //contactCardDisplayStatus={isContactCardDisplay} 
+                                //setContactCardDisplayStatus={setIsContactCardDisplay} 
                                 />
                             </TabPanel>
 
-                             {/* /////////////////////// Pour Version ESSAI /////////////////////// */}                      
+                            {/* /////////////////////// Pour Version ESSAI /////////////////////// */}
                             <TabPanel key="4" value={tabValue} index={4}>
                                 <Admin currentUser={currentUser} />
-                                <Box sx={{ 
+                                <Box sx={{
                                     //display: "flex", justifyContent: "space-around", 
-                                    padding: "10px", border: "solid 3px blue", borderRadius: "10px", marginTop: "200px", width: "calc(100vw - 200px)" }}>
-                                    <Typography 
-                                        component="div" 
+                                    padding: "10px", border: "solid 3px blue", borderRadius: "10px", marginTop: "200px", width: "calc(100vw - 200px)"
+                                }}>
+                                    <Typography
+                                        component="div"
                                         textAlign="center"
                                         style={{
                                             //display: "block",
-                                            marginBottom:"50px"
+                                            marginBottom: "50px"
                                             //width: "360px" 
-                                    }} >Pour Version TEST</Typography>
-                                    <Box sx={{display:"flex", justifyContent:"space-between", marginBottom:"20px" }} >
+                                        }} >Pour Version TEST</Typography>
+                                    <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }} >
                                         <Button variant="contained" color='success' onClick={() => addCategoriesOnFirebaseAndReload(currentUser, contactCategories)}>1-Ajouter Catégories</Button>
                                         <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>2-Ajouter Contacts Test</Button>
                                         <Button variant="contained" color='warning' onClick={() => addCatToFakeContacts(fakeContactsData)}>3-Ajouter catégories aux contacts</Button>
                                         {/* <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
                                         <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button> */}
                                     </Box>
-                                    <Box sx={{display:"flex", justifyContent:"space-around", }} >
+                                    <Box sx={{ display: "flex", justifyContent: "space-around", }} >
                                         <Button variant="contained" color='error' sx={{ width: "300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUser)}>Supprimer tous mes contacts</Button>
                                         {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer TOUS les contacts de l'appli !!!</Button> */}
                                     </Box>
                                 </Box>
                             </TabPanel>
-    
+
                             {/* ///////// ADMIN ///////// */}
                             {/* <TabPanel key="4" value={tabValue} index={4}>
                                 <Admin />
@@ -730,7 +742,7 @@ export default function Contacts() {
                                     marginTop: "20px",
                                     position: "relative"
                                 }} >
-                                    
+
 
                                     {/* <Box sx={{ position: "absolute", right: 0, top: 0 }} >
                                         <Tooltip title="Ajouter un contact (avec ou sans recherche)" placement="left">
@@ -765,10 +777,7 @@ export default function Contacts() {
                             </Box>
                         }
                     </Box>
-
-                   
             }
-
         </Box>
     )
 }

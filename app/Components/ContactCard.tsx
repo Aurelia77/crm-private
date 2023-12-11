@@ -645,11 +645,11 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         sx={{ width: "48%" }}
                     >
                         <Box>
-                            <TextField 
+                            {/* <TextField 
                             id="outlined-basic" label="Nom DIRIGEANT" value="" 
                             //onChange={handleChangeText("contactName")}
                                 sx={{ width: "48%" }}
-                            />
+                            /> */}
                             <TextField
                                 id="outlined-basic"
                                 label="Site WEB"
