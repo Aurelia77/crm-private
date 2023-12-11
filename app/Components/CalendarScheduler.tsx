@@ -35,7 +35,7 @@ export default function CalendarScheduler({ contacts, diplayContactCardToUpdate,
 
   const muiTheme = useTheme();
 
-  const [checked, setChecked] = React.useState(false);
+  const [transition, setTransition] = React.useState(false);
 
   const icon = (
     <Box id="calendar" ref={calendarRef} sx={{ width: "calc(100vw - 250px)", margin: "auto", marginTop: "3%", backgroundColor: muiTheme.palette.lightCyan.light }}
@@ -43,7 +43,7 @@ export default function CalendarScheduler({ contacts, diplayContactCardToUpdate,
   );
 
   React.useEffect(() => {
-    setChecked(true);
+    setTransition(true);
   }, []);
 
   const hightPriorityColor = muiTheme.palette.primary.main
@@ -225,7 +225,7 @@ export default function CalendarScheduler({ contacts, diplayContactCardToUpdate,
       <Typography sx={{ p: 0.3, textAlign: "center", borderRadius: "10px", backgroundColor: noPriorityColor, color: 'white', width: "20%" }}>Aucune</Typography>
     </Box>
 
-    <Fade in={checked}>{icon}</Fade>
+    <Fade in={transition}>{icon}</Fade>
     {/* <Collapse in={checked}>{icon}</Collapse> */}
 
     {/* <Box id="calendar" ref={calendarRef} sx={{ width: "calc(100vw - 250px)", margin: "auto", marginTop: "3%", backgroundColor: muiTheme.palette.lightCyan.light }}

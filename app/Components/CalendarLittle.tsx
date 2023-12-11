@@ -155,7 +155,7 @@ export default function CalendarLittle({ contacts, diplayContactCardToUpdate }: 
 
   const muiTheme = useTheme();
 
-  const [checked, setChecked] = React.useState(false);
+  const [transition, setTransition] = React.useState(false);
 
   const handleMonthChange = (date: Dayjs) => {
     console.log("date", date)
@@ -174,7 +174,7 @@ export default function CalendarLittle({ contacts, diplayContactCardToUpdate }: 
     setContactsToCallThisMonthAndToHighlight(getDaysOfNextCallsForMonth(contacts, date));
   };
 
-  const icon1 = (
+  const firstTransition = (
     <DateCalendar
         //defaultValue={dateToSeeOnTheCalendar} // seulement si cette valeur ne change jamais => ici : erreur : MUI: A component is changing the default value state of an uncontrolled DateCalendar after being initialized.
         value={dateToSeeOnTheCalendar}
@@ -194,7 +194,7 @@ export default function CalendarLittle({ contacts, diplayContactCardToUpdate }: 
      
   );
 
-  const icon2 = (
+  const secondTransition = (
 
     <Box sx={{ border: '1px solid #CCC', p: 2, ml: 2, width: 300 }} >
 
@@ -218,7 +218,7 @@ export default function CalendarLittle({ contacts, diplayContactCardToUpdate }: 
   );
 
   React.useEffect(() => {
-    setChecked(true);
+    setTransition(true);
   }, []);
 
 
@@ -348,14 +348,14 @@ export default function CalendarLittle({ contacts, diplayContactCardToUpdate }: 
 
   return (
     <Box style={{ display: "flex", backgroundColor: muiTheme.palette.lightCyan.light, width:"800px", margin:"auto", marginTop:"50px", padding:"20px" }} >
-      <Grow in={checked}>{icon1}</Grow>
+      <Grow in={transition}>{firstTransition}</Grow>
         {/* Conditionally applies the timeout prop to change the entry speed. */}
         <Grow
-          in={checked}
+          in={transition}
           style={{ transformOrigin: '0 0 0' }}
-          {...(checked ? { timeout: 1000 } : {})}
+          {...(transition ? { timeout: 1000 } : {})}
         >
-          {icon2}
+          {secondTransition}
         </Grow>
 
       {/* <DateCalendar
