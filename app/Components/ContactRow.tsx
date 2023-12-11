@@ -785,7 +785,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 }}
             >
             {/* <Tooltip title={`Priorité ${getPriorityTextAndColor(contact.priority).text}`} placement='top'   > */}
-                {contact.priority && <Tooltip 
+                {/* {contact.priority && <Tooltip 
                     arrow 
                     title="Supprimer la priorité" 
                     placement='left'
@@ -794,7 +794,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         onClick={() => handleChangeNumber(null, "priority")} >
                         <ClearIcon fontSize='small' color='error' />
                     </IconButton>
-                </Tooltip>}
+                </Tooltip>} */}
 
                 <Box sx={{ '& > legend': { mt: 2 }, }} >
                     <Rating
@@ -1090,7 +1090,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             {/* interestGauge */}
             {/* https://bernii.github.io/gauge.js/#! ??? Avec CANVAS ??? */}
             <StyledTableCell align="center" sx={{ position: 'relative' }}>
-                {contact.interestGauge && <Tooltip 
+                {/* {contact.interestGauge && <Tooltip 
                     arrow 
                     title="Supprimer la gauge d'intérêt" 
                     placement='left'
@@ -1099,7 +1099,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         onClick={() => handleChangeNumber(null, "interestGauge")} >
                         <ClearIcon fontSize='small' color='error' />
                     </IconButton>
-                </Tooltip>}
+                </Tooltip>} */}
+
                 {/* <IconButton aria-label="comment" color="primary" sx={{ padding: 0, float: "right" }}       // Car les boutons ont automatiquement un padding
                     onClick={() => handleChangeInterestGauge(null)} >
                     <ClearIcon color='warning' />

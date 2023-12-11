@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { getFilesFromDatabase, getCategoriesFromDatabase, storage, addFileOnFirebaseDB, addCategorieOnFirebase, updateCategorieOnFirebase, deleteCategorieOnFirebase } from '../utils/firebase'
-import { Box, ListItemText, Paper, TextField, Typography } from '@mui/material'
+import { Box, ListItemText, Modal, Paper, TextField, Typography } from '@mui/material'
 import { handleOpenFile } from '../utils/firebase'
 import { Button, FormControl, InputLabel, MenuItem, Select, Input } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -13,6 +13,9 @@ import ListItem from '@mui/material/ListItem';
 import ListSubheader from '@mui/material/ListSubheader';
 import { useTheme } from '@mui/material/styles';
 import { uid } from 'uid';
+
+import { deleteModalStyle } from '../utils/StyledComponents'
+
 
 import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, deleteDoc, updateDoc, doc } from "firebase/firestore";
 import { fireStoreDb } from '../utils/firebase';
@@ -30,6 +33,11 @@ export default function Admin({ currentUser }: AdminType) {
   const [newCat, setNewCat] = React.useState<string>("");
   const [catToUpdateOrDelete, setCatToUpdateOrDelete] = React.useState<ContactCategorieType>({ id: "", label: "" });
   const [progresspercentFile, setProgresspercentFile] = React.useState(0);
+
+  const [openDeleteCatModal, setOpenDeleteCatModal] = React.useState(false);
+
+
+  const [isFileChoosen, setIsFileChoosen] = React.useState(false);
 
   console.log("catToUpdate", catToUpdateOrDelete)
 
@@ -87,6 +95,8 @@ export default function Admin({ currentUser }: AdminType) {
           addFileOnFirebaseDB(currentUser.uid, { fileName: file.name, fileRef: downloadURL }).then(() => {
             setFilesList([...filesList, { fileName: file.name, fileRef: downloadURL }]);
             //window.location.reload();
+            setIsFileChoosen(false);
+            setProgresspercentFile(0);
           });
         });
       }
@@ -126,16 +136,16 @@ export default function Admin({ currentUser }: AdminType) {
   //   setCatToUpdateOrDelete({ id: "", label: "" });
   // }
 
-  
+
 
   // const deleteCategorieOnFirebase2 = (catId: string) => {
   //   console.log("catId", catId) 
-  
+
   //   const q = query(collection(fireStoreDb, "contacts"), where("businessCategoryId", "==", catId));
-  
+
   //   return getDocs(q).then((querySnapshot) => {
   //     console.log("querySnapshot", querySnapshot.docs)
-  
+
   //     if (!querySnapshot.empty) {
   //       throw new Error("Un contact est associé à cette catégorie.");
   //     } else {
@@ -176,11 +186,11 @@ export default function Admin({ currentUser }: AdminType) {
 
     deleteCategorieOnFirebase(catToUpdateOrDelete.id)
       .then(() => {
-      setCategoriesList([...categoriesList.filter(cat => cat.id !== catToUpdateOrDelete.id)]);
-    }).catch((error) => {
-      alert("Impossible de supprimer cette catégorie => Un ou plusieurs contact(s) y est (sont) associé(s). Veuillez d'abord modifier/supprimer leur catégorie.");
-      console.log(error)
-    })
+        setCategoriesList([...categoriesList.filter(cat => cat.id !== catToUpdateOrDelete.id)]);
+      }).catch((error) => {
+        alert("Impossible de supprimer cette catégorie => Un ou plusieurs contact(s) y est (sont) associé(s). Veuillez d'abord modifier/supprimer leur catégorie.");
+        console.log(error)
+      })
 
     setCatToUpdateOrDelete({ id: "", label: "" });
   }
@@ -190,119 +200,188 @@ export default function Admin({ currentUser }: AdminType) {
     <Paper elevation={3}>
       <Box sx={{ marginTop: "30px" }} >
         <Typography variant="h6">Fichiers dans ma base de données ({filesList.length}) </Typography>
-        <List
-          sx={{
-            //width: '100%',
-            overflow: 'auto',
-            maxHeight: "50vh",
-          }}
-          subheader={<li />}
-        >
-          {filesList.map((file, index) => (
-            <ListItemText
-              key={index}
-              onClick={() => handleOpenFile(file.fileRef)}
-              sx={{ cursor: "pointer", backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
-            >
-              {file.fileName}
-            </ListItemText>
-          ))}
-        </List>
-
-        <form style={{ margin: "30px" }} onSubmit={(e) => handleSubmitFiles(e, "filesSent")} >
-          <Input type="file" />
-          <Button
-            sx={{ marginTop: "10px" }}
-            //component="label"
-            type="submit"
-            variant="contained" startIcon={<CloudUploadIcon />}
-          //onClick={handleChangeLogo}
+        <Box sx={{ display: "flex", justifyContent: "space-between" }} >
+          <List
+            sx={{
+              //width: '100%',
+              overflow: 'auto',
+              maxHeight: "50vh",
+              mt: 2,
+              //backgroundColor: muiTheme.palette.lightCyan.light
+            }}
+            subheader={<li />}
           >
-            Télécharger le fichier
-          </Button>
-        </form>
-        <LinearProgress
-          variant="determinate"
-          value={progresspercentFile}
-          sx={{ marginTop: "10px" }} />
+            {filesList.map((file, index) => (
+              <ListItemText
+                key={index}
+                onClick={() => handleOpenFile(file.fileRef)}
+                sx={{
+                  cursor: "pointer",
+                  backgroundColor: index % 2 === 0 ? muiTheme.palette.lightCyan.light : '',
+                  color: index % 2 === 1 ? muiTheme.palette.primary.dark : '',
+                }}
+              >
+                {file.fileName}
+              </ListItemText>
+            ))}
+          </List>
+
+          <form
+            style={{
+              margin: "5%",
+              width: "80%",
+              display: "flex",
+              gap: "5%"
+            }}
+            onSubmit={(e) => handleSubmitFiles(e, "filesSent")}
+          >
+            <Input
+              id="fileInput"
+              type="file"
+              style={{ display: 'none' }}
+              onChange={() => setIsFileChoosen(true)}
+            />
+            <label htmlFor="fileInput">
+              <Button variant='contained' component="span">
+                Choisir un fichier à ajouter
+              </Button>
+            </label>
+
+            {isFileChoosen && <Box>
+              <Button
+                color="pink"
+                //sx={{ marginTop: "10px" }}
+                //component="label"
+                type="submit"
+                variant="contained" startIcon={<CloudUploadIcon />}
+              //onClick={handleChangeLogo}
+              >
+                Télécharger/ajouter le fichier
+              </Button>
+              <LinearProgress
+                variant="determinate"
+                value={progresspercentFile}
+                sx={{ marginTop: "10px" }} />
+            </Box>}
+          </form>
+        </Box>
       </Box>
 
       <Box sx={{ marginTop: "100px" }} >
         <Typography variant="h6">Catégories dans ma base de données ({categoriesList.length}) </Typography>
-        <List
-          sx={{
-            width: '50%',
-            overflow: 'auto',
-            maxHeight: "50vh",
-          }}
-          subheader={<li />}
-        >
-          {categoriesList
-            .sort((a, b) => a.label.localeCompare(b.label))
-            .map((cat, index) => (
-              <ListItemText
-              key={index}
-              sx={{ cursor: "pointer", backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
-              onClick={() => setCatToUpdateOrDelete(cat)}
+        <Box sx={{ display: "flex", justifyContent: "space-between" }} >
+          <List
+            sx={{
+              width: '50%',
+              overflow: 'auto',
+              maxHeight: "50vh",
+              mt: 2,
+            }}
+            subheader={<li />}
+          >
+            {categoriesList
+              .sort((a, b) => a.label.localeCompare(b.label))
+              .map((cat, index) => (
+                <ListItemText
+                  key={index}
+                  sx={{
+                    cursor: "pointer",
+                    backgroundColor: index % 2 === 0 ? muiTheme.palette.lightCyan.light : '',
+                    color: index % 2 === 1 ? muiTheme.palette.primary.dark : '',
+                  }}
+                  onClick={() => setCatToUpdateOrDelete(cat)}
+                >
+                  {cat.label}
+                </ListItemText>
+              ))}
+          </List>
+
+          <Box>
+            <FormControl 
+              sx={{ 
+                padding: "2%", 
+                display: "flex", 
+                flexDirection: "row", 
+                justifyContent: "space-around" }} 
             >
-              {cat.label}
-            </ListItemText>
-          ))}
-        </List>
+              <TextField
+                disabled={catToUpdateOrDelete.id === "" ? true : false}
+                value={catToUpdateOrDelete.label}
+                //autoComplete="off"
+                onChange={(e) => setCatToUpdateOrDelete({ ...catToUpdateOrDelete, label: e.target.value })}
+                id="outlined-basic"
+                label="Catégorie à modifier ou supprimer"
+                variant="outlined"
+                sx={{ width: "40%" }}
+              />
+              <Button
+                sx={{ width: "20%" }}
+                //component="label"
+                color="ochre"
+                type="submit"
+                variant="contained" //startIcon={<CloudUploadIcon />}
+                onClick={handleUpdateCat}
+              >
+                Modifier la catégorie
+              </Button>
+              <Button
+                sx={{ width: "20%" }}
+                //component="label"
+                color="warning"
+                type="submit"
+                variant="contained" //startIcon={<CloudUploadIcon />}
+                onClick={() => setOpenDeleteCatModal(true)}
+              >
+                Supprimer la catégorie
+              </Button>
+              <Modal
+                open={openDeleteCatModal}
+                onClose={() => setOpenDeleteCatModal(false)}
+              >
+                <Box sx={deleteModalStyle} >
+                  <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
+                    Supprimer la catégorie : <span style={{ fontWeight: "bold" }}>
+                      {catToUpdateOrDelete.label}
+                    </span> ?
+                  </Typography>
+                  {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
+                  <Box sx={{ display: "flex", justifyContent: "space-between" }} >
+                    <Button variant="contained" color='warning' onClick={handleDeleteCat} sx={{ marginRight: "15px" }} >Oui !</Button>
+                    <Button variant="contained" color='primary' onClick={() => setOpenDeleteCatModal(false)} >Non</Button>
+                  </Box>
+                </Box>
+              </Modal>
+            </FormControl>
 
-        <FormControl sx={{ padding: "2%", display: "flex", flexDirection: "row", justifyContent: "space-around" }} >
-          <TextField
-            disabled={catToUpdateOrDelete.id === "" ? true : false}
-            value={catToUpdateOrDelete.label}
-            //autoComplete="off"
-            onChange={(e) => setCatToUpdateOrDelete({ ...catToUpdateOrDelete, label: e.target.value })}
-            id="outlined-basic"
-            label="Catégorie à modifier ou supprimer"
-            variant="outlined"
-            sx={{ width: "40%" }}
-          />
-          <Button
-            sx={{ width: "20%" }}
-            //component="label"
-            color="ochre"
-            type="submit"
-            variant="contained" //startIcon={<CloudUploadIcon />}
-            onClick={handleUpdateCat}
-          >
-            Modifier la catégorie
-          </Button>
-          <Button
-            sx={{ width: "20%" }}
-            //component="label"
-            color="warning"
-            type="submit"
-            variant="contained" //startIcon={<CloudUploadIcon />}
-            onClick={handleDeleteCat}
-          >
-            Supprimer la catégorie
-          </Button>
-        </FormControl>
-
-        <FormControl sx={{ padding: "2%", display: "flex", flexDirection: "row", justifyContent: "space-around" }} >
-          <TextField
-            value={newCat}
-            //autoComplete="off"
-            onChange={(e) => setNewCat(e.target.value)}
-            id="outlined-basic"
-            label="Nouvelle catégorie"
-            variant="outlined"
-            sx={{ width: "40%" }}
-          />
-          <Button
-            sx={{ width: "40%" }}
-            //component="label"
-            type="submit"
-            variant="contained" startIcon={<CloudUploadIcon />}
-            onClick={handleAddCat}
-          >
-            Ajouter la catégorie
-          </Button>
-        </FormControl>
+            <FormControl 
+              sx={{ 
+                mt:3, 
+                padding: "2%", 
+                display: "flex", 
+                flexDirection: "row", 
+                justifyContent: "space-around" 
+              }} >
+              <TextField
+                value={newCat}
+                //autoComplete="off"
+                onChange={(e) => setNewCat(e.target.value)}
+                id="outlined-basic"
+                label="Nouvelle catégorie"
+                variant="outlined"
+                sx={{ width: "40%" }}
+              />
+              <Button
+                sx={{ width: "40%" }}
+                //component="label"
+                type="submit"
+                variant="contained" startIcon={<CloudUploadIcon />}
+                onClick={handleAddCat}
+              >
+                Ajouter la catégorie
+              </Button>
+            </FormControl>
+          </Box>
+        </Box>
       </Box>
     </Paper>
 
