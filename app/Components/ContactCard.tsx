@@ -43,8 +43,11 @@ import MailIcon from '@mui/icons-material/Mail';
 import LanguageIcon from '@mui/icons-material/Language';
 import PsychologyAlt from '@mui/icons-material/PsychologyAlt';
 import { StyledRating, IconContainer, customIcons } from '../utils/StyledComponents';
+import SettingsIcon from '@mui/icons-material/Settings';
+
 
 import { isDatePassed, isDateSoon } from '../utils/toolbox'
+import { truncate } from 'fs';
 
 
 type ContactCardProps = {
@@ -65,32 +68,67 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
     const [contactToAddOrUpdate, setContactToAddOrUpdate] = React.useState<Contact>(contact)
     const [tabValue, setTabValue] = React.useState(0);
+    const [logoChoosen, setIsLogoChoosen] = React.useState(false);
+    const [isFileChoosen, setIsFileChoosen] = React.useState(false);
+    const [isExistingFileChoosen, setIsExistingFileChoosen] = React.useState(false);
 
 
-    //console.log("contactToAddOrUpdate", contactToAddOrUpdate)
+    console.log("contactToAddOrUpdate", contactToAddOrUpdate)
+    //console.log("LOGO", contactToAddOrUpdate.logo)
 
     const muiTheme = useTheme();
+
+    const inputFileRef = React.useRef<HTMLInputElement>(null);
+
+    //console.log("inputFileRef", inputFileRef)
+
 
     const [progresspercentLogo, setProgresspercentLogo] = React.useState(0);
     const [progresspercentFile, setProgresspercentFile] = React.useState(0);
     const [filesFirebaseArray, setFilesFirebaseArray] = React.useState<FileNameAndRefType[]>([])
     const [firebaseFileSelected, setFirebaseFileSelected] = React.useState<FileNameAndRefType>({ fileName: "", fileRef: "" })
+
+    console.log("firebaseFileSelected", firebaseFileSelected)
+
     const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[]>([]);
 
 
-    const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
-    const handleOpenDeleteModal = () => setOpenDeleteModal(true);
-    const handleCloseDeleteModal = () => setOpenDeleteModal(false);
+    const [openDeleteContactModal, setOpenDeleteContactModal] = React.useState(false);
+    const [openDeleteCatModal, setOpenDeleteCatModal] = React.useState(false);
+    const [openDeleteContactFileModal, setOpenDeleteContactFileModal] = React.useState(false);
+    const [openDeleteContactFilesModal, setOpenDeleteContactFilesModal] = React.useState(false);
+
+    const handleOpenDeleteContactModal = () => setOpenDeleteContactModal(true);
+    const handleCloseDeleteContactModal = () => setOpenDeleteContactModal(false);
+
+    const handleOpenDeleteCatModal = () => setOpenDeleteCatModal(true);
+    const handleCloseDeleteCatModal = () => setOpenDeleteCatModal(false);
+
+    const handleOpenDeleteContactFiletModal = () => setOpenDeleteContactFileModal(true);
+    const handleCloseDeleteContactFileModal = () => setOpenDeleteContactFileModal(false);
+
+    const handleOpenDeleteContactFilesModal = () => setOpenDeleteContactFilesModal(true);
+    const handleCloseDeleteContactFilesModal = () => setOpenDeleteContactFilesModal(false);
 
     const handleClickDeleteContact = () => {
         handleDeleteContact && handleDeleteContact(contact.id)
     }
 
+    const handleChangeExistingFile = (e: any) => {
+        const selectedFileRef = e.target.value;
+        const selectedFile = filesFirebaseArray.find(file => file.fileRef === selectedFileRef);
+
+        setFirebaseFileSelected({ fileName: selectedFile?.fileName ?? "" , fileRef: selectedFileRef })
+        setIsExistingFileChoosen(true)
+    }
+
     React.useEffect(() => {
+
+        console.log("USE EFFECT !!!!!!!")
 
         getFilesFromDatabase(currentUserId).then((filesList) => {
             setFilesFirebaseArray(filesList)
-            filesList.length > 0 && setFirebaseFileSelected({ fileName: filesList[0].fileName, fileRef: filesList[0].fileRef })
+           // filesList.length > 0 && setFirebaseFileSelected({ fileName: filesList[0].fileName, fileRef: filesList[0].fileRef })
         });
 
         getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
@@ -114,7 +152,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         setContactToAddOrUpdate(contact)    // Sinon quand on clic ne change rien !
     }, [contact])
 
-    console.log("contactToAddOrUpdate", contactToAddOrUpdate)
+    //console.log("contactToAddOrUpdate", contactToAddOrUpdate)
     //console.log("files", contactToAddOrUpdate.filesSent)
     //console.log(typeof contactToAddOrUpdate.filesSent)
     //contactToAddOrUpdate.filesSent.length > 0 && console.log(typeof contactToAddOrUpdate.filesSent[0])
@@ -191,11 +229,15 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                 });
             }
         );
+        attribut === "logo"
+            ? setIsLogoChoosen(false)
+            : setIsFileChoosen(false)
     }
 
     const handleChangeSelectFirebaseFile = () => {
 
         setContactToAddOrUpdate({ ...contactToAddOrUpdate, filesSent: [...contactToAddOrUpdate.filesSent, { fileName: firebaseFileSelected.fileName, fileRef: firebaseFileSelected.fileRef }] })
+        setIsExistingFileChoosen(false)
     }
 
     const removeFile = (file: FileNameAndRefType) => {
@@ -399,7 +441,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             ))}
                         </Typography>
                     </Box>
-                 
+
                 </Box>
 
 
@@ -411,20 +453,70 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         //alignItems: 'center', gap: 2, 
                     }}>
                         {/* ///////// LOGO  */}
-                        <Box sx={{ width: "20%", mt: "auto" }} >
-                            <Avatar
-                                variant="rounded"
-                                src={contactToAddOrUpdate.logo
-                                    ? contactToAddOrUpdate.logo
-                                    : ""}
-                                sx={{ width: "250px", height: "250px" }}
-                            >
-                                {contactToAddOrUpdate.logo ? "" : "Aucun logo"}
-                            </Avatar>
+                        <Box sx={{ width: "28%", mb: "auto", aspectRatio: "1/1" }} >
+                            <Tooltip arrow title="Ajouter/modifier le logo puis cliquer sur TELECHARGER pour l'afficher" placement='top' >
+                                <Avatar
+                                    variant="rounded"
+                                    onClick={() => inputFileRef.current?.click()}
+                                    //onClick={() => inputFileRef && inputFileRef.current && inputFileRef.current.click()}
+                                    src={contactToAddOrUpdate.logo
+                                        ? contactToAddOrUpdate.logo
+                                        : ""}
+                                    sx={{ width: "100%", height: "100%", cursor: "pointer", border:`solid ${getPriorityTextAndColor(contactToAddOrUpdate.priority).color}` }}
+                                >
+                                    {contactToAddOrUpdate.logo ? "" : "Aucun logo"}
+                                </Avatar>
+                            </Tooltip>
+
+                            {/*  Boutons TELECHARGEMENT */}
+                            <Box sx={{ marginTop: "15px" }}>
+                                {/* => FormControl n'est pas conçu pour gérer les soumissions de formulaire. */}
+                                <form onSubmit={(e) => handleSubmitFiles(e, "logo")}
+                                //style={{ display:"flex", alignItems:"center", gap:"50px" }} 
+                                >
+                                    {/* <TextField
+                                        color="secondary"
+                                        name="upload-photo"
+                                        type="file"
+                                    //onChange={handleChangeLogo}
+                                    /> */}                              
+                                 
+
+                                    <Button variant="contained" component="label" sx={{ color: "white", display: 'none' }} >
+                                        <Input
+                                            type="file"
+                                            ref={inputFileRef}
+                                            //sx={{ display: 'none' }}
+                                            onChange={() => setIsLogoChoosen(true)}
+                                        />
+                                        {/* 1- Choisir */}
+                                    </Button>
+
+                                    {logoChoosen &&  <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center" }} >
+                                        <Button
+                                            color="pink"
+                                            //sx={{ marginLeft: "10px", }}
+                                            //component="label"
+                                            type="submit"
+                                            variant="contained" startIcon={<CloudUploadIcon />}
+                                        //onClick={handleChangeLogo}
+                                        >
+                                            Télécharger/afficher le logo
+                                            {/* <VisuallyHiddenInput type="file" /> */}
+                                        </Button>
+                                        <LinearProgress variant="determinate" value={progresspercentLogo} sx={{ marginTop: "10px" }} />
+                                    </Box>
+                                    }
+                                </form>
+                                {/* <Box className='innerbar' sx={{ width: `${progresspercent}%`, backgroundColor: "red" }}>{progresspercent}%</Box>
+                            </Box> */}
+                              
+                                {contactToAddOrUpdate.logo && <Button variant="contained" color="error" sx={{ marginTop: "10px" }} onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, logo: "" })} >Supprimer le logo</Button> }
+                            </Box>
                         </Box>
 
-                        {/* ///////// NOM et DATES */}
-                        <Box sx={{ width: "75%" }} >
+                        {/* ///////// NOM et DATES + SMILEYS */}
+                        <Box sx={{ width: "70%" }} >
 
                             {/* ///////// NOM */}
                             <TextField
@@ -459,7 +551,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             {/* <TextField id="outlined-basic" label="Secteur d'activité"  value={findLabelNafCodes(contactToAdd.businessActivity)} /> */}
 
                             {/* ///////// DATES ///////// */}
-                            <Box sx={{ display: 'flex', justifyContent: "space-around", marginTop: "50px" }} >
+                            <Box sx={{ display: 'flex', justifyContent: "space-around", mt:8 }} >
                                 {/* ///////// 1er APPEL */}
                                 <Box sx={{ width: "25%" }} >
                                     <Box sx={{
@@ -556,88 +648,50 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     </Typography>
                                 </Box>
                             </Box>
-                        </Box>
-                    </Box>
 
-                    {/* ////////////// Boutons TELECHARGEMENT fichier LOGO et SMILEYS /// */}
-                    <Box sx={{ display: "flex", justifyContent: "space-between" }} >
-                        {/* ////////////// Boutons TELECHARGEMENT */}
-                        <Box sx={{ width: "30%", marginTop: "15px" }}>
-                            {/* => FormControl n'est pas conçu pour gérer les soumissions de formulaire. */}
-                            <form onSubmit={(e) => handleSubmitFiles(e, "logo")}
-                            //style={{ display:"flex", alignItems:"center", gap:"50px" }} 
-                            >
-                                {/* <TextField
-                                        color="secondary"
-                                        name="upload-photo"
-                                        type="file"
-                                    //onChange={handleChangeLogo}
-                                    /> */}
-
-                                <Button variant="contained" component="label" sx={{ color: "white" }} >
-                                    <Input type="file" sx={{ display: 'none' }} />
-                                    1- Choisir
-                                </Button>
-
-                                <Button
-                                    color="pink"
-                                    sx={{ marginLeft: "10px", }}
-                                    //component="label"
-                                    type="submit"
-                                    variant="contained" startIcon={<CloudUploadIcon />}
-                                //onClick={handleChangeLogo}
-                                >
-                                    2- Télécharger
-                                    {/* <VisuallyHiddenInput type="file" /> */}
-                                </Button>
-                            </form>
-                            {/* <Box className='innerbar' sx={{ width: `${progresspercent}%`, backgroundColor: "red" }}>{progresspercent}%</Box>
-                            </Box> */}
-                            <LinearProgress variant="determinate" value={progresspercentLogo} sx={{ marginTop: "10px" }} />
-
-                            {contactToAddOrUpdate.logo &&
-                                <Button variant="contained" color="error" sx={{ marginTop: "10px" }} onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, logo: "" })} >Supprimer le logo</Button>}
-                        </Box>
-
-                        {/* ////////////// SMILEYS */}
-                        <Box
-                            sx={{
-                                m: 3,
-                                //width:"50%",
-                                position: 'relative',
-                                mr: "40%"
-                            }}
-                        >
-
-                            {contactToAddOrUpdate.interestGauge && <Tooltip
-                                arrow
-                                title="Supprimer la gauge d'intérêt"
-                                placement='left'
-                            >
-                                <IconButton color="primary" sx={{ padding: 0, position: "absolute", top: -5, right: -15 }}        // Car les boutons ont automatiquement un padding
-                                    onClick={() => handleChangeNumber(null, "interestGauge")} >
-                                    <ClearIcon fontSize='small' color='error' />
-                                </IconButton>
-                            </Tooltip>}
-                            <StyledRating
-                                name="highlight-selected-only"
-                                //defaultValue={2}
+                            {/* ////////////// SMILEYS */}
+                            <Box
                                 sx={{
-                                    alignItems: 'center',
-                                    fontSize: "5.5em",
+                                    mt: 8,
+                                    display: 'flex',
+                                    justifyContent: 'center',
                                 }}
-                                value={contactToAddOrUpdate.interestGauge}
-                                onChange={(e, newValue) => handleChangeNumber(newValue, "interestGauge")}
-                                IconContainerComponent={IconContainer}
-                                getLabelText={(value: number) => customIcons[value].label}
-                                highlightSelectedOnly
-                            />
+                            >
+                                <Box
+                                    sx={{
+                                        position: 'relative',
+                                    }}
+                                >
 
+                                    {contactToAddOrUpdate.interestGauge && <Tooltip
+                                        arrow
+                                        title="Supprimer la gauge d'intérêt"
+                                        placement='left'
+                                    >
+                                        <IconButton color="primary" sx={{ padding: 0, position: "absolute", top: -5, right: -15 }}        // Car les boutons ont automatiquement un padding
+                                            onClick={() => handleChangeNumber(null, "interestGauge")} >
+                                            <ClearIcon fontSize='small' color='error' />
+                                        </IconButton>
+                                    </Tooltip>}
+                                    <StyledRating
+                                        name="highlight-selected-only"
+                                        //defaultValue={2}
+                                        sx={{
+                                            alignItems: 'center',
+                                            fontSize: "5.5em",
+                                        }}
+                                        value={contactToAddOrUpdate.interestGauge}
+                                        onChange={(e, newValue) => handleChangeNumber(newValue, "interestGauge")}
+                                        IconContainerComponent={IconContainer}
+                                        getLabelText={(value: number) => customIcons[value].label}
+                                        highlightSelectedOnly
+                                    />
+
+                                </Box>
+                            </Box>
                         </Box>
-                    </Box>
+                    </Box>                 
                 </Box>
-
-
 
                 <Box sx={{ display: 'flex', justifyContent: "space-between", gap: "4%" }} >
                     {/* ///////// NOM Contact, POSITION, VILLE et ADRESSE ///////// */}
@@ -655,7 +709,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 label="Site WEB"
                                 value={contactToAddOrUpdate.businessWebsite}
                                 onChange={handleChangeText("businessWebsite")}
-                                sx={{ width: "48%", ml:"4%" }}
+                                sx={{ width: "48%", ml: "4%" }}
                                 InputProps={{
                                     startAdornment: contactToAddOrUpdate.businessWebsite && <Link
                                         href={contactToAddOrUpdate.businessWebsite}
@@ -674,25 +728,25 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         </Box>
 
                         <Box sx={{ mt: 2 }} >
-                            <TextField id="outlined-basic" label="Nom Contact DIRECT"  value={contactToAddOrUpdate.contactName} onChange={handleChangeText("contactName")}
+                            <TextField id="outlined-basic" label="Nom Contact DIRECT" value={contactToAddOrUpdate.contactName} onChange={handleChangeText("contactName")}
                                 sx={{ width: "48%" }}
                             />
-                            <TextField id="outlined-basic" label="Position"  value={contactToAddOrUpdate.contactPosition} onChange={handleChangeText("contactPosition")}
+                            <TextField id="outlined-basic" label="Position" value={contactToAddOrUpdate.contactPosition} onChange={handleChangeText("contactPosition")}
                                 sx={{ width: "48%", ml: "4%" }}
                             />
                         </Box>
 
                         <Box sx={{ mt: 2 }} >
-                            <TextField id="outlined-basic" label="Ville"  value={contactToAddOrUpdate.businessCity} onChange={handleChangeText("businessCity")} sx={{ width: "48%" }} />
-                            <TextField id="outlined-basic" label="Adresse"  value={contactToAddOrUpdate.businessAddress} onChange={handleChangeText("businessAddress")} sx={{ width: "48%", ml: "4%" }} />
+                            <TextField id="outlined-basic" label="Ville" value={contactToAddOrUpdate.businessCity} onChange={handleChangeText("businessCity")} sx={{ width: "48%" }} />
+                            <TextField id="outlined-basic" label="Adresse" value={contactToAddOrUpdate.businessAddress} onChange={handleChangeText("businessAddress")} sx={{ width: "48%", ml: "4%" }} />
                         </Box>
 
                         <Box sx={{ mt: 2 }} >
-                            <TextField id="outlined-basic" label="Téléphone STANDARD"  value={contactToAddOrUpdate.businessPhone} onChange={handleChangeText("businessPhone")} sx={{ width: "48%" }} />
+                            <TextField id="outlined-basic" label="Téléphone STANDARD" value={contactToAddOrUpdate.businessPhone} onChange={handleChangeText("businessPhone")} sx={{ width: "48%" }} />
                             <TextField
                                 id="outlined-basic"
                                 label="Téléphone DIRECT"
-                                
+
                                 value={contactToAddOrUpdate.contactPhone}
                                 onChange={handleChangeText("contactPhone")}
                                 sx={{ width: "48%", ml: "4%" }}
@@ -703,7 +757,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             <TextField
                                 id="outlined-basic"
                                 label="Email ENTREPRISE"
-                                
+
                                 value={contactToAddOrUpdate.businessEmail}
                                 onChange={handleChangeText("businessEmail")}
                                 sx={{ width: "48%" }}
@@ -722,7 +776,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             <TextField
                                 id="outlined-basic"
                                 label="Email DIRECT"
-                                
+
                                 value={contactToAddOrUpdate.contactEmail}
                                 onChange={handleChangeText("businessEmail")}
                                 sx={{ width: "48%", ml: "4%" }}
@@ -751,16 +805,16 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         multiline
                         id="outlined-basic"
                         label="Commentaires"
-                        
+
                         value={contactToAddOrUpdate.comments}
                         onChange={handleChangeText("comments")}
                     />
                 </Box>
 
 
-            
 
-              
+
+
 
 
                 {/* ///////// FICHIERS ///////// */}
@@ -815,7 +869,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         aria-label="Horizontal tabs"
                     //sx={{ borderRight: 1, borderColor: 'divider', width: "120px" }}
                     >
-
                         <Tab key={0} label="Ajout fichier existant"
                         //icon={title.icon}
                         // {...a11yProps(index)} 
@@ -827,17 +880,24 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     </Tabs>
 
                     <TabPanel key="0" value={tabValue} index={0}  >
-                        <FormControl sx={{ margin: "30px", width: "50%" }} >
-                            <InputLabel id="checkbox-type-label">Choisir un fichier existant</InputLabel>
+                        <FormControl sx={{
+                            margin: "30px",
+                            width: "80%"
+                        }} >
+                            {filesFirebaseArray.length > 0
+                                ? <InputLabel id="checkbox-type-label">Choisir un fichier existant</InputLabel>
+                                : <InputLabel id="checkbox-type-label">Aucun fichier pour l'instant, veuillez en ajouter (onglet de droite : AJOUT NOUVEAU FICHIER) ou dans l'onglet ADMIN <SettingsIcon /></InputLabel>
+                            }
+
                             <Select
                                 id="checkbox-type-label"
                                 //sx={{ width: "200px" }}
                                 value={firebaseFileSelected.fileRef}
-                                name={firebaseFileSelected.fileName}
-                                onChange={(e) => setFirebaseFileSelected({ fileName: e.target.name, fileRef: e.target.value })}
+                                //name={firebaseFileSelected.fileName}  // SERT A RIEN !!!
+                                onChange={handleChangeExistingFile}
                             >
+                                {/* <MenuItem key="0" value="0">Choisir dans la liste</MenuItem> */}
                                 {filesFirebaseArray.map((file) => (
-
 
                                     //     <Tooltip title="Associer au contact">
                                     //         <IconButton color="secondary" sx={{
@@ -877,56 +937,103 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     </MenuItem>
                                 ))}
                             </Select>
-                            <Box sx={{ display: "flex", justifyContent: "space-between" }} >
-                                <Button
-                                    sx={{ marginTop: "10px" }}
-                                    color="secondary"
-                                    //component="label"
-                                    type="submit"
-                                    variant="contained" startIcon={<VisibilityIcon />}
-                                    onClick={() => handleOpenFile(firebaseFileSelected.fileRef)}
-                                >
-                                    Voir le fichier
-                                </Button>
-                                <Button
-                                    sx={{ marginTop: "10px" }}
-                                    //component="label"
-                                    type="submit"
-                                    variant="contained" startIcon={<AddIcon />}
-                                    onClick={handleChangeSelectFirebaseFile}
-                                >
-                                    Associer ce fichier
-                                </Button>
-                            </Box>
+                            {isExistingFileChoosen && 
+                                <Box sx={{ display: "flex", justifyContent: "space-between" }} >
+                                    <Button
+                                        sx={{ marginTop: "10px" }}
+                                        color="secondary"
+                                        //component="label"
+                                        type="submit"
+                                        variant="contained" startIcon={<VisibilityIcon />}
+                                        onClick={() => handleOpenFile(firebaseFileSelected.fileRef)}
+                                    >
+                                        Voir le fichier
+                                    </Button>
+                                    <Button
+                                        sx={{ marginTop: "10px" }}
+                                        //component="label"
+                                        type="submit"
+                                        variant="contained" startIcon={<AddIcon />}
+                                        onClick={handleChangeSelectFirebaseFile}
+                                    >
+                                        Associer ce fichier
+                                    </Button>
+                                </Box>
+                            }
                         </FormControl>
                     </TabPanel>
 
                     <TabPanel key="1" value={tabValue} index={1}  >
                         {/* => FormControl n'est pas conçu pour gérer les soumissions de formulaire. */}
                         <form style={{ margin: "30px" }} onSubmit={(e) => handleSubmitFiles(e, "filesSent")} >
-                            <Input type="file" />
-                            <Button
-                                sx={{ marginTop: "10px" }}
+
+                                <Input 
+                                    id="fileInput"
+                                    type="file"
+                                    style={{ display: 'none' }}
+                                    onChange={() => setIsFileChoosen(true)}
+                                />
+                                <label htmlFor="fileInput">
+                                    <Button variant='contained' component="span">
+                                        Choisir un fichier
+                                    </Button>
+                                </label>
+                           
+                            {isFileChoosen && <Button
+                                color="secondary"
+                                sx={{ marginLeft: "10px" }}
                                 //component="label"
                                 type="submit"
                                 variant="contained" startIcon={<CloudUploadIcon />}
                             //onClick={handleChangeLogo}
                             >
                                 Télécharger le fichier
-                            </Button>
+                            </Button>}
                         </form>
                         <LinearProgress
                             variant="determinate"
                             value={progresspercentFile}
-                            sx={{ marginTop: "10px" }} />
+                            sx={{ marginTop: "10px", 
+                                width:"90%" }} />
                     </TabPanel>
 
-                    {contactToAddOrUpdate.filesSent &&
-                        <Button
-                            variant="contained"
-                            color="error"
-                            sx={{ marginTop: "10px", position: "absolute", top: 0, right: 0 }}
-                            onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, filesSent: [] })} >Supprimer tous les fichiers associés</Button>}
+                    {contactToAddOrUpdate.filesSent.length > 0 &&
+                        <Box>
+                            <Button
+                                variant="contained"
+                                color="error"
+                                sx={{ marginTop: "10px", position: "absolute", top: 0, right: 0 }}
+                                onClick={() => setOpenDeleteContactFilesModal(true)} >
+                                Supprimer tous les fichiers associés
+                            </Button>
+
+                            <Modal
+                                open={openDeleteContactFilesModal}
+                                onClose={handleCloseDeleteContactFilesModal}
+                                aria-labelledby="modal-modal-title"
+                                aria-describedby="modal-modal-description"
+                            >
+                                <Box sx={deleteModalStyle} >
+                                    <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
+                                        Supprimer tous les fichiers associés au contact : <span style={{ fontWeight: "bold" }}>{contactToAddOrUpdate.businessName}</span> ?
+                                    </Typography>
+                                    {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
+                                    <Box sx={{ display: "flex", justifyContent: "space-between" }} >
+                                        <Button
+                                            variant="contained"
+                                            color='warning'
+                                            onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, filesSent: [] })}
+                                            sx={{ marginRight: "15px" }}
+                                        >
+                                            Oui !
+                                        </Button>
+                                        <Button variant="contained" color='primary' onClick={handleCloseDeleteContactFilesModal} >Non</Button>
+                                    </Box>
+                                </Box>
+                            </Modal>
+                        </Box>
+
+                    }
                 </Box>
 
 
@@ -934,8 +1041,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     <Edit sx={{ fontSize: 14 }} />
                 </IconButton> */}
 
-                {addContact && <Button variant="contained" sx={{ width: '100%', height:"80px", mt: 1, mb: 2 }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
-                {updateContact && <Button variant="contained" color='pink' sx={{ width: '100%', height:"80px",  mt: 1, mb: 2 }} onClick={() => updateContact(contactToAddOrUpdate)} >Mettre à jour le contact</Button>}
+                {addContact && <Button variant="contained" sx={{ width: '100%', height: "80px", mt: 1, mb: 2 }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
+                {updateContact && <Button variant="contained" color='pink' sx={{ width: '100%', height: "80px", mt: 1, mb: 2 }} onClick={() => updateContact(contactToAddOrUpdate)} >Mettre à jour le contact</Button>}
             </Box>
 
             {/* ///////// SUPPRIMER ///////// */}
@@ -943,7 +1050,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                 <Button
                     variant="contained"
                     color='error'
-                    onClick={handleOpenDeleteModal}
+                    onClick={handleOpenDeleteContactModal}
                     sx={{ mt: 5, mr: 0, ml: "auto", }}
                 >
                     <DeleteForeverIcon />
@@ -951,8 +1058,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                 </Button>
 
                 <Modal
-                    open={openDeleteModal}
-                    onClose={handleCloseDeleteModal}
+                    open={openDeleteContactModal}
+                    onClose={handleCloseDeleteContactModal}
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >
@@ -963,7 +1070,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
                         <Box sx={{ display: "flex", justifyContent: "space-between" }} >
                             <Button variant="contained" color='warning' onClick={handleClickDeleteContact} sx={{ marginRight: "15px" }} >Oui !</Button>
-                            <Button variant="contained" color='primary' onClick={handleCloseDeleteModal} >Non</Button>
+                            <Button variant="contained" color='primary' onClick={handleCloseDeleteContactModal} >Non</Button>
                         </Box>
                     </Box>
                 </Modal>

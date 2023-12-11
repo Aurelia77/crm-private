@@ -126,7 +126,7 @@ export default function Contacts() {
         { label: "Calendrier", icon: <CalendarMonthIcon /> },
         { label: "Nouveau", icon: <PersonAddIcon /> },
         { label: "Contact", icon: <PersonIcon /> },
-        { label: "Modification BDD", icon: <SettingsIcon /> },
+        { label: "Admin", icon: <SettingsIcon /> },
         // { label: "Admin", icon: <SettingsIcon /> },
     ]
 
