@@ -111,6 +111,10 @@ export default function Admin({ currentUser }: AdminType) {
 
   const handleUpdateFile = () => {    
     console.log("fileToUpdate", fileToUpdateOrDelete)
+    if (fileToUpdateOrDelete.fileName === "") {
+      alert("Le nom du fichier doit contenir au moins un caractère !")
+      return 
+    }
     updateFileOnFirebase(fileToUpdateOrDelete)
     setFilesList([...filesList.filter(file => file.fileRef !== fileToUpdateOrDelete.fileRef), { ...fileToUpdateOrDelete }]);
     setFileToUpdateOrDelete({ fileName: "", fileRef: "" });
@@ -212,11 +216,8 @@ export default function Admin({ currentUser }: AdminType) {
 
   return (
     <Box sx={{ maxWidth: "1500px", margin: "auto" }} >
-      <Box
-        m={5}
-      //sx={{ marginTop: "30px" }} 
-      >
-        <Typography variant="h6">Mes fichiers ({filesList.length}) <span style={{ color: 'gray', fontSize: "0.8em" }}>(double clic pour visualiser)</span>
+      <Box mx={5} mb={2} >
+        <Typography variant="h6">Mes fichiers ({filesList.length}) <span style={{ color: 'gray', fontSize: "0.8em" }}>(1 clic pour modifier, 2 clics pour visualiser)</span>
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "space-between", gap: "2%", mt: 2, }} >
           <List
@@ -307,7 +308,7 @@ export default function Admin({ currentUser }: AdminType) {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-                gap: "2%",
+                //gap: "2%",
               }}
             >
               <TextField
@@ -319,7 +320,7 @@ export default function Admin({ currentUser }: AdminType) {
                 variant="outlined"
                 sx={{ width: "100%" }}
               />
-              <Button
+              {fileToUpdateOrDelete.fileRef && <Button
                 //sx={{ marginTop: "15px", }}
                 //component="label"
                 color="ochre"
@@ -327,8 +328,8 @@ export default function Admin({ currentUser }: AdminType) {
                 variant="contained" //startIcon={<CloudUploadIcon />}
                 onClick={handleUpdateFile}
               >
-                Modifier le nom du fichier
-              </Button>              
+                Modifier le nom
+              </Button>  }            
             </FormControl>}
           </Box>
         </Box>
@@ -342,16 +343,16 @@ export default function Admin({ currentUser }: AdminType) {
         m={5}
       //sx={{ marginTop: "100px" }} 
       >
-        <Typography variant="h6">Mes catégories ({categoriesList.length}) </Typography>
-        <Box sx={{ display: "flex", justifyContent: "space-between" }} >
+        <Typography variant="h6">Mes catégories ({categoriesList.length}) <span style={{ color: 'gray', fontSize: "0.8em" }}>(cliquer pour modifier)</span>
+        </Typography>       
+        <Box sx={{ display: "flex", justifyContent: "space-between", gap: "2%", mt: 2, }} >
+
           <List
             sx={{
               width: '50%',
               overflow: 'auto',
               maxHeight: "40vh",
-              mt: 2,
               boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)'
-
             }}
             subheader={<li />}
           >
@@ -374,70 +375,11 @@ export default function Admin({ currentUser }: AdminType) {
           </List>
 
           <Box>
-            {categoriesList.length > 0 && <FormControl
-              sx={{
-                padding: "2%",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-around"
-              }}
-            >
-              <TextField
-                disabled={catToUpdateOrDelete.id === "" ? true : false}
-                value={catToUpdateOrDelete.label}
-                //autoComplete="off"
-                onChange={(e) => setCatToUpdateOrDelete({ ...catToUpdateOrDelete, label: e.target.value })}
-                id="outlined-basic"
-                label="Catégorie à modifier ou supprimer"
-                variant="outlined"
-                sx={{ width: "40%" }}
-              />
-              <Button
-                sx={{ width: "20%" }}
-                //component="label"
-                color="ochre"
-                type="submit"
-                variant="contained" //startIcon={<CloudUploadIcon />}
-                onClick={handleUpdateCat}
-              >
-                Modifier le nom de la catégorie
-              </Button>
-              <Button
-                sx={{ width: "20%" }}
-                //component="label"
-                color="warning"
-                type="submit"
-                variant="contained" //startIcon={<CloudUploadIcon />}
-                onClick={() => setOpenDeleteCatModal(true)}
-              >
-                Supprimer la catégorie
-              </Button>
-              <Modal
-                open={openDeleteCatModal}
-                onClose={() => setOpenDeleteCatModal(false)}
-              >
-                <Box sx={deleteModalStyle} >
-                  <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
-                    Supprimer la catégorie : <span style={{ fontWeight: "bold" }}>
-                      {catToUpdateOrDelete.label}
-                    </span> ?
-                  </Typography>
-                  {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
-                  <Box sx={{ display: "flex", justifyContent: "space-between" }} >
-                    <Button variant="contained" color='warning' onClick={handleDeleteCat} sx={{ marginRight: "15px" }} >Oui !</Button>
-                    <Button variant="contained" color='primary' onClick={() => setOpenDeleteCatModal(false)} >Non</Button>
-                  </Box>
-                </Box>
-              </Modal>
-            </FormControl>}
-
             <FormControl
               sx={{
-                mt: 3,
-                padding: "2%",
                 display: "flex",
                 flexDirection: "row",
-                justifyContent: "space-around"
+                justifyContent: "space-between"
               }} >
               <TextField
                 value={newCat}
@@ -449,7 +391,7 @@ export default function Admin({ currentUser }: AdminType) {
                 sx={{ width: "40%" }}
               />
               <Button
-                sx={{ width: "40%" }}
+                sx={{ width: "40%", color:"white" }}
                 //component="label"
                 type="submit"
                 variant="contained" startIcon={<CloudUploadIcon />}
@@ -458,6 +400,65 @@ export default function Admin({ currentUser }: AdminType) {
                 Ajouter la catégorie
               </Button>
             </FormControl>
+            
+            {categoriesList.length > 0 && <FormControl
+              sx={{
+                marginTop: "100px",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                gap: "2%",
+              }}
+            >
+              <TextField
+                disabled={catToUpdateOrDelete.id === "" ? true : false}
+                value={catToUpdateOrDelete.label}
+                //autoComplete="off"    // Marche pas !!!
+                onChange={(e) => setCatToUpdateOrDelete({ ...catToUpdateOrDelete, label: e.target.value })}
+                label="Catégorie à modifier ou supprimer"
+                variant="outlined"
+                //sx={{ width: "40%" }}
+              />
+              {newCat && <Box sx={{display:"flex", gap:"2%" }} > 
+                <Button
+                  //sx={{ width: "20%" }}
+                  //component="label"
+                  color="ochre"
+                  type="submit"
+                  variant="contained" //startIcon={<CloudUploadIcon />}
+                  onClick={handleUpdateCat}
+                >
+                  Modifier le nom
+                </Button>
+                <Button
+                  //sx={{ width: "20%" }}
+                  //component="label"
+                  color="warning"
+                  type="submit"
+                  variant="contained" //startIcon={<CloudUploadIcon />}
+                  onClick={() => setOpenDeleteCatModal(true)}
+                >
+                  Supprimer
+                </Button>
+                <Modal
+                  open={openDeleteCatModal}
+                  onClose={() => setOpenDeleteCatModal(false)}
+                >
+                  <Box sx={deleteModalStyle} >
+                    <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
+                      Supprimer la catégorie : <span style={{ fontWeight: "bold" }}>
+                        {catToUpdateOrDelete.label}
+                      </span> ?
+                    </Typography>
+                    {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
+                    <Box sx={{ display: "flex", justifyContent: "space-between" }} >
+                      <Button variant="contained" color='warning' onClick={handleDeleteCat} sx={{ marginRight: "15px" }} >Oui !</Button>
+                      <Button variant="contained" color='primary' onClick={() => setOpenDeleteCatModal(false)} >Non</Button>
+                    </Box>
+                  </Box>
+                </Modal>
+              </Box>}
+            </FormControl>}
           </Box>
         </Box>
       </Box>

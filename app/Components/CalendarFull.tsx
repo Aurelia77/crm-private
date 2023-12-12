@@ -81,10 +81,7 @@ export default function CalendarFull({ contacts, diplayContactCardToUpdate, upda
 
   const calendarRef = React.useRef(null);
 
-  const icon = (
-    <Box id="calendar" ref={calendarRef} sx={{ width: "calc(100vw - 250px)", margin: "auto", marginTop: "3%", backgroundColor: muiTheme.palette.lightCyan.light }}
-    ></Box>
-  );
+
 
   React.useEffect(() => {  
     setChecked(true);
@@ -243,7 +240,10 @@ export default function CalendarFull({ contacts, diplayContactCardToUpdate, upda
         <Typography sx={{ p:0.3, textAlign:"center", borderRadius: "10px", backgroundColor: noPriorityColor, color: 'white', width:"20%" }}>Aucune</Typography>
       </Box>
 
-      <Collapse in={checked}>{icon}</Collapse>
+      <Collapse in={checked}>
+        <Box id="calendar" ref={calendarRef} sx={{ width: "calc(100vw - 250px)", margin: "auto", marginTop: "3%", backgroundColor: muiTheme.palette.lightCyan.light }}
+        ></Box>
+      </Collapse>
       {/* <Box id="calendar" ref={calendarRef} sx={{ width: "calc(100vw - 250px)", margin: "auto", marginTop: "3%", backgroundColor: muiTheme.palette.lightCyan.light }}
       ></Box> */}
     </Box>

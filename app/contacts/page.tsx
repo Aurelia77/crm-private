@@ -257,9 +257,9 @@ export default function Contacts() {
     const getPriorityTextAndColor = (priority: number | null) => {
         switch (priority) {
             case 1: return { text: "Faible", color: muiTheme.palette.error.main }
-            case 2: return { text: "Moyenne", color: muiTheme.palette.gray.dark }
+            case 2: return { text: "Moyenne", color: muiTheme.palette.ochre.dark }
             case 3: return { text: "Haute", color: muiTheme.palette.primary.dark }
-            default: return { text: "Aucune", color: "" }
+            default: return { text: "Aucune", color: muiTheme.palette.gray.dark  }
             // default: return { text: "Aucune", color: "black" }
         }
     }
@@ -486,7 +486,7 @@ export default function Contacts() {
                             </Tabs>
 
                             {/* ///////// LISTE DE CONTACTS + recherche) ///////// */}
-                            <TabPanel key="0" value={tabValue} index={0}  >
+                            <TabPanel key="0" value={tabValue} index={0} width= {`calc(100vw - ${TABS_WIDTH}px`} >
                                 <SearchContactsForm
                                     contacts={contacts}
                                     currentUserId={currentUser.uid}
@@ -540,7 +540,7 @@ export default function Contacts() {
                             </TabPanel>
 
                             {/* ///////// CALENDRIER ///////// */}
-                            <TabPanel key="1" value={tabValue} index={1}>
+                            <TabPanel key="1" value={tabValue} index={1}  width= {`calc(100vw - ${TABS_WIDTH}px`} >
                                 <Tabs
                                     value={tabCalendarValue}
                                     onChange={(e, newValue: number) => setTabCalendarValue(newValue)}
@@ -563,7 +563,7 @@ export default function Contacts() {
                                 </Tabs>
 
                                 {/* ///////// Petit Calendrier ///////// */}
-                                <TabPanel key="0" value={tabCalendarValue} index={0}  >
+                                <TabPanel key="0" value={tabCalendarValue} index={0}  width= {`calc(100vw - ${TABS_WIDTH}px`} >
                                     <CalendarScheduler
                                         //contacts={fakeContactsData}
                                         //contacts={filteredContacts}   // ????????? 
@@ -574,7 +574,7 @@ export default function Contacts() {
                                 </TabPanel>
 
                                 {/* ///////// Scheduler Calendrier ///////// */}
-                                <TabPanel key="1" value={tabCalendarValue} index={1}  >
+                                <TabPanel key="1" value={tabCalendarValue} index={1}  width= {`calc(100vw - ${TABS_WIDTH}px`} >
                                     <CalendarLittle
                                         //contacts={fakeContactsData}
                                         //contacts={filteredContacts}   // ????????? 
@@ -584,7 +584,7 @@ export default function Contacts() {
                                 </TabPanel>
 
                                 {/* ///////// Grand Calendrier ///////// */}
-                                <TabPanel key="2" value={tabCalendarValue} index={2}  >
+                                <TabPanel key="2" value={tabCalendarValue} index={2}  width= {`calc(100vw - ${TABS_WIDTH}px`} >
                                     <CalendarFull
                                         //contacts={fakeContactsData}
                                         //contacts={filteredContacts}   // ????????? 
@@ -596,7 +596,7 @@ export default function Contacts() {
                             </TabPanel>
 
                             {/* ///////// Nouveau CONTACT ///////// */}
-                            <TabPanel key="2" value={tabValue} index={2}>
+                            <TabPanel key="2" value={tabValue} index={2}  width= {`calc(100vw - ${TABS_WIDTH}px`} >
                                 <Tabs
                                     //orientation="vertical"
                                     // variant="scrollable"
@@ -639,7 +639,7 @@ export default function Contacts() {
                             </TabPanel>
 
                             {/* ///////// Un CONTACT ///////// */}
-                            <TabPanel key="3" value={tabValue} index={3}>
+                            <TabPanel key="3" value={tabValue} index={3}  width= {`calc(100vw - ${TABS_WIDTH}px`} >
                                 <ContactCard
                                     contact={contactToDisplay}
                                     currentUserId={currentUser.uid}
@@ -652,12 +652,12 @@ export default function Contacts() {
                                 />
                             </TabPanel>
 
-                            {/* /////////////////////// Pour Version ESSAI /////////////////////// */}
-                            <TabPanel key="4" value={tabValue} index={4}>
+                            {/* /////////////////////// Admin /////////////////////// */}
+                            <TabPanel key="4" value={tabValue} index={4}  width= {`calc(100vw - ${TABS_WIDTH}px`} >
                                 <Admin currentUser={currentUser} />
                                 <Box sx={{
                                     //display: "flex", justifyContent: "space-around", 
-                                    padding: "10px", border: "solid 3px blue", borderRadius: "10px", marginTop: "200px", width: "calc(100vw - 200px)"
+                                    padding: "10px", border: "solid 3px blue", borderRadius: "10px", marginTop: "100px", width: "calc(100vw - 200px)"
                                 }}>
                                     <Typography
                                         component="div"

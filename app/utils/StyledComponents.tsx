@@ -72,9 +72,10 @@ interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
+  width?: string;
 }
 function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
+  const { children, value, index, width, ...other } = props;
 
   return (
       <div
@@ -82,7 +83,8 @@ function TabPanel(props: TabPanelProps) {
           hidden={value !== index}
           id={`vertical-tabpanel-${index}`}
           aria-labelledby={`vertical-tab-${index}`}
-          style={{ width: `calc(100vw - ${TABS_WIDTH}px)` }}
+          style={{ width: width }}
+          // style={{ width: `calc(100vw - ${TABS_WIDTH}px)` }}
           {...other}
       >
           {value === index && (

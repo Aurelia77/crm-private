@@ -73,23 +73,26 @@ export default function MuiProviders({ children }: { children: React.ReactNode }
             // }
         },
         components: {
-            // Demande d'ajouter 3 petits points à la fin du texte si il est trop long
+            
             MuiTextField: {
                 defaultProps: {
                     variant: "standard",
                     inputProps: {
-                        //sx: { color: "red" },
+                        //sx: { color: "darkCyan" },
                     },
                     InputProps: {
                         //disableUnderline: true,
                     },
+                    InputLabelProps: {
+                        style: { color: 'gray', fontSize: '0.8rem' },
+                    }
                 },
                 styleOverrides: {
                     "root": {
                         //variant:"standard",        
                         "& .MuiInputBase-input": {
                             overflow: "hidden",
-                            textOverflow: "ellipsis",
+                            textOverflow: "ellipsis",   // Demande d'ajouter 3 petits points à la fin du texte si il est trop long
                             //textAlign: "center",
                         },
                     },
@@ -136,7 +139,7 @@ export default function MuiProviders({ children }: { children: React.ReactNode }
                 //       fontSize: '1rem',
                 //     },
                 //   },
-            }
+            },
         },
         // components: {
         //   MuiCssBaseline: {
