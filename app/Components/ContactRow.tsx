@@ -860,6 +860,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
             {/* ContactName */}
             <StyledTableCell 
+                sx={{ py:0}} 
             //sx={{ paddingLeft:"7px"}} 
             >
                 <Tooltip arrow title="Contact direct" placement='bottom'>

@@ -8,7 +8,10 @@ const SignIn = () => {
         //fullName: '',
         email: '',
         password: '',
-    })     
+    })  
+    
+    const [frontError, setFrontError] = React.useState<any>("")  // Front error (password moins de 6 caractères par exemple)
+    
 
     const signIn = (e: React.MouseEvent<HTMLButtonElement>) => {
         console.log("Sign In", e)
@@ -31,12 +34,41 @@ const SignIn = () => {
     }
  
     return (
-        <Paper sx={{ padding: "40px" }} elevation={5} >
+        <Paper sx={{ padding: "40px" }} elevation={5} >            
+            {frontError
+            ? (frontError && <Typography color="error">{frontError}</Typography>)
+            : ""
+            //(backError && <Typography variant="body2" color="error">{backError}</Typography> )
+            }
             <FormControl>
-                <Typography variant='h3' component='h2' color='primary' sx={{ textShadow: "1px 1px 2px blue", marginBottom:"25px" }}>Connexion</Typography>
-                <TextField type="email" label="Email" value={authUserInfoSignIn.email} onChange={(e) => setAuthUserInfoSignIn({ ...authUserInfoSignIn, email: e.target.value })} />             
-                <TextField id="standard-basic" type="password" label="Mot de passe" value={authUserInfoSignIn.password} onChange={(e) => setAuthUserInfoSignIn({ ...authUserInfoSignIn, password: e.target.value })} />     
-                <Button variant="contained" color="primary" sx={{ marginTop:"25px" }} onClick={signIn}>Connexion</Button>
+                <Typography 
+                    variant='h3' 
+                    component='h2' 
+                    color='primary' 
+                    sx={{ textShadow: "1px 1px 2px blue", marginBottom:"25px" }}
+                >Connexion</Typography>
+
+                <TextField 
+                    type="email" 
+                    label="Email" 
+                    value={authUserInfoSignIn.email} 
+                    onChange={(e) => setAuthUserInfoSignIn({ ...authUserInfoSignIn, email: e.target.value })} 
+                /> 
+
+                <TextField 
+                    id="standard-basic" 
+                    type="password" 
+                    label="Mot de passe" 
+                    value={authUserInfoSignIn.password} 
+                    onChange={(e) => setAuthUserInfoSignIn({ ...authUserInfoSignIn, password: e.target.value })} 
+                />     
+
+                <Button 
+                    variant="contained" 
+                    color="primary" 
+                    sx={{ marginTop:"25px" }} 
+                    onClick={signIn}
+                >Connexion</Button>
                 {/* <Typography variant="body2" color="error">
                     Pas encore de compte ? 
                     <Link href="/auth/signIn">Se connecter</Link>

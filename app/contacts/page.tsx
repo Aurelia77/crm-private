@@ -244,7 +244,10 @@ export default function Contacts() {
         })
         
         Promise.all(promises)
-        .then(() => { window.location.reload() })
+        .then(() => { 
+            console.log("!!!!!!!!! CAT ATJOUTées !!!!!")
+            window.location.reload() 
+        })
         .catch((error) => { console.error("Error reloading page: ", error); });
     }
 
