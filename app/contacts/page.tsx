@@ -239,13 +239,13 @@ export default function Contacts() {
                     // .then(() => {
                     //     window.location.reload()
                     // }) 
-                    Promise.all(promises)
-                        .then(() => { window.location.reload() })
-                        .catch((error) => { console.error("Error reloading page: ", error); });
                 }
             })
         })
-
+        
+        Promise.all(promises)
+        .then(() => { window.location.reload() })
+        .catch((error) => { console.error("Error reloading page: ", error); });
     }
 
     // Je ne peux pas mettre cette fonction dans ToolBox car je peux utiliser les thème seulement dans un composant  (React Hooks must be called in a React function component or a custom React Hook function.)
