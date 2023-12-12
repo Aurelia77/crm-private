@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { getFilesFromDatabase, getCategoriesFromDatabase, storage, addFileOnFirebaseDB, addCategorieOnFirebase, updateCategorieOnFirebase, deleteCategorieOnFirebase } from '../utils/firebase'
-import { Box, ListItemText, Modal, Paper, TextField, Typography } from '@mui/material'
+import { Box, Divider, ListItemText, Modal, Paper, TextField, Typography } from '@mui/material'
 import { handleOpenFile } from '../utils/firebase'
 import { Button, FormControl, InputLabel, MenuItem, Select, Input } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -200,7 +200,7 @@ export default function Admin({ currentUser }: AdminType) {
   return (
     <Paper elevation={3}>
       <Box 
-        m={3} 
+        m={3} mt={5}
         //sx={{ marginTop: "30px" }} 
       >
         <Typography variant="h6">Mes fichiers ({filesList.length}) </Typography>
@@ -273,6 +273,10 @@ export default function Admin({ currentUser }: AdminType) {
         </Box>
       </Box>
 
+      
+
+      <Divider />
+
       <Box  
         m={3} mt={5}
         //sx={{ marginTop: "100px" }} 
@@ -306,7 +310,7 @@ export default function Admin({ currentUser }: AdminType) {
           </List>
 
           <Box>
-            <FormControl 
+            {categoriesList.length > 0  && <FormControl 
               sx={{ 
                 padding: "2%", 
                 display: "flex", 
@@ -360,7 +364,7 @@ export default function Admin({ currentUser }: AdminType) {
                   </Box>
                 </Box>
               </Modal>
-            </FormControl>
+            </FormControl>}
 
             <FormControl 
               sx={{ 
@@ -372,7 +376,7 @@ export default function Admin({ currentUser }: AdminType) {
               }} >
               <TextField
                 value={newCat}
-                //autoComplete="off"
+                autoComplete="off"
                 onChange={(e) => setNewCat(e.target.value)}
                 id="outlined-basic"
                 label="Nouvelle catégorie"

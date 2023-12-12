@@ -130,6 +130,7 @@ export default function Contacts() {
     const [tabNewContactValue, setTabNewContactValue] = React.useState(0);
     const [tabCalendarValue, setTabCalendarValue] = React.useState(0);
 
+    console.log("tabValue", tabValue)
 
     const titles = [
         { label: "Contacts", icon: <Diversity3Icon /> },
@@ -470,6 +471,7 @@ export default function Contacts() {
                                         //label={title.label} 
                                         title={title.label}
                                         icon={title.icon}
+                                        value={index}
                                         // {...a11yProps(index)}
                                         sx={{ margin: '10px 0 10px 0' }}
                                     //sx={{ marginBottom:"10px" }} 

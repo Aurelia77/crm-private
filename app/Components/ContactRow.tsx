@@ -79,7 +79,7 @@ import { handleOpenFile } from '../utils/firebase'
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import {deleteModalStyle, StyledRating, StyledRatingStars, customIcons, IconContainer} from '../utils/StyledComponents'
 import { parse } from 'path';
-
+import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import {isDatePassed, isDateSoon} from '../utils/toolbox'
 
 // Pour les étoiles de la PRIORITé 
@@ -862,12 +862,14 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             <StyledTableCell 
             //sx={{ paddingLeft:"7px"}} 
             >
-                <TextField id="standard-basic" //label="Nom du contact" 
-                    value={contact.contactName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactName')}
-                    InputProps={{
-                        disableUnderline: contact.contactName.length > 0
-                    }}
-                />
+                <Tooltip arrow title="Contact direct" placement='bottom'>
+                    <TextField id="standard-basic" //label="Nom du contact" 
+                        value={contact.contactName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactName')}
+                        InputProps={{
+                            disableUnderline: contact.contactName.length > 0
+                        }}
+                    />
+                </Tooltip>
                 <TextField id="standard-basic" //label="Nom du contact" 
                     value={contact.contactPosition} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactPosition')}
                     InputProps={{  
@@ -876,6 +878,19 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     }}
                     inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
                 />
+                <Tooltip arrow title="Dirigeant" placement='bottom'>
+                    <TextField id="standard-basic" //label="Nom du contact" 
+                        value={contact.directorName}
+                        //value= {contact.directorName.length === 0 ? "" : `(${contact.directorName})`}     // Non car ça ajoute des () à chaque changement !
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'directorName')}
+                        InputProps={{  
+                            startAdornment: contact.directorName.length === 0 ? <span style={{ color: 'gray', fontSize: "0.8em", marginLeft:"40%" }}>... </span> : <ArrowCircleUpIcon color='primary' fontSize="small" /> , 
+                            //startAdornment: <span style={{ color: 'gray', fontSize: "0.8em"}}>Dirigeant : </span>,                 
+                            disableUnderline: true//contact.contactPosition.length > 0
+                        }}
+                        inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
+                    />
+                </Tooltip>
                 {/* <CustomTextField attribut="contactName"  />
                 <CustomTextField attribut="contactPosition" smallLighter /> */}
             </StyledTableCell>
