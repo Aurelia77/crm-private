@@ -130,7 +130,7 @@ export default function Contacts() {
     const [tabNewContactValue, setTabNewContactValue] = React.useState(0);
     const [tabCalendarValue, setTabCalendarValue] = React.useState(0);
 
-    console.log("tabValue", tabValue)
+    //console.log("tabValue", tabValue)
 
     const titles = [
         { label: "Contacts", icon: <Diversity3Icon /> },
@@ -283,23 +283,24 @@ export default function Contacts() {
     // }, [currentUser?.uid])
 
      
-    React.useEffect(() => {
-        // Si c'est le premier rendu, ne faites rien et mettez à jour firstRender pour les rendus suivants
+    // React.useEffect(() => {
+    //     // Si c'est le premier rendu, ne faites rien et mettez à jour firstRender pour les rendus suivants
 
-        console.log("1111111111111")
-        if (firstRender.current) {
-            firstRender.current = false;
-            return;
-        }
+    //     console.log("1111111111111")
+    //     if (firstRender.current) {
+    //         firstRender.current = false;
+    //         return;
+    //     }
 
-        console.log("2222222222222222222")
+    //     console.log("2222222222222222222")
 
        
 
-        // Mettez à jour votre variable ici
-        setIsContactTableFilled(isContactTableFilled + 1);
-    }, [contacts]);
+    //     // Mettez à jour votre variable ici
+    //     setIsContactTableFilled(isContactTableFilled + 1);
+    // }, [contacts]);
   
+
     //   React.useEffect(() => {
     //       // Si c'est le premier rendu, ne faites rien et mettez à jour firstRender pour les rendus suivants
     //       if (firstRender.current) {
@@ -511,7 +512,8 @@ export default function Contacts() {
                                         </Fab>
                                         }
                                     </Typography>
-                                    : (isContactTableFilled >= 2) && <Typography variant="h5" color="error.main">
+                                    : //(isContactTableFilled >= 2) && 
+                                    <Typography variant="h5" color="error.main">
                                         {messageNoContact}
                                         Aucun contact pour l'instant, veuillez en ajouter ici :
                                         <Button variant="contained" color="primary" onClick={() => { setTabValue(2); setTabNewContactValue(0) }} sx={{ ml: 2 }}>Nouveau contact</Button>

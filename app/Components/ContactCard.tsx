@@ -68,11 +68,13 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 }: ContactCardProps) {
 
     const [contactToAddOrUpdate, setContactToAddOrUpdate] = React.useState<Contact>(contact)
-    const [tabValue, setTabValue] = React.useState(0);
+    const [tabValue, setTabValue] = React.useState<number>(0);
     const [logoChoosen, setIsLogoChoosen] = React.useState(false);
     const [isFileChoosen, setIsFileChoosen] = React.useState(false);
     const [isExistingFileChoosen, setIsExistingFileChoosen] = React.useState(false);
 
+    console.log("tabValue x", tabValue)
+    console.log("tabValue x", typeof tabValue)
 
     //console.log("contactToAddOrUpdate", contactToAddOrUpdate)
     //console.log("LOGO", contactToAddOrUpdate.logo)
@@ -920,22 +922,29 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
                         <Tabs
                             sx={{ marginTop: "30px" }}
-                            value={tabValue}
+                            value={false}       // Sinon avec "value={tabValue}" => erreur dans Console : The `value` provided to the Tabs component is invalid. The Tab with this `value` ("0") is not part of the document layout. !!! (alors que dans page (contact) ça marche !!!???)
+                            //value={tabValue}
                             onChange={(e, newValue: number) => setTabValue(newValue)}
                             aria-label="Horizontal tabs"
                         //sx={{ borderRight: 1, borderColor: 'divider', width: "120px" }}
                         >
-                            <Tab key={0} label="Ajout fichier existant"
+                            <Tab 
+                                key={0} 
+                                label="Ajout fichier existant"
+                                value={0}
                             //icon={title.icon}
                             // {...a11yProps(index)} 
                             />
-                            <Tab key={1} label="Ajout nouveau fichier"
+                            <Tab 
+                                key={1} 
+                                label="Ajout nouveau fichier"
+                                value={1}
                             //icon={title.icon}
                             // {...a11yProps(index)} 
                             />
                         </Tabs>
 
-                        <TabPanel key="0" value={tabValue} index={0}  >
+                        <TabPanel key={0} value={tabValue} index={0}  >
                             <FormControl sx={{
                                 margin: "5%",
                                 width: "80%",
@@ -1020,7 +1029,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             </FormControl>
                         </TabPanel>
 
-                        <TabPanel key="1" value={tabValue} index={1}  >
+                        <TabPanel key={1} value={tabValue} index={1}  >
                             {/* => FormControl n'est pas conçu pour gérer les soumissions de formulaire. */}
                     
                             <form 
