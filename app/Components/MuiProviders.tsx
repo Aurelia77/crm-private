@@ -56,7 +56,7 @@ export default function MuiProviders({ children }: { children: React.ReactNode }
                 contrastText: '#242105',
             },
             pink: {
-                main: pink[700],
+                main: pink[100],
             },
             lightCyan: {
                 light: cyan[50],
@@ -123,6 +123,20 @@ export default function MuiProviders({ children }: { children: React.ReactNode }
                     },
                 }
             },
+            MuiButton: {
+                defaultProps: {
+                    //color: 'secondary',       // Marche !
+                    style: {
+                        fontWeight: 'bold',
+                    },
+                },
+                // Marche aussi :
+                // styleOverrides: {
+                //     root: {
+                //       fontSize: '1rem',
+                //     },
+                //   },
+            }
         },
         // components: {
         //   MuiCssBaseline: {

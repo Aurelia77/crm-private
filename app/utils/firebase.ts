@@ -499,19 +499,34 @@ const updatDataWholeContactOnFirebase = (contactToUpdate: Contact) => {
 }
 
 const updateCategorieOnFirebase = (cat: ContactCategorieType) => {
- 
-    const q = query(collection(fireStoreDb, "categories"), where("id", "==", cat.id));
-  
-    getDocs(q).then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {        // besoin du FOREACH alors qu'il n'y en a qu'un ???
-      
-        updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
-          label: cat.label
-        });
-        //set(doc.ref, updatingContact)
-      })
+
+  const q = query(collection(fireStoreDb, "categories"), where("id", "==", cat.id));
+
+  getDocs(q).then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {        // besoin du FOREACH alors qu'il n'y en a qu'un ???
+
+      updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
+        label: cat.label
+      });
+      //set(doc.ref, updatingContact)
     })
-  }  
+  })
+}  
+
+const updateFileOnFirebase = (file: FileNameAndRefType) => {
+
+  const q = query(collection(fireStoreDb, "files"), where("fileRef", "==", file.fileRef));
+
+  getDocs(q).then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {        // besoin du FOREACH alors qu'il n'y en a qu'un ???
+
+      updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
+        fileName: file.fileName
+      });
+      //set(doc.ref, updatingContact)
+    })
+  })
+}  
 
 
 
@@ -676,6 +691,7 @@ export {
   updatDataOnFirebase,
   updatDataWholeContactOnFirebase,
   updateCategorieOnFirebase,
+  updateFileOnFirebase, 
   deleteAllDatasOnFirebaseAndReload,
   deleteDataOnFirebaseAndReload,
   deleteCategorieOnFirebase,

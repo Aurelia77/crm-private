@@ -265,9 +265,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
     return (
         //JSON.stringify(contact) === '{}' ? <div></div> :
-        <Zoom in={transition} 
-        //style={{ transitionDelay: transition ? '500ms' : '0ms' }}
-        timeout={1000}
+        <Zoom in={transition} timeout={500}
+        //style={{ transitionDelay: transition ? '500ms' : '0ms' }}        
         >
             <Card key={contact.id} elevation={3}
                 sx={{

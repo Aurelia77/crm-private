@@ -8,6 +8,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 export default function AuthDetails() {
     const [authUserInfo, setAuthUserInfo] = React.useState<any>(null)
 
+    console.log(authUserInfo)
+
     React.useEffect(() => {
         const listen = onAuthStateChanged(auth, (user) => {
             user ? setAuthUserInfo(user) : setAuthUserInfo(null)

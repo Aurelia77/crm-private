@@ -545,7 +545,6 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             key={contact.id} selected={selectedContactId === contact.id ? true : false}
             //className={selectedContactId === contact.id ? 'tableRowSelected bg-cyan-400 ' : 'bg-yellow-200'}      // CYAN ne s'affiche pas, mais jaune oui
             onClick={() => setSelectedContact(contact)}
-            onDoubleClick={() => diplayContactCard(contact)}
             style={{
                 //backgroundColor: contact.isClient ? muiTheme.palette.primary.light : muiTheme.palette.ochre.light 
                 //color: "blue" //contact.isClient ? "primary.main" : "secondary.main"
@@ -692,7 +691,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
             {/* LOGO */}
             <StyledTableCell component="td" scope="row"
-                sx={{ padding:0 }}  
+                sx={{ padding: 0, cursor:"pointer" }}
+                onDoubleClick={() => diplayContactCard(contact)}
             >
                 {/* <TextField type="file" onChange={handleChangeLogo2} /> */}
                 {/* {contact.logo && <Image src={contact.logo} alt={contact.businessName} width={100} height={100} style={{ borderRadius: "10%" }}  />} */}
@@ -917,7 +917,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 {/* </Box> */}
                 <Tooltip arrow title="Contact entreprise"  placement='left'>
                     <TextField id="standard-basic"
-                        value={contact.businessEmail} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessEmail')}
+                        value={contact.businessEmail} 
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessEmail')}
                         InputProps={{
                             startAdornment: contact.businessEmail.length === 0 && <span style={{ color: 'gray', fontSize: "0.8em", marginLeft:"40%" }}>... </span>,
                             disableUnderline: true//contact.businessEmail.length > 0
@@ -928,7 +929,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 </Tooltip>
                 <Tooltip arrow title="Site Web">
                     <TextField id="standard-basic"
-                        value={contact.businessWebsite} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessWebsite')}
+                        value={contact.businessWebsite} 
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessWebsite')}
                         InputProps={{
                             startAdornment: contact.businessWebsite.length === 0 && <span style={{ color: 'gray', fontSize: "0.8em", marginLeft:"40%" }}>... </span>,
                             disableUnderline: true//contact.businessWebsite.length > 0

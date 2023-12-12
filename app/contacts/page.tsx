@@ -149,7 +149,7 @@ export default function Contacts() {
     //console.log(contactsSearchCriteria)
 
     const { currentUser } = useAuthUserContext()
-    // console.log(currentUser)
+    console.log(currentUser)
     // console.log(currentUser?.uid)
 
 
@@ -206,7 +206,9 @@ export default function Contacts() {
             catLabel: "Restaurant Plage"
         },
     ]
+    
 
+    // UTILISER MAP pour pouvoir retourner ???
     const addCatToFakeContacts = (fakeContactsData: Contact[]) => {
         // fakeContactsData.forEach((contact) => {
         //     contact.businessCategoryId = contact.businessCategory.map((cat) => getCatIdFromLabel(cat))
@@ -216,39 +218,39 @@ export default function Contacts() {
 
         let promises: any = [];
 
-        fakeContactsData.forEach((contact) => {
-            fakeContactsNameAndCatLabel.forEach((contactNameAndCatLabel) => {
+        // fakeContactsData.forEach((contact) => {
+        //     fakeContactsNameAndCatLabel.forEach((contactNameAndCatLabel) => {
 
-                if (contact.businessName === contactNameAndCatLabel.name) {
-                    // console.log(contact.businessName)
-                    // console.log(contactNameAndCatLabel.catLabel)
-                    // console.log(getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel))
+        //         if (contact.businessName === contactNameAndCatLabel.name) {
+        //             // console.log(contact.businessName)
+        //             // console.log(contactNameAndCatLabel.catLabel)
+        //             // console.log(getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel))
 
-                    const promise = getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel)
-                        .then((catId: string) => {
-                            // Bien utiliser .map car .foreach ne retourne rien (filteredContacts.map() crée un tableau de promesses. Promise.all(promises) renvoie une nouvelle promesse qui est résolue lorsque toutes les promesses dans le tableau promises sont résolues.)
-                            filteredContacts.map((filteredContact) => {
-                                if (filteredContact.businessName === contact.businessName) {
-                                    console.log(filteredContact, catId)
-                                    return updatDataOnFirebase(filteredContact.id, { key: "businessCategoryId", value: catId })
-                                }
-                            })
-                            promises.push(promise);
-                            //return Promise.all(promises)              
-                        })
-                    // .then(() => {
-                    //     window.location.reload()
-                    // }) 
-                }
-            })
-        })
+        //             const promise = getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel)
+        //                 .then((catId: string) => {
+        //                     // Bien utiliser .map car .foreach ne retourne rien (filteredContacts.map() crée un tableau de promesses. Promise.all(promises) renvoie une nouvelle promesse qui est résolue lorsque toutes les promesses dans le tableau promises sont résolues.)
+        //                     filteredContacts.map((filteredContact) => {
+        //                         if (filteredContact.businessName === contact.businessName) {
+        //                             console.log(filteredContact, catId)
+        //                             return updatDataOnFirebase(filteredContact.id, { key: "businessCategoryId", value: catId })
+        //                         }
+        //                     })
+        //                     promises.push(promise);
+        //                     //return Promise.all(promises)              
+        //                 })
+        //             // .then(() => {
+        //             //     window.location.reload()
+        //             // }) 
+        //         }
+        //     })
+        // })
         
-        Promise.all(promises)
-        .then(() => { 
-            console.log("!!!!!!!!! CAT ATJOUTées !!!!!")
-            window.location.reload() 
-        })
-        .catch((error) => { console.error("Error reloading page: ", error); });
+        // Promise.all(promises)
+        // .then(() => { 
+        //     console.log("!!!!!!!!! CAT ATJOUTées !!!!!")
+        //     window.location.reload() 
+        // })
+        // .catch((error) => { console.error("Error reloading page: ", error); });
     }
 
     // Je ne peux pas mettre cette fonction dans ToolBox car je peux utiliser les thème seulement dans un composant  (React Hooks must be called in a React function component or a custom React Hook function.)
@@ -546,11 +548,11 @@ export default function Contacts() {
                                 //sx={{ borderRight: 1, borderColor: 'divider', width: "120px" }}
                                 >
 
-                                    <Tab key={0} label="Petit Calendrier"
+                                    <Tab key={0} label="Grand"
                                     //icon={title.icon}
                                     // {...a11yProps(index)} 
                                     />
-                                    <Tab key={1} label="Grand Calendrier"   // Scheduler
+                                    <Tab key={1} label="Petit"   // Scheduler
                                     //icon={title.icon}
                                     // {...a11yProps(index)} 
                                     />
@@ -562,22 +564,22 @@ export default function Contacts() {
 
                                 {/* ///////// Petit Calendrier ///////// */}
                                 <TabPanel key="0" value={tabCalendarValue} index={0}  >
-                                    <CalendarLittle
-                                        //contacts={fakeContactsData}
-                                        //contacts={filteredContacts}   // ????????? 
-                                        contacts={contacts}
-                                        diplayContactCardToUpdate={diplayContactCardToUpdate}
-                                    />
-                                </TabPanel>
-
-                                {/* ///////// Scheduler Calendrier ///////// */}
-                                <TabPanel key="1" value={tabCalendarValue} index={1}  >
                                     <CalendarScheduler
                                         //contacts={fakeContactsData}
                                         //contacts={filteredContacts}   // ????????? 
                                         contacts={contacts}
                                         diplayContactCardToUpdate={diplayContactCardToUpdate}
                                         updateContactInContactsAndDB={updateContactInContactsAndDB}
+                                    />
+                                </TabPanel>
+
+                                {/* ///////// Scheduler Calendrier ///////// */}
+                                <TabPanel key="1" value={tabCalendarValue} index={1}  >
+                                    <CalendarLittle
+                                        //contacts={fakeContactsData}
+                                        //contacts={filteredContacts}   // ????????? 
+                                        contacts={contacts}
+                                        diplayContactCardToUpdate={diplayContactCardToUpdate}
                                     />
                                 </TabPanel>
 

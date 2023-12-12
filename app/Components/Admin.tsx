@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { getFilesFromDatabase, getCategoriesFromDatabase, storage, addFileOnFirebaseDB, addCategorieOnFirebase, updateCategorieOnFirebase, deleteCategorieOnFirebase } from '../utils/firebase'
+import { getFilesFromDatabase, getCategoriesFromDatabase, storage, addFileOnFirebaseDB, addCategorieOnFirebase, updateCategorieOnFirebase, updateFileOnFirebase, deleteCategorieOnFirebase } from '../utils/firebase'
 import { Box, Divider, ListItemText, Modal, Paper, TextField, Typography } from '@mui/material'
 import { handleOpenFile } from '../utils/firebase'
 import { Button, FormControl, InputLabel, MenuItem, Select, Input } from '@mui/material'
@@ -30,20 +30,19 @@ export default function Admin({ currentUser }: AdminType) {
 
   const [filesList, setFilesList] = React.useState<FileNameAndRefType[]>([]);
   const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[]>([]);
+  const [newFileName, setNewFileName] = React.useState<string>("");
   const [newCat, setNewCat] = React.useState<string>("");
   const [catToUpdateOrDelete, setCatToUpdateOrDelete] = React.useState<ContactCategorieType>({ id: "", label: "" });
+  const [fileToUpdateOrDelete, setFileToUpdateOrDelete] = React.useState<FileNameAndRefType>({ fileName: "", fileRef: "" });
   const [progresspercentFile, setProgresspercentFile] = React.useState(0);
-
   const [openDeleteCatModal, setOpenDeleteCatModal] = React.useState(false);
 
+  //console.log("catToUpdate", catToUpdateOrDelete)
+  //console.log("newCat", newCat)
 
-  const [isFileChoosen, setIsFileChoosen] = React.useState(false);
-
-  console.log("catToUpdate", catToUpdateOrDelete)
-
+  console.log("fileToUpdateOrDelete", fileToUpdateOrDelete)
   const muiTheme = useTheme();
 
-  console.log("newCat", newCat)
 
   React.useEffect(() => {
     getFilesFromDatabase(currentUser.uid).then((files: FileNameAndRefType[]) => {
@@ -62,6 +61,7 @@ export default function Admin({ currentUser }: AdminType) {
     })
 
   }, [currentUser.uid]);
+
 
   const handleSubmitFiles = (e: any, attribut: string) => {
     e.preventDefault()
@@ -93,14 +93,27 @@ export default function Admin({ currentUser }: AdminType) {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           addFileOnFirebaseDB(currentUser.uid, { fileName: file.name, fileRef: downloadURL }).then(() => {
-            setFilesList([...filesList, { fileName: file.name, fileRef: downloadURL }]);
+            //setFilesList([...filesList, { fileName: file.name, fileRef: downloadURL }]);
+            setFilesList([...filesList, { fileName: newFileName, fileRef: downloadURL }]);
             //window.location.reload();
-            setIsFileChoosen(false);
             setProgresspercentFile(0);
+            setNewFileName("");
           });
         });
       }
     );
+  }
+
+  const handleChangeInputFile = (e: any) => {
+    console.log(e.target.files[0])
+    setNewFileName(e.target.files[0].name)
+  }
+
+  const handleUpdateFile = () => {    
+    console.log("fileToUpdate", fileToUpdateOrDelete)
+    updateFileOnFirebase(fileToUpdateOrDelete)
+    setFilesList([...filesList.filter(file => file.fileRef !== fileToUpdateOrDelete.fileRef), { ...fileToUpdateOrDelete }]);
+    setFileToUpdateOrDelete({ fileName: "", fileRef: "" });
   }
 
   const handleAddCat = () => {
@@ -109,6 +122,7 @@ export default function Admin({ currentUser }: AdminType) {
     addCategorieOnFirebase(currentUser.uid, newCatWithUpperCase)
     setCategoriesList([...categoriesList, { ...newCatWithUpperCase }]);
     // setCategoriesList([...categoriesList, newCatWithUpperCase].sort((a, b) => a.localeCompare(b)));
+    setNewCat("");
   }
 
   const handleUpdateCat = () => {
@@ -179,9 +193,6 @@ export default function Admin({ currentUser }: AdminType) {
 
 
 
-
-
-
   const handleDeleteCat = () => {
     console.log("catToUpdate", catToUpdateOrDelete)
 
@@ -192,103 +203,155 @@ export default function Admin({ currentUser }: AdminType) {
         alert("Impossible de supprimer cette catégorie => Un ou plusieurs contact(s) y est (sont) associé(s). Veuillez d'abord modifier/supprimer leur catégorie.");
         console.log(error)
       })
-    setCatToUpdateOrDelete({ id: "", label: "" });     
-    setOpenDeleteCatModal(false);     
+    setCatToUpdateOrDelete({ id: "", label: "" });
+    setOpenDeleteCatModal(false);
   }
 
 
+
+
   return (
-    <Paper elevation={3}>
-      <Box 
-        m={3} mt={5}
-        //sx={{ marginTop: "30px" }} 
+    <Box sx={{ maxWidth: "1500px", margin: "auto" }} >
+      <Box
+        m={5}
+      //sx={{ marginTop: "30px" }} 
       >
-        <Typography variant="h6">Mes fichiers ({filesList.length}) </Typography>
-        <Box sx={{ display: "flex", justifyContent: "space-between" }} >
+        <Typography variant="h6">Mes fichiers ({filesList.length}) <span style={{ color: 'gray', fontSize: "0.8em" }}>(double clic pour visualiser)</span>
+        </Typography>
+        <Box sx={{ display: "flex", justifyContent: "space-between", gap: "2%", mt: 2, }} >
           <List
             sx={{
-              //width: '100%',
+              width: '50%',
               overflow: 'auto',
-              maxHeight: "50vh",
-              mt: 2,
+              maxHeight: "40vh",
+              boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)'
               //backgroundColor: muiTheme.palette.lightCyan.light
             }}
             subheader={<li />}
           >
-            {filesList              
+            {filesList
               .sort((a, b) => a.fileName.localeCompare(b.fileName))
               .map((file, index) => (
-              <ListItemText
-                key={index}
-                onClick={() => handleOpenFile(file.fileRef)}
-                sx={{
-                  cursor: "pointer",
-                  backgroundColor: index % 2 === 0 ? muiTheme.palette.lightCyan.light : '',
-                  color: index % 2 === 1 ? muiTheme.palette.primary.dark : '',
-                }}
-              >
-                {file.fileName}
-              </ListItemText>
-            ))}
+                <ListItemText
+                  key={index}
+                  onDoubleClick={() => handleOpenFile(file.fileRef)}
+                  onClick={() => setFileToUpdateOrDelete({fileName: file.fileName, fileRef: file.fileRef})}
+                  sx={{
+                    cursor: "pointer",
+                    backgroundColor: index % 2 === 0 ? muiTheme.palette.lightCyan.light : '',
+                    color: index % 2 === 1 ? muiTheme.palette.primary.dark : '',
+                    pl: 1,
+                  }}
+                >
+                  {file.fileName}
+                </ListItemText>
+              ))}
           </List>
 
-          <form
-            style={{
-              margin: "5%",
-              width: "80%",
-              display: "flex",
-              gap: "5%"
-            }}
-            onSubmit={(e) => handleSubmitFiles(e, "filesSent")}
-          >
-            <Input
-              id="fileInput"
-              type="file"
-              style={{ display: 'none' }}
-              onChange={() => setIsFileChoosen(true)}
-            />
-            <label htmlFor="fileInput">
-              <Button variant='contained' component="span">
-                Choisir un fichier à ajouter
-              </Button>
-            </label>
+          <Box sx={{width:"48%"}}  >           
 
-            {isFileChoosen && <Box>
+            <form
+              style={{
+                //marginLeft: "0px",
+                //margin: "5%",
+                //width: "48%",
+                display: "flex",
+                flexDirection: "column",
+                //justifyContent: "start",
+                //gap: "5%",
+                //maxWidth: "500px",
+              }}
+              onSubmit={(e) => handleSubmitFiles(e, "filesSent")}
+            >
+              <Input
+                id="fileInput"
+                type="file"
+                style={{ display: 'none' }}
+                onChange={handleChangeInputFile}
+              />
+              <label htmlFor="fileInput">
+                <Button variant='contained' component="span" sx={{ color: "white", fontWeight: "bold" }}
+                >
+                  1- Choisir un fichier à ajouter
+                </Button>
+              </label>
+
+              {newFileName && <Box>
+                <TextField
+                  value={newFileName}
+                  onChange={(e) => setNewFileName(e.target.value)}
+                  label="Fichier à ajouter"
+                  variant="outlined"
+                  sx={{ width: "100%", marginTop: "15px" }}
+                />
+                <Button
+                  color="pink"
+                  sx={{ fontWeight: "bold", marginTop: "15px" }}
+                  //component="label"
+                  type="submit"
+                  variant="contained" startIcon={<CloudUploadIcon />}
+                //onClick={handleChangeLogo}
+                >
+                  2-Télécharger/ajouter le fichier
+                </Button>
+                <LinearProgress
+                  variant="determinate"
+                  value={progresspercentFile}
+                  sx={{ marginTop: "10px" }} />
+              </Box>}
+            </form>
+
+            {filesList.length > 0 && <FormControl
+              sx={{
+                marginTop: "100px",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                gap: "2%",
+              }}
+            >
+              <TextField
+                disabled={fileToUpdateOrDelete.fileName === "" ? true : false}
+                value={fileToUpdateOrDelete.fileName}
+                //autoComplete="off"
+                onChange={(e) => setFileToUpdateOrDelete({ ...fileToUpdateOrDelete, fileName: e.target.value })}
+                label="Fichier à modifier"
+                variant="outlined"
+                sx={{ width: "100%" }}
+              />
               <Button
-                color="pink"
-                //sx={{ marginTop: "10px" }}
+                //sx={{ marginTop: "15px", }}
                 //component="label"
+                color="ochre"
                 type="submit"
-                variant="contained" startIcon={<CloudUploadIcon />}
-              //onClick={handleChangeLogo}
+                variant="contained" //startIcon={<CloudUploadIcon />}
+                onClick={handleUpdateFile}
               >
-                Télécharger/ajouter le fichier
-              </Button>
-              <LinearProgress
-                variant="determinate"
-                value={progresspercentFile}
-                sx={{ marginTop: "10px" }} />
-            </Box>}
-          </form>
+                Modifier le nom du fichier
+              </Button>              
+            </FormControl>}
+          </Box>
         </Box>
       </Box>
 
-      
+
 
       <Divider />
 
-      <Box  
-        m={3} mt={5}
-        //sx={{ marginTop: "100px" }} 
-        >
+      <Box
+        m={5}
+      //sx={{ marginTop: "100px" }} 
+      >
         <Typography variant="h6">Mes catégories ({categoriesList.length}) </Typography>
         <Box sx={{ display: "flex", justifyContent: "space-between" }} >
           <List
             sx={{
               width: '50%',
               overflow: 'auto',
-              maxHeight: "50vh",
+              maxHeight: "40vh",
               mt: 2,
+              boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)'
+
             }}
             subheader={<li />}
           >
@@ -301,6 +364,7 @@ export default function Admin({ currentUser }: AdminType) {
                     cursor: "pointer",
                     backgroundColor: index % 2 === 0 ? muiTheme.palette.lightCyan.light : '',
                     color: index % 2 === 1 ? muiTheme.palette.primary.dark : '',
+                    pl: 1,
                   }}
                   onClick={() => setCatToUpdateOrDelete(cat)}
                 >
@@ -310,12 +374,13 @@ export default function Admin({ currentUser }: AdminType) {
           </List>
 
           <Box>
-            {categoriesList.length > 0  && <FormControl 
-              sx={{ 
-                padding: "2%", 
-                display: "flex", 
-                flexDirection: "row", 
-                justifyContent: "space-around" }} 
+            {categoriesList.length > 0 && <FormControl
+              sx={{
+                padding: "2%",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-around"
+              }}
             >
               <TextField
                 disabled={catToUpdateOrDelete.id === "" ? true : false}
@@ -335,7 +400,7 @@ export default function Admin({ currentUser }: AdminType) {
                 variant="contained" //startIcon={<CloudUploadIcon />}
                 onClick={handleUpdateCat}
               >
-                Modifier la catégorie
+                Modifier le nom de la catégorie
               </Button>
               <Button
                 sx={{ width: "20%" }}
@@ -366,13 +431,13 @@ export default function Admin({ currentUser }: AdminType) {
               </Modal>
             </FormControl>}
 
-            <FormControl 
-              sx={{ 
-                mt:3, 
-                padding: "2%", 
-                display: "flex", 
-                flexDirection: "row", 
-                justifyContent: "space-around" 
+            <FormControl
+              sx={{
+                mt: 3,
+                padding: "2%",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-around"
               }} >
               <TextField
                 value={newCat}
@@ -396,7 +461,7 @@ export default function Admin({ currentUser }: AdminType) {
           </Box>
         </Box>
       </Box>
-    </Paper>
+    </Box>
 
   );
 
