@@ -108,13 +108,14 @@ export default function Admin({ currentUser }: AdminType) {
 
     addCategorieOnFirebase(currentUser.uid, newCatWithUpperCase)
     setCategoriesList([...categoriesList, { ...newCatWithUpperCase }]);
-    // setCategoriesList([...categoriesList, newCatWithUpperCase].sort((a, b) => a.localeCompare(b)));      
+    // setCategoriesList([...categoriesList, newCatWithUpperCase].sort((a, b) => a.localeCompare(b)));
   }
 
   const handleUpdateCat = () => {
     console.log("catToUpdate", catToUpdateOrDelete)
     updateCategorieOnFirebase(catToUpdateOrDelete)
     setCategoriesList([...categoriesList.filter(cat => cat.id !== catToUpdateOrDelete.id), { ...catToUpdateOrDelete }]);
+    setCatToUpdateOrDelete({ id: "", label: "" });
   }
 
   // const handleDeleteCat = async () => {
@@ -191,15 +192,18 @@ export default function Admin({ currentUser }: AdminType) {
         alert("Impossible de supprimer cette catégorie => Un ou plusieurs contact(s) y est (sont) associé(s). Veuillez d'abord modifier/supprimer leur catégorie.");
         console.log(error)
       })
-
-    setCatToUpdateOrDelete({ id: "", label: "" });
+    setCatToUpdateOrDelete({ id: "", label: "" });     
+    setOpenDeleteCatModal(false);     
   }
 
 
   return (
     <Paper elevation={3}>
-      <Box sx={{ marginTop: "30px" }} >
-        <Typography variant="h6">Fichiers dans ma base de données ({filesList.length}) </Typography>
+      <Box 
+        m={3} 
+        //sx={{ marginTop: "30px" }} 
+      >
+        <Typography variant="h6">Mes fichiers ({filesList.length}) </Typography>
         <Box sx={{ display: "flex", justifyContent: "space-between" }} >
           <List
             sx={{
@@ -211,7 +215,9 @@ export default function Admin({ currentUser }: AdminType) {
             }}
             subheader={<li />}
           >
-            {filesList.map((file, index) => (
+            {filesList              
+              .sort((a, b) => a.fileName.localeCompare(b.fileName))
+              .map((file, index) => (
               <ListItemText
                 key={index}
                 onClick={() => handleOpenFile(file.fileRef)}
@@ -267,8 +273,11 @@ export default function Admin({ currentUser }: AdminType) {
         </Box>
       </Box>
 
-      <Box sx={{ marginTop: "100px" }} >
-        <Typography variant="h6">Catégories dans ma base de données ({categoriesList.length}) </Typography>
+      <Box  
+        m={3} mt={5}
+        //sx={{ marginTop: "100px" }} 
+        >
+        <Typography variant="h6">Mes catégories ({categoriesList.length}) </Typography>
         <Box sx={{ display: "flex", justifyContent: "space-between" }} >
           <List
             sx={{

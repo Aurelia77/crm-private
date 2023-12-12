@@ -28,6 +28,7 @@ type Contact = {
   businessPhone: string,
   businessEmail: string,
   businessCity: string,
+  directorName: string,
   contactName: string,
   contactPhone: string,
   contactEmail: string,

@@ -120,7 +120,7 @@ const StyledRatingStars = styled(Rating)(({ theme, color }) => ({
     color: color 
   },
   '& .MuiRating-iconHover': {
-    color: theme.palette.primary.main, 
+    color: color//theme.palette.primary.main, 
   },
 }));
 

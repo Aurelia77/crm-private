@@ -18,6 +18,7 @@ const emptyContact: Contact = {
     businessPhone: '',
     businessEmail: '',
     businessCity: '',
+    directorName: '',
     contactName: '',
     contactPhone: '',
     contactEmail: '',
