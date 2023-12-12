@@ -227,7 +227,7 @@ export default function Contacts() {
                     const promise = getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel)
                         .then((catId: string) => {
                             // Bien utiliser .map car .foreach ne retourne rien (filteredContacts.map() crée un tableau de promesses. Promise.all(promises) renvoie une nouvelle promesse qui est résolue lorsque toutes les promesses dans le tableau promises sont résolues.)
-                            return filteredContacts.map((filteredContact) => {
+                            filteredContacts.map((filteredContact) => {
                                 if (filteredContact.businessName === contact.businessName) {
                                     console.log(filteredContact, catId)
                                     return updatDataOnFirebase(filteredContact.id, { key: "businessCategoryId", value: catId })

@@ -760,7 +760,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 <TextField id="outlined-basic" label="Nom Contact DIRECT" value={contactToAddOrUpdate.contactName} onChange={handleChangeText("contactName")}
                                     sx={{ width: "48%" }}
                                 />
-                                <TextField id="outlined-basic" label="Position" value={contactToAddOrUpdate.contactPosition} onChange={handleChangeText("contactPosition")}
+                                <TextField id="outlined-basic" label="Poste occupé" value={contactToAddOrUpdate.contactPosition} onChange={handleChangeText("contactPosition")}
                                     sx={{ width: "48%", ml: "4%" }}
                                 />
                             </Box>

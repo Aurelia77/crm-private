@@ -152,7 +152,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
                         //padding={headCell.disablePadding ? 'none' : 'normal'}
                         //align="center"
                         style={{
-                            height:"40px",
+                            //height:"40px",
                             minWidth: headCell.minWidth,
                             padding: 0
                             //minWidth: colWidth,
