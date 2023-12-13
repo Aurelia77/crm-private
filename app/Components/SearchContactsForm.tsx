@@ -89,7 +89,10 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
     React.useEffect(() => {
         if (selectedCatIds.length > 0) {
             Promise.all(selectedCatIds.map(catId => getCatLabelFromId(catId)))
-                .then(labels => setCatSelectedLabels(labels));
+                .then(labels => {
+                    console.log("labels", labels)
+                    return setCatSelectedLabels(labels)
+                });
         } else {
             setCatSelectedLabels([]);
         }
@@ -206,6 +209,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             ? <Select
                                 id="multiple-checkbox-type-label"
                                 multiple={true}
+                               //multiline={true}
                                 value={search.businessCategoryId}
                                 // value={search.businessCategoryId.map(
                                 //         (catId: string) => getCatLabelFromId(catId)                            
@@ -215,15 +219,24 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                                 //sx={{ width: '300px', border: "solid 1px black" }} 
                                 />}
                                 //renderValue={(selected) => selected).join(', ')}
-                                renderValue={(selectedIds) => selectedCatLabels.join(', ')}
+                                renderValue={() => (
+                                    <Box component="div" whiteSpace="pre-line">
+                                      {selectedCatLabels.join('\n')}
+                                    </Box>
+                                )}
+                                //renderValue={() => selectedCatLabels.join(', ')}
                                 sx={{ width: '100%' }}
                                 MenuProps={MenuSelectProps}
                             >
-                                 {/* <MenuItem key="0" value="NON DEFINI">
-                                    <Checkbox checked={search.contactType.indexOf("NON DEFINI") > -1} />
-                                    <ListItemText primary="NON DEFINI" />                                
-                            </MenuItem> */}
-                                <MenuItem key="0" value="">NON DEFINIE</MenuItem>
+                                <MenuItem key="0" value="0">
+                                    <Checkbox checked={search.businessCategoryId.includes("0")} />
+                                    <ListItemText primary="NON DEFINIE" />
+                                </MenuItem>
+
+                                {/* <MenuItem key="0" value="NON DEFINIE">
+                                    <Checkbox checked={search.contactType.indexOf("NON DEFINIE") > -1} />
+                                    <ListItemText primary="NON DEFINIE" />
+                                </MenuItem> */}
                                 {categoriesList
                                     .filter(cat => allDifferentsBusinessCategoryValues.includes(cat.id))
                                     .sort((a, b) => a.label.localeCompare(b.label))
@@ -256,7 +269,12 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             onChange={(e) => handleMultipleChangeSelect(e, "businessCity")}
                             input={<OutlinedInput label="Villes"         // ici le label est utilisé pour l'accessibilité et non pour l'affichage.                            
                             />}
-                            renderValue={(selected) => selected.join(', ')}
+                            renderValue={(selected) => (
+                                <Box component="div" whiteSpace="pre-line">
+                                  {selected.join('\n')}
+                                </Box>
+                            )}
+                           // renderValue={(selected) => selected.join(', ')}
                             MenuProps={MenuSelectProps}
                         >
                             {allDifferentsBusinessCitiesValues.map((city) => (
@@ -278,7 +296,12 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             input={<OutlinedInput label="Types"         // ici le label est utilisé pour l'accessibilité et non pour l'affichage.
                             //sx={{ width: '300px' }} 
                             />}
-                            renderValue={(selected) => selected.join(', ')}
+                            renderValue={(selected) => (
+                                <Box component="div" whiteSpace="pre-line">
+                                  {selected.join('\n')}
+                                </Box>
+                            )}
+                            //renderValue={(selected) => selected.join(', ')}
                             sx={{ width: '100%' }}
                             MenuProps={MenuSelectProps}
                         >                            

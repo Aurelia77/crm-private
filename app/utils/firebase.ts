@@ -247,8 +247,10 @@ const getCatLabelFromId = async (catId: string) => {
   querySnapshot.forEach((doc) => {
     label = doc.data().label
   })
- 
-  return label;
+  
+  return label !== "" 
+    ? label
+    : "NON DEFINIE"
 }
 
 const addFakeDataOnFirebaseAndReload = (currentUser: any, fakeContactsData: Contact[]) => {
