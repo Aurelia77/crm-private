@@ -58,7 +58,7 @@ type NewContactSearchForm = {
     emptyContact: Contact
     addContact: (contact: Contact) => void
     currentUserId: string
-    getPriorityTextAndColor: (priority: number | null) => { text: string, color: string },
+    getPriorityTextAndColor: (priority: number | null) => { text: string, color: string, bgColor: string }
     setHasContactInfoChanged: (status: boolean) => void
 }
 
