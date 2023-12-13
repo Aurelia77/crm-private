@@ -135,7 +135,10 @@ export default function NewContactSearchForm({    //contacts, setContacts }: { c
             ? apiAccessUrl + "siret:" + query.siret
             : apiAccessUrl + multiCriteriaSearch
 
-        isFormEmpty() ? setResultInseeSearch([])
+        console.log("+++searchApiUrl", searchApiUrl)
+
+        isFormEmpty() 
+            ? setResultInseeSearch([])
             : fetch(searchApiUrl, {
                 method: 'GET',
                 headers: {
@@ -434,13 +437,17 @@ export default function NewContactSearchForm({    //contacts, setContacts }: { c
                         sx={{ my: 4 }} >
                         <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                             <BadgeRoundedIcon sx={{ color: 'action.active', mr: 1, mb: 2 }} />
-                            <TextField type="text" variant='outlined' color='primary' label="Nom" onChange={e => setQuery({ ...query, name: `*${e.target.value.trim().replaceAll(" ", "* AND denominationUniteLegale:*")}*` })}
+                            <TextField type="text" variant='outlined' color='primary' label="Nom" onChange={e => setQuery({ ...query, name: `*${e.target.value.trim().replaceAll(/ |'/g, "* AND denominationUniteLegale:*")}*` })}
                                 //value={searchContact.name} // Pas besoin de mettre valeur !!!???
                                 fullWidth />
+                            {/* <TextField type="text" variant='outlined' color='primary' label="Nom" onChange={e => setQuery({ ...query, name: `*${e.target.value.trim().replaceAll(" ", "* AND denominationUniteLegale:*")}*` })}
+                                //value={searchContact.name} // Pas besoin de mettre valeur !!!???
+                                fullWidth /> */}
                         </Box>                     
                         <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                             <LocationCityRoundedIcon sx={{ color: 'action.active', mr: 1, mb: 2 }} />
-                            <TextField type="text" variant='outlined' color='primary' label="Ville" onChange={e => setQuery({ ...query, city: `*${e.target.value.trim().replaceAll(" ", "* AND libelleCommuneEtablissement:*")}*` })} fullWidth />
+                            <TextField type="text" variant='outlined' color='primary' label="Ville" onChange={e => setQuery({ ...query, city: `*${e.target.value.trim().replaceAll(/ |'/g, "* AND libelleCommuneEtablissement:*")}*` })} fullWidth />
+                            {/* <TextField type="text" variant='outlined' color='primary' label="Ville" onChange={e => setQuery({ ...query, city: `*${e.target.value.trim().replaceAll(" ", "* AND libelleCommuneEtablissement:*")}*` })} fullWidth /> */}
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                             <BusinessRoundedIcon sx={{ color: 'action.active', mr: 1, mb: 2 }} />
@@ -484,7 +491,7 @@ export default function NewContactSearchForm({    //contacts, setContacts }: { c
                     }}                  
                         //border={2} color='primary.dark' 
                         //borderColor={'secondary.main'} 
-                        bgcolor={'ochre.light'} // bgcolor="#ddd"
+                        bgcolor={'pink.light'} // bgcolor="#ddd"
                          >
                         {resultInseeSearchToKeepPlusDomainAndLogo.length === nbResultInsee &&
                             <Typography variant="h6" sx={{ p: 2, bgcolor: 'background.default' }}>Plus de {nbResultInsee} résultats, veuillez affiner votre recherche
@@ -509,10 +516,16 @@ export default function NewContactSearchForm({    //contacts, setContacts }: { c
                                             width: '50px',
                                             height: '50px',
                                             objectFit: 'cover',
-                                        }} />
-                                        : <AccountCircle sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
+                                            }} />
+                                            : <AccountCircle sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
                                         }
-                                        <ListItemText sx={{ ml:1 }}
+                                        <ListItemText sx={{
+                                            width:"100%",
+                                            ml: 1,
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis",
+                                            whiteSpace: "nowrap"
+                                        }}
                                         //primary={business.businessName}
                                         >{business.businessName} 
                                             <span style={{ color: 'gray', fontSize:'0.8em' }}> ({business.businessCity})</span>

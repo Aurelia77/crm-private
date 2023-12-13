@@ -265,10 +265,26 @@ export default function Contacts() {
     // Je ne peux pas mettre cette fonction dans ToolBox car je peux utiliser les thème seulement dans un composant  (React Hooks must be called in a React function component or a custom React Hook function.)
     const getPriorityTextAndColor = (priority: number | null) => {
         switch (priority) {
-            case 1: return { text: "Faible", color: muiTheme.palette.error.main }
-            case 2: return { text: "Moyenne", color: muiTheme.palette.secondary.light }
-            case 3: return { text: "Haute", color: muiTheme.palette.primary.dark }
-            default: return { text: "Aucune", color: muiTheme.palette.gray.dark  }
+            case 1: return { 
+                text: "Faible", 
+                color: muiTheme.palette.error.main,
+                bgColor: "#efb9b9"
+            }
+            case 2: return { 
+                text: "Moyenne", 
+                color: "lightsalmon",
+                bgColor: "lightgoldenrodyellow"
+            }
+            case 3: return { 
+                text: "Haute", 
+                color: muiTheme.palette.primary.dark,
+                bgColor: muiTheme.palette.lightCyan.light
+            }
+            default: return { 
+                text: "Aucune", 
+                color: muiTheme.palette.gray.dark,
+                bgColor: "muiTheme.palette.gray.light  "
+            }
             // default: return { text: "Aucune", color: "black" }
         }
     }

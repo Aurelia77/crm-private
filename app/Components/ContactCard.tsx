@@ -54,7 +54,7 @@ import { truncate } from 'fs';
 type ContactCardProps = {
     contact: Contact
     currentUserId: any
-    getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
+    getPriorityTextAndColor: (priority: number | null) => { text: string, color: string, bgColor: string }
     setHasContactInfoChanged: (status: boolean) => void
     handleDeleteContact?: (id: string) => void
     addContact?: (contact: Contact) => void
@@ -307,7 +307,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                 //mx: "auto",
                 padding: "2% 4%",
                 //maxWidth: "850px",
-                bgcolor: 'lightCyan.light',
+                bgcolor: getPriorityTextAndColor(contactToAddOrUpdate.priority).bgColor,
+                // bgcolor: 'lightCyan.light',
                 //backgroundColor: muiTheme.palette.primary.light,
             }}        // my = 0.5rem (donc 1/2 taille de la police de la racine (em pour l'élément))
         >
@@ -763,7 +764,10 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                 <Box sx={{ display: 'flex', justifyContent: "space-between", gap: "4%" }} >
                     {/* ///////// NOM Contact, POSITION, VILLE et ADRESSE ///////// */}
                     <Box
-                        sx={{ width: "48%", display: 'flex', justifyContent: "space-between", gap: "4%" 
+                        sx={{                            
+                            width: contactToAddOrUpdate.comments.length > 0 ? "48%" : "86%",
+                            //width: "48%", 
+                            display: 'flex', justifyContent: "space-between", gap: "4%" 
                     }}
                     >
                         <Box sx={{ display: 'flex', flexDirection:"column", justifyContent: "space-between", gap: "15px", width:"48%"  }} >
@@ -777,28 +781,28 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 label="Nom Contact DIRECT" 
                                 value={contactToAddOrUpdate.contactName} 
                                 onChange={handleChangeText("contactName")}
-                                sx={{ backgroundColor: muiTheme.palette.pink.light }}
+                                sx={{ backgroundColor: muiTheme.palette.pink.main }}
                             />
                             <TextField
                                 id="outlined-basic"
                                 label="Poste occupé"
                                 value={contactToAddOrUpdate.contactPosition}
                                 onChange={handleChangeText("contactPosition")}
-                                sx={{ backgroundColor: muiTheme.palette.pink.light }}
+                                sx={{ backgroundColor: muiTheme.palette.pink.main }}
                             />
                             <TextField
                                 id="outlined-basic"
                                 label="Téléphone DIRECT"
                                 value={contactToAddOrUpdate.contactPhone}
                                 onChange={handleChangeText("contactPhone")}
-                                sx={{ backgroundColor: muiTheme.palette.pink.light }}
+                                sx={{ backgroundColor: muiTheme.palette.pink.main }}
                             />
                             <TextField
                                 id="outlined-basic"
                                 label="Email DIRECT"
                                 value={contactToAddOrUpdate.contactEmail}
                                 onChange={handleChangeText("businessEmail")}
-                                sx={{ backgroundColor: muiTheme.palette.pink.light }}
+                                sx={{ backgroundColor: muiTheme.palette.pink.main }}
                                 InputProps={{
                                     startAdornment: contactToAddOrUpdate.contactEmail && <Link href={`mailto:${contactToAddOrUpdate.contactEmail}`} underline="none" //color="inherit"                                       
                                         target="_blank"
@@ -873,17 +877,14 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     </Link>
                                 }}
                             />
-
-
                         </Box>
-
                     </Box>
 
                     {/* ///////// COMMENTAIRES ///////// */}
                     <TextField
                         //variant="outlined"
                         sx={{
-                            width: "48%",
+                            width: contactToAddOrUpdate.comments.length > 0 ? "48%" : "10%",
                             overflow: 'auto',
                             maxHeight: "40vh",
                             boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',
