@@ -101,8 +101,9 @@ console.log('%c    color: HotPink', 'color: HotPink')
     console.log("%c 222- S'affiche AVANT ", 'color: MediumSpringGreen')
   }
 
-
+  
   const getCategoriesFromDatabase = async () => {
+    console.log('%c 111-START Fonction ASYNC getCategoriesFromDatabase', 'color: tomato');
 
     const userA_Id = "9toBAMERXdV9TTGHZDSt6qJoxvf2"    
     let catsArr: any[] = []
@@ -117,9 +118,16 @@ console.log('%c    color: HotPink', 'color: HotPink')
       catsArr.push(doc.data()) 
     })
 
-    //console.log("catsArr", catsArr)   // Toutes les cats
+    console.log("%c 222-RESULTATS ", 'color: tomato', catsArr)   // Toutes les cats
 
     return catsArr
+  }
+
+  const displayCat = async () => {
+    console.log("%c 111-START Fonction displayCat qui appelle FONCT ASYNC", 'color: MediumTurquoise')
+
+    const catsArr = await getCategoriesFromDatabase()
+    console.log("%c 222-catsArr", 'color: MediumTurquoise', catsArr)
   }
 
 
@@ -148,9 +156,9 @@ console.log('%c    color: HotPink', 'color: HotPink')
         sx={{ margin: "30px 0 0 500px" }}
         variant="contained" > Appelle funct ASYNC et retourne le RESULTAT</Button>
       <Button
-        onClick={getCategoriesFromDatabase}
+        onClick={displayCat}
         sx={{ margin: "30px 0 0 500px" }}
-        variant="contained" >getCategoriesFromDatabase</Button>
+        variant="contained" >displayCat</Button>
     </Box>
 
   )

@@ -209,50 +209,80 @@ export default function Contacts() {
         },
     ]
     
+    const addCatToFakeContacts2 = async (fakeContactsData: Contact[]) => {
+        let promises: any = [];
+
+        for (const contact of fakeContactsData) {
+            for (const contactNameAndCatLabel of fakeContactsNameAndCatLabel) {
+                if (contact.businessName === contactNameAndCatLabel.name) {
+
+                    const catId = await getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel);                    
+                    console.log("***catId", catId)
+
+                    const updatePromises = filteredContacts.map((filteredContact) => {
+                        if (filteredContact.businessName === contact.businessName) {
+                            console.log(filteredContact, catId)
+                            return updatDataOnFirebase(filteredContact.id, { key: "businessCategoryId", value: catId })
+                        }
+                    });
+
+                    promises.push((updatePromises));
+                    console.log("***promises", promises)    
+                }
+            }
+        }
+
+        Promise.all(promises)
+            .then(() => { 
+                console.log("***Dans le THEN du PROMISE ALL")
+                console.log("!!!!!!!!! CAT ATJOUTées !!!!!")
+                window.location.reload() 
+            })
+            .catch((error) => { console.error("Error reloading page: ", error); });
+    }
 
     // UTILISER MAP pour pouvoir retourner ???
-    const addCatToFakeContacts = (fakeContactsData: Contact[]) => {
-        // fakeContactsData.forEach((contact) => {
-        //     contact.businessCategoryId = contact.businessCategory.map((cat) => getCatIdFromLabel(cat))
-        //     console.log(contact.businessCategoryId)
-        //     updateWholeContactInContactsAndDB(contact)
-        // })
+    const addCatToFakeContacts = async (fakeContactsData: Contact[]) => {
 
         let promises: any = [];
 
-        // fakeContactsData.forEach((contact) => {
-        //     fakeContactsNameAndCatLabel.forEach((contactNameAndCatLabel) => {
+        fakeContactsData.map((contact) => {
+            fakeContactsNameAndCatLabel.forEach((contactNameAndCatLabel) => {
 
-        //         if (contact.businessName === contactNameAndCatLabel.name) {
-        //             // console.log(contact.businessName)
-        //             // console.log(contactNameAndCatLabel.catLabel)
-        //             // console.log(getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel))
+                if (contact.businessName === contactNameAndCatLabel.name) {
 
-        //             const promise = getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel)
-        //                 .then((catId: string) => {
-        //                     // Bien utiliser .map car .foreach ne retourne rien (filteredContacts.map() crée un tableau de promesses. Promise.all(promises) renvoie une nouvelle promesse qui est résolue lorsque toutes les promesses dans le tableau promises sont résolues.)
-        //                     filteredContacts.map((filteredContact) => {
-        //                         if (filteredContact.businessName === contact.businessName) {
-        //                             console.log(filteredContact, catId)
-        //                             return updatDataOnFirebase(filteredContact.id, { key: "businessCategoryId", value: catId })
-        //                         }
-        //                     })
-        //                     promises.push(promise);
-        //                     //return Promise.all(promises)              
-        //                 })
-        //             // .then(() => {
-        //             //     window.location.reload()
-        //             // }) 
-        //         }
-        //     })
-        // })
+                    const promise = getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel)
+
+                    
+                        .then((catId: string) => {
+
+                            console.log("***catId", catId)
+                            // utiliser .map car .foreach ne retourne rien
+                            filteredContacts.map((filteredContact) => {
+                                if (filteredContact.businessName === contact.businessName) {
+                                    console.log(filteredContact, catId)
+                                    return updatDataOnFirebase(filteredContact.id, { key: "businessCategoryId", value: catId })
+                                }
+                            })
+                            promises.push(promise);
+                            //return Promise.all(promises)              
+                        })
+                    .then(() => {
+                        console.log("***Dans le THEN")
+                        //window.location.reload()
+                    }) 
+                }
+            })
+        })
         
-        // Promise.all(promises)
-        // .then(() => { 
-        //     console.log("!!!!!!!!! CAT ATJOUTées !!!!!")
-        //     window.location.reload() 
-        // })
-        // .catch((error) => { console.error("Error reloading page: ", error); });
+        Promise.all(promises)
+        .then(() => { 
+            console.log("***Dans le THEN du PROMISE ALL")
+
+            console.log("!!!!!!!!! CAT ATJOUTées !!!!!")
+            //window.location.reload() 
+        })
+        .catch((error) => { console.error("Error reloading page: ", error); });
     }
 
     // Je ne peux pas mettre cette fonction dans ToolBox car je peux utiliser les thème seulement dans un composant  (React Hooks must be called in a React function component or a custom React Hook function.)
@@ -672,7 +702,7 @@ export default function Contacts() {
                                     <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }} >
                                         <Button variant="contained" color='success' onClick={() => addCategoriesOnFirebaseAndReload(currentUser, contactCategories)}>1-Ajouter Catégories</Button>
                                         <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>2-Ajouter Contacts Test</Button>
-                                        <Button variant="contained" color='warning' onClick={() => addCatToFakeContacts(fakeContactsData)}>3-Ajouter catégories aux contacts</Button>
+                                        <Button variant="contained" color='warning' onClick={() => addCatToFakeContacts2(fakeContactsData)}>3-Ajouter catégories aux contacts</Button>
                                         {/* <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
                                         <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button> */}
                                     </Box>
