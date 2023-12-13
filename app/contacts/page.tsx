@@ -24,7 +24,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import FormControl from '@mui/material/FormControl';
-import { Container, Tooltip, Paper } from '@mui/material';
+import { Container, Tooltip, Paper, Modal } from '@mui/material';
 import { TextField, Select, MenuItem, Autocomplete, ListItem, List, InputLabel, Tabs, Tab, Box as CustomBox } from '@mui/material'
 import { contactCategories } from '../utils/toolbox'
 
@@ -38,6 +38,7 @@ import AuthDetails from '../Components/AuthDetails';
 import SearchContactsForm from '../Components/SearchContactsForm';
 import Admin from '../Components/Admin';
 import SearchIcon from '@mui/icons-material/Search';
+import { modalStyle } from '../utils/StyledComponents'
 
 import fakeContactsData from '../utils/contactsTest'
 import contactsLaurianeCampings from '../utils/contactsLauriane';
@@ -106,7 +107,11 @@ export default function Contacts() {
     const [contactToDisplay, setContactToDisplay] = React.useState<Contact>(emptyContact)
 
     const [messageNoContact, setMessageNoContact] = React.useState("") //Aucun contact pour l'instant, veuillez en ajouter ici :")
+    const [hasContactInfoChanged , setHasContactInfoChanged ] = React.useState(false)
+    const [openWarningModal, setOpenWarningModal] = React.useState(false);
 
+
+    console.log("****hasContactInfoChanged", hasContactInfoChanged)
 
     const muiTheme = useTheme()
 
@@ -131,6 +136,7 @@ export default function Contacts() {
     const isSearchCriteriaEmpty = JSON.stringify(contactsSearchCriteria) === JSON.stringify(emptySearchCriteria)
 
     const [tabValue, setTabValue] = React.useState(0);
+    const [tabValueWithoutSavingInfoChanges, setTabValueWithoutSavingInfoChanges] = React.useState(0);
     const [tabNewContactValue, setTabNewContactValue] = React.useState(0);
     const [tabCalendarValue, setTabCalendarValue] = React.useState(0);
 
@@ -169,8 +175,8 @@ export default function Contacts() {
         setFilteredContacts(updatedContactsInLocalListWithWholeContact(contacts, contactToUpdate))
         updatDataWholeContactOnFirebase(contactToUpdate)
 
-        setTabValue(0)
-        setContactToDisplay(emptyContact)
+        //setTabValue(0)
+        //setContactToDisplay(emptyContact)
     }
 
     const diplayContactCardToUpdate = (contact: Contact) => {
@@ -208,10 +214,6 @@ export default function Contacts() {
             catLabel: "Restaurant Plage"
         },
     ]
-
-
- 
-
 
     
     const addCatToFakeContacts = async (fakeContactsData: Contact[]) => {
@@ -255,15 +257,10 @@ export default function Contacts() {
             .catch((error) => { console.error("Error reloading page: ", error); });
     }
 
-   
-
     const addFakeDataWithCat = async() => {
         await addFakeDataOnFirebase(currentUser, fakeContactsData)            
         addCatToFakeContacts(fakeContactsData)        
     }
-
-
-
 
     // Je ne peux pas mettre cette fonction dans ToolBox car je peux utiliser les thème seulement dans un composant  (React Hooks must be called in a React function component or a custom React Hook function.)
     const getPriorityTextAndColor = (priority: number | null) => {
@@ -298,6 +295,23 @@ export default function Contacts() {
 
     }, [currentUser])
     // }, [currentUser?.uid])
+
+    const onChangeTabValue = (newValue: number) => {
+        setTabValueWithoutSavingInfoChanges(newValue)
+
+        if ([2,3].includes(tabValue)  && hasContactInfoChanged) {
+            setOpenWarningModal(true)
+            return
+        }
+        setTabValue(newValue)
+    }
+
+   const handleNotSaveContactInfo = () => {
+    console.log("********")
+    setOpenWarningModal(false)
+    setTabValue(tabValueWithoutSavingInfoChanges)
+    setHasContactInfoChanged(false)
+   }
 
      
     // React.useEffect(() => {
@@ -432,6 +446,32 @@ export default function Contacts() {
             position: "relative",
             //marginTop:0
         }}>
+            <Modal
+                open={openWarningModal}
+                onClose={() => setOpenWarningModal(false)}
+            >
+                <Box sx={modalStyle} >
+                    <Typography
+                        id="modal-modal-title"
+                        variant="h6"
+                        component="h2"
+                        sx={{ mb: 5 }}
+                    >
+                        Attention, vous avez fait des changements non sauvegardés : êtes vous sûr de vouloir quitter ?
+                    </Typography>
+                    <Box sx={{ display: "flex", justifyContent: "space-between" }} >
+                        <Button
+                            variant="contained"
+                            color='warning'
+                            onClick={handleNotSaveContactInfo}
+                            sx={{ marginRight: "15px" }}
+                        >
+                            Oui !
+                        </Button>
+                        <Button variant="contained" color='primary' sx={{ color: "white" }} onClick={() => setOpenWarningModal(false)} >Non</Button>
+                    </Box>
+                </Box>
+            </Modal>
 
             {/* /////////////////////// Info USER /////////////////////// */}
             <Box sx={{
@@ -478,7 +518,7 @@ export default function Contacts() {
                                 orientation="vertical"
                                 //variant="scrollable"
                                 value={tabValue}
-                                onChange={(e, newValue) => setTabValue(newValue)}
+                                onChange={(e, newValue) => onChangeTabValue(newValue)}
                                 aria-label="Vertical tabs"
                                 sx={{ borderRight: 1, borderColor: 'divider', width: TABS_WIDTH }}
                             >
@@ -636,6 +676,7 @@ export default function Contacts() {
                                         addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)}
                                         currentUserId={currentUser.uid}
                                         getPriorityTextAndColor={getPriorityTextAndColor}
+                                        setHasContactInfoChanged={setHasContactInfoChanged }
                                     />
                                 </TabPanel>
 
@@ -645,6 +686,7 @@ export default function Contacts() {
                                         contact={emptyContact}
                                         currentUserId={currentUser.uid}
                                         getPriorityTextAndColor={getPriorityTextAndColor}
+                                        setHasContactInfoChanged={setHasContactInfoChanged }
                                         addContact={(e) => addContactOnFirebaseAndReload(currentUser, e)}
                                     />
                                 </TabPanel>
@@ -656,6 +698,7 @@ export default function Contacts() {
                                     contact={contactToDisplay}
                                     currentUserId={currentUser.uid}
                                     getPriorityTextAndColor={getPriorityTextAndColor}
+                                    setHasContactInfoChanged={setHasContactInfoChanged }
                                     handleDeleteContact={deleteDataOnFirebaseAndReload}
                                     updateContact={updateWholeContactInContactsAndDB}
                                 // updateContact={() => {console.log("updateContact")}} 

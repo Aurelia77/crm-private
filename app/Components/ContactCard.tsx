@@ -36,7 +36,7 @@ import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { deleteModalStyle } from '../utils/StyledComponents'
+import { modalStyle } from '../utils/StyledComponents'
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import MailIcon from '@mui/icons-material/Mail';
@@ -52,9 +52,10 @@ import { truncate } from 'fs';
 
 
 type ContactCardProps = {
-    contact: Contact;
+    contact: Contact
     currentUserId: any
     getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
+    setHasContactInfoChanged: (status: boolean) => void
     handleDeleteContact?: (id: string) => void
     addContact?: (contact: Contact) => void
     updateContact?: (contact: Contact) => void
@@ -62,7 +63,7 @@ type ContactCardProps = {
     //setContactCardDisplayStatus?: (status: boolean) => void
 }
 
-export default function ContactCard({ contact, currentUserId, getPriorityTextAndColor, handleDeleteContact, addContact, updateContact,
+export default function ContactCard({ contact, currentUserId, getPriorityTextAndColor, setHasContactInfoChanged, handleDeleteContact, addContact, updateContact,
     //contactCardDisplayStatus=true, 
     //setContactCardDisplayStatus
 }: ContactCardProps) {
@@ -103,10 +104,10 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     const [openDeleteContactModal, setOpenDeleteContactModal] = React.useState(false);
     const [openDeleteContactFileModal, setOpenDeleteContactFileModal] = React.useState(false);
     const [openDeleteContactFilesModal, setOpenDeleteContactFilesModal] = React.useState(false);
+    const [openContactIsUpdatedModal, setOpenContactIsUpdatedModal] = React.useState(false);
 
     const [alertFileText, setAlertFileText] = React.useState("");
 
-    const [transition, setTransition] = React.useState(false);
 
 
     const handleClickDeleteContact = () => {
@@ -118,11 +119,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         const selectedFile = filesFirebaseArray.find(file => file.fileRef === selectedFileRef);
 
         setFirebaseFileSelected({ fileName: selectedFile?.fileName ?? "", fileRef: selectedFileRef })
-    }
-
-    React.useEffect(() => {
-        setTransition(true);
-    }, []);
+    }   
 
     React.useEffect(() => {
 
@@ -147,12 +144,17 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     }, [currentUserId]);
 
 
+    React.useEffect(() => {
+        console.log("****Comparaison des contacts")
+        JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && console.log("****CHANGE")
+        JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && setHasContactInfoChanged(true)
+    }, [contactToAddOrUpdate])
 
 
     ///////////// Encore besoin ??????????
-    React.useEffect(() => {
-        setContactToAddOrUpdate(contact)    // Sinon quand on clic ne change rien !
-    }, [contact])
+    // React.useEffect(() => {
+    //     setContactToAddOrUpdate(contact)    // Sinon quand on clic ne change rien !
+    // }, [contact])
 
     //console.log("contactToAddOrUpdate", contactToAddOrUpdate)
     //console.log("files", contactToAddOrUpdate.filesSent)
@@ -279,6 +281,12 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         //     ? alert("Doit être entre 0 et 5 !")
         //    : 
         setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: number })
+    }
+
+    const handleUpdateContact = () => {
+        setHasContactInfoChanged(false)
+        updateContact && updateContact(contactToAddOrUpdate)
+        setOpenContactIsUpdatedModal(true)
     }
 
 
@@ -917,7 +925,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         aria-labelledby="modal-modal-title"
                                         aria-describedby="modal-modal-description"
                                     >
-                                        <Box sx={deleteModalStyle} >
+                                        <Box sx={modalStyle} >
                                             <Typography
                                                 id="modal-modal-title"
                                                 variant="h6"
@@ -935,7 +943,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                                 >
                                                     Oui !
                                                 </Button>
-                                                <Button variant="contained" color='primary' onClick={() => setOpenDeleteContactFileModal(false)} >Non</Button>
+                                                <Button variant="contained" color='primary' sx={{color:"white"}} onClick={() => setOpenDeleteContactFileModal(false)} >Non</Button>
                                             </Box>
                                         </Box>
                                     </Modal>
@@ -1158,7 +1166,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     aria-labelledby="modal-modal-title"
                                     aria-describedby="modal-modal-description"
                                 >
-                                    <Box sx={deleteModalStyle} >
+                                    <Box sx={modalStyle} >
                                         <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
                                             Supprimer tous les fichiers associés au contact : <span style={{ fontWeight: "bold" }}>{contactToAddOrUpdate.businessName}</span> ?
                                         </Typography>
@@ -1172,7 +1180,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                             >
                                                 Oui !
                                             </Button>
-                                            <Button variant="contained" color='primary' onClick={() => setOpenDeleteContactFilesModal(false)} >Non</Button>
+                                            <Button variant="contained" color='primary' sx={{color:"white"}} onClick={() => setOpenDeleteContactFilesModal(false)} >Non</Button>
                                         </Box>
                                     </Box>
                                 </Modal>
@@ -1186,7 +1194,22 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         </IconButton> */}
 
                     {addContact && <Button variant="contained" sx={{ width: '25%', height: "200px", mt: 3, }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
-                    {updateContact && <Button variant="contained" color='secondary' sx={{ width: '25%', height: "200px", mt: 3 }} onClick={() => updateContact(contactToAddOrUpdate)} >Mettre à jour le contact</Button>}
+                    {updateContact && <Button variant="contained" color='secondary' sx={{ width: '25%', height: "200px", mt: 3 }} onClick={handleUpdateContact} >Mettre à jour le contact</Button>}
+                    <Modal
+                        open={openContactIsUpdatedModal}
+                        onClose={() => setOpenContactIsUpdatedModal(false)}
+                    >
+                        <Box sx={modalStyle} >
+                            <Typography
+                                id="modal-modal-title"
+                                variant="h6"
+                                component="h2"
+                                sx={{ mb: 5 }}
+                            >
+                                Contact <span style={{ fontWeight: "bold" }}>{contactToAddOrUpdate.businessName}</span> mis à jour !
+                            </Typography>                            
+                        </Box>
+                    </Modal>
                 </Box>
             </Box>
 
@@ -1208,14 +1231,14 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >
-                    <Box sx={deleteModalStyle} >
+                    <Box sx={modalStyle} >
                         <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
                             Supprimer le contact : <span style={{ fontWeight: "bold" }}>{contact.businessName}</span> ?
                         </Typography>
                         {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
                         <Box sx={{ display: "flex", justifyContent: "space-between" }} >
                             <Button variant="contained" color='warning' onClick={handleClickDeleteContact} sx={{ marginRight: "15px" }} >Oui !</Button>
-                            <Button variant="contained" color='primary' onClick={() => setOpenDeleteContactModal(false)} >Non</Button>
+                            <Button variant="contained" color='primary' sx={{color:"white"}} onClick={() => setOpenDeleteContactModal(false)} >Non</Button>
                         </Box>
                     </Box>
                 </Modal>

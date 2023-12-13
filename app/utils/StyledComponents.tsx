@@ -104,7 +104,7 @@ function TabPanel(props: TabPanelProps) {
 //   };
 // }
 
-const deleteModalStyle = {
+const modalStyle = {
   position: 'absolute' as 'absolute',
   top: '50%',
   left: '50%',
@@ -186,4 +186,4 @@ function IconContainer(props: IconContainerProps) {
   return <span {...other}>{customIcons[value].icon}</span>;
 }
 
-export { StyledTableCell, StyledTableRow, TabPanel, TABS_WIDTH, deleteModalStyle, StyledRatingStars, StyledRating, customIcons, IconContainer }
+export { StyledTableCell, StyledTableRow, TabPanel, TABS_WIDTH, modalStyle, StyledRatingStars, StyledRating, customIcons, IconContainer }

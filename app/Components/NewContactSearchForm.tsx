@@ -55,17 +55,19 @@ const CustomedTextField = ({ contactInfo, value, setValue }: { contactInfo: Cont
 }
 
 type NewContactSearchForm = {
-    emptyContact: Contact,
-    addContact: (contact: Contact) => void,
-    currentUserId: string,
-    getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
+    emptyContact: Contact
+    addContact: (contact: Contact) => void
+    currentUserId: string
+    getPriorityTextAndColor: (priority: number | null) => { text: string, color: string },
+    setHasContactInfoChanged: (status: boolean) => void
 }
 
 export default function NewContactSearchForm({    //contacts, setContacts }: { contacts: Contact[], setContacts: Function
     emptyContact,
     addContact,
     currentUserId,
-    getPriorityTextAndColor
+    getPriorityTextAndColor,
+    setHasContactInfoChanged 
  }: NewContactSearchForm) {
     const token = '613dca81-d71e-3b02-ac1a-b2170d2084c6'
     const nbResultInsee = 50
@@ -542,6 +544,7 @@ export default function NewContactSearchForm({    //contacts, setContacts }: { c
                             currentUserId={currentUserId}
                             addContact={addContact}
                             getPriorityTextAndColor={getPriorityTextAndColor}
+                            setHasContactInfoChanged={setHasContactInfoChanged }
                         />
                         {
                             //(searchContactName !== '') && resultInseeSearch && 

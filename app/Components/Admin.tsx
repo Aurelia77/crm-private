@@ -14,7 +14,7 @@ import ListSubheader from '@mui/material/ListSubheader';
 import { useTheme } from '@mui/material/styles';
 import { uid } from 'uid';
 
-import { deleteModalStyle } from '../utils/StyledComponents'
+import { modalStyle } from '../utils/StyledComponents'
 
 
 import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, deleteDoc, updateDoc, doc } from "firebase/firestore";
@@ -480,7 +480,7 @@ export default function Admin({ currentUser }: AdminType) {
                 open={openDeleteCatModal}
                 onClose={() => setOpenDeleteCatModal(false)}
               >
-                <Box sx={deleteModalStyle} >
+                <Box sx={modalStyle} >
                   <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
                     Supprimer la catégorie : <span style={{ fontWeight: "bold" }}>
                       {catToUpdateOrDelete.label}
