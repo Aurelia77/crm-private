@@ -67,6 +67,10 @@ export default function Admin({ currentUser }: AdminType) {
 
   }, [currentUser.uid]);
 
+  React.useEffect(() => {
+    newCatName && setAlertCatText("")
+
+  }, [newCatName])
 
   const handleChangeInputFile = (e: any) => {
     console.log(e.target.files[0])
@@ -374,7 +378,7 @@ export default function Admin({ currentUser }: AdminType) {
         m={5}
       //sx={{ marginTop: "100px" }} 
       >
-        <Typography variant="h6">Mes catégories ({categoriesList.length}) <span style={{ color: 'gray', fontSize: "0.8em" }}>(cliquer pour modifier)</span>
+        <Typography variant="h6">Mes catégories ({categoriesList.length}) {categoriesList.length > 0 && <span style={{ color: 'gray', fontSize: "0.8em" }}>(cliquer pour modifier)</span>}
         </Typography>       
         <Box sx={{ display: "flex", justifyContent: "space-between", gap: "2%", mt: 2, }} >
           <List

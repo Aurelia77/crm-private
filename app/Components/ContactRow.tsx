@@ -77,7 +77,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { FormControl } from '@mui/material';
 import { handleOpenFile } from '../utils/firebase'
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
-import {deleteModalStyle, StyledRating, StyledRatingStars, customIcons, IconContainer} from '../utils/StyledComponents'
+import {modalStyle, StyledRating, StyledRatingStars, customIcons, IconContainer} from '../utils/StyledComponents'
 import { parse } from 'path';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import {isDatePassed, isDateSoon} from '../utils/toolbox'
@@ -1426,7 +1426,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >
-                    <Box sx={deleteModalStyle}>
+                    <Box sx={modalStyle}>
                         <Typography id="modal-modal-title" variant="h6" component="h2" sx={{mb:5}} >
                             Supprimer le contact : <span style={{ fontWeight: "bold" }}>{contact.businessName}</span> ?
                         </Typography>
