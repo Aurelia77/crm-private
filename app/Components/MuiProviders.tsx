@@ -1,5 +1,5 @@
 import { ThemeProvider, createTheme, PaletteOptions } from "@mui/material/styles";
-import { cyan, grey, pink, yellow, deepOrange, lightGreen, green, teal, lime } from "@mui/material/colors";
+import { cyan, grey, pink, yellow, deepOrange, lightGreen, green, teal, lime, purple } from "@mui/material/colors";
 
 // Pour ajouter une nouvelle couleur à la palette
 declare module '@mui/material/styles' {
@@ -7,12 +7,14 @@ declare module '@mui/material/styles' {
         ochre: Palette['primary'];
         gray: Palette['primary'];
         pink: Palette['primary'];
+        purple: Palette['primary'];
         lightCyan: Palette['primary'];
     }
     interface PaletteOptions {
         ochre?: PaletteOptions['primary'];
         gray?: PaletteOptions['primary'];
         pink?: PaletteOptions['primary'];
+        purple?: PaletteOptions['primary'];
         lightCyan?: PaletteOptions['primary'];
     }
 }
@@ -22,6 +24,7 @@ declare module '@mui/material/Button' {
         ochre: true;
         gray: true;
         pink: true;
+        purple: true;
         lightCyan: true;
     }
 }
@@ -57,6 +60,13 @@ export default function MuiProviders({ children }: { children: React.ReactNode }
             },
             pink: {
                 main: pink[100],
+                light: pink[50],
+                dark: pink[200],
+            },
+            purple: {
+                main: purple[200],
+                light: purple[100],
+                dark: purple[300],
             },
             lightCyan: {
                 light: cyan[50],

@@ -210,7 +210,6 @@ const contacts : Contact[] = [
         ...emptyContact,
         isClient : true,
         priority: 2,
-        contactType : "Particulier",
         logo : "",
         businessName: "Entreprise de maquillage GLOW",
         denominationUsuelleEtablissement : [],

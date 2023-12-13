@@ -268,7 +268,25 @@ const addFakeDataOnFirebaseAndReload = (currentUser: any, fakeContactsData: Cont
   Promise.all(promises)
     .then(() => { window.location.reload() })
     .catch((error) => { console.error("Error reloading page: ", error); });
-}   
+}  
+
+const addFakeDataOnFirebase = (currentUser: any, fakeContactsData: Contact[]) => {
+  // fakeContactsData.map((contact: Contact) => {
+  //   console.log(contact)
+  //   console.log({
+  //     ...contact, id: uid(), userId: currentUser?.uid
+  //   })
+  const promises = fakeContactsData.map((contact: Contact) => {
+    return addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid(), userId: currentUser?.uid })
+      //addDoc(collection(fireStoreDb, "contacts"), {contact})
+      .then((docRef) => { console.log("***Document written with ID: ", docRef.id); })
+      //.then(() => { window.location.reload() })     // NON ! Va pas recharcger à chaque fois
+      .catch((error) => { console.error("***Error adding document: ", error); });
+  })
+
+  return Promise.all(promises); 
+}  
+
 
 const addContactOnFirebaseAndReload = async (currentUser: any, contact: Contact) => {
   console.log("add contact", contact)
@@ -445,7 +463,7 @@ const addCategoriesOnFirebaseAndReload = (currentUser: any, categories: ContactC
 
 const updatDataOnFirebase = async (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
   // const contactToUpdateRef = doc(fireStoreDb, "contacts", id);
-  // console.log(contactToUpdateRef)
+  console.log("***Contact to update", id, keyAndValue.key, keyAndValue.value)
 
   // updateDoc(contactToUpdateRef, {
   //     [keyAndValue.key]: keyAndValue.value
@@ -684,6 +702,7 @@ export {
   getFilesFromDatabase,
   getCategoriesFromDatabase,
   addFakeDataOnFirebaseAndReload,
+  addFakeDataOnFirebase,
   addContactOnFirebaseAndReload,
   addFileOnFirebaseDB,
   addCategoriesOnFirebaseAndReload,

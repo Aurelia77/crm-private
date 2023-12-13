@@ -39,6 +39,8 @@ export default function Admin({ currentUser }: AdminType) {
   const [alertFileText, setAlertFileText] = React.useState("");
   const [alertCatText, setAlertCatText] = React.useState("");
 
+  const [inputFileValue, setInputFileValue] = React.useState("")
+
 
   //console.log("catToUpdate", catToUpdateOrDelete)
   //console.log("newCat", newCat)
@@ -294,6 +296,8 @@ export default function Admin({ currentUser }: AdminType) {
               <Input
                 id="fileInput"
                 type="file"
+                // value={inputFileValue}
+                //value={newFileName ?? ""}
                 style={{ display: 'none' }}
                 onChange={handleChangeInputFile}
               />

@@ -46,7 +46,7 @@ import contactsLaurianeCampings_x10 from '../utils/contactsLauriane x10';
 //import writeContactData from '../utils/firebase'
 //import firebase from 'firebase/app'
 //import firebaseConfig from '../utils/firebaseConfig'
-import { storage, addFakeDataOnFirebaseAndReload, addCategoriesOnFirebaseAndReload, addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, updatDataWholeContactOnFirebase, deleteDataOnFirebaseAndReload, getContactsFromDatabase } from '../utils/firebase'
+import { storage, addFakeDataOnFirebaseAndReload, addFakeDataOnFirebase, addCategoriesOnFirebaseAndReload, addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, updatDataWholeContactOnFirebase, deleteDataOnFirebaseAndReload, getContactsFromDatabase } from '../utils/firebase'
 import { Timestamp } from 'firebase/firestore';
 import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, deleteDoc, updateDoc, doc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
@@ -208,26 +208,40 @@ export default function Contacts() {
             catLabel: "Restaurant Plage"
         },
     ]
+
+
+ 
+
+
     
-    const addCatToFakeContacts2 = async (fakeContactsData: Contact[]) => {
+    const addCatToFakeContacts = async (fakeContactsData: Contact[]) => {
+
+        console.log("****start addCatToFakeContacts")
         let promises: any = [];
 
-        for (const contact of fakeContactsData) {
+        for (const fakeContact of fakeContactsData) {
             for (const contactNameAndCatLabel of fakeContactsNameAndCatLabel) {
-                if (contact.businessName === contactNameAndCatLabel.name) {
+
+                console.log("***contact", fakeContact.businessName, " - " ,contactNameAndCatLabel.name)
+
+                if (fakeContact.businessName === contactNameAndCatLabel.name) {
 
                     const catId = await getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel);                    
+                    console.log("***cat du contact", contactNameAndCatLabel.catLabel)
                     console.log("***catId", catId)
 
-                    const updatePromises = filteredContacts.map((filteredContact) => {
-                        if (filteredContact.businessName === contact.businessName) {
-                            console.log(filteredContact, catId)
-                            return updatDataOnFirebase(filteredContact.id, { key: "businessCategoryId", value: catId })
-                        }
-                    });
 
-                    promises.push((updatePromises));
-                    console.log("***promises", promises)    
+                    getContactsFromDatabase(currentUser).then((contactsList) => {
+                        const updatePromises = contactsList.map((filteredContact) => {
+                            if (filteredContact.businessName === fakeContact.businessName) {
+                                console.log("***", filteredContact, catId)
+                                return updatDataOnFirebase(filteredContact.id, { key: "businessCategoryId", value: catId })
+                            }
+                        });
+                        promises.push((updatePromises));
+                        console.log("***promises", promises)    
+                    })
+
                 }
             }
         }
@@ -236,54 +250,20 @@ export default function Contacts() {
             .then(() => { 
                 console.log("***Dans le THEN du PROMISE ALL")
                 console.log("!!!!!!!!! CAT ATJOUTées !!!!!")
-                window.location.reload() 
+                //window.location.reload() 
             })
             .catch((error) => { console.error("Error reloading page: ", error); });
     }
 
-    // UTILISER MAP pour pouvoir retourner ???
-    const addCatToFakeContacts = async (fakeContactsData: Contact[]) => {
+   
 
-        let promises: any = [];
-
-        fakeContactsData.map((contact) => {
-            fakeContactsNameAndCatLabel.forEach((contactNameAndCatLabel) => {
-
-                if (contact.businessName === contactNameAndCatLabel.name) {
-
-                    const promise = getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel)
-
-                    
-                        .then((catId: string) => {
-
-                            console.log("***catId", catId)
-                            // utiliser .map car .foreach ne retourne rien
-                            filteredContacts.map((filteredContact) => {
-                                if (filteredContact.businessName === contact.businessName) {
-                                    console.log(filteredContact, catId)
-                                    return updatDataOnFirebase(filteredContact.id, { key: "businessCategoryId", value: catId })
-                                }
-                            })
-                            promises.push(promise);
-                            //return Promise.all(promises)              
-                        })
-                    .then(() => {
-                        console.log("***Dans le THEN")
-                        //window.location.reload()
-                    }) 
-                }
-            })
-        })
-        
-        Promise.all(promises)
-        .then(() => { 
-            console.log("***Dans le THEN du PROMISE ALL")
-
-            console.log("!!!!!!!!! CAT ATJOUTées !!!!!")
-            //window.location.reload() 
-        })
-        .catch((error) => { console.error("Error reloading page: ", error); });
+    const addFakeDataWithCat = async() => {
+        await addFakeDataOnFirebase(currentUser, fakeContactsData)            
+        addCatToFakeContacts(fakeContactsData)        
     }
+
+
+
 
     // Je ne peux pas mettre cette fonction dans ToolBox car je peux utiliser les thème seulement dans un composant  (React Hooks must be called in a React function component or a custom React Hook function.)
     const getPriorityTextAndColor = (priority: number | null) => {
@@ -701,8 +681,7 @@ export default function Contacts() {
                                         }} >Pour Version TEST</Typography>
                                     <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }} >
                                         <Button variant="contained" color='success' onClick={() => addCategoriesOnFirebaseAndReload(currentUser, contactCategories)}>1-Ajouter Catégories</Button>
-                                        <Button variant="contained" color='ochre' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, fakeContactsData)}>2-Ajouter Contacts Test</Button>
-                                        <Button variant="contained" color='warning' onClick={() => addCatToFakeContacts2(fakeContactsData)}>3-Ajouter catégories aux contacts</Button>
+                                        <Button variant="contained" color='ochre' onClick={addFakeDataWithCat}>2-Ajouter Contacts Test</Button>
                                         {/* <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
                                         <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button> */}
                                     </Box>

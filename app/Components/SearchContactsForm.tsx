@@ -219,8 +219,11 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                                 sx={{ width: '100%' }}
                                 MenuProps={MenuSelectProps}
                             >
-                                {/* <MenuItem key="0" value="">NON DEFINIE</MenuItem> */}
-
+                                 {/* <MenuItem key="0" value="NON DEFINI">
+                                    <Checkbox checked={search.contactType.indexOf("NON DEFINI") > -1} />
+                                    <ListItemText primary="NON DEFINI" />                                
+                            </MenuItem> */}
+                                <MenuItem key="0" value="">NON DEFINIE</MenuItem>
                                 {categoriesList
                                     .filter(cat => allDifferentsBusinessCategoryValues.includes(cat.id))
                                     .sort((a, b) => a.label.localeCompare(b.label))
@@ -278,7 +281,11 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             renderValue={(selected) => selected.join(', ')}
                             sx={{ width: '100%' }}
                             MenuProps={MenuSelectProps}
-                        >
+                        >                            
+                            {/* <MenuItem key="0" value="NON DEFINI">
+                                    <Checkbox checked={search.contactType.indexOf("NON DEFINI") > -1} />
+                                    <ListItemText primary="NON DEFINI" />                                
+                            </MenuItem> */}
                             {allDifferentsContactTypesValues.map((type) => (
                                 <MenuItem key={type} value={type}>
                                     <Checkbox checked={search.contactType.indexOf(type) > -1} />

@@ -7,7 +7,7 @@ const emptyContact: Contact = {
     id: uid(),
     isClient: false,
     priority: null, 
-    contactType : "NON DEFINI", 
+    contactType : "-Non défini",
     logo: '',
     businessName: '',
     denominationUsuelleEtablissement: [],
@@ -38,6 +38,10 @@ const emptyContact: Contact = {
 // const businessCategories: string[] = ["NON DEFINI", "Camping", "Hôtel", "Conciergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre", "Mairie / médiathèque"];
 
 const contactCategories: ContactCategorieType[] = [
+    {
+        id: "",
+        label: "-Non définie",
+    },
     {
         id: "",
         label: "Camping",
@@ -118,7 +122,7 @@ const contactCategories: ContactCategorieType[] = [
 
 //const sortedBusinessCategories = [...businessCategories].sort();
 
-const contactTypes: ContactTypeType[] = ["NON DEFINI", "Entreprise", "Particulier", "Partenaire"];
+const contactTypes: ContactTypeType[] = ["-Non défini", "Entreprise", "Particulier", "Partenaire"];
 
 
 const timeStampObjToTimeStamp = (timeStampObj: Timestamp): number => {
