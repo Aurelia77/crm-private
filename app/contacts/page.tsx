@@ -232,10 +232,10 @@ export default function Contacts() {
 
 
                     getContactsFromDatabase(currentUser).then((contactsList) => {
-                        const updatePromises = contactsList.map((filteredContact) => {
-                            if (filteredContact.businessName === fakeContact.businessName) {
-                                console.log("***", filteredContact, catId)
-                                return updatDataOnFirebase(filteredContact.id, { key: "businessCategoryId", value: catId })
+                        const updatePromises = contactsList.map((firebaseContact) => {
+                            if (firebaseContact.businessName === fakeContact.businessName) {
+                                console.log("***", firebaseContact, catId)
+                                return updatDataOnFirebase(firebaseContact.id, { key: "businessCategoryId", value: catId })
                             }
                         });
                         promises.push((updatePromises));
@@ -250,7 +250,7 @@ export default function Contacts() {
             .then(() => { 
                 console.log("***Dans le THEN du PROMISE ALL")
                 console.log("!!!!!!!!! CAT ATJOUTées !!!!!")
-                //window.location.reload() 
+                window.location.reload() 
             })
             .catch((error) => { console.error("Error reloading page: ", error); });
     }
