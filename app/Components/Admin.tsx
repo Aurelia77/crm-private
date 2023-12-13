@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { getFilesFromDatabase, getCategoriesFromDatabase, storage, addFileOnFirebaseDB, addCategorieOnFirebase, updateCategorieOnFirebase, updateFileOnFirebase, deleteCategorieOnFirebase } from '../utils/firebase'
-import { Box, Divider, ListItemText, Modal, Paper, TextField, Typography } from '@mui/material'
+import { Alert, Box, Divider, ListItemText, Modal, Paper, TextField, Typography } from '@mui/material'
 import { handleOpenFile } from '../utils/firebase'
 import { Button, FormControl, InputLabel, MenuItem, Select, Input } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -30,12 +30,15 @@ export default function Admin({ currentUser }: AdminType) {
 
   const [filesList, setFilesList] = React.useState<FileNameAndRefType[]>([]);
   const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[]>([]);
-  const [newFileName, setNewFileName] = React.useState<string>("");
-  const [newCat, setNewCat] = React.useState<string>("");
+  const [newFileName, setNewFileName] = React.useState<string | null>(null);
+  const [newCatName, setNewCatName] = React.useState<string>("");
   const [catToUpdateOrDelete, setCatToUpdateOrDelete] = React.useState<ContactCategorieType>({ id: "", label: "" });
   const [fileToUpdateOrDelete, setFileToUpdateOrDelete] = React.useState<FileNameAndRefType>({ fileName: "", fileRef: "" });
   const [progresspercentFile, setProgresspercentFile] = React.useState(0);
   const [openDeleteCatModal, setOpenDeleteCatModal] = React.useState(false);
+  const [alertFileText, setAlertFileText] = React.useState("");
+  const [alertCatText, setAlertCatText] = React.useState("");
+
 
   //console.log("catToUpdate", catToUpdateOrDelete)
   //console.log("newCat", newCat)
@@ -63,6 +66,11 @@ export default function Admin({ currentUser }: AdminType) {
   }, [currentUser.uid]);
 
 
+  const handleChangeInputFile = (e: any) => {
+    console.log(e.target.files[0])
+    setNewFileName(e.target.files[0].name)
+  }
+  
   const handleSubmitFiles = (e: any, attribut: string) => {
     e.preventDefault()
     console.log("e", e)
@@ -71,6 +79,14 @@ export default function Admin({ currentUser }: AdminType) {
     console.log("e.target", e.target.elements[0])
     console.log("e.target", e.target.elements[0].files)
     console.log("e.target", e.target.elements[0].files[0])
+
+    if (newFileName === "" ) {
+      setAlertFileText("Le nom du fichier doit contenir au moins un caractère !")
+      return
+    }
+
+    setAlertFileText("")
+
     //const file = e.target[0]?.files[0]
     const file = e.target.elements[0].files[0]
     if (!file) return;
@@ -78,8 +94,7 @@ export default function Admin({ currentUser }: AdminType) {
 
     const uploadTask = uploadBytesResumable(storageRef, file);
 
-    console.log(uploadTask)
-
+    //console.log(uploadTask)
 
     uploadTask.on("state_changed",
       (snapshot) => {
@@ -91,46 +106,57 @@ export default function Admin({ currentUser }: AdminType) {
         alert(error);
       },
       () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          addFileOnFirebaseDB(currentUser.uid, { fileName: file.name, fileRef: downloadURL }).then(() => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL: any) => {
+          newFileName && addFileOnFirebaseDB(currentUser.uid, { fileName: newFileName, fileRef: downloadURL }).then(() => {
             //setFilesList([...filesList, { fileName: file.name, fileRef: downloadURL }]);
             setFilesList([...filesList, { fileName: newFileName, fileRef: downloadURL }]);
             //window.location.reload();
             setProgresspercentFile(0);
-            setNewFileName("");
+            setNewFileName(null);
           });
         });
       }
     );
   }
 
-  const handleChangeInputFile = (e: any) => {
-    console.log(e.target.files[0])
-    setNewFileName(e.target.files[0].name)
-  }
 
   const handleUpdateFile = () => {    
     console.log("fileToUpdate", fileToUpdateOrDelete)
     if (fileToUpdateOrDelete.fileName === "") {
-      alert("Le nom du fichier doit contenir au moins un caractère !")
+      setAlertFileText("Le nom du fichier doit contenir au moins un caractère !")
       return 
     }
+    setAlertFileText("")
     updateFileOnFirebase(fileToUpdateOrDelete)
     setFilesList([...filesList.filter(file => file.fileRef !== fileToUpdateOrDelete.fileRef), { ...fileToUpdateOrDelete }]);
     setFileToUpdateOrDelete({ fileName: "", fileRef: "" });
   }
 
   const handleAddCat = () => {
-    const newCatWithUpperCase: ContactCategorieType = { id: uid(), label: newCat.charAt(0).toUpperCase() + newCat.slice(1) }
+    if (newCatName === "") {
+      setAlertCatText("Le nom de la catégorie doit contenir au moins un caractère !")
+      return 
+    }
+
+    setAlertCatText("")
+
+    const newCatWithUpperCase: ContactCategorieType = { id: uid(), label: newCatName.charAt(0).toUpperCase() + newCatName.slice(1) }
 
     addCategorieOnFirebase(currentUser.uid, newCatWithUpperCase)
     setCategoriesList([...categoriesList, { ...newCatWithUpperCase }]);
     // setCategoriesList([...categoriesList, newCatWithUpperCase].sort((a, b) => a.localeCompare(b)));
-    setNewCat("");
+    setNewCatName("");
   }
 
   const handleUpdateCat = () => {
     console.log("catToUpdate", catToUpdateOrDelete)
+
+    if (catToUpdateOrDelete.label === "") {
+      setAlertCatText("Le nom de la catégorie doit contenir au moins un caractère !")
+      return 
+    }
+
+    setAlertCatText("")
     updateCategorieOnFirebase(catToUpdateOrDelete)
     setCategoriesList([...categoriesList.filter(cat => cat.id !== catToUpdateOrDelete.id), { ...catToUpdateOrDelete }]);
     setCatToUpdateOrDelete({ id: "", label: "" });
@@ -204,9 +230,10 @@ export default function Admin({ currentUser }: AdminType) {
       .then(() => {
         setCategoriesList([...categoriesList.filter(cat => cat.id !== catToUpdateOrDelete.id)]);
       }).catch((error) => {
-        alert("Impossible de supprimer cette catégorie => Un ou plusieurs contact(s) y est (sont) associé(s). Veuillez d'abord modifier/supprimer leur catégorie.");
+        setAlertCatText("Impossible de supprimer cette catégorie => Un ou plusieurs contact(s) y est (sont) associé(s). Veuillez d'abord modifier/supprimer leur catégorie.");
         console.log(error)
       })
+    setAlertCatText("");
     setCatToUpdateOrDelete({ id: "", label: "" });
     setOpenDeleteCatModal(false);
   }
@@ -249,7 +276,7 @@ export default function Admin({ currentUser }: AdminType) {
               ))}
           </List>
 
-          <Box sx={{width:"48%"}}  >           
+          <Box sx={{width:"48%" }}  >           
 
             <form
               style={{
@@ -276,8 +303,8 @@ export default function Admin({ currentUser }: AdminType) {
                   1- Choisir un fichier à ajouter
                 </Button>
               </label>
-
-              {newFileName && <Box>
+              
+              {(newFileName !== null) && <Box>
                 <TextField
                   value={newFileName}
                   onChange={(e) => setNewFileName(e.target.value)}
@@ -302,23 +329,25 @@ export default function Admin({ currentUser }: AdminType) {
               </Box>}
             </form>
 
-            {filesList.length > 0 && <FormControl
+            {alertFileText && <Alert sx={{ mt:"70px" }} severity="warning">{alertFileText}</Alert>}
+
+            {fileToUpdateOrDelete.fileRef && <FormControl
               sx={{
-                marginTop: "100px",
+                marginTop: "70px",
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-                //gap: "2%",
+                gap: "2%",
               }}
             >
               <TextField
-                disabled={fileToUpdateOrDelete.fileName === "" ? true : false}
+                //disabled={fileToUpdateOrDelete.fileName === "" ? true : false}
                 value={fileToUpdateOrDelete.fileName}
                 //autoComplete="off"
                 onChange={(e) => setFileToUpdateOrDelete({ ...fileToUpdateOrDelete, fileName: e.target.value })}
                 label="Fichier à modifier"
                 variant="outlined"
-                sx={{ width: "100%" }}
+                sx={{ width: "60%" }}
               />
               {fileToUpdateOrDelete.fileRef && <Button
                 //sx={{ marginTop: "15px", }}
@@ -335,8 +364,6 @@ export default function Admin({ currentUser }: AdminType) {
         </Box>
       </Box>
 
-
-
       <Divider />
 
       <Box
@@ -346,7 +373,6 @@ export default function Admin({ currentUser }: AdminType) {
         <Typography variant="h6">Mes catégories ({categoriesList.length}) <span style={{ color: 'gray', fontSize: "0.8em" }}>(cliquer pour modifier)</span>
         </Typography>       
         <Box sx={{ display: "flex", justifyContent: "space-between", gap: "2%", mt: 2, }} >
-
           <List
             sx={{
               width: '50%',
@@ -374,36 +400,43 @@ export default function Admin({ currentUser }: AdminType) {
               ))}
           </List>
 
-          <Box>
+          <Box sx={{width:"48%" }}  >   
             <FormControl
               sx={{
                 display: "flex",
                 flexDirection: "row",
-                justifyContent: "space-between"
+                justifyContent: "space-between",
+                gap: "2%",
+                //alignItems: ""
               }} >
               <TextField
-                value={newCat}
+                value={newCatName}
                 autoComplete="off"
-                onChange={(e) => setNewCat(e.target.value)}
+                onChange={(e) => setNewCatName(e.target.value)}
                 id="outlined-basic"
                 label="Nouvelle catégorie"
                 variant="outlined"
-                sx={{ width: "40%" }}
+                sx={{ width: "60%" }}
               />
               <Button
-                sx={{ width: "40%", color:"white" }}
+                sx={{ 
+                  //width: "30%", 
+                  color:"white" }}
                 //component="label"
                 type="submit"
-                variant="contained" startIcon={<CloudUploadIcon />}
+                variant="contained" 
+                startIcon={<CloudUploadIcon />}
                 onClick={handleAddCat}
               >
                 Ajouter la catégorie
               </Button>
             </FormControl>
             
-            {categoriesList.length > 0 && <FormControl
+            {alertCatText && <Alert sx={{ mt:"70px" }} severity="warning">{alertCatText}</Alert>}
+
+            {catToUpdateOrDelete.id && <FormControl
               sx={{
-                marginTop: "100px",
+                marginTop: "70px",
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
@@ -417,47 +450,45 @@ export default function Admin({ currentUser }: AdminType) {
                 onChange={(e) => setCatToUpdateOrDelete({ ...catToUpdateOrDelete, label: e.target.value })}
                 label="Catégorie à modifier ou supprimer"
                 variant="outlined"
-                //sx={{ width: "40%" }}
+                sx={{ width: "60%" }}
               />
-              {newCat && <Box sx={{display:"flex", gap:"2%" }} > 
-                <Button
-                  //sx={{ width: "20%" }}
-                  //component="label"
-                  color="ochre"
-                  type="submit"
-                  variant="contained" //startIcon={<CloudUploadIcon />}
-                  onClick={handleUpdateCat}
-                >
-                  Modifier le nom
-                </Button>
-                <Button
-                  //sx={{ width: "20%" }}
-                  //component="label"
-                  color="warning"
-                  type="submit"
-                  variant="contained" //startIcon={<CloudUploadIcon />}
-                  onClick={() => setOpenDeleteCatModal(true)}
-                >
-                  Supprimer
-                </Button>
-                <Modal
-                  open={openDeleteCatModal}
-                  onClose={() => setOpenDeleteCatModal(false)}
-                >
-                  <Box sx={deleteModalStyle} >
-                    <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
-                      Supprimer la catégorie : <span style={{ fontWeight: "bold" }}>
-                        {catToUpdateOrDelete.label}
-                      </span> ?
-                    </Typography>
-                    {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
-                    <Box sx={{ display: "flex", justifyContent: "space-between" }} >
-                      <Button variant="contained" color='warning' onClick={handleDeleteCat} sx={{ marginRight: "15px" }} >Oui !</Button>
-                      <Button variant="contained" color='primary' onClick={() => setOpenDeleteCatModal(false)} >Non</Button>
-                    </Box>
+              <Button
+                //sx={{ width: "20%" }}
+                //component="label"
+                color="ochre"
+                type="submit"
+                variant="contained" //startIcon={<CloudUploadIcon />}
+                onClick={handleUpdateCat}
+              >
+                Modifier le nom
+              </Button>
+              <Button
+                //sx={{ width: "20%" }}
+                //component="label"
+                color="warning"
+                type="submit"
+                variant="contained" //startIcon={<CloudUploadIcon />}
+                onClick={() => setOpenDeleteCatModal(true)}
+              >
+                Supprimer
+              </Button>
+              <Modal
+                open={openDeleteCatModal}
+                onClose={() => setOpenDeleteCatModal(false)}
+              >
+                <Box sx={deleteModalStyle} >
+                  <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
+                    Supprimer la catégorie : <span style={{ fontWeight: "bold" }}>
+                      {catToUpdateOrDelete.label}
+                    </span> ?
+                  </Typography>
+                  {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
+                  <Box sx={{ display: "flex", justifyContent: "space-between" }} >
+                    <Button variant="contained" color='warning' onClick={handleDeleteCat} sx={{ marginRight: "15px" }} >Oui !</Button>
+                    <Button variant="contained" color='primary' onClick={() => setOpenDeleteCatModal(false)} >Non</Button>
                   </Box>
-                </Modal>
-              </Box>}
+                </Box>
+              </Modal>
             </FormControl>}
           </Box>
         </Box>

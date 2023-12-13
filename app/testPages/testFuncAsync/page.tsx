@@ -158,8 +158,7 @@ console.log('%c    color: HotPink', 'color: HotPink')
       <Button
         onClick={displayCat}
         sx={{ margin: "30px 0 0 500px" }}
-        variant="contained" >displayCat</Button>
+        variant="contained" >displayCat pour user a@a.fr</Button>
     </Box>
-
   )
 }

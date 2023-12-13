@@ -100,7 +100,7 @@ export default function Contacts() {
     const [isContactTableFilled, setIsContactTableFilled] = React.useState(0)
     // const [isContactTableFilled, setIsContactTableFilled] = React.useState(false)
 
-    console.log("isContactTableFilled", isContactTableFilled)
+    //console.log("isContactTableFilled", isContactTableFilled)
 
     // const [displayNewContactForms, setDisplayNewContactForms] = React.useState(false)
     const [contactToDisplay, setContactToDisplay] = React.useState<Contact>(emptyContact)
@@ -113,7 +113,7 @@ export default function Contacts() {
     // console.log(isContactCardDisplay)
 
     const { currentUser } = useAuthUserContext()
-    console.log(currentUser)
+    //console.log(currentUser)
     // console.log(currentUser?.uid)
 
 
@@ -192,7 +192,7 @@ export default function Contacts() {
             catLabel: "Camping"
         },
         {
-            name: "Centre de plongée",
+            name: "Plongeons ensemble !",
             catLabel: "Centre de Plongée"
         },
         {
@@ -301,8 +301,8 @@ export default function Contacts() {
  // Créez une référence pour suivre le premier rendu
     const firstRender = React.useRef(true);
 
-    console.log("firstRender", firstRender)
-    console.log("firstRender", firstRender.current)
+    //console.log("firstRender", firstRender)
+    //console.log("firstRender", firstRender.current)
 
 
 
