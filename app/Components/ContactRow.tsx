@@ -581,7 +581,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             disableUnderline={true}
                             //onChange={(e) => handleChangeSelect(e, "businessCategory")}
                             onChange={(e) => handleChangeSelect(e, "businessCategoryId")}
-                            sx={{ overflow: "hidden", textOverflow: "ellipsis", width: 180 }}
+                            sx={{  width: 180 }}
                         >
                             <MenuItem key="0" value="0">NON DEFINIE</MenuItem>
                             {categoriesList
@@ -590,7 +590,10 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                                 <MenuItem
                                     key={cat.id}
                                     value={cat.id}
-                                    sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
+                                    sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' ,  
+                                    //overflow: 'auto',
+                                    //maxHeight: "50vh",
+                                }}
                                 >{cat.label}</MenuItem>
                             ))}
                         </Select>

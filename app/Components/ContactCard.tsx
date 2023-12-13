@@ -464,7 +464,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
                         {/* ///////// TYPE */}
                         <FormControl sx={{
-                            width: "auto", backgroundColor: muiTheme.palette.secondary.main,
+                            width: "auto", backgroundColor: muiTheme.palette.secondary.light,
                             borderRadius: "50px"
                         }} >
                             {/* <InputLabel id="checkbox-type-label">Type</InputLabel> */}

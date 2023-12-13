@@ -203,8 +203,8 @@ const getFilesFromDatabase = async (currentUserId: any) => {
 const getCategoriesFromDatabase = async (currentUserId: any) => {
 
   let catsArr: any[] = []
-  const filesCollectionRef = collection(fireStoreDb, "categories");
-  const q =  query(filesCollectionRef, where("userId", "==", currentUserId))
+  const catsCollectionRef = collection(fireStoreDb, "categories");
+  const q =  query(catsCollectionRef, where("userId", "==", currentUserId))
 
   const querySnapshot = await getDocs(q)
 

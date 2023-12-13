@@ -86,6 +86,10 @@ import { useTheme } from '@mui/material/styles';
 
 
 
+import { initializeApp } from "firebase/app";
+import { getFirestore } from 'firebase/firestore';
+
+
 export default function Contacts() {
     const [contacts, setContacts] = React.useState<Contact[]>([])
     const [filteredContacts, setFilteredContacts] = React.useState<Contact[]>([])
@@ -108,10 +112,10 @@ export default function Contacts() {
 
     // console.log(isContactCardDisplay)
 
+    const { currentUser } = useAuthUserContext()
+    console.log(currentUser)
+    // console.log(currentUser?.uid)
 
-  
-
- 
 
 
     const emptySearchCriteria: SearchContactCriteria = {
@@ -148,9 +152,7 @@ export default function Contacts() {
     //console.log("filteredContacts", filteredContacts)
     //console.log(contactsSearchCriteria)
 
-    const { currentUser } = useAuthUserContext()
-    console.log(currentUser)
-    // console.log(currentUser?.uid)
+
 
 
     //const updateContactInContactsAndDB = (updatingContact: Contact) => {     // ou selectedContact
@@ -257,7 +259,7 @@ export default function Contacts() {
     const getPriorityTextAndColor = (priority: number | null) => {
         switch (priority) {
             case 1: return { text: "Faible", color: muiTheme.palette.error.main }
-            case 2: return { text: "Moyenne", color: muiTheme.palette.ochre.dark }
+            case 2: return { text: "Moyenne", color: muiTheme.palette.secondary.light }
             case 3: return { text: "Haute", color: muiTheme.palette.primary.dark }
             default: return { text: "Aucune", color: muiTheme.palette.gray.dark  }
             // default: return { text: "Aucune", color: "black" }

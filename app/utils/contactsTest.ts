@@ -87,7 +87,7 @@ const contacts : Contact[] = [
         priority: 2,
         contactType : "Partenaire",
         logo : "",// "https://firebasestorage.googleapis.com/v0/b/crm-lauriane-c8084.appspot.com/o/logo%2Fshark-gb3168aabf_1920.png?alt=media&token=70659b4a-29d2-46e9-8d9c-2e3d2c477c68",
-        businessName: "Centre de plongée",
+        businessName: "Plongeons ensemble !",
         denominationUsuelleEtablissement : [],
         //businessCategoryId : 16,
         interestGauge: null,
