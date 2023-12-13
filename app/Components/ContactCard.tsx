@@ -119,7 +119,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         const selectedFile = filesFirebaseArray.find(file => file.fileRef === selectedFileRef);
 
         setFirebaseFileSelected({ fileName: selectedFile?.fileName ?? "", fileRef: selectedFileRef })
-    }   
+    }
 
     React.useEffect(() => {
 
@@ -492,7 +492,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         {/* <InputLabel id="checkbox-type-label">Type</InputLabel> */}
                         <Select
                             sx={{
-                                color: 'white', 
+                                color: 'white',
                                 textAlign: 'center',
                                 // display: 'flex',
                                 // alignItems: 'center'
@@ -763,22 +763,77 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                 <Box sx={{ display: 'flex', justifyContent: "space-between", gap: "4%" }} >
                     {/* ///////// NOM Contact, POSITION, VILLE et ADRESSE ///////// */}
                     <Box
-                        sx={{ width: "48%" }}
+                        sx={{ width: "48%", display: 'flex', justifyContent: "space-between", gap: "4%" 
+                    }}
                     >
-                        <Box>
+                        <Box sx={{ display: 'flex', flexDirection:"column", justifyContent: "space-between", gap: "15px", width:"48%"  }} >
                             <TextField
                                 id="outlined-basic" label="Nom DIRIGEANT"
                                 value={contactToAddOrUpdate.directorName}
                                 onChange={handleChangeText("directorName")}
-                                //onChange={handleChangeText("contactName")}
-                                sx={{ width: "48%" }}
+                            />
+                            <TextField 
+                                id="outlined-basic" 
+                                label="Nom Contact DIRECT" 
+                                value={contactToAddOrUpdate.contactName} 
+                                onChange={handleChangeText("contactName")}
+                                sx={{ backgroundColor: muiTheme.palette.pink.light }}
+                            />
+                            <TextField
+                                id="outlined-basic"
+                                label="Poste occupé"
+                                value={contactToAddOrUpdate.contactPosition}
+                                onChange={handleChangeText("contactPosition")}
+                                sx={{ backgroundColor: muiTheme.palette.pink.light }}
+                            />
+                            <TextField
+                                id="outlined-basic"
+                                label="Téléphone DIRECT"
+                                value={contactToAddOrUpdate.contactPhone}
+                                onChange={handleChangeText("contactPhone")}
+                                sx={{ backgroundColor: muiTheme.palette.pink.light }}
+                            />
+                            <TextField
+                                id="outlined-basic"
+                                label="Email DIRECT"
+                                value={contactToAddOrUpdate.contactEmail}
+                                onChange={handleChangeText("businessEmail")}
+                                sx={{ backgroundColor: muiTheme.palette.pink.light }}
+                                InputProps={{
+                                    startAdornment: contactToAddOrUpdate.contactEmail && <Link href={`mailto:${contactToAddOrUpdate.contactEmail}`} underline="none" //color="inherit"                                       
+                                        target="_blank"
+                                        sx={{
+                                            mr: 1,
+                                            fontSize: "0.8em"
+                                        }}
+                                    >
+                                        <MailIcon />
+                                    </Link>
+                                }}
+                            />
+                        </Box>
+
+                        <Box sx={{ display: 'flex', flexDirection:"column", justifyContent: "space-between", gap: "15px", width:"48%"  }} >
+                            <TextField 
+                                id="outlined-basic" 
+                                label="Ville" 
+                                value={contactToAddOrUpdate.businessCity} 
+                                onChange={handleChangeText("businessCity")} 
+                                //sx={{ width: "48%" }} 
+                            />
+                            <TextField 
+                                id="outlined-basic" 
+                                label="Adresse" 
+                                value={contactToAddOrUpdate.businessAddress} 
+                                onChange={handleChangeText("businessAddress")} 
+                                //sx={{ width: "48%", ml: "4%" }} 
                             />
                             <TextField
                                 id="outlined-basic"
                                 label="Site WEB"
                                 value={contactToAddOrUpdate.businessWebsite}
                                 onChange={handleChangeText("businessWebsite")}
-                                sx={{ width: "48%", ml: "4%" }}
+                                //sx={{ width: "48%", ml: "4%" }}
                                 InputProps={{
                                     startAdornment: contactToAddOrUpdate.businessWebsite && <Link
                                         href={contactToAddOrUpdate.businessWebsite}
@@ -790,46 +845,22 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         }}
                                     >
                                         <LanguageIcon style={{ color: muiTheme.palette.gray.dark }} />
-                                        {/* <LanguageIcon style={{ color: 'red' }} /> */}
                                     </Link>
                                 }}
                             />
-                        </Box>
-
-                        <Box sx={{ mt: 2 }} >
-                            <TextField id="outlined-basic" label="Nom Contact DIRECT" value={contactToAddOrUpdate.contactName} onChange={handleChangeText("contactName")}
-                                sx={{ width: "48%" }}
+                            <TextField 
+                                id="outlined-basic" 
+                                label="Téléphone STANDARD" 
+                                value={contactToAddOrUpdate.businessPhone} 
+                                onChange={handleChangeText("businessPhone")} 
+                                //sx={{ width: "48%" }} 
                             />
-                            <TextField id="outlined-basic" label="Poste occupé" value={contactToAddOrUpdate.contactPosition} onChange={handleChangeText("contactPosition")}
-                                sx={{ width: "48%", ml: "4%" }}
-                            />
-                        </Box>
-
-                        <Box sx={{ mt: 2 }} >
-                            <TextField id="outlined-basic" label="Ville" value={contactToAddOrUpdate.businessCity} onChange={handleChangeText("businessCity")} sx={{ width: "48%" }} />
-                            <TextField id="outlined-basic" label="Adresse" value={contactToAddOrUpdate.businessAddress} onChange={handleChangeText("businessAddress")} sx={{ width: "48%", ml: "4%" }} />
-                        </Box>
-
-                        <Box sx={{ mt: 2 }} >
-                            <TextField id="outlined-basic" label="Téléphone STANDARD" value={contactToAddOrUpdate.businessPhone} onChange={handleChangeText("businessPhone")} sx={{ width: "48%" }} />
-                            <TextField
-                                id="outlined-basic"
-                                label="Téléphone DIRECT"
-
-                                value={contactToAddOrUpdate.contactPhone}
-                                onChange={handleChangeText("contactPhone")}
-                                sx={{ width: "48%", ml: "4%" }}
-                            />
-                        </Box>
-
-                        <Box sx={{ mt: 2 }} >
                             <TextField
                                 id="outlined-basic"
                                 label="Email ENTREPRISE"
-
                                 value={contactToAddOrUpdate.businessEmail}
                                 onChange={handleChangeText("businessEmail")}
-                                sx={{ width: "48%" }}
+                                //sx={{ width: "48%" }}
                                 InputProps={{
                                     startAdornment: contactToAddOrUpdate.businessEmail && <Link href={`mailto:${contactToAddOrUpdate.businessEmail}`} underline="none" //color="inherit"                                        
                                         target="_blank"
@@ -843,29 +874,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 }}
                             />
 
-                            <TextField
-                                id="outlined-basic"
-                                label="Email DIRECT"
-
-                                value={contactToAddOrUpdate.contactEmail}
-                                onChange={handleChangeText("businessEmail")}
-                                sx={{ width: "48%", ml: "4%" }}
-                                InputProps={{
-                                    startAdornment: contactToAddOrUpdate.contactEmail && <Link href={`mailto:${contactToAddOrUpdate.contactEmail}`} underline="none" //color="inherit"                                       
-                                        target="_blank"
-                                        sx={{
-                                            mr: 1,
-                                            fontSize: "0.8em"
-                                        }}
-                                    >
-                                        <MailIcon />
-                                    </Link>
-                                }}
-                            />
 
                         </Box>
-
-
 
                     </Box>
 
@@ -943,7 +953,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                                 >
                                                     Oui !
                                                 </Button>
-                                                <Button variant="contained" color='primary' sx={{color:"white"}} onClick={() => setOpenDeleteContactFileModal(false)} >Non</Button>
+                                                <Button variant="contained" color='primary' sx={{ color: "white" }} onClick={() => setOpenDeleteContactFileModal(false)} >Non</Button>
                                             </Box>
                                         </Box>
                                     </Modal>
@@ -1138,7 +1148,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                             }}
                                         />
                                         {alertFileText && <Alert
-                                            sx={{ marginTop: "10px", }} 
+                                            sx={{ marginTop: "10px", }}
                                             severity="warning">{alertFileText}</Alert>}
                                     </Box>
 
@@ -1180,7 +1190,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                             >
                                                 Oui !
                                             </Button>
-                                            <Button variant="contained" color='primary' sx={{color:"white"}} onClick={() => setOpenDeleteContactFilesModal(false)} >Non</Button>
+                                            <Button variant="contained" color='primary' sx={{ color: "white" }} onClick={() => setOpenDeleteContactFilesModal(false)} >Non</Button>
                                         </Box>
                                     </Box>
                                 </Modal>
@@ -1193,8 +1203,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             <Edit sx={{ fontSize: 14 }} />
                         </IconButton> */}
 
-                    {addContact && <Button variant="contained" sx={{ width: '25%', height: "200px", mt: 3, }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
-                    {updateContact && <Button variant="contained" color='secondary' sx={{ width: '25%', height: "200px", mt: 3 }} onClick={handleUpdateContact} >Mettre à jour le contact</Button>}
+                    {addContact && <Button variant="contained" sx={{ width: '25%', height: "100px", mt: 3, }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
+                    {updateContact && <Button variant="contained" color='secondary' sx={{ width: '25%', height: "100px", mt: 3 }} onClick={handleUpdateContact} >Mettre à jour le contact</Button>}
                     <Modal
                         open={openContactIsUpdatedModal}
                         onClose={() => setOpenContactIsUpdatedModal(false)}
@@ -1207,7 +1217,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 sx={{ mb: 5 }}
                             >
                                 Contact <span style={{ fontWeight: "bold" }}>{contactToAddOrUpdate.businessName}</span> mis à jour !
-                            </Typography>                            
+                            </Typography>
                         </Box>
                     </Modal>
                 </Box>
@@ -1238,7 +1248,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
                         <Box sx={{ display: "flex", justifyContent: "space-between" }} >
                             <Button variant="contained" color='warning' onClick={handleClickDeleteContact} sx={{ marginRight: "15px" }} >Oui !</Button>
-                            <Button variant="contained" color='primary' sx={{color:"white"}} onClick={() => setOpenDeleteContactModal(false)} >Non</Button>
+                            <Button variant="contained" color='primary' sx={{ color: "white" }} onClick={() => setOpenDeleteContactModal(false)} >Non</Button>
                         </Box>
                     </Box>
                 </Modal>

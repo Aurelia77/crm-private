@@ -539,56 +539,59 @@ export default function Contacts() {
 
                             {/* ///////// LISTE DE CONTACTS + recherche) ///////// */}
                             <TabPanel key="0" value={tabValue} index={0} width= {`calc(100vw - ${TABS_WIDTH}px`} >
-                                <SearchContactsForm
-                                    contacts={contacts}
-                                    currentUserId={currentUser.uid}
-                                    emptySearchCriteria={emptySearchCriteria}
-                                    onSearchChange={setContactsSearchCriteria}
-                                />
+                                <Box display="flex" flexDirection="column" style={{ height: '100vh' }}>
+                                    <SearchContactsForm
+                                        contacts={contacts}
+                                        currentUserId={currentUser.uid}
+                                        emptySearchCriteria={emptySearchCriteria}
+                                        onSearchChange={setContactsSearchCriteria}
+                                    />
 
-                                <Box
-                                    sx={{ display: "flex", alignItems: "center", margin: "13px 0 7px 15px", }}
-                                >{filteredContacts.length > 0
-                                    ? <Typography variant="h5">
-                                        {filteredContacts.length} contacts :
+                                    <Box sx={{ display: "flex", alignItems: "center", margin: "13px 0 7px 15px", }}
+                                    >{filteredContacts.length > 0
+                                        ? <Typography variant="h5">
+                                            {filteredContacts.length} contacts :
 
-                                        {/* {!isSearchCriteriaEmpty
-                                            ? `Recherche : ${filteredContacts.length} contacts trouvé(s) (sur ${contacts.length})`
-                                            : `${contacts.length} contacts : `
-                                        } */}
-                                        <Typography variant="h5" component="span" color="warning.main" sx={{ px: 2 }}>
-                                            {alerts.nbContactsWithDatePassed} relance(s) passée(s)
+                                            {/* {!isSearchCriteriaEmpty
+                                                ? `Recherche : ${filteredContacts.length} contacts trouvé(s) (sur ${contacts.length})`
+                                                : `${contacts.length} contacts : `
+                                            } */}
+                                            <Typography variant="h5" component="span" color="warning.main" sx={{ px: 2 }}>
+                                                {alerts.nbContactsWithDatePassed} relance(s) passée(s)
+                                            </Typography>
+                                            <Typography variant="h5" component="span" color="primary.main">
+                                                et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jour(s)
+                                            </Typography>
+                                            {!isSearchCriteriaEmpty && <Fab disabled size="small" color="primary" sx={{
+                                                ml: 2
+                                            }} >
+                                                <SearchIcon />
+                                            </Fab>
+                                            }
                                         </Typography>
-                                        <Typography variant="h5" component="span" color="primary.main">
-                                            et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jour(s)
+                                        : //(isContactTableFilled >= 2) && 
+                                        <Typography variant="h5" color="error.main">
+                                            {messageNoContact}
+                                            Aucun contact pour l'instant, veuillez en ajouter ici :
+                                            <Button variant="contained" color="primary" onClick={() => { setTabValue(2); setTabNewContactValue(0) }} sx={{ ml: 2 }}>Nouveau contact</Button>
                                         </Typography>
-                                        {!isSearchCriteriaEmpty && <Fab disabled size="small" color="primary" sx={{
-                                            ml: 2
-                                        }} >
-                                            <SearchIcon />
-                                        </Fab>
                                         }
-                                    </Typography>
-                                    : //(isContactTableFilled >= 2) && 
-                                    <Typography variant="h5" color="error.main">
-                                        {messageNoContact}
-                                        Aucun contact pour l'instant, veuillez en ajouter ici :
-                                        <Button variant="contained" color="primary" onClick={() => { setTabValue(2); setTabNewContactValue(0) }} sx={{ ml: 2 }}>Nouveau contact</Button>
-                                    </Typography>
-                                    }
-                                </Box>
+                                    </Box>
 
-                                <ContactsTable
-                                    //contacts={contacts}
-                                    contacts={filteredContacts}
-                                    currentUserId={currentUser.uid}
-                                    selectedContactId={selectedContact.id}
-                                    setSelectedContact={setSelectedContact}
-                                    handleUpdateContact={updateContactInContactsAndDB}
-                                    handleDeleteContact={deleteDataOnFirebaseAndReload}
-                                    diplayContactCard={diplayContactCardToUpdate}
-                                    getPriorityTextAndColor={getPriorityTextAndColor}
-                                />
+                                    <Box flexGrow={1} overflow="auto" >
+                                        <ContactsTable
+                                            contacts={filteredContacts}
+                                            currentUserId={currentUser.uid}
+                                            selectedContactId={selectedContact.id}
+                                            setSelectedContact={setSelectedContact}
+                                            handleUpdateContact={updateContactInContactsAndDB}
+                                            handleDeleteContact={deleteDataOnFirebaseAndReload}
+                                            diplayContactCard={diplayContactCardToUpdate}
+                                            getPriorityTextAndColor={getPriorityTextAndColor}
+                                        />
+                                    </Box>
+
+                                </Box>
                             </TabPanel>
 
                             {/* ///////// CALENDRIER ///////// */}

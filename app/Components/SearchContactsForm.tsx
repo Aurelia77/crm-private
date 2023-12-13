@@ -218,13 +218,14 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                                 input={<OutlinedInput label="Catégories"
                                 //sx={{ width: '300px', border: "solid 1px black" }} 
                                 />}
+                                // BIEN mais modifie la taille donc le tableau de contact dépasse...
+                                // renderValue={() => (
+                                //     <Box component="div" whiteSpace="pre-line">
+                                //       {selectedCatLabels.join('\n')}
+                                //     </Box>
+                                // )}
+                                renderValue={() => selectedCatLabels.join(', ')}
                                 //renderValue={(selected) => selected).join(', ')}
-                                renderValue={() => (
-                                    <Box component="div" whiteSpace="pre-line">
-                                      {selectedCatLabels.join('\n')}
-                                    </Box>
-                                )}
-                                //renderValue={() => selectedCatLabels.join(', ')}
                                 sx={{ width: '100%' }}
                                 MenuProps={MenuSelectProps}
                             >
@@ -269,12 +270,13 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             onChange={(e) => handleMultipleChangeSelect(e, "businessCity")}
                             input={<OutlinedInput label="Villes"         // ici le label est utilisé pour l'accessibilité et non pour l'affichage.                            
                             />}
-                            renderValue={(selected) => (
-                                <Box component="div" whiteSpace="pre-line">
-                                  {selected.join('\n')}
-                                </Box>
-                            )}
-                           // renderValue={(selected) => selected.join(', ')}
+                            // BIEN mais modifie la taille donc le tableau de contact dépasse...
+                            // renderValue={(selected) => (
+                            //     <Box component="div" whiteSpace="pre-line">
+                            //       {selected.join('\n')}
+                            //     </Box>
+                            // )}
+                           renderValue={(selected) => selected.join(', ')}
                             MenuProps={MenuSelectProps}
                         >
                             {allDifferentsBusinessCitiesValues.map((city) => (
@@ -296,12 +298,13 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             input={<OutlinedInput label="Types"         // ici le label est utilisé pour l'accessibilité et non pour l'affichage.
                             //sx={{ width: '300px' }} 
                             />}
-                            renderValue={(selected) => (
-                                <Box component="div" whiteSpace="pre-line">
-                                  {selected.join('\n')}
-                                </Box>
-                            )}
-                            //renderValue={(selected) => selected.join(', ')}
+                            // BIEN mais modifie la taille donc le tableau de contact dépasse...
+                            // renderValue={(selected) => (
+                            //     <Box component="div" whiteSpace="pre-line">
+                            //       {selected.join('\n')}
+                            //     </Box>
+                            // )}
+                            renderValue={(selected) => selected.join(', ')}
                             sx={{ width: '100%' }}
                             MenuProps={MenuSelectProps}
                         >                            

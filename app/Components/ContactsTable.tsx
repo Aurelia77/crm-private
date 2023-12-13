@@ -297,7 +297,7 @@ export default function ContactsTable({ contacts, currentUserId, selectedContact
              //   sx={{ maxHeight: "calc(100vh - 175px)" }}
              sx={{ maxHeight:  "calc(100vh - 200px)" }} 
             >
-                <Table stickyHeader aria-label="sticky table">
+                <Table stickyHeader>
                     <EnhancedTableHead
                         numSelected={selected.length}
                         order={order}
