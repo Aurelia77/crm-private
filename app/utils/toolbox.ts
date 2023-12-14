@@ -219,8 +219,6 @@ const isDateSoon = (timeStampObj: Timestamp | null) => {
 }
 
 
-
-
 export { 
     emptyContact,
     contactCategories, 

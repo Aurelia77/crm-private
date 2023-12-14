@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { addFakeDataWithCat, addCategoriesOnFirebaseAndReload, getFilesFromDatabase, getCategoriesFromDatabase, storage, addFileOnFirebaseDB, addCategorieOnFirebase, updateCategorieOnFirebase, updateFileOnFirebase, deleteCategorieOnFirebase, deleteAllDatasOnFirebaseAndReload, handleOpenFile, getAllFirebaseUserDatasAndSave } from '../utils/firebase'
+import { addFakeDataWithCat, addLaurianeDataWithCat, addCategoriesOnFirebaseAndReload, getFilesFromDatabase, getCategoriesFromDatabase, storage, addFileOnFirebaseDB, addCategorieOnFirebase, updateCategorieOnFirebase, updateFileOnFirebase, deleteCategorieOnFirebase, deleteAllDatasOnFirebaseAndReload, handleOpenFile, getAllFirebaseUserDatasAndSave } from '../utils/firebase'
 import { Alert, Box, Divider, ListItemText, Modal, Paper, TextField, Typography } from '@mui/material'
 import { Button, FormControl, InputLabel, MenuItem, Select, Input } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -521,6 +521,7 @@ export default function Admin({ currentUser }: AdminType) {
           <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }} >
               <Button variant="contained" color='success' onClick={() => addCategoriesOnFirebaseAndReload(currentUser)}>1-Ajouter Catégories</Button>
               <Button variant="contained" color='ochre' onClick={() => addFakeDataWithCat(currentUser)}>2-Ajouter Contacts Test</Button>
+              {/* <Button variant="contained" color='warning' onClick={() => addLaurianeDataWithCat(currentUser)}>Ajouter Contacts LAURIANE</Button> */}
               <Button variant="contained" onClick={handleSaveAll}>Sauvegarder TOUTES mes données</Button>
               {/* <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
               <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button> */}

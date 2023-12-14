@@ -3,7 +3,7 @@ import { emptyContact } from '../utils/toolbox'
 const contacts : Contact[] = [
     {
         ...emptyContact,
-        isClient : true,
+        isClient: true,
         priority: 3,
         contactType : "Entreprise",
         // logo : "https://www.pierreetvacances.com/medias/sys_master/images/images/hf1/hf7/8805202177566.jpg",

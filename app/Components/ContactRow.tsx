@@ -155,11 +155,6 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
           })
        
     }, [currentUserId]);
-
-
-
-   
-
   
   
 
@@ -204,16 +199,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 return "black"    //muiTheme.palette.gray.main;
         }
     };
-    const getPhoneIconText = (hasBeenCalled: 0 | 1 | 2) => {
-        switch (hasBeenCalled) {
-            case 1:
-                return "J'ai parlé à quelqu'un"
-            case 2:
-                return "J'ai appélé mais pas de réponse"
-            default:
-                return "Pas appelé"
-        }
-    };
+   
     const getEmailIconText = (hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3) => {
         switch (hasBeenSentEmailOrMeetUp) {
             case 1:
@@ -226,6 +212,17 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 return "Mail non envoyé"
         }
     };
+    const getPhoneIconText = (hasBeenCalled: 0 | 1 | 2) => {
+        switch (hasBeenCalled) {
+            case 1:
+                return "J'ai parlé à quelqu'un"
+            case 2:
+                return "J'ai appélé mais pas de réponse"
+            default:
+                return "Pas appelé"
+        }
+    };
+   
 
     // Pour utiliser un icon différent selon hasBeenCalled = 0, 1 ou 2
     // const RightPhoneIcon = ({ hasBeenCalled }: { hasBeenCalled: 0 | 1 | 2 }) => {

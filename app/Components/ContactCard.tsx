@@ -40,10 +40,14 @@ import { modalStyle } from '../utils/StyledComponents'
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import MailIcon from '@mui/icons-material/Mail';
+import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
 import LanguageIcon from '@mui/icons-material/Language';
 import PsychologyAlt from '@mui/icons-material/PsychologyAlt';
 import { StyledRating, StyledRatingStars, IconContainer, customIcons } from '../utils/StyledComponents';
 import SettingsIcon from '@mui/icons-material/Settings';
+import CallRoundedIcon from '@mui/icons-material/CallRounded';
 
 import Zoom from '@mui/material/Zoom';
 
@@ -298,6 +302,89 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
 
 
+    // GESTION DES ICONES MAIL ET TELEPHONE
+    // hasBeenCalled => 0="no" | 1="yes but no answer" | 2="yes and answered",
+    // hasBeenSentEmailOrMeetUp =>  0="nothing" | 1="email sent" | 2="email sent and received" | 3="met up",
+
+    // Renvoie la bonne icone selon l'état de hasBeenCalled (non envoyé, envoyé, lu...)
+    const RightMailIcon = ({ hasBeenSentEmailOrMeetUp }: { hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3 }) => {
+        switch (hasBeenSentEmailOrMeetUp) {
+            case 1: return <MailIcon sx={{ color: muiTheme.palette.ochre.main }} />
+            case 2: return <MarkEmailReadIcon color='success' />
+            case 3: return <HandshakeTwoToneIcon color="success" />
+            default: return <MailOutlineIcon sx={{
+                color: "black" //muiTheme.palette.gray.main 
+            }} />
+        }
+    }
+    const getPhoneIconColor = (hasBeenCalled: 0 | 1 | 2) => {
+        //console.log("xxxusePhoneIconStyle")
+        switch (hasBeenCalled) {
+            case 1:
+                return muiTheme.palette.success.main;
+            case 2:
+                return muiTheme.palette.ochre.main;
+            default:
+                return "black"    //muiTheme.palette.gray.main;
+        }
+    };
+    const getEmailIconColor = (hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3) => {
+        //console.log("xxxusePhoneIconStyle")
+        switch (hasBeenSentEmailOrMeetUp) {
+            case 2:
+            case 3:
+                return muiTheme.palette.success.main;
+            case 1:
+                return muiTheme.palette.ochre.main;
+            default:
+                return "black"    //muiTheme.palette.gray.main;
+        }
+    };
+
+    const getEmailIconText = (hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3) => {
+        switch (hasBeenSentEmailOrMeetUp) {
+            case 1:
+                return "Mail envoyé"
+            case 2:
+                return "Mail reçu"
+            case 3:
+                return "Rencontre physique"
+            default:
+                return "Mail non envoyé"
+        }
+    };
+    const getPhoneIconText = (hasBeenCalled: 0 | 1 | 2) => {
+        switch (hasBeenCalled) {
+            case 1:
+                return "J'ai parlé à quelqu'un"
+            case 2:
+                return "J'ai appélé mais pas de réponse"
+            default:
+                return "Pas appelé"
+        }
+    };
+
+    //const handleClickHasBeenCalled = () => {
+    //     setContactToAddOrUpdate({ ...contactToAddOrUpdate, hasBeenCalled: contactToAddOrUpdate.hasBeenCalled === 0
+    //     handleUpdateContact(contact.id, {
+    //         key: "hasBeenCalled", value: contact.hasBeenCalled === 0
+    //             ? 1
+    //             : contact.hasBeenCalled === 1
+    //                 ? 2
+    //                 : 0
+    //     })
+    // }
+    // const handleClickhasBeenSentEmailOrMeetUp = () => {
+    //     handleUpdateContact(contact.id, {
+    //         key: "hasBeenSentEmailOrMeetUp", value: contact.hasBeenSentEmailOrMeetUp === 0
+    //             ? 1
+    //             : contact.hasBeenSentEmailOrMeetUp === 1
+    //                 ? 2
+    //                 : contact.hasBeenSentEmailOrMeetUp === 2
+    //                     ? 3
+    //                     : 0
+    //     })
+    // }
 
 
     return (
@@ -319,22 +406,22 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
             }}        // my = 0.5rem (donc 1/2 taille de la police de la racine (em pour l'élément))
         >
             <Modal
-                    open={openNoContactModal}
-                    onClose={() => setOpenNoContactModal(false)}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                >
-                    <Box sx={modalStyle} >
-                        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
-                            Aucun contact selectionné ! Pour cela, double cliquer sur le logo d'un contact dans la liste (onglet en haut à gauche)
-                        </Typography>
-                        {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
-                        {/* <Box sx={{ display: "flex", justifyContent: "space-between" }} >
+                open={openNoContactModal}
+                onClose={() => setOpenNoContactModal(false)}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={modalStyle} >
+                    <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
+                        Aucun contact selectionné ! Pour cela, double cliquer sur le logo d'un contact dans la liste (onglet en haut à gauche)
+                    </Typography>
+                    {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
+                    {/* <Box sx={{ display: "flex", justifyContent: "space-between" }} >
                             <Button variant="contained" color='warning' onClick={handleClickDeleteContact} sx={{ marginRight: "15px" }} >Oui !</Button>
                             <Button variant="contained" color='primary' sx={{ color: "white" }} onClick={() => setOpenDeleteContactModal(false)} >Non</Button>
                         </Box> */}
-                    </Box>
-                </Modal>
+                </Box>
+            </Modal>
             <Box
                 sx={{
                     display: 'flex',
@@ -497,7 +584,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         >
                             <MenuItem key="0" value="0">NON DEFINIE</MenuItem>
                             {categoriesList.length === 0 && <Typography variant="caption" >
-                            Aucune catégorie créée pour l'instant, veuillez le faire dans Admin (onglet <SettingsIcon fontSize='small' /> )
+                                Aucune catégorie créée pour l'instant, veuillez le faire dans Admin (onglet <SettingsIcon fontSize='small' /> )
                             </Typography>
                             }
                             {categoriesList.sort((a, b) => a.label.localeCompare(b.label)).map((cat, index) => (
@@ -651,34 +738,88 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         <Box sx={{ width: "80%" }} >
 
                             {/* ///////// NOM */}
-                            <TextField
-                                sx={{ width: "100%" }}
-                                required
-                                id="outlined-basic"
-                                //label="Nom"
-                                //
-                                value={contactToAddOrUpdate.businessName}
-                                onChange={handleChangeText("businessName")}
-                                inputProps={{
-                                    style: {
-                                        //color: muiTheme.palette.primary.dark, 
-                                        color: getPriorityTextAndColor(contactToAddOrUpdate.priority).color,
-                                        fontSize: "2.5em",
-                                        fontWeight: "bold",
-                                        textAlign: "center"
-                                    }
-                                }}
-                                color={contactToAddOrUpdate.businessName ? "success" : "error"}
-                                InputProps={{
-                                    startAdornment: contactToAddOrUpdate.businessName.length === 0 && <span style={{ fontSize: "2.5em", marginLeft: "40%" }}>... </span>,
-                                    disableUnderline: true
-                                    //contactToAddOrUpdate.businessName.length > 0,
-                                }}
-                            // inputProps={{ 
-                            //     style: 
-                            //         {color: getPriorityTextAndColor(contact.priority).color ?? ""}
-                            // }}
-                            />
+                            <Box>
+                                <TextField
+                                    sx={{ width: "100%" }}
+                                    required
+                                    id="outlined-basic"
+                                    //label="Nom"
+                                    //
+                                    value={contactToAddOrUpdate.businessName}
+                                    onChange={handleChangeText("businessName")}
+                                    inputProps={{
+                                        style: {
+                                            //color: muiTheme.palette.primary.dark, 
+                                            color: getPriorityTextAndColor(contactToAddOrUpdate.priority).color,
+                                            fontSize: "2.5em",
+                                            fontWeight: "bold",
+                                            textAlign: "center"
+                                        }
+                                    }}
+                                    color={contactToAddOrUpdate.businessName ? "success" : "error"}
+                                    InputProps={{
+                                        startAdornment: contactToAddOrUpdate.businessName.length === 0 && <span style={{ fontSize: "2.5em", marginLeft: "40%" }}>... </span>,
+                                        disableUnderline: true
+                                        //contactToAddOrUpdate.businessName.length > 0,
+                                    }}
+                                // inputProps={{ 
+                                //     style: 
+                                //         {color: getPriorityTextAndColor(contact.priority).color ?? ""}
+                                // }}
+                                />
+
+
+                                {/* hasBeenCalled */}
+
+                                {/* <Box display="flex"
+                                    // alignItems="center" 
+                                    justifyContent="center"
+                                >
+                                    <Avatar
+                                        sx={{ bgcolor: getPhoneIconColor(contact.hasBeenCalled), border: `4px solid ${getPhoneIconColor(contact.hasBeenCalled)}`, }}
+                                    // sx={{ bgcolor: "white", border: `4px solid ${getIconStyle(contact.hasBeenCalled)}`, }}
+                                    //className={classes.avatar}
+                                    >
+                                        <Tooltip arrow title={getPhoneIconText(contact.hasBeenCalled)}>
+                                            <IconButton color="primary" onClick={handleClickHasBeenCalled}>
+                                                <CallRoundedIcon fontSize="large"
+                                                    sx={{
+                                                        color: "white",
+                                                        //backgroundColor:getIconStyle(contact.hasBeenCalled), 
+                                                    }}
+                                                // color={usePhoneIconStyle(contact.hasBeenCalled)}
+                                                />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Avatar>
+                                </Box>
+
+
+                                <Box display="flex"
+                                    // alignItems="center" 
+                                    justifyContent="center"
+                                >
+                                    <Avatar
+                                        sx={{
+                                            bgcolor: "white",
+                                            //bgcolor: getEmailIconColor(contact.hasBeenSentEmailOrMeetUp),     //"white", 
+                                            border: `4px solid ${getEmailIconColor(contact.hasBeenSentEmailOrMeetUp)}`,
+                                        }}
+                                    //className={classes.avatar}
+                                    >
+                                        <Tooltip arrow title={getEmailIconText(contact.hasBeenSentEmailOrMeetUp)}>
+                                            <IconButton color="primary" onClick={handleClickhasBeenSentEmailOrMeetUp}>
+                                                <RightMailIcon hasBeenSentEmailOrMeetUp={contact.hasBeenSentEmailOrMeetUp} />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Avatar>
+                                </Box> */}
+
+
+                            </Box>
+
+
+
 
                             {/* <TextField id="outlined-basic" label="Secteur d'activité"  value={findLabelNafCodes(contactToAdd.businessActivity)} /> */}
 
@@ -789,22 +930,22 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                 <Box sx={{ display: 'flex', justifyContent: "space-between", gap: "4%" }} >
                     {/* ///////// NOM Contact, POSITION, VILLE et ADRESSE ///////// */}
                     <Box
-                        sx={{                            
+                        sx={{
                             width: contactToAddOrUpdate.comments.length > 0 ? "48%" : "86%",
                             //width: "48%", 
-                            display: 'flex', justifyContent: "space-between", gap: "4%" 
-                    }}
+                            display: 'flex', justifyContent: "space-between", gap: "4%"
+                        }}
                     >
-                        <Box sx={{ display: 'flex', flexDirection:"column", justifyContent: "space-between", gap: "15px", width:"48%"  }} >
+                        <Box sx={{ display: 'flex', flexDirection: "column", justifyContent: "space-between", gap: "15px", width: "48%" }} >
                             <TextField
                                 id="outlined-basic" label="Nom DIRIGEANT"
                                 value={contactToAddOrUpdate.directorName}
                                 onChange={handleChangeText("directorName")}
                             />
-                            <TextField 
-                                id="outlined-basic" 
-                                label="Nom Contact DIRECT" 
-                                value={contactToAddOrUpdate.contactName} 
+                            <TextField
+                                id="outlined-basic"
+                                label="Nom Contact DIRECT"
+                                value={contactToAddOrUpdate.contactName}
                                 onChange={handleChangeText("contactName")}
                                 sx={{ backgroundColor: muiTheme.palette.pink.main }}
                             />
@@ -842,20 +983,20 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             />
                         </Box>
 
-                        <Box sx={{ display: 'flex', flexDirection:"column", justifyContent: "space-between", gap: "15px", width:"48%"  }} >
-                            <TextField 
-                                id="outlined-basic" 
-                                label="Ville" 
-                                value={contactToAddOrUpdate.businessCity} 
-                                onChange={handleChangeText("businessCity")} 
-                                //sx={{ width: "48%" }} 
+                        <Box sx={{ display: 'flex', flexDirection: "column", justifyContent: "space-between", gap: "15px", width: "48%" }} >
+                            <TextField
+                                id="outlined-basic"
+                                label="Ville"
+                                value={contactToAddOrUpdate.businessCity}
+                                onChange={handleChangeText("businessCity")}
+                            //sx={{ width: "48%" }} 
                             />
-                            <TextField 
-                                id="outlined-basic" 
-                                label="Adresse" 
-                                value={contactToAddOrUpdate.businessAddress} 
-                                onChange={handleChangeText("businessAddress")} 
-                                //sx={{ width: "48%", ml: "4%" }} 
+                            <TextField
+                                id="outlined-basic"
+                                label="Adresse"
+                                value={contactToAddOrUpdate.businessAddress}
+                                onChange={handleChangeText("businessAddress")}
+                            //sx={{ width: "48%", ml: "4%" }} 
                             />
                             <TextField
                                 id="outlined-basic"
@@ -877,12 +1018,12 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     </Link>
                                 }}
                             />
-                            <TextField 
-                                id="outlined-basic" 
-                                label="Téléphone STANDARD" 
-                                value={contactToAddOrUpdate.businessPhone} 
-                                onChange={handleChangeText("businessPhone")} 
-                                //sx={{ width: "48%" }} 
+                            <TextField
+                                id="outlined-basic"
+                                label="Téléphone STANDARD"
+                                value={contactToAddOrUpdate.businessPhone}
+                                onChange={handleChangeText("businessPhone")}
+                            //sx={{ width: "48%" }} 
                             />
                             <TextField
                                 id="outlined-basic"
@@ -1295,3 +1436,4 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         // </Zoom>
     )
 }
+

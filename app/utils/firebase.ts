@@ -17,7 +17,9 @@ import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, d
 import { uid } from 'uid';
 //import { User } from "firebase/auth/cordova";
 import fakeContactsData from '../utils/contactsTest'
+import laurianeData from '../utils/contactsLaurianeTOUS'
 import { contactCategories } from '../utils/toolbox'
+import contactsLaurianeNameAndCatLabel from '../utils/contactsLaurianeNomEtCat'
 
 
 // import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
@@ -88,7 +90,7 @@ const fakeContactsNameAndCatLabel = [
   },
 ]
 
-const addCatToFakeContacts = async (currentUser: any, fakeContactsData: Contact[]) => {
+const addCatToFakeContacts = async (currentUser: any, fakeContactsData: Contact[], fakeContactsNameAndCatLabel: any) => {
 
   console.log("****start addCatToFakeContacts")
   let promises: any = [];
@@ -130,7 +132,11 @@ const addCatToFakeContacts = async (currentUser: any, fakeContactsData: Contact[
 }
 const addFakeDataWithCat = async(currentUser: any) => {
   await addFakeDataOnFirebase(currentUser, fakeContactsData)            
-  addCatToFakeContacts(currentUser, fakeContactsData)        
+  addCatToFakeContacts(currentUser, fakeContactsData, fakeContactsNameAndCatLabel )       
+}
+const addLaurianeDataWithCat = async(currentUser: any) => {
+  await addFakeDataOnFirebase(currentUser, laurianeData) 
+  addCatToFakeContacts(currentUser, laurianeData, contactsLaurianeNameAndCatLabel)        
 }
 
 
@@ -784,6 +790,7 @@ export {
   auth,
   storage,
   addFakeDataWithCat,
+  addLaurianeDataWithCat,
   //readDataFromFirebaseAndSetContact,
   getContactsFromDatabase,
   getFilesFromDatabase,
