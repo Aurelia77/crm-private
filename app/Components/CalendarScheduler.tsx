@@ -107,7 +107,7 @@ export default function CalendarScheduler({ contacts, diplayContactCardToUpdate,
       locale: frLocale,
       //initialView: 'resourceTimelineDay',
       //initialView: 'multiMonthSixMonth',
-      initialDate: dayjs().subtract(1, 'month').toDate(), // Définit la date initiale à un mois avant le mois en cours
+      //initialDate: dayjs().subtract(1, 'month').toDate(), // Définit la date initiale à un mois avant le mois en cours
       // initialDate: new Date().toISOString().split('T')[0], // !!! toISOString => 1h avant !!! Mettre plutôt toLocaleDateString !!!
       views: {
         multiMonthSixMonth: {
@@ -195,6 +195,20 @@ export default function CalendarScheduler({ contacts, diplayContactCardToUpdate,
         end && console.log("Event dropped to " + end.toLocaleString());
 
         start && updateContactInContactsAndDB(contact.id, { key: "dateOfNextCall", value: Timestamp.fromDate(start) })
+
+        // J'essaie de faire que quand on modifie un event, ça reste sur la VUE et la DATE !!! Mais ça revient comme au début !
+        // Sauvegardez la date et la vue actuelles
+        const currentView = calendar.view;
+        console.log("currentView.type : " + currentView.type)
+        const currentDate = calendar.getDate();
+           console.log("currentDate : " + currentDate)
+
+        // Restaurez la date et la vue actuelles après un délai
+        setTimeout(() => {
+          calendar.changeView(currentView.type, currentDate);
+        }, 0);
+        // Restaurez la date et la vue actuelles
+        //calendar.changeView(currentView.type, currentDate);
       },
 
       // eventResize: function(resizeInfo) {

@@ -36,6 +36,7 @@ import SignUp from '../Components/auth/SignUp';
 import AuthDetails from '../Components/AuthDetails';
 import SearchContactsForm from '../Components/SearchContactsForm';
 import Admin from '../Components/Admin';
+import Help from '../Components/Help';
 import SearchIcon from '@mui/icons-material/Search';
 import { modalStyle } from '../utils/StyledComponents'
 
@@ -64,7 +65,7 @@ import AddIcon from '@mui/icons-material/Add';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ClearIcon from '@mui/icons-material/Clear';
 import LogoutIcon from '@mui/icons-material/Logout';
-
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Fade from '@mui/material';
 import Collapse from '@mui/material';
 
@@ -142,11 +143,12 @@ export default function Contacts() {
     //console.log("tabValue", tabValue)
 
     const titles = [
-        { label: "Contacts", icon: <Diversity3Icon /> },
+        { label: "Liste des contacts", icon: <Diversity3Icon /> },
         { label: "Calendrier", icon: <CalendarMonthIcon /> },
-        { label: "Nouveau", icon: <PersonAddIcon /> },
-        { label: "Contact", icon: <PersonIcon /> },
+        { label: "Nouveau contact", icon: <PersonAddIcon /> },
+        { label: "Vu d'un contact", icon: <PersonIcon /> },
         { label: "Admin", icon: <SettingsIcon /> },
+        { label: "Aide", icon: <HelpOutlineIcon /> },
         // { label: "Admin", icon: <SettingsIcon /> },
     ]
 
@@ -657,14 +659,17 @@ export default function Contacts() {
                             <TabPanel key="4" value={tabValue} index={4}  width= {`calc(100vw - ${TABS_WIDTH}px`} >
                                 <Admin currentUser={currentUser} />                              
                             </TabPanel>
-
-                            {/* ///////// ADMIN ///////// */}
                             {/* <TabPanel key="4" value={tabValue} index={4}>
                                 <Admin />
                                 <Typography variant="h5" component="div" sx={{ p: 2 }}>ADMIN</Typography>
                                 <Typography variant="h5" component="div" sx={{ p: 2 }}>{currentUser.displayName}</Typography>
                                 <Typography variant="h5" component="div" sx={{ p: 2 }}>{currentUser.email}</Typography>                               
                             </TabPanel> */}
+
+                            {/* /////////////////////// Aide /////////////////////// */}
+                            <TabPanel key="5" value={tabValue} index={5}  width= {`calc(100vw - ${TABS_WIDTH}px`} >
+                                <Help />                              
+                            </TabPanel>
                         </Box>
 
 
