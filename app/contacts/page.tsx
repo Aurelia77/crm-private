@@ -26,7 +26,6 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import FormControl from '@mui/material/FormControl';
 import { Container, Tooltip, Paper, Modal } from '@mui/material';
 import { TextField, Select, MenuItem, Autocomplete, ListItem, List, InputLabel, Tabs, Tab, Box as CustomBox } from '@mui/material'
-import { contactCategories } from '../utils/toolbox'
 
 import { Fab } from '@mui/material'
 import NewContactSearchForm from '../Components/NewContactSearchForm';
@@ -188,79 +187,7 @@ export default function Contacts() {
     //     setIsContactCardDisplay(true)
     // }
 
-    const fakeContactsNameAndCatLabel = [
-        {
-            name: "Camping Hyères",
-            catLabel: "Camping"
-        },
-        {
-            name: "Camping St Tropez",
-            catLabel: "Camping"
-        },
-        {
-            name: "Plongeons ensemble !",
-            catLabel: "Centre de Plongée"
-        },
-        {
-            name: "Entreprise de maquillage GLOW",
-            catLabel: "Autre"
-        },
-        {
-            name: "Pierre et vacances",
-            catLabel: "Centre de Loisirs"
-        },
-        {
-            name: "Restaurant 5* LE BONHEUR",
-            catLabel: "Restaurant Plage"
-        },
-    ]
-
-    
-    const addCatToFakeContacts = async (fakeContactsData: Contact[]) => {
-
-        console.log("****start addCatToFakeContacts")
-        let promises: any = [];
-
-        for (const fakeContact of fakeContactsData) {
-            for (const contactNameAndCatLabel of fakeContactsNameAndCatLabel) {
-
-                console.log("***contact", fakeContact.businessName, " - " ,contactNameAndCatLabel.name)
-
-                if (fakeContact.businessName === contactNameAndCatLabel.name) {
-
-                    const catId = await getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel);                    
-                    console.log("***cat du contact", contactNameAndCatLabel.catLabel)
-                    console.log("***catId", catId)
-
-
-                    getContactsFromDatabase(currentUser).then((contactsList) => {
-                        const updatePromises = contactsList.map((firebaseContact) => {
-                            if (firebaseContact.businessName === fakeContact.businessName) {
-                                console.log("***", firebaseContact, catId)
-                                return updatDataOnFirebase(firebaseContact.id, { key: "businessCategoryId", value: catId })
-                            }
-                        });
-                        promises.push((updatePromises));
-                        console.log("***promises", promises)    
-                    })
-
-                }
-            }
-        }
-
-        Promise.all(promises)
-            .then(() => { 
-                console.log("***Dans le THEN du PROMISE ALL")
-                console.log("!!!!!!!!! CAT ATJOUTées !!!!!")
-                window.location.reload() 
-            })
-            .catch((error) => { console.error("Error reloading page: ", error); });
-    }
-
-    const addFakeDataWithCat = async() => {
-        await addFakeDataOnFirebase(currentUser, fakeContactsData)            
-        addCatToFakeContacts(fakeContactsData)        
-    }
+ 
 
     // Je ne peux pas mettre cette fonction dans ToolBox car je peux utiliser les thème seulement dans un composant  (React Hooks must be called in a React function component or a custom React Hook function.)
     const getPriorityTextAndColor = (priority: number | null) => {
@@ -728,30 +655,7 @@ export default function Contacts() {
 
                             {/* /////////////////////// Admin /////////////////////// */}
                             <TabPanel key="4" value={tabValue} index={4}  width= {`calc(100vw - ${TABS_WIDTH}px`} >
-                                <Admin currentUser={currentUser} />
-                                <Box sx={{
-                                    //display: "flex", justifyContent: "space-around", 
-                                    padding: "10px", border: "solid 3px blue", borderRadius: "10px", marginTop: "100px", width: "calc(100vw - 200px)"
-                                }}>
-                                    <Typography
-                                        component="div"
-                                        textAlign="center"
-                                        style={{
-                                            //display: "block",
-                                            marginBottom: "50px"
-                                            //width: "360px" 
-                                        }} >Pour Version TEST</Typography>
-                                    <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }} >
-                                        <Button variant="contained" color='success' onClick={() => addCategoriesOnFirebaseAndReload(currentUser, contactCategories)}>1-Ajouter Catégories</Button>
-                                        <Button variant="contained" color='ochre' onClick={addFakeDataWithCat}>2-Ajouter Contacts Test</Button>
-                                        {/* <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
-                                        <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button> */}
-                                    </Box>
-                                    <Box sx={{ display: "flex", justifyContent: "space-around", }} >
-                                        <Button variant="contained" color='error' sx={{ width: "300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUser)}>Supprimer tous mes contacts</Button>
-                                        {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer TOUS les contacts de l'appli !!!</Button> */}
-                                    </Box>
-                                </Box>
+                                <Admin currentUser={currentUser} />                              
                             </TabPanel>
 
                             {/* ///////// ADMIN ///////// */}

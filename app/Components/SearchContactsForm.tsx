@@ -205,57 +205,54 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                     {/* //////////// CAT ///////////// */}
                     <FormControl sx={{ width: "20%" }} >
                         <InputLabel id="multiple-checkbox-type-label">Catégorie(s)</InputLabel>
-                        {categoriesList.length > 0
-                            ? <Select
-                                id="multiple-checkbox-type-label"
-                                multiple={true}
-                               //multiline={true}
-                                value={search.businessCategoryId}
-                                // value={search.businessCategoryId.map(
-                                //         (catId: string) => getCatLabelFromId(catId)                            
-                                //     ) }
-                                onChange={(e) => handleMultipleChangeSelect(e, "businessCategoryId")}
-                                input={<OutlinedInput label="Catégories"
-                                //sx={{ width: '300px', border: "solid 1px black" }} 
-                                />}
-                                // BIEN mais modifie la taille donc le tableau de contact dépasse...
-                                // renderValue={() => (
-                                //     <Box component="div" whiteSpace="pre-line">
-                                //       {selectedCatLabels.join('\n')}
-                                //     </Box>
-                                // )}
-                                renderValue={() => selectedCatLabels.join(', ')}
-                                //renderValue={(selected) => selected).join(', ')}
-                                sx={{ width: '100%' }}
-                                MenuProps={MenuSelectProps}
-                            >
-                                <MenuItem key="0" value="0">
-                                    <Checkbox checked={search.businessCategoryId.includes("0")} />
-                                    <ListItemText primary="NON DEFINIE" />
-                                </MenuItem>
+                        <Select
+                            id="multiple-checkbox-type-label"
+                            multiple={true}
+                            //multiline={true}
+                            value={search.businessCategoryId}
+                            // value={search.businessCategoryId.map(
+                            //         (catId: string) => getCatLabelFromId(catId)                            
+                            //     ) }
+                            onChange={(e) => handleMultipleChangeSelect(e, "businessCategoryId")}
+                            input={<OutlinedInput label="Catégories"
+                            //sx={{ width: '300px', border: "solid 1px black" }} 
+                            />}
+                            // BIEN mais modifie la taille donc le tableau de contact dépasse...
+                            // renderValue={() => (
+                            //     <Box component="div" whiteSpace="pre-line">
+                            //       {selectedCatLabels.join('\n')}
+                            //     </Box>
+                            // )}
+                            renderValue={() => selectedCatLabels.join(', ')}
+                            //renderValue={(selected) => selected).join(', ')}
+                            sx={{ width: '100%' }}
+                            MenuProps={MenuSelectProps}
+                        >
+                            <MenuItem key="0" value="0">
+                                <Checkbox checked={search.businessCategoryId.includes("0")} />
+                                <ListItemText primary="NON DEFINIE" />
+                            </MenuItem>
 
-                                {/* <MenuItem key="0" value="NON DEFINIE">
-                                    <Checkbox checked={search.contactType.indexOf("NON DEFINIE") > -1} />
-                                    <ListItemText primary="NON DEFINIE" />
-                                </MenuItem> */}
-                                {categoriesList
-                                    .filter(cat => allDifferentsBusinessCategoryValues.includes(cat.id))
-                                    .sort((a, b) => a.label.localeCompare(b.label))
-                                    .map((cat, index) => (
-                                        //{categoriesList.filter(cat => allDifferentsBusinessCategoryValues.includes(cat.id)).map((cat, index) => (
-                                        // {categoriesList.sort((a, b) => a.label.localeCompare(b.label)).map((cat, index) => (
-                                        <MenuItem
-                                            key={cat.id}
-                                            value={cat.id}
-                                            sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
-                                        >
-                                            <Checkbox checked={search.businessCategoryId.indexOf(cat.id) > -1} />
-                                            <ListItemText primary={cat.label} />
-                                        </MenuItem>
-                                    ))}
-                            </Select>
-                            : null
-                        }
+                            {/* <MenuItem key="0" value="NON DEFINIE">
+                                <Checkbox checked={search.contactType.indexOf("NON DEFINIE") > -1} />
+                                <ListItemText primary="NON DEFINIE" />
+                            </MenuItem> */}
+                            {categoriesList
+                                .filter(cat => allDifferentsBusinessCategoryValues.includes(cat.id))
+                                .sort((a, b) => a.label.localeCompare(b.label))
+                                .map((cat, index) => (
+                                    //{categoriesList.filter(cat => allDifferentsBusinessCategoryValues.includes(cat.id)).map((cat, index) => (
+                                    // {categoriesList.sort((a, b) => a.label.localeCompare(b.label)).map((cat, index) => (
+                                    <MenuItem
+                                        key={cat.id}
+                                        value={cat.id}
+                                        sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
+                                    >
+                                        <Checkbox checked={search.businessCategoryId.indexOf(cat.id) > -1} />
+                                        <ListItemText primary={cat.label} />
+                                    </MenuItem>
+                                ))}
+                        </Select>
                     </FormControl>
 
 

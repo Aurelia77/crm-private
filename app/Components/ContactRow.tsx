@@ -66,6 +66,7 @@ import { StyledTableRow, StyledTableCell } from '../utils/StyledComponents';
 import { Timestamp } from 'firebase/firestore';
 
 import Rating, { IconContainerProps } from '@mui/material/Rating';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import Tooltip from '@mui/material/Tooltip';
 import { timeStamp } from 'console';
@@ -573,32 +574,33 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 /> */}
                 <FormControl >
                     {/* Si on ne fait pas cette vérification, les options n'étant pas chargées au premier rendu => on a une indication (en jaune) dans la console : You have provided an out-of-range value for the select component" */}
-                    {categoriesList.length > 0 
-                        ?  <Select
-                            id="checkbox-type-label"
-                            value={contact.businessCategoryId}
-                            variant="standard"
-                            disableUnderline={true}
-                            //onChange={(e) => handleChangeSelect(e, "businessCategory")}
-                            onChange={(e) => handleChangeSelect(e, "businessCategoryId")}
-                            sx={{  width: 180 }}
-                        >
-                            <MenuItem key="0" value="0">NON DEFINIE</MenuItem>
-                            {categoriesList
-                                .sort((a, b) => a.label.localeCompare(b.label))
-                                .map((cat, index) => (
-                                <MenuItem
-                                    key={cat.id}
-                                    value={cat.id}
-                                    sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' ,  
-                                    //overflow: 'auto',
-                                    //maxHeight: "50vh",
-                                }}
-                                >{cat.label}</MenuItem>
-                            ))}
-                        </Select>
-                        : null
-                    }
+                    <Select
+                        id="checkbox-type-label"
+                        value={contact.businessCategoryId}
+                        variant="standard"
+                        disableUnderline={true}
+                        //onChange={(e) => handleChangeSelect(e, "businessCategory")}
+                        onChange={(e) => handleChangeSelect(e, "businessCategoryId")}
+                        sx={{  width: 180 }}
+                    >
+                        <MenuItem key="0" value="0">NON DEFINIE</MenuItem>
+                        {categoriesList.length === 0 && <Typography variant="caption" >
+                            Aucune catégorie créée pour l'instant, veuillez le faire dans Admin (onglet <SettingsIcon fontSize='small' /> )
+                            </Typography>
+                        }
+                        {categoriesList
+                            .sort((a, b) => a.label.localeCompare(b.label))
+                            .map((cat, index) => (
+                            <MenuItem
+                                key={cat.id}
+                                value={cat.id}
+                                sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' ,  
+                                //overflow: 'auto',
+                                //maxHeight: "50vh",
+                            }}
+                            >{cat.label}</MenuItem>
+                        ))}
+                    </Select>
                 </FormControl>
                 {/* <CustomTextField attribut="businessCategory" /> */}
             </StyledTableCell>

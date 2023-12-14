@@ -15,7 +15,7 @@ import { grey } from '@mui/material/colors';
 import Image from 'next/image'
 import { TextField, Stack, Button, FormControl, InputLabel, MenuItem, Autocomplete, Chip, ListItem, List, OutlinedInput, Checkbox, ListItemText, FormControlLabel, Tooltip, Modal, Rating, Link, InputAdornment, Alert } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { contactTypes } from '../utils/toolbox'
+import { contactTypes, emptyContact } from '../utils/toolbox'
 import dayjs, { Dayjs } from 'dayjs';       // npm install dayjs
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -75,7 +75,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     console.log("tabValue x", tabValue)
     console.log("tabValue x", typeof tabValue)
 
-    //console.log("contactToAddOrUpdate", contactToAddOrUpdate)
+    console.log("contactToAddOrUpdate", contactToAddOrUpdate)
     //console.log("LOGO", contactToAddOrUpdate.logo)
 
     const muiTheme = useTheme();
@@ -101,6 +101,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[]>([]);
 
 
+    const [openNoContactModal, setOpenNoContactModal] = React.useState(false);
     const [openDeleteContactModal, setOpenDeleteContactModal] = React.useState(false);
     const [openDeleteContactFileModal, setOpenDeleteContactFileModal] = React.useState(false);
     const [openDeleteContactFilesModal, setOpenDeleteContactFilesModal] = React.useState(false);
@@ -289,6 +290,11 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         setOpenContactIsUpdatedModal(true)
     }
 
+    React.useEffect(() => {
+        // Si on est sur la VUE d'un contact et qu'on n'a pas cliqué sur un contact => modal 
+        (updateContact && JSON.stringify(contactToAddOrUpdate) === JSON.stringify(emptyContact)) && setOpenNoContactModal(true)
+    }, [])
+
 
 
 
@@ -312,6 +318,23 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                 //backgroundColor: muiTheme.palette.primary.light,
             }}        // my = 0.5rem (donc 1/2 taille de la police de la racine (em pour l'élément))
         >
+            <Modal
+                    open={openNoContactModal}
+                    onClose={() => setOpenNoContactModal(false)}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={modalStyle} >
+                        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
+                            Aucun contact selectionné ! Pour cela, double cliquer sur le logo d'un contact dans la liste (onglet en haut à gauche)
+                        </Typography>
+                        {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
+                        {/* <Box sx={{ display: "flex", justifyContent: "space-between" }} >
+                            <Button variant="contained" color='warning' onClick={handleClickDeleteContact} sx={{ marginRight: "15px" }} >Oui !</Button>
+                            <Button variant="contained" color='primary' sx={{ color: "white" }} onClick={() => setOpenDeleteContactModal(false)} >Non</Button>
+                        </Box> */}
+                    </Box>
+                </Modal>
             <Box
                 sx={{
                     display: 'flex',
@@ -455,42 +478,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                 }} >
                     {/* ///////// CAT */}
                     <FormControl sx={{ width: "auto", backgroundColor: muiTheme.palette.primary.main, borderRadius: "50px" }} >
-                        {/* <InputLabel id="checkbox-type-label">Catégorie</InputLabel> */}
-                        {categoriesList.length > 0
-                            ? <Select
-                                sx={{
-                                    color: 'white',
-                                    textAlign: 'center',
-                                    // display: 'flex',
-                                    // alignItems: 'center'
-                                    margin: "auto",
-                                    padding: "25px 10px 25px 30px"
-                                }}
-                                id="checkbox-type-label"
-                                value={contactToAddOrUpdate.businessCategoryId}
-                                onChange={(e) => handleChangeSelect(e, "businessCategoryId")}
-                                variant="standard"
-                                disableUnderline={true}
-                            >
-                                <MenuItem key="0" value="0">NON DEFINIE</MenuItem>
-                                {categoriesList.sort((a, b) => a.label.localeCompare(b.label)).map((cat, index) => (
-                                    <MenuItem
-                                        key={cat.id}
-                                        value={cat.id}
-                                        sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
-                                    >{cat.label}</MenuItem>
-                                ))}
-                            </Select>
-                            : null
-                        }
-                    </FormControl>
-
-                    {/* ///////// TYPE */}
-                    <FormControl sx={{
-                        width: "auto", backgroundColor: muiTheme.palette.purple.dark,
-                        borderRadius: "50px"
-                    }} >
-                        {/* <InputLabel id="checkbox-type-label">Type</InputLabel> */}
+                        <InputLabel id="checkbox-type-label" sx={{ marginLeft: '20px' }} >Catégorie</InputLabel>
                         <Select
                             sx={{
                                 color: 'white',
@@ -498,7 +486,44 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 // display: 'flex',
                                 // alignItems: 'center'
                                 margin: "auto",
-                                padding: "25px 10px 25px 30px"
+                                padding: "15px 10px 25px 30px",
+                                marginTop: 0
+                            }}
+                            id="checkbox-type-label"
+                            value={contactToAddOrUpdate.businessCategoryId}
+                            onChange={(e) => handleChangeSelect(e, "businessCategoryId")}
+                            variant="standard"
+                            disableUnderline={true}
+                        >
+                            <MenuItem key="0" value="0">NON DEFINIE</MenuItem>
+                            {categoriesList.length === 0 && <Typography variant="caption" >
+                            Aucune catégorie créée pour l'instant, veuillez le faire dans Admin (onglet <SettingsIcon fontSize='small' /> )
+                            </Typography>
+                            }
+                            {categoriesList.sort((a, b) => a.label.localeCompare(b.label)).map((cat, index) => (
+                                <MenuItem
+                                    key={cat.id}
+                                    value={cat.id}
+                                    sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
+                                >{cat.label}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
+                    {/* ///////// TYPE */}
+                    <FormControl sx={{
+                        width: "auto", backgroundColor: muiTheme.palette.purple.dark,
+                        borderRadius: "50px"
+                    }} >
+                        <InputLabel id="checkbox-type-label" sx={{ marginLeft: '20px' }}>Type</InputLabel>
+                        <Select
+                            sx={{
+                                color: 'white',
+                                textAlign: 'center',
+                                // display: 'flex',
+                                // alignItems: 'center'
+                                margin: "auto",
+                                padding: "15px 10px 25px 30px"
                             }}
                             id="checkbox-type-label"
                             value={contactToAddOrUpdate.contactType}
@@ -618,7 +643,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 {contactToAddOrUpdate.logo && <Button variant="contained" color="error" sx={{
                                     margin: "auto"
                                     //marginTop: "5px" 
-                                }} onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, logo: "" })} >Supprimer</Button>}
+                                }} onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, logo: "" })} >Supprimer logo</Button>}
                             </Box>
                         </Box>
 

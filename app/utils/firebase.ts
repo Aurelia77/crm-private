@@ -16,6 +16,8 @@ import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, d
 
 import { uid } from 'uid';
 //import { User } from "firebase/auth/cordova";
+import fakeContactsData from '../utils/contactsTest'
+import { contactCategories } from '../utils/toolbox'
 
 
 // import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
@@ -58,6 +60,79 @@ const guadeloupeRef = ref(storage, 'guadeloupe.jpg');
 // uploadBytes(guadeloupeRef, file).then((snapshot) => {
 //     console.log('Uploaded a blob or file!');
 // });
+
+const fakeContactsNameAndCatLabel = [
+  {
+      name: "Camping Hyères",
+      catLabel: "Camping"
+  },
+  {
+      name: "Camping St Tropez",
+      catLabel: "Camping"
+  },
+  {
+      name: "Plongeons ensemble !",
+      catLabel: "Centre de Plongée"
+  },
+  {
+      name: "Entreprise de maquillage GLOW",
+      catLabel: "Autre"
+  },
+  {
+      name: "Pierre et vacances",
+      catLabel: "Centre de Loisirs"
+  },
+  {
+      name: "Restaurant 5* LE BONHEUR",
+      catLabel: "Restaurant Plage"
+  },
+]
+
+const addCatToFakeContacts = async (currentUser: any, fakeContactsData: Contact[]) => {
+
+  console.log("****start addCatToFakeContacts")
+  let promises: any = [];
+
+  for (const fakeContact of fakeContactsData) {
+      for (const contactNameAndCatLabel of fakeContactsNameAndCatLabel) {
+
+          console.log("***contact", fakeContact.businessName, " - " ,contactNameAndCatLabel.name)
+
+          if (fakeContact.businessName === contactNameAndCatLabel.name) {
+
+              const catId = await getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel);                    
+              console.log("***cat du contact", contactNameAndCatLabel.catLabel)
+              console.log("***catId", catId)
+
+
+              getContactsFromDatabase(currentUser).then((contactsList) => {
+                  const updatePromises = contactsList.map((firebaseContact) => {
+                      if (firebaseContact.businessName === fakeContact.businessName) {
+                          console.log("***", firebaseContact, catId)
+                          return updatDataOnFirebase(firebaseContact.id, { key: "businessCategoryId", value: catId })
+                      }
+                  });
+                  promises.push((updatePromises));
+                  console.log("***promises", promises)    
+              })
+
+          }
+      }
+  }
+
+  Promise.all(promises)
+      .then(() => { 
+          console.log("***Dans le THEN du PROMISE ALL")
+          console.log("!!!!!!!!! CAT ATJOUTées !!!!!")
+          window.location.reload() 
+      })
+      .catch((error) => { console.error("Error reloading page: ", error); });
+}
+const addFakeDataWithCat = async(currentUser: any) => {
+  await addFakeDataOnFirebase(currentUser, fakeContactsData)            
+  addCatToFakeContacts(currentUser, fakeContactsData)        
+}
+
 
 // 1-REALTIME DB
 //const [todo, setTodo] = React.useState<string>('')
@@ -170,7 +245,7 @@ const getContactsFromDatabase = async (currentUser: any) => {
   const querySnapshot = await getDocs(q);
   //getDocs(collection(fireStoreDb, "contacts")).then((querySnapshot) => {
   querySnapshot.forEach((doc) => {
-    //console.log(doc.data())
+    console.log("*/*/",doc.data())
     //console.log("contactsArr***", contactsArr)
     contactsArr.push({ ...doc.data() as Contact }); // On indique que doc.data() est de type Contact     
   });
@@ -187,15 +262,15 @@ const getFilesFromDatabase = async (currentUserId: any) => {
   // const readDataFromFirebase = (currentUser: User | null) => {
   let filesArr: FileNameAndRefType[] = []
   const filesCollectionRef = collection(fireStoreDb, "files");
-  const q =  query(filesCollectionRef, where("userId", "==", currentUserId))
+  const q = query(filesCollectionRef, where("userId", "==", currentUserId))
 
   const querySnapshot = await getDocs(q)
 
   querySnapshot.forEach((doc) => {
 
-    //console.log("doc.data()", doc.data())
+    console.log("*/*/ files - doc.data()", doc.data())
 
-    filesArr.push({ ...doc.data() as FileNameAndRefType }) 
+    filesArr.push({ ...doc.data() as FileNameAndRefType })
   });
   return filesArr
 }
@@ -204,15 +279,15 @@ const getCategoriesFromDatabase = async (currentUserId: any) => {
 
   let catsArr: any[] = []
   const catsCollectionRef = collection(fireStoreDb, "categories");
-  const q =  query(catsCollectionRef, where("userId", "==", currentUserId))
+  const q = query(catsCollectionRef, where("userId", "==", currentUserId))
 
   const querySnapshot = await getDocs(q)
 
   querySnapshot.forEach((doc) => {
 
-    //console.log("doc.data()", doc.data())
+    console.log("*/*/ cat - doc.data()", doc.data())
 
-    catsArr.push(doc.data()) 
+    catsArr.push(doc.data())
   })
   return catsArr
 }
@@ -229,7 +304,7 @@ const getCatIdFromLabel = async (currentUserId: any, catLabel: string) => {
   const querySnapshot = await getDocs(q);
 
   console.log(querySnapshot)
-  
+
   let catId = ''
   querySnapshot.forEach((doc) => {
     catId = doc.data().id
@@ -247,8 +322,8 @@ const getCatLabelFromId = async (catId: string) => {
   querySnapshot.forEach((doc) => {
     label = doc.data().label
   })
-  
-  return label !== "" 
+
+  return label !== ""
     ? label
     : "NON DEFINIE"
 }
@@ -270,7 +345,7 @@ const addFakeDataOnFirebaseAndReload = (currentUser: any, fakeContactsData: Cont
   Promise.all(promises)
     .then(() => { window.location.reload() })
     .catch((error) => { console.error("Error reloading page: ", error); });
-}  
+}
 
 const addFakeDataOnFirebase = (currentUser: any, fakeContactsData: Contact[]) => {
   // fakeContactsData.map((contact: Contact) => {
@@ -286,8 +361,8 @@ const addFakeDataOnFirebase = (currentUser: any, fakeContactsData: Contact[]) =>
       .catch((error) => { console.error("***Error adding document: ", error); });
   })
 
-  return Promise.all(promises); 
-}  
+  return Promise.all(promises);
+}
 
 
 const addContactOnFirebaseAndReload = async (currentUser: any, contact: Contact) => {
@@ -302,11 +377,11 @@ const addContactOnFirebaseAndReload = async (currentUser: any, contact: Contact)
   }
 
   console.log("****************//////////////FINI ///////////**********")
-  
+
   window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
 }
 
-const addFileOnFirebaseDB = async (currentUserId: any, file: FileNameAndRefType) => {  
+const addFileOnFirebaseDB = async (currentUserId: any, file: FileNameAndRefType) => {
 
   console.log(file.fileName)
 
@@ -320,7 +395,7 @@ const addFileOnFirebaseDB = async (currentUserId: any, file: FileNameAndRefType)
   console.log("****************//////////////FINI ///////////**********")
 
   //alert("Fichier ajouté !")
-  
+
   //window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données
 }
 
@@ -329,13 +404,14 @@ const addCategorieOnFirebase = (currentUserId: any, category: ContactCategorieTy
 
   // Il faut bien mettre un RETURN ici sinon qd on appelle cette fonction dans addCategoriesOnFirebaseAndReload ça n'attend pas la fin du chargement
   return addDoc(collection(fireStoreDb, "categories"), { id: uid(), label: category.label, userId: currentUserId })
-      .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
-      .catch((error) => { console.error("Error adding document: ", error); }); 
-} 
+    .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
+    .catch((error) => { console.error("Error adding document: ", error); });
+}
 
-const addCategoriesOnFirebaseAndReload = (currentUser: any, categories: ContactCategorieType[]) => {
 
-  const promises = categories.map((cat: ContactCategorieType) => {
+const addCategoriesOnFirebaseAndReload = (currentUser: any) => {
+
+  const promises = contactCategories.map((cat: ContactCategorieType) => {
     console.log("cat", cat)
     return addCategorieOnFirebase(currentUser?.uid, cat)
   })
@@ -351,7 +427,7 @@ const addCategoriesOnFirebaseAndReload = (currentUser: any, categories: ContactC
   Promise.all(promises)
     .then(() => { window.location.reload() })
     .catch((error) => { console.error("Error reloading page: ", error); });
-}  
+}
 
 
 
@@ -475,16 +551,16 @@ const updatDataOnFirebase = async (id: string, keyAndValue: { key: string, value
   const querySnapshot = await getDocs(q);
   //getDocs(q).then((querySnapshot) => {    // A la place de la ligne ci-dessus si on vt fonction NON Async !
   querySnapshot.forEach((doc) => {        // besoin du FOREACH alors qu'il n'y en a qu'un ???
-      //console.log(doc.data())
-      //console.log(doc.ref)
-      //console.log(doc.id)
-      console.log("FIREBASE", keyAndValue.key, keyAndValue.value)
-      //docID = doc.id;
-      updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
-        [keyAndValue.key]: keyAndValue.value
-      });
-      //set(doc.ref, updatingContact)
-    })
+    //console.log(doc.data())
+    //console.log(doc.ref)
+    //console.log(doc.id)
+    console.log("FIREBASE", keyAndValue.key, keyAndValue.value)
+    //docID = doc.id;
+    updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
+      [keyAndValue.key]: keyAndValue.value
+    });
+    //set(doc.ref, updatingContact)
+  })
   // })
 }
 
@@ -503,12 +579,12 @@ const updatDataWholeContactOnFirebase = (contactToUpdate: Contact) => {
       //console.log(doc.data())
       //console.log(doc.ref)
       //console.log(doc.id)
-     // console.log("FIREBASE", keyAndValue.key, keyAndValue.value)
+      // console.log("FIREBASE", keyAndValue.key, keyAndValue.value)
       //docID = doc.id;
 
       updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
         ...contactToUpdate
-        });
+      });
 
       // updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
       //   [keyAndValue.key]: keyAndValue.value
@@ -531,7 +607,7 @@ const updateCategorieOnFirebase = (cat: ContactCategorieType) => {
       //set(doc.ref, updatingContact)
     })
   })
-}  
+}
 
 const updateFileOnFirebase = (file: FileNameAndRefType) => {
 
@@ -546,11 +622,11 @@ const updateFileOnFirebase = (file: FileNameAndRefType) => {
       //set(doc.ref, updatingContact)
     })
   })
-}  
+}
 
 
 
-const deleteAllDatasOnFirebaseAndReload = (currentUser: any = null, ) => {
+const deleteAllDatasOnFirebaseAndReload = (currentUser: any = null,) => {
 
   const contactsCollection = collection(fireStoreDb, "contacts");
   const q = (currentUser)
@@ -633,7 +709,7 @@ const deleteCategorieOnFirebase2 = (catId: string) => {
 
 
 const deleteCategorieOnFirebase = (catId: string) => {
-  console.log("catId", catId) 
+  console.log("catId", catId)
 
   const q = query(collection(fireStoreDb, "contacts"), where("businessCategoryId", "==", catId));
 
@@ -654,15 +730,15 @@ const deleteCategorieOnFirebase = (catId: string) => {
       // const docRef = doc(fireStoreDb, "categories", catId);
       // return deleteDoc(docRef);
     }
-   })
-   // Ne pas mettre le CATCH ici sinon si on ut cette fonction ailleurs, on ne pourra pas gérer l'erreur => il faut mettre le CATCH dans l'autre fonciton !!!
-   //.catch((error) => {
+  })
+  // Ne pas mettre le CATCH ici sinon si on ut cette fonction ailleurs, on ne pourra pas gérer l'erreur => il faut mettre le CATCH dans l'autre fonciton !!!
+  //.catch((error) => {
   //   console.error("Erreur lors de la suppression de la catégorie : ", error);
   // });
 }
 
 
-     
+
 
 
 
@@ -688,6 +764,14 @@ const handleOpenFile = async (file: any) => {
 };
 
 
+const getAllFirebaseUserDatasAndSave = async (currentUser: any) => {
+  
+    const contacts = await getContactsFromDatabase(currentUser)
+    const files = await getFilesFromDatabase(currentUser.uid)
+    const categories = await getCategoriesFromDatabase(currentUser.uid)
+  
+    return { contacts, files, categories }
+  }
 
 
 
@@ -699,6 +783,7 @@ export {
   realtimeDb,
   auth,
   storage,
+  addFakeDataWithCat,
   //readDataFromFirebaseAndSetContact,
   getContactsFromDatabase,
   getFilesFromDatabase,
@@ -712,13 +797,14 @@ export {
   updatDataOnFirebase,
   updatDataWholeContactOnFirebase,
   updateCategorieOnFirebase,
-  updateFileOnFirebase, 
+  updateFileOnFirebase,
   deleteAllDatasOnFirebaseAndReload,
   deleteDataOnFirebaseAndReload,
   deleteCategorieOnFirebase,
   handleOpenFile,
-  getCatLabelFromId, 
-  getCatIdFromLabel
+  getCatLabelFromId,
+  getCatIdFromLabel,
+  getAllFirebaseUserDatasAndSave
 }
 
 
