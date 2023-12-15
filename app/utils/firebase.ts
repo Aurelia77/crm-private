@@ -251,7 +251,7 @@ const getContactsFromDatabase = async (currentUser: any) => {
   const querySnapshot = await getDocs(q);
   //getDocs(collection(fireStoreDb, "contacts")).then((querySnapshot) => {
   querySnapshot.forEach((doc) => {
-    //console.log("*/*/",doc.data())
+    console.log("*/*/",doc.data())
     //console.log("contactsArr***", contactsArr)
     contactsArr.push({ ...doc.data() as Contact }); // On indique que doc.data() est de type Contact     
   });
@@ -291,7 +291,7 @@ const getCategoriesFromDatabase = async (currentUserId: any) => {
 
   querySnapshot.forEach((doc) => {
 
-    //console.log("*/*/ cat - doc.data()", doc.data())
+    console.log("*/*/ cat - doc.data()", doc.data())
 
     catsArr.push(doc.data())
   })
