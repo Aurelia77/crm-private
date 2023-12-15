@@ -45,7 +45,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
 
     const muiTheme = useTheme();
 
-    console.log("search", search)
+    //console.log("search", search)
     //console.log(selectedCatIds)
     //console.log(selectedCatLabels)
 
@@ -81,7 +81,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
     React.useEffect(() => {
         onSearchChange(search)
 
-        console.log("!!!!!!!!!! USEEFFECT")
+        //console.log("!!!!!!!!!! USEEFFECT")
     }, [search, onSearchChange, 
         //contacts
     ])

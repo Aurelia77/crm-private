@@ -3855,7 +3855,7 @@ const contacts: Contact[] = [
         "hasBeenSentEmailOrMeetUp": 0,
         "comments": "",
         "interestGauge": null,
-        "dateOfFirstCall": new Date("1 aout 2019"),
+        "dateOfFirstCall": new Date("2019-08-01"),
         "priority": 3,
     },
     {
