@@ -172,7 +172,7 @@ const countContactsByAlertDates = (contactsTab: Contact[]): Alerts => {
 }
 
 const updatedContactsInLocalList = (contacts: Contact[], id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }): Contact[] => {
-    console.log("xxxLOCAL", keyAndValue.key, keyAndValue.value)
+    //console.log("xxxLOCAL", keyAndValue.key, keyAndValue.value)
 
     let tempUpdatedContacts: Contact[] = contacts.map(contact => {
         return contact.id === id ? { ...contact, [keyAndValue.key]: keyAndValue.value } : contact

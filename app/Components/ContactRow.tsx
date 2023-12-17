@@ -137,7 +137,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
     const [contactInfo, setContactInfo] = React.useState<Contact>(contact)
 
-    const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[]>([]);
+    const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[] | null>(null);
 
     const muiTheme = useTheme();
 
@@ -290,8 +290,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     // const handleChangeText = (attribut: keyof Contact) => (event: React.ChangeEvent<HTMLInputElement>) => {
     const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>, attribut: keyof Contact) => {
 
-        console.log("event.target.value", event.target.value)
-        console.log(attribut)
+        // console.log("event.target.value", event.target.value)
+        // console.log(attribut)
         handleUpdateContact(contact.id, { key: attribut, value: event.target.value })
         // handleUpdateContact({ ...contact, [attribut]: event.target.value })
     }
@@ -330,7 +330,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
 
     const handleChangeNumber = (number: number | null, attribut: string) => {
-        console.log(number);      // Obligé de mettre ; sinon erreur !!! (Uncaught TypeError: console.log(...) is not a function)
+        //console.log(number);      // Obligé de mettre ; sinon erreur !!! (Uncaught TypeError: console.log(...) is not a function)
         //newGauge && console.log(newGauge)
 
         // (number && (number > 5 || number < 0))
@@ -571,7 +571,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                 /> */}
                 <FormControl >
                     {/* Si on ne fait pas cette vérification, les options n'étant pas chargées au premier rendu => on a une indication (en jaune) dans la console : You have provided an out-of-range value for the select component" */}
-                    <Select
+                    {categoriesList && <Select
                         id="checkbox-type-label"
                         value={contact.businessCategoryId}
                         variant="standard"
@@ -597,7 +597,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             }}
                             >{cat.label}</MenuItem>
                         ))}
-                    </Select>
+                    </Select>}
                 </FormControl>
                 {/* <CustomTextField attribut="businessCategory" /> */}
             </StyledTableCell>

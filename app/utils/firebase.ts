@@ -63,6 +63,7 @@ const guadeloupeRef = ref(storage, 'guadeloupe.jpg');
 //     console.log('Uploaded a blob or file!');
 // });
 
+
 const fakeContactsNameAndCatLabel = [
   {
       name: "Camping Hyères",
@@ -92,15 +93,22 @@ const fakeContactsNameAndCatLabel = [
 
 const addCatToFakeContacts = async (currentUser: any, fakeContactsData: Contact[], fakeContactsNameAndCatLabel: any) => {
 
+  console.log("***fakeContactsNameAndCatLabel", fakeContactsNameAndCatLabel)
+
   console.log("****start addCatToFakeContacts")
   let promises: any = [];
 
   for (const fakeContact of fakeContactsData) {
       for (const contactNameAndCatLabel of fakeContactsNameAndCatLabel) {
 
-          console.log("***contact", fakeContact.businessName, " - " ,contactNameAndCatLabel.name)
+        // console.log("***fakeContactsNameAndCatLabel", fakeContactsNameAndCatLabel)
+        // console.log("***contactNameAndCatLabel", contactNameAndCatLabel)
+        // console.log("***contactNameAndCatLabel", contactNameAndCatLabel.name)
+        //   console.log("***contact", fakeContact.businessName, " - " ,contactNameAndCatLabel.name)
 
           if (fakeContact.businessName === contactNameAndCatLabel.name) {
+
+            console.log("fakeContact.businessName === contactNameAndCatLabel.name !!!")
 
               const catId = await getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel);                    
               console.log("***cat du contact", contactNameAndCatLabel.catLabel)
@@ -135,6 +143,8 @@ const addFakeDataWithCat = async(currentUser: any) => {
   addCatToFakeContacts(currentUser, fakeContactsData, fakeContactsNameAndCatLabel )       
 }
 const addLaurianeDataWithCat = async(currentUser: any) => {
+  console.log("contactsLaurianeNameAndCatLabel", contactsLaurianeNameAndCatLabel)
+
   await addFakeDataOnFirebase(currentUser, laurianeData) 
   addCatToFakeContacts(currentUser, laurianeData, contactsLaurianeNameAndCatLabel)        
 }
@@ -251,7 +261,7 @@ const getContactsFromDatabase = async (currentUser: any) => {
   const querySnapshot = await getDocs(q);
   //getDocs(collection(fireStoreDb, "contacts")).then((querySnapshot) => {
   querySnapshot.forEach((doc) => {
-    console.log("*/*/",doc.data())
+    //console.log("*/*/",doc.data())
     //console.log("contactsArr***", contactsArr)
     contactsArr.push({ ...doc.data() as Contact }); // On indique que doc.data() est de type Contact     
   });
@@ -291,7 +301,7 @@ const getCategoriesFromDatabase = async (currentUserId: any) => {
 
   querySnapshot.forEach((doc) => {
 
-    console.log("*/*/ cat - doc.data()", doc.data())
+    //console.log("*/*/ cat - doc.data()", doc.data())
 
     catsArr.push(doc.data())
   })

@@ -135,7 +135,7 @@ export default function Contacts() {
 
 
     const updateContactInContactsAndDB = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
-        console.log("updatingContact", id, keyAndValue)
+        //console.log("updatingContact", id, keyAndValue)
 
         setContacts(updatedContactsInLocalList(contacts, id, keyAndValue))
         setFilteredContacts(updatedContactsInLocalList(filteredContacts, id, keyAndValue))
@@ -276,7 +276,7 @@ export default function Contacts() {
                     })
                 )
             })
-            console.log(searchedContacts)
+            //console.log(searchedContacts)
             setFilteredContacts(searchedContacts)
         } else {
             setFilteredContacts(contacts)

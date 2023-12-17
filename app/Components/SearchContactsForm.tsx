@@ -90,7 +90,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
         if (selectedCatIds.length > 0) {
             Promise.all(selectedCatIds.map(catId => getCatLabelFromId(catId)))
                 .then(labels => {
-                    console.log("labels", labels)
+                   // console.log("labels", labels)
                     return setCatSelectedLabels(labels)
                 });
         } else {
@@ -109,7 +109,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
         // const { target: { value }, } = event;
         const value = event.target.value;
 
-        console.log(value)
+        //console.log(value)
 
         attribut === "businessCategoryId" &&  setCatSelectedIds(value as string[]);
 

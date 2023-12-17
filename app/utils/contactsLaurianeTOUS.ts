@@ -400,7 +400,7 @@ const contacts: Contact[] = [
         "dateOfFirstCall": null,
         "priority": 2,
     },
-    {
+    /*{
         ...emptyContact,
         "isClient": false,
         "contactType": "Entreprise",
@@ -3878,6 +3878,7 @@ const contacts: Contact[] = [
         "dateOfFirstCall": new Date("2022-11-07"),
         "priority": 3,
     }
+    */
 ]
 
 export default contacts;

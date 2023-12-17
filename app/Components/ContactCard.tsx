@@ -76,8 +76,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     const [tabValue, setTabValue] = React.useState<number>(0);
     const [logoChoosen, setIsLogoChoosen] = React.useState(false);
 
-    console.log("tabValue x", tabValue)
-    console.log("tabValue x", typeof tabValue)
+    //console.log("tabValue x", tabValue)
+    //console.log("tabValue x", typeof tabValue)
 
     console.log("contactToAddOrUpdate", contactToAddOrUpdate)
     //console.log("LOGO", contactToAddOrUpdate.logo)
@@ -102,7 +102,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
     //console.log("firebaseFileSelected", firebaseFileSelected)
 
-    const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[]>([]);
+    const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[] | null>(null);
 
 
     const [openNoContactModal, setOpenNoContactModal] = React.useState(false);
@@ -566,7 +566,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     {/* ///////// CAT */}
                     <FormControl sx={{ width: "auto", backgroundColor: muiTheme.palette.primary.main, borderRadius: "50px" }} >
                         <InputLabel id="checkbox-type-label" sx={{ marginLeft: '20px' }} >Catégorie</InputLabel>
-                        <Select
+                      {categoriesList &&  <Select
                             sx={{
                                 color: 'white',
                                 textAlign: 'center',
@@ -594,7 +594,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
                                 >{cat.label}</MenuItem>
                             ))}
-                        </Select>
+                        </Select>}
                     </FormControl>
 
                     {/* ///////// TYPE */}
