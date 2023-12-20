@@ -5,7 +5,7 @@ import React from 'react'
 import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, deleteDoc, updateDoc, doc } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from 'firebase/firestore';
-import Todos from '../../Components/Todos';
+import Todos from '../../Components/TestComponents/Todos';
 
 export default function TestAsync() {
 
