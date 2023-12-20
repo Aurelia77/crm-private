@@ -9,7 +9,6 @@ import { purple } from '@mui/material/colors';
 import { useTheme } from '@mui/material/styles';
 
 
-
 const PurpleButton = styled(Button)<ButtonProps>(({ theme }) => ({
   color: theme.palette.getContrastText(purple[500]),
   backgroundColor: purple[500],
@@ -39,6 +38,7 @@ export default function Home() {
         <Button variant="contained" color="ochre" href= '/testPages/testAutocompletePage'>Autocomplete</Button> 
         <Button variant="contained" color="primary" href= '/testPages/testTableSortLabel'>TestTableSortLabel OK</Button>
         <PurpleButton variant="contained" href= '/testPages/testFuncAsyncAndReRender'>Test ASYNC and RERENDER !</PurpleButton>
+        <Button variant="contained" color="secondary" href= '/testPages/TestVirtualizedWithReactWindowsPage'>Test Virtualized with React Windows</Button>
       </Stack>      
   )
 }

@@ -500,7 +500,7 @@ const contacts: Contact[] = [
         "dateOfFirstCall": null,
         "priority": 3,
     },
-    {
+   /* {
         ...emptyContact,
         "isClient": false,
         "contactType": "Entreprise",
@@ -3877,7 +3877,7 @@ const contacts: Contact[] = [
         "interestGauge": null,
         "dateOfFirstCall": new Date("2022-11-07"),
         "priority": 3,
-    }
+    }*/
 ]
 
 export default contacts;

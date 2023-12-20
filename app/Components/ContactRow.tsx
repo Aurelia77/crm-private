@@ -124,6 +124,7 @@ type ContactRowProps = {
     diplayContactCard: (contact: Contact) => void,
     currentUserId: string
     getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
+    
 }
 
 export default function ContactRow({ contact, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, diplayContactCard, currentUserId, getPriorityTextAndColor }: ContactRowProps) {

@@ -95,7 +95,7 @@ const fakeContactsNameAndCatLabel = [
   },
 ]
 
-const addCatToFakeContacts = async (currentUserId: any, fakeContactsData: Contact[], fakeContactsNameAndCatLabel: any) => {
+const addCatToFakeContactsAndReload = async (currentUserId: any, fakeContactsData: Contact[], fakeContactsNameAndCatLabel: any) => {
 
   console.log("***fakeContactsNameAndCatLabel", fakeContactsNameAndCatLabel)
 
@@ -138,21 +138,21 @@ const addCatToFakeContacts = async (currentUserId: any, fakeContactsData: Contac
       .then(() => { 
           console.log("***Dans le THEN du PROMISE ALL")
           console.log("!!!!!!!!! CAT ATJOUTées !!!!!")
-          //window.location.reload() 
+          window.location.reload() 
       })
       .catch((error) => { console.error("Error reloading page: ", error); });
 }
 const addFakeDataWithCat = async(currentUserId: any) => {
-  await addFakeDataOnFirebaseAndReload(currentUserId, fakeContactsData)            
-  // await addFakeDataOnFirebase(currentUserId, fakeContactsData)            
-  addCatToFakeContacts(currentUserId, fakeContactsData, fakeContactsNameAndCatLabel )       
+  await addFakeDataOnFirebase(currentUserId, fakeContactsData)            
+  //await addFakeDataOnFirebaseAndReload(currentUserId, fakeContactsData)            
+  addCatToFakeContactsAndReload(currentUserId, fakeContactsData, fakeContactsNameAndCatLabel )       
 }
 const addLaurianeDataWithCat = async(currentUserId: any) => {
   console.log("contactsLaurianeNameAndCatLabel", contactsLaurianeNameAndCatLabel)
 
   await addFakeDataOnFirebase(currentUserId, laurianeData) 
   //await addFakeDataOnFirebaseAndReload(currentUserId, laurianeData) 
-  addCatToFakeContacts(currentUserId, laurianeData, contactsLaurianeNameAndCatLabel)        
+  addCatToFakeContactsAndReload(currentUserId, laurianeData, contactsLaurianeNameAndCatLabel)        
 }
 
 
