@@ -22,10 +22,10 @@ import { fireStoreDb } from '../utils/firebase';
 
 
 type AdminType = {
-  currentUser: any
+  currentUserId: any
 }
 
-export default function Admin({ currentUser }: AdminType) {
+export default function Admin({ currentUserId }: AdminType) {
 
   const [filesList, setFilesList] = React.useState<FileNameAndRefType[]>([]);
   const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[]>([]);
@@ -49,11 +49,11 @@ export default function Admin({ currentUser }: AdminType) {
 
 
   React.useEffect(() => {
-    getFilesFromDatabase(currentUser.uid).then((files: FileNameAndRefType[]) => {
+    getFilesFromDatabase(currentUserId).then((files: FileNameAndRefType[]) => {
       setFilesList(files);
     });
 
-    getCategoriesFromDatabase(currentUser.uid).then((categories: ContactCategorieType[]) => {
+    getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
       console.log("categories", categories)
 
       // Pas besoin de l'attribut userId donc on garde juste ce qu'on veut
@@ -64,7 +64,7 @@ export default function Admin({ currentUser }: AdminType) {
       setCategoriesList(newCategoriesList);
     })
 
-  }, [currentUser.uid]);
+  }, [currentUserId]);
 
   React.useEffect(() => {
     newCatName && setAlertCatText("")
@@ -112,7 +112,7 @@ export default function Admin({ currentUser }: AdminType) {
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL: any) => {
-          newFileName && addFileOnFirebaseDB(currentUser.uid, { fileName: newFileName, fileRef: downloadURL }).then(() => {
+          newFileName && addFileOnFirebaseDB(currentUserId, { fileName: newFileName, fileRef: downloadURL }).then(() => {
             //setFilesList([...filesList, { fileName: file.name, fileRef: downloadURL }]);
             setFilesList([...filesList, { fileName: newFileName, fileRef: downloadURL }]);
             //window.location.reload();
@@ -147,7 +147,7 @@ export default function Admin({ currentUser }: AdminType) {
 
     const newCatWithUpperCase: ContactCategorieType = { id: uid(), label: newCatName.charAt(0).toUpperCase() + newCatName.slice(1) }
 
-    addCategorieOnFirebase(currentUser.uid, newCatWithUpperCase)
+    addCategorieOnFirebase(currentUserId, newCatWithUpperCase)
     setCategoriesList([...categoriesList, { ...newCatWithUpperCase }]);
     // setCategoriesList([...categoriesList, newCatWithUpperCase].sort((a, b) => a.localeCompare(b)));
     setNewCatName("");
@@ -244,7 +244,7 @@ export default function Admin({ currentUser }: AdminType) {
   }
 
   const handleSaveAll = () => {
-    console.log("*/*/*/",getAllFirebaseUserDatasAndSave(currentUser))
+    console.log("*/*/*/",getAllFirebaseUserDatasAndSave(currentUserId))
   } 
 
 
@@ -519,15 +519,15 @@ export default function Admin({ currentUser }: AdminType) {
                   //width: "360px" 
               }} >Pour Version TEST</Typography>
           <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }} >
-              <Button variant="contained" color='success' onClick={() => addCategoriesOnFirebaseAndReload(currentUser)}>1-Ajouter Catégories</Button>
-              <Button variant="contained" color='ochre' onClick={() => addFakeDataWithCat(currentUser)}>2-Ajouter Contacts Test</Button>
-              <Button variant="contained" color='warning' onClick={() => addLaurianeDataWithCat(currentUser)}>Ajouter Contacts LAURIANE</Button>
+              <Button variant="contained" color='success' onClick={() => addCategoriesOnFirebaseAndReload(currentUserId)}>1-Ajouter Catégories</Button>
+              <Button variant="contained" color='ochre' onClick={() => addFakeDataWithCat(currentUserId)}>2-Ajouter Contacts Test</Button>
+              <Button variant="contained" color='warning' onClick={() => addLaurianeDataWithCat(currentUserId)}>Ajouter Contacts LAURIANE</Button>
               <Button variant="contained" onClick={handleSaveAll}>Sauvegarder TOUTES mes données</Button>
-              {/* <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
-              <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUser, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button> */}
+              {/* <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUserId, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
+              <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUserId, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button> */}
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-around", }} >
-              <Button variant="contained" color='error' sx={{ width: "300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUser)}>Supprimer tous mes contacts</Button>
+              <Button variant="contained" color='error' sx={{ width: "300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUserId)}>Supprimer tous mes contacts</Button>
               {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer TOUS les contacts de l'appli !!!</Button> */}
           </Box>
       </Box>

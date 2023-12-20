@@ -1,12 +1,17 @@
 'use client'
 
-import { Box, Button } from '@mui/material';
+import { Box, Button, Divider, Input, Typography } from '@mui/material';
 import React from 'react'
 import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, deleteDoc, updateDoc, doc } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from 'firebase/firestore';
+import Todos from '../../Components/Todos';
 
 export default function TestAsync() {
+
+  //////// TEST RERENDER
+  const [countState, setStateCount] = React.useState(0)
+  const contRef = React.useRef(0)
 
   ///////////// TEST PROMESSES   
   const firebaseConfig = {
@@ -28,13 +33,13 @@ export default function TestAsync() {
 
   const isOk: boolean = false
 
-  
-  
+
+
   console.log('%c Fonction ASYNCHRONE', 'color: tomato')
   console.log('%c callFunctAsyncReturnPromise', 'color: MediumTurquoise')
   console.log('%c callFunctAsyncReturnRESULT', 'color: MediumSpringGreen')
   console.log('%c    color: LightCoral', 'color: LightCoral')
-console.log('%c    color: HotPink', 'color: HotPink')
+  console.log('%c    color: HotPink', 'color: HotPink')
 
 
   //Pas une fonct ASYNC
@@ -51,7 +56,7 @@ console.log('%c    color: HotPink', 'color: HotPink')
 
 
   //Fonct ASYNC
-    //const functAsync = async () => {// On peut ajouter ASYNC / AWAIT (await avant new Promise) => mais pas obligatoire
+  //const functAsync = async () => {// On peut ajouter ASYNC / AWAIT (await avant new Promise) => mais pas obligatoire
   const functAsync = () => {
     console.log('%c 111-START Fonction ASYNC', 'color: tomato');
 
@@ -93,29 +98,29 @@ console.log('%c    color: HotPink', 'color: HotPink')
     functAsync().then((result) => {
       console.log("%c 333-S'affiche APRES le résultat de la FONCT ASYNC => le résultat est :", 'color: MediumSpringGreen', result)  // RESULT est une PROMESSE (avec un State, un Result : pending, fulfilled, ou rejected) 
     })
-    // Si on met pas le CATCH et que c'est un REJECT => erreur en rouge dans la console.
-    .catch((error) => {
-      console.log("%c 333-erreur : ", 'color: MediumSpringGreen', error)
-    })
+      // Si on met pas le CATCH et que c'est un REJECT => erreur en rouge dans la console.
+      .catch((error) => {
+        console.log("%c 333-erreur : ", 'color: MediumSpringGreen', error)
+      })
 
     console.log("%c 222- S'affiche AVANT ", 'color: MediumSpringGreen')
   }
 
-  
+
   const getCategoriesFromDatabase = async () => {
     console.log('%c 111-START Fonction ASYNC getCategoriesFromDatabase', 'color: tomato');
 
-    const userA_Id = "9toBAMERXdV9TTGHZDSt6qJoxvf2"    
+    const userA_Id = "9toBAMERXdV9TTGHZDSt6qJoxvf2"
     let catsArr: any[] = []
 
     const catsCollectionRef = collection(fireStoreDb, "categories");
-    const q =  query(catsCollectionRef, where("userId", "==", userA_Id))  
+    const q = query(catsCollectionRef, where("userId", "==", userA_Id))
     const querySnapshot = await getDocs(q)
-  
-    querySnapshot.forEach((doc) => {      
+
+    querySnapshot.forEach((doc) => {
       //console.log(doc.data())         // Données d'une cat (ex: {id: '6ef4ff40702', label: 'Plage Privée', userId: '9toBAMERXdV9TTGHZDSt6qJoxvf2'})
-      
-      catsArr.push(doc.data()) 
+
+      catsArr.push(doc.data())
     })
 
     console.log("%c 222-RESULTATS ", 'color: tomato', catsArr)   // Toutes les cats
@@ -130,12 +135,44 @@ console.log('%c    color: HotPink', 'color: HotPink')
     console.log("%c 222-catsArr", 'color: MediumTurquoise', catsArr)
   }
 
+  const Coucou = () => {
+    console.log('coucou !!!')
 
+    React.useEffect(() => {
+      console.log('Coucou rerendered');
+    });
 
+    const [number, setNumber] = React.useState(0);
+
+    return (
+      <div>
+        <h1>Memo Coucou !!!</h1>
+        <Button variant="contained" color="success" onClick={() => setNumber(number + 1)}>{number}</Button>
+      </div>
+    )
+  }
+
+  const MemoedCoucou = React.memo(Coucou);
+
+  const [count, setCount] = React.useState(0);
+  const [todos, setTodos] = React.useState(["todo 1", "todo 2"]);
+
+  const increment = () => {
+    setCount((c) => c + 1);
+  };
 
 
   return (
-    <Box>
+    <React.Fragment>
+      <Todos todos={todos} />
+      <hr />
+      <div>
+        Count: {count}
+        <button onClick={increment}>+</button>
+      </div>
+
+      <MemoedCoucou />
+
       <Button
         onClick={functNonAsync}
         sx={{ margin: "30px 0 0 500px" }}
@@ -159,6 +196,36 @@ console.log('%c    color: HotPink', 'color: HotPink')
         onClick={displayCat}
         sx={{ margin: "30px 0 0 500px" }}
         variant="contained" >displayCat pour user a@a.fr</Button>
-    </Box>
+
+      <Divider sx={{ margin: "30px 0 0 0" }} />
+
+      <Box sx={{display:"flex", gap:"20px", margin:"50px"}}>
+        <Button
+          onClick={() => setStateCount(countState + 1)}
+          //sx={{ margin: "30px 0 0 500px" }}
+          variant="contained" >
+            State +1
+        </Button>
+        <Typography sx={{ color: countState > 2 ? "red" : "blue" }} variant="h6">State : {countState}</Typography>
+        <Typography sx={{ display: countState > 2 ? "block" : "none" }} variant="h6">State  &gt; 2: {countState}</Typography>
+      </Box>
+
+      <Box sx={{display:"flex", gap:"20px", margin:"50px"}}>
+        <Button
+          onClick={() => contRef.current++}
+          //sx={{ margin: "30px 0 0 500px" }}
+          variant="contained" >
+            Ref +1
+        </Button>
+        <Typography sx={{ color: contRef.current > 2 ? "red" : "blue" }} variant="h6">Ref &gt; 2: {contRef.current}</Typography>
+        <Typography sx={{  display: contRef.current > 2 ? "block" : "none" }} variant="h6">Ref : {contRef.current}</Typography>
+      </Box>
+
+      <Divider sx={{ margin: "30px 0 0 0" }} />
+
+
+
+
+    </React.Fragment>
   )
 }

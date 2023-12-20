@@ -23,12 +23,12 @@ const SignUp = () => {
         confirmPassword: ''
     }) 
     
-    // En faire en 1 seul !!!!!!!!!!!!!!!!
+    // En faire en 1 seul !!!???
     const [frontError, setFrontError] = React.useState<any>("")  // Front error (password moins de 6 caractères par exemple)
     const [backError, setBackError] = React.useState<any>("")   // Backup error
 
     React.useEffect(() => {
-        console.log("I am in")
+        //console.log("I am in")
         if (error) {
             setInterval(() => {
                 setBackError("")

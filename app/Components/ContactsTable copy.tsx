@@ -226,8 +226,7 @@ type ContactsTableProps = {
     getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
     //setSelectedContactId: (id: string) => void
 }
-const ContactsTable = ({ contacts, currentUserId, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, diplayContactCard, getPriorityTextAndColor
-}: ContactsTableProps) => {
+const ContactsTable = ({ contacts, currentUserId, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, diplayContactCard, getPriorityTextAndColor}: ContactsTableProps) => {
 
     //console.log("CONTACT TABLE")
     console.log("CONTACT TABLE Contacts = ", contacts)
@@ -285,9 +284,7 @@ const ContactsTable = ({ contacts, currentUserId, selectedContactId, setSelected
     // ];
    
     return (
-        <Paper sx={{ 
-            width: '100%',
-          }}  elevation={3} >
+        <Paper sx={{ width: '100%',  }}  elevation={3} >
             {/* <div style={{ height: 400, width: '100%' }}>
                 <DataGrid rows={rows} columns={columns} />
             </div> */}     

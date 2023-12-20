@@ -20,6 +20,7 @@ import fakeContactsData from '../utils/contactsTest'
 import laurianeData from '../utils/contactsLaurianeTOUS'
 import { contactCategories } from '../utils/toolbox'
 import contactsLaurianeNameAndCatLabel from '../utils/contactsLaurianeNomEtCat'
+import { getPerformance } from "firebase/performance";
 
 
 // import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
@@ -54,6 +55,9 @@ const auth = getAuth(app);
 
 // Initialize Cloud Storage and get a reference to the service
 const storage = getStorage(app);
+
+// Initialize Performance Monitoring and get a reference to the service
+const perf = getPerformance(app);
 
 const storageRef = ref(storage);
 // //console.log(storageRef)
@@ -246,7 +250,7 @@ const addLaurianeDataWithCat = async(currentUser: any) => {
 // }
 
 
-const getContactsFromDatabase = async (currentUser: any) => {
+const getContactsFromDatabase = async (currentUserId: any) => {
   // const readDataFromFirebase = (currentUser: User | null) => {
   let contactsArr: Contact[] = []
   const contactsCollectionRef = collection(fireStoreDb, "contacts");
@@ -254,7 +258,7 @@ const getContactsFromDatabase = async (currentUser: any) => {
     //(filterName !== '')
     //   ? query(contactsCollectionRef, where("userId", "==", currentUser?.uid ?? ""), where("businessName", ">=", filterName), where("businessName", "<=", filterName + "\uf8ff"))    // \uf8ff = "z
     //   : 
-    query(contactsCollectionRef, where("userId", "==", currentUser?.uid ?? ""));
+    query(contactsCollectionRef, where("userId", "==", currentUserId ?? ""));
   //const q = query(collection(fireStoreDb, "contacts"), where("userId", "==", currentUser?.uid ?? ""));
   // const q = query(collection(fireStoreDb, "contacts"), where("userId", "==", currentUser?.uid ?? ""));
 
@@ -381,12 +385,12 @@ const addFakeDataOnFirebase = (currentUser: any, fakeContactsData: Contact[]) =>
 }
 
 
-const addContactOnFirebaseAndReload = async (currentUser: any, contact: Contact) => {
+const addContactOnFirebaseAndReload = async (currentUserId: any, contact: Contact) => {
   console.log("add contact", contact)
   //console.log({ ...contact, id: uid() })
 
   try {
-    const docRef = await addDoc(collection(fireStoreDb, "contacts"), { ...contact, userId: currentUser.uid });
+    const docRef = await addDoc(collection(fireStoreDb, "contacts"), { ...contact, userId: currentUserId });
     console.log("Document written with ID: ", docRef.id);
   } catch (error) {
     console.error("Error adding document: ", error);
@@ -642,11 +646,11 @@ const updateFileOnFirebase = (file: FileNameAndRefType) => {
 
 
 
-const deleteAllDatasOnFirebaseAndReload = (currentUser: any = null,) => {
+const deleteAllDatasOnFirebaseAndReload = (currentUserId: any = null,) => {
 
   const contactsCollection = collection(fireStoreDb, "contacts");
-  const q = (currentUser)
-    ? query(contactsCollection, where("userId", "==", currentUser.uid))
+  const q = currentUserId
+    ? query(contactsCollection, where("userId", "==", currentUserId))
     : query(contactsCollection);
 
   // const q = onlyFromConnectedUser ? query(collection(fireStoreDb, "contacts"), where("userId", "==", currentUser?.uid ?? ""))
@@ -780,11 +784,11 @@ const handleOpenFile = async (file: any) => {
 };
 
 
-const getAllFirebaseUserDatasAndSave = async (currentUser: any) => {
+const getAllFirebaseUserDatasAndSave = async (currentUserId: any) => {
   
-    const contacts = await getContactsFromDatabase(currentUser)
-    const files = await getFilesFromDatabase(currentUser.uid)
-    const categories = await getCategoriesFromDatabase(currentUser.uid)
+    const contacts = await getContactsFromDatabase(currentUserId)
+    const files = await getFilesFromDatabase(currentUserId)
+    const categories = await getCategoriesFromDatabase(currentUserId)
   
     return { contacts, files, categories }
   }

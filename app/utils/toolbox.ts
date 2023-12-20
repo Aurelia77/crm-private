@@ -225,7 +225,7 @@ export {
     //sortedBusinessCategories,
     contactTypes,
     timeStampObjToTimeStamp,
-    //timeStampToTimeStampObj,
+    timeStampToTimeStampObj,
     isDateTimeStampObjPassed,
     isDateTimeStampObjBeforeAWeek,
     countContactsByAlertDates,

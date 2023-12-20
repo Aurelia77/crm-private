@@ -81,8 +81,8 @@ function TabPanel(props: TabPanelProps) {
       <div
           role="tabpanel"
           hidden={value !== index}
-          id={`vertical-tabpanel-${index}`}
-          aria-labelledby={`vertical-tab-${index}`}
+          //id={`vertical-tabpanel-${index}`}
+          //aria-labelledby={`vertical-tab-${index}`}
           style={{ width: width }}
           // style={{ width: `calc(100vw - ${TABS_WIDTH}px)` }}
           {...other}

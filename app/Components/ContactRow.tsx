@@ -125,6 +125,7 @@ type ContactRowProps = {
     currentUserId: string
     getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
 }
+
 export default function ContactRow({ contact, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, diplayContactCard, currentUserId, getPriorityTextAndColor }: ContactRowProps) {
 
     //console.log("CONTACT ROW", contact)
@@ -307,7 +308,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
 
         console.log("newDate", newDate) // M {$L: 'en', $u: undefined, $d: Wed Nov 01 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale), $y: 2023, $M: 10, …}
         console.log(typeof newDate) // object
-        console.log(newDate?.toDate()) // Wed Nov 01 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale)
+        //console.log(newDate?.toDate()) // Wed Nov 01 2023 16:12:50 GMT+0100 (heure normale d’Europe centrale)
         // // console.log((newDate?.toDate())?.getTime())      // Non car c'est un TIMESTAMP mais pas l'objet Timestamp de firebase
         // newDate && console.log(Timestamp.fromDate(newDate.toDate()))
         //console.log("parse ?", Date.parse(newDate))
@@ -633,14 +634,14 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             sx={{ marginRight:"70%" }} 
                             //fontSize='large' 
                             />}
-                        <Tooltip arrow title="Supprimer la date" placement='left' >
+                        {/* <Tooltip arrow title="Supprimer la date" placement='left' >
                             <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
                                 onClick={() => handleChangeDate(null, "dateOfNextCall")} >
                                 <ClearIcon
                                 //color='warning'
                                 />
                             </IconButton>
-                        </Tooltip>
+                        </Tooltip> */}
                     </Box>
                     <Tooltip arrow title={isDatePassed(contact.dateOfNextCall)
                                             ? "Attention : La date est passée !!!"
@@ -995,11 +996,11 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                                     }}
                                 // color={usePhoneIconStyle(contact.hasBeenCalled)}
                                 />
-                                {/* hasBeenCalled={contact.hasBeenCalled} /> */}
-                                {/* {contact.hasBeenCalled === false ? <CallIcon /> : <CallRoundedIcon />}  */}
                             </IconButton>
                         </Tooltip>
                     </Avatar>
+                                {/* hasBeenCalled={contact.hasBeenCalled} /> */}
+                                {/* {contact.hasBeenCalled === false ? <CallIcon /> : <CallRoundedIcon />}  */}
                 </Box>
                 {/* <Checkbox checked={contact.hasBeenCalled}       // Par défaut quand checked = true, la couleur est la primary (.light ?)
                     //color='primary'           // Si on met la couleur ici => quand non coché c'est gris !
@@ -1035,10 +1036,10 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         <Tooltip arrow title={getEmailIconText(contact.hasBeenSentEmailOrMeetUp)}>
                             <IconButton color="primary" onClick={handleClickhasBeenSentEmailOrMeetUp}>
                                 <RightMailIcon hasBeenSentEmailOrMeetUp={contact.hasBeenSentEmailOrMeetUp} />
-                                {/* <MailOutlineIcon fontSize="large" sx={{ color: "white" }} /> */}
                             </IconButton>
                         </Tooltip>
                     </Avatar>
+                                {/* <MailOutlineIcon fontSize="large" sx={{ color: "white" }} /> */}
                 </Box>
 
                 {/* <Checkbox checked={contact.hasBeenSentEmailOrMeetUp}
@@ -1151,6 +1152,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                      />}
                     emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}
                 /> */}
+
+
                 <StyledRating
                     name="highlight-selected-only"
                     //defaultValue={2}
@@ -1161,6 +1164,8 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                     getLabelText={(value: number) => customIcons[value].label}
                     highlightSelectedOnly
                 />
+
+
                 {/* <GaugeComponent
                     arc={{
                         subArcs: [

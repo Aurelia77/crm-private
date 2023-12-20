@@ -19,8 +19,8 @@ const PurpleButton = styled(Button)<ButtonProps>(({ theme }) => ({
 }));
 
 export default function Home() {
-  const muiTheme = useTheme();
-  console.log("muiTheme", muiTheme)
+  // const muiTheme = useTheme();
+  // console.log("muiTheme", muiTheme)
 
   return (
     // <div>     
@@ -38,7 +38,7 @@ export default function Home() {
         <Button variant="contained" color="secondary"  href= '/testPages/testUseEffectPage' >Test Page</Button>
         <Button variant="contained" color="ochre" href= '/testPages/testAutocompletePage'>Autocomplete</Button> 
         <Button variant="contained" color="primary" href= '/testPages/testTableSortLabel'>TestTableSortLabel OK</Button>
-        <PurpleButton variant="contained" href= '/testPages/testFuncAsync'>Test ASYNC !</PurpleButton>
+        <PurpleButton variant="contained" href= '/testPages/testFuncAsyncAndReRender'>Test ASYNC and RERENDER !</PurpleButton>
       </Stack>      
   )
 }
