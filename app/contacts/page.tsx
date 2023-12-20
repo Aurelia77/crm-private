@@ -79,8 +79,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { getCatIdFromLabel } from '../utils/firebase'
 import { useTheme } from '@mui/material/styles';
 
-import Coucou from '../Components/Coucou';
-import Todos from '../Components/Todos';
 
 import { initializeApp } from "firebase/app";
 import { getFirestore } from 'firebase/firestore';

@@ -57,7 +57,7 @@ const auth = getAuth(app);
 const storage = getStorage(app);
 
 // Initialize Performance Monitoring and get a reference to the service
-const perf = getPerformance(app);
+//const perf = getPerformance(app);
 
 const storageRef = ref(storage);
 // //console.log(storageRef)
@@ -95,7 +95,7 @@ const fakeContactsNameAndCatLabel = [
   },
 ]
 
-const addCatToFakeContacts = async (currentUser: any, fakeContactsData: Contact[], fakeContactsNameAndCatLabel: any) => {
+const addCatToFakeContacts = async (currentUserId: any, fakeContactsData: Contact[], fakeContactsNameAndCatLabel: any) => {
 
   console.log("***fakeContactsNameAndCatLabel", fakeContactsNameAndCatLabel)
 
@@ -114,12 +114,12 @@ const addCatToFakeContacts = async (currentUser: any, fakeContactsData: Contact[
 
             console.log("fakeContact.businessName === contactNameAndCatLabel.name !!!")
 
-              const catId = await getCatIdFromLabel(currentUser?.uid, contactNameAndCatLabel.catLabel);                    
+              const catId = await getCatIdFromLabel(currentUserId, contactNameAndCatLabel.catLabel);                    
               console.log("***cat du contact", contactNameAndCatLabel.catLabel)
               console.log("***catId", catId)
 
 
-              getContactsFromDatabase(currentUser).then((contactsList) => {
+              getContactsFromDatabase(currentUserId).then((contactsList) => {
                   const updatePromises = contactsList.map((firebaseContact) => {
                       if (firebaseContact.businessName === fakeContact.businessName) {
                           console.log("***", firebaseContact, catId)
@@ -142,15 +142,17 @@ const addCatToFakeContacts = async (currentUser: any, fakeContactsData: Contact[
       })
       .catch((error) => { console.error("Error reloading page: ", error); });
 }
-const addFakeDataWithCat = async(currentUser: any) => {
-  await addFakeDataOnFirebase(currentUser, fakeContactsData)            
-  addCatToFakeContacts(currentUser, fakeContactsData, fakeContactsNameAndCatLabel )       
+const addFakeDataWithCat = async(currentUserId: any) => {
+  await addFakeDataOnFirebaseAndReload(currentUserId, fakeContactsData)            
+  // await addFakeDataOnFirebase(currentUserId, fakeContactsData)            
+  addCatToFakeContacts(currentUserId, fakeContactsData, fakeContactsNameAndCatLabel )       
 }
-const addLaurianeDataWithCat = async(currentUser: any) => {
+const addLaurianeDataWithCat = async(currentUserId: any) => {
   console.log("contactsLaurianeNameAndCatLabel", contactsLaurianeNameAndCatLabel)
 
-  await addFakeDataOnFirebase(currentUser, laurianeData) 
-  addCatToFakeContacts(currentUser, laurianeData, contactsLaurianeNameAndCatLabel)        
+  await addFakeDataOnFirebase(currentUserId, laurianeData) 
+  //await addFakeDataOnFirebaseAndReload(currentUserId, laurianeData) 
+  addCatToFakeContacts(currentUserId, laurianeData, contactsLaurianeNameAndCatLabel)        
 }
 
 
@@ -348,33 +350,33 @@ const getCatLabelFromId = async (catId: string) => {
     : "NON DEFINIE"
 }
 
-const addFakeDataOnFirebaseAndReload = (currentUser: any, fakeContactsData: Contact[]) => {
+const addFakeDataOnFirebaseAndReload = (currentUserId: any, fakeContactsData: Contact[]) => {
   // fakeContactsData.map((contact: Contact) => {
   //   console.log(contact)
   //   console.log({
   //     ...contact, id: uid(), userId: currentUser?.uid
   //   })
   const promises = fakeContactsData.map((contact: Contact) => {
-    return addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid(), userId: currentUser?.uid })
+    return addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid(), userId: currentUserId })
       //addDoc(collection(fireStoreDb, "contacts"), {contact})
       .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
       //.then(() => { window.location.reload() })     // NON ! Va pas recharcger à chaque fois
       .catch((error) => { console.error("Error adding document: ", error); });
   })
   //window.location.reload()    // On rafraichit => re-render => useEffect avec la lecture des données        // n'enregistre pas les données à chaque fois si je le mets ici !!!
-  Promise.all(promises)
+  return Promise.all(promises)
     .then(() => { window.location.reload() })
     .catch((error) => { console.error("Error reloading page: ", error); });
 }
 
-const addFakeDataOnFirebase = (currentUser: any, fakeContactsData: Contact[]) => {
+const addFakeDataOnFirebase = (currentUserId: any, fakeContactsData: Contact[]) => {
   // fakeContactsData.map((contact: Contact) => {
   //   console.log(contact)
   //   console.log({
   //     ...contact, id: uid(), userId: currentUser?.uid
   //   })
   const promises = fakeContactsData.map((contact: Contact) => {
-    return addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid(), userId: currentUser?.uid })
+    return addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid(), userId: currentUserId })
       //addDoc(collection(fireStoreDb, "contacts"), {contact})
       .then((docRef) => { console.log("***Document written with ID: ", docRef.id); })
       //.then(() => { window.location.reload() })     // NON ! Va pas recharcger à chaque fois
@@ -429,11 +431,11 @@ const addCategorieOnFirebase = (currentUserId: any, category: ContactCategorieTy
 }
 
 
-const addCategoriesOnFirebaseAndReload = (currentUser: any) => {
+const addCategoriesOnFirebaseAndReload = (currentUserId: any) => {
 
   const promises = contactCategories.map((cat: ContactCategorieType) => {
     console.log("cat", cat)
-    return addCategorieOnFirebase(currentUser?.uid, cat)
+    return addCategorieOnFirebase(currentUserId, cat)
   })
 
   // const promises = categories.map((cat: ContactCategorieType) => {
