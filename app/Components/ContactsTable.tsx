@@ -3,13 +3,6 @@ import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-// Si beauocup de contacts => très long à charger !!! Donc j'utilise la virtualisation avec react-window => pnpm install react-window
-// Aussi intaller les types de définitions pour TS ! (sinon erreur: Le fichier de déclaration du module 'react-window' est introuvable.) => pnpm install @types/react-window
-// Ensuite on importe et on utilise List à la place de Table
-
-import { FixedSizeList, FixedSizeListProps } from 'react-window';
-
-
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
@@ -38,10 +31,9 @@ import GradeIcon from '@mui/icons-material/Grade';
 
 
 import { StyledTableCell } from '../utils/StyledComponents';
-import { Box, ListItem, Typography } from '@mui/material';
-import { Timestamp } from 'firebase/firestore';
 import ContactRow from './ContactRow';
-//const ContactRow = React.lazy(() => import('./ContactRow'));          // Pour utiliser LAZY mais pas bien ici car 9 sec pour charger la page + 10 sec pour charger tous les ROW, sinon 12 sec pour tout charger !
+import { Box, TextField, Typography } from '@mui/material';
+import { Timestamp } from 'firebase/firestore';
 
 
 interface Column {
@@ -55,35 +47,30 @@ interface Column {
 
 
 const headCells: readonly Column[] = [               // readonly ???
-    { id: 'isClient', label: <HandshakeOutlinedIcon />, minWidth: "2em", },
+    { id: 'isClient', label: <HandshakeOutlinedIcon />, minWidth: "2em", },  
     { id: 'businessCategoryId', label: 'Catégorie', minWidth: "8em", },
-    {
-        id: 'dateOfNextCall', label: <Box sx={{ display: 'flex', alignItems: 'center', }}
-        ><AccessAlarmRoundedIcon fontSize='large' sx={{ marginRight: "20px" }} />Relance</Box>, minWidth: "9em",
-    },
+    { id: 'dateOfNextCall', label: <Box sx={{ display: 'flex', alignItems: 'center', }}
+    ><AccessAlarmRoundedIcon fontSize='large' sx={{ marginRight: "20px" }} />Relance</Box>, minWidth: "9em", },
     { id: 'logo', label: 'Logo', minWidth: "4em", },
     { id: 'businessName', label: 'Nom', minWidth: "10em", },
     { id: 'priority', label: <GradeIcon />, minWidth: "2em", },
     { id: 'contactPhone', label: <CallRoundedIcon fontSize='large' />, minWidth: "10em", },
-    {
-        id: 'contactName', label: <AccountCircleRoundedIcon fontSize='large' />, minWidth: "10em",
+    { id: 'contactName', label: <AccountCircleRoundedIcon fontSize='large' />, minWidth: "10em",
         //align: 'right', 
         //format: (value: number) => value.toLocaleString('en-US'),
     },
-    { id: 'contactEmail', label: <MailIcon fontSize='large' />, minWidth: "10em", },
+    { id: 'contactEmail', label: <MailIcon fontSize='large' />, minWidth: "10em", },    
     { id: 'businessCity', label: 'Ville', minWidth: "10em", },
     { id: 'hasBeenCalled', label: <Box><CallRoundedIcon fontSize='large' /><QuestionMarkIcon /></Box>, minWidth: "5em", },
-    {
-        id: 'hasBeenSentEmailOrMeetUp', label:
-            //'mail/rencontre ?',
-            <Box><MailIcon /><HandshakeTwoToneIcon /><QuestionMarkIcon /></Box>, minWidth: "6em",
-    },
+    { id: 'hasBeenSentEmailOrMeetUp', label: 
+    //'mail/rencontre ?',
+    <Box><MailIcon /><HandshakeTwoToneIcon /><QuestionMarkIcon /></Box>,  minWidth: "6em", },
     { id: 'comments', label: <CommentRoundedIcon fontSize='large' />, minWidth: "5em", },
     { id: 'interestGauge', label: <FavoriteRoundedIcon fontSize='large' />, minWidth: "5em", },
     { id: 'filesSent', label: <AttachFileRoundedIcon fontSize='large' />, minWidth: "10em", },
     { id: 'dateOfFirstCall', label: 'Premier appel', minWidth: "9em", },
     { id: 'dateOfLastCall', label: 'Dernier appel', minWidth: "9em", },
-    { id: 'contactType', label: 'Type', minWidth: "7em", },
+    { id: 'contactType', label: 'Type', minWidth: "7em", }, 
     // { id: 'supprimer', label: 'Supprimer ?', minWidth: "5em", },
 ];
 
@@ -126,7 +113,7 @@ function stableSort(array: Contact[], comparator: (a: any, b: any) => number) { 
     return stabilizedThis.map((el) => el[0]);
 }
 interface EnhancedTableProps {
-    numSelected: number;
+    //numSelected: number;
     onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Contact) => void;
     //onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
     order: Order;
@@ -136,7 +123,8 @@ interface EnhancedTableProps {
 function EnhancedTableHead(props: EnhancedTableProps) {
     const {
         //onSelectAllClick,
-        order, orderBy, numSelected,
+        order, orderBy, 
+        //numSelected,
         //rowCount,
         onRequestSort } = props;
     const createSortHandler =
@@ -165,7 +153,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
                         //padding={headCell.disablePadding ? 'none' : 'normal'}
                         //align="center"
                         style={{
-                            height: "40px",
+                            height:"40px",
                             minWidth: headCell.minWidth,
                             padding: 0
                             //minWidth: colWidth,
@@ -197,11 +185,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
                 //     //minWidth: colWidth,
                 // }}
                 // sortDirection={orderBy === headCell.id ? order : false}
-                >
-                    <Box>
-                        <DeleteForeverRoundedIcon />
-                        <QuestionMarkIcon />
-                    </Box>
+                ><Box><DeleteForeverRoundedIcon /><QuestionMarkIcon /></Box>
                 </StyledTableCell>
                 {/* {headCells.map((headCell) => (
                     <TableCell
@@ -230,120 +214,46 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 }
 
 
-// Pour améliorer les performances car très long ! => On utilise la virtualisation avec React Window
-/** Context for cross component communication */
-const VirtualTableContext = React.createContext<{
-    top: number
-    setTop: (top: number) => void
-    header: React.ReactNode
-    footer: React.ReactNode
-}>({
-    top: 0,
-    setTop: (value: number) => { },
-    header: <></>,
-    footer: <></>,
-})
-
-/** The virtual table. It basically accepts all of the same params as the original FixedSizeList.*/
-function VirtualTable({
-    row,
-    header,
-    footer,
-    ...rest
-}: {
-    header?: React.ReactNode
-    footer?: React.ReactNode
-    row: FixedSizeListProps['children']
-} & Omit<FixedSizeListProps, 'children' | 'innerElementType'>) {
-    const listRef = React.useRef<FixedSizeList | null>()
-    const [top, setTop] = React.useState(0)
-
-    return (
-        <VirtualTableContext.Provider value={{ top, setTop, header, footer }}>
-            <FixedSizeList
-                {...rest}
-                innerElementType={Inner}
-                onItemsRendered={props => {
-                    const style =
-                        listRef.current &&
-                        // @ts-ignore private method access
-                        listRef.current._getItemStyle(props.overscanStartIndex)
-                    setTop((style && style.top) || 0)
-
-                    // Call the original callback
-                    rest.onItemsRendered && rest.onItemsRendered(props)
-                }}
-                ref={el => (listRef.current = el)}
-            >
-                {row}
-            </FixedSizeList>
-        </VirtualTableContext.Provider>
-    )
-}
-
-
-
-/** The Row component. This should be a table row, and noted that we don't use the style that regular `react-window` examples pass in.*/
-function Row({ index }: { index: number }) {
-    return (
-        <tr>
-            {/** Make sure your table rows are the same height as what you passed into the list... */}
-            <td style={{ height: '36px' }}>Row {index}</td>
-            <td>Col 2</td>
-            <td>Col 3</td>
-            <td>Col 4</td>
-        </tr>
-    )
-}
-
-/**
- * The Inner component of the virtual list. This is the "Magic".
- * Capture what would have been the top elements position and apply it to the table.
- * Other than that, render an optional header and footer.
- **/
-const Inner = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(
-    function Inner({ children, ...rest }, ref) {
-        const { header, footer, top } = React.useContext(VirtualTableContext)
-        return (
-            <div {...rest} ref={ref}>
-                <table style={{ top, position: 'absolute', width: '100%' }}>
-                    {header}
-                    <tbody>{children}</tbody>
-                    {footer}
-                </table>
-            </div>
-        )
-    }
-)
-
-
-
-
-
-
-
 type ContactsTableProps = {
     contacts: Contact[],
     currentUserId: string,
     //selectedContact: Contact,
-    selectedContactId: string,
-    setSelectedContact: (contact: Contact) => void
+    // selectedContactId: string,
+    // setSelectedContactId: (contactId: string) => void
     handleUpdateContact: (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => void   // obligé de mettre NULL pour la date ! (???)
     // handleUpdateContact: (updatingContact: Contact) => void
     handleDeleteContact: (id: string) => void
-    diplayContactCard: (contact: Contact) => void
+    displayContactCard: (contact: Contact) => void
     getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
     //setSelectedContactId: (id: string) => void
 }
-const ContactsTable = ({ contacts, currentUserId, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, diplayContactCard, getPriorityTextAndColor
-}: ContactsTableProps) => {
+const ContactsTable = ({ contacts, currentUserId, 
+    //selectedContactId, setSelectedContactId, 
+    handleUpdateContact, handleDeleteContact, displayContactCard, getPriorityTextAndColor}: ContactsTableProps) => {
+
+    const [selectedContactId, setSelectedContactId] = React.useState("");
 
     //console.log("CONTACT TABLE")
     console.log("CONTACT TABLE Contacts = ", contacts)
+    console.log("TABLEAU selectedContactId = ", selectedContactId)
+
+    // J'ai utilisé Memo et useCallback pour pas que toute la liste ne se rerende à chaque changement sur un contact mais comme chaque contactId change à chaque fois dans le liste de contact, ça ne foncitonne pas...
+
+    // useCallback ne devrait pas être utilisé pour mémoriser les fonctions de mise à jour de l'état, car ces fonctions ne changent pas entre les rendus. Vous pouvez simplement passer les fonctions de mise à jour de l'état directement à vos composants.
+    //const memoizedSetSelectedContactId = React.useCallback(setSelectedContactId, [setSelectedContactId])
+    const memoizedHandleUpdateContact = React.useCallback(handleUpdateContact, [handleUpdateContact])
+    const memoizedHandleDeleteContact = React.useCallback(handleDeleteContact, [handleDeleteContact])
+    const memoizedDisplayContactCard = React.useCallback(displayContactCard, [displayContactCard])
+    const memoizedGetPriorityTextAndColor = React.useCallback(getPriorityTextAndColor, [getPriorityTextAndColor])
+
+    const ContactRowMemo = React.memo(ContactRow)
+    
+
+
 
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof Contact>('businessName');
-    const [selected, setSelected] = React.useState<readonly number[]>([]);
+    //const [selected, setSelected] = React.useState<readonly number[]>([]);
     //const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
     //const [rowsPerPage, setRowsPerPage] = React.useState(5);   
@@ -357,7 +267,7 @@ const ContactsTable = ({ contacts, currentUserId, selectedContactId, setSelected
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };
+    };  
 
 
     const muiTheme = useTheme();
@@ -393,144 +303,61 @@ const ContactsTable = ({ contacts, currentUserId, selectedContactId, setSelected
     //     { field: 'interestGauge', headerName: 'interestGauge', },
     // ];
 
-    return (
-        <Paper sx={{
-            width: '100%',
-        }} elevation={3} >
 
+
+     // Comme ROW est un objet => il change à chaque Rerender, donc on fait ça... Mais va être utilisé dans une boucle mais impossible d'utiliser les Hook dans une boucle donc je le mets en dehors
+     const renderRow = React.useCallback((row: Contact) => {
+        return (
+            <ContactRowMemo
+                key={row.id}
+                contact={row}
+                currentUserId={currentUserId}
+                // selectedContactId={selectedContactId}
+                // setSelectedContactId={setSelectedContactId}
+                handleUpdateContact={memoizedHandleUpdateContact}
+                handleDeleteContact={memoizedHandleDeleteContact}
+                displayContactCard={memoizedDisplayContactCard}
+                getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
+            />
+
+        //     <ContactRow
+        //     key={row.id}
+        //     contact={row}
+        //     currentUserId={currentUserId}
+        //     selectedContactId={selectedContactId}
+        //     setSelectedContactId={setSelectedContactId}
+        //     handleUpdateContact={handleUpdateContact}
+        //     handleDeleteContact={() => handleDeleteContact(row.id)}  
+        //     displayContactCard={displayContactCard}
+        //     getPriorityTextAndColor={getPriorityTextAndColor}
+        // //setContacts={setContacts} 
+        // />
+        );
+    }, [ContactRowMemo, currentUserId, memoizedHandleUpdateContact, memoizedHandleDeleteContact, memoizedDisplayContactCard, memoizedGetPriorityTextAndColor])
+
+  
+   
+    return (
+        <Paper sx={{ width: '100%',  }}  elevation={3} >
             {/* <div style={{ height: 400, width: '100%' }}>
                 <DataGrid rows={rows} columns={columns} />
-            </div> */}
+            </div> */}     
 
             {/* <Typography variant="h5" component="div" sx={{ p: 2 }}>Liste des contacts ({contacts.length})</Typography> */}
             <TableContainer
                 //sx={{ maxHeight: document.documentElement.clientHeight * 0.88 }}   //vh = 1% de la hauteur du viewport (la zone d'affichage).// Ok mais problème avec Vercel !!!               
-                //   sx={{ maxHeight: "calc(100vh - 175px)" }}
-                sx={{ maxHeight: "calc(100vh - 200px)" }}
+             //   sx={{ maxHeight: "calc(100vh - 175px)" }}
+             sx={{ maxHeight:  "calc(100vh - 200px)" }} 
             >
-                {/* Utilisation de lazy et Suspense mais pas très bien !!! => car 9 sec pour charger la page + 10 sec pour charger tous les ROW, sinon 12 sec pour tout charger ! */}
-                {/* React.Suspense => obligé de le mettre en dehors du tableau sinon erreur */}
-                {/* <React.Suspense fallback={<div>Loading...</div>}> */}
-                {/* <Table stickyHeader> */}
-                    <VirtualTable
-                        height={600}
-                        width="100%"
-                        itemCount={visibleRows.length}
-                        itemSize={100}
-                        header={ 
-                            <EnhancedTableHead
-                                numSelected={selected.length}
-                                order={order}
-                                orderBy={orderBy}
-                                //onSelectAllClick={handleSelectAllClick}
-                                onRequestSort={handleRequestSort}
-                            //rowCount={rows.length}
-                            />  
-                            // <thead>
-                            //     <tr>
-                            //         <th>Index</th>
-                            //         <th>Header 2</th>
-                            //         <th>Header 3</th>
-                            //         <th>Header 4</th>
-                            //     </tr>
-                            // </thead>
-                        }                        
-                                                   
-                        
-                        //row={Row}
-                        
-                        row={({ index, style }) => {
-                            const rowData = visibleRows[index];
-                            return (
-                            //<div>{rowData.businessName}</div>;
-                            <ContactRow
-                                    //style={style}     // ???
-                                    key={rowData.id}
-                                    contact={rowData}
-                                    currentUserId={currentUserId}
-                                    selectedContactId={selectedContactId}
-                                    setSelectedContact={setSelectedContact}
-                                    handleUpdateContact={handleUpdateContact}
-                                    handleDeleteContact={() => handleDeleteContact(rowData.id)}
-                                    diplayContactCard={diplayContactCard}
-                                    getPriorityTextAndColor={getPriorityTextAndColor}
-                                //setContacts={setContacts} 
-                                />)
-                          }}
-
-
-                        // row={({ index, style }) => {  // Utilisez une fonction pour générer chaque ligne
-                        //     const item = visibleRows[index];  // Accédez à l'objet correspondant dans le tableau
-                        //     console.log("item = ", item)
-                        //     return (
-                        //         <ContactRow
-                        //             //style={style}     // ???
-                        //             key={item.id}
-                        //             contact={item}
-                        //             currentUserId={currentUserId}
-                        //             selectedContactId={selectedContactId}
-                        //             setSelectedContact={setSelectedContact}
-                        //             handleUpdateContact={handleUpdateContact}
-                        //             handleDeleteContact={() => handleDeleteContact(item.id)}
-                        //             diplayContactCard={diplayContactCard}
-                        //             getPriorityTextAndColor={getPriorityTextAndColor}
-                        //         //setContacts={setContacts} 
-                        //         />
-                        //     );
-                        // }}      
-
-                        footer={
-                            <tfoot>
-                                <tr>
-                                    <td>Footer 1</td>
-                                    <td>Footer 2</td>
-                                    <td>Footer 3</td>
-                                    <td>Footer 4</td>
-                                </tr>
-                            </tfoot>
-                        }
-                    />
-
-                    {/* <EnhancedTableHead
-                        numSelected={selected.length}
+                <Table stickyHeader>
+                    <EnhancedTableHead
+                        //numSelected={selected.length}
                         order={order}
                         orderBy={orderBy}
                         //onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
                     //rowCount={rows.length}
-                    /> */}
-
-                     {/* <FixedSizeList
-                        height={document.documentElement.clientHeight * 0.88} // ou la hauteur de votre conteneur
-                        itemCount={visibleRows.length}
-                        itemSize={5}
-                        width='100%'
-                    >
-                        {({ index, style }) => {
-                            const row = visibleRows[index];
-                            return (
-                                <ContactRow
-                                    style={style}
-                                    key={row.id}
-                                    contact={row}
-                                    currentUserId={currentUserId}
-                                    selectedContactId={selectedContactId}
-                                    setSelectedContact={setSelectedContact}
-                                    handleUpdateContact={handleUpdateContact}
-                                    handleDeleteContact={() => handleDeleteContact(row.id)}
-                                    diplayContactCard={diplayContactCard}
-                                    getPriorityTextAndColor={getPriorityTextAndColor}
-                                />
-                            );
-                        }}
-                    </FixedSizeList> */}
-
-
-
-
-
-
-
+                    />
                     {/* <TableHead>                      
                         <TableRow>
                             {headCells.map((column) => (
@@ -548,35 +375,44 @@ const ContactsTable = ({ contacts, currentUserId, selectedContactId, setSelected
                             ))}
                         </TableRow> 
                     </TableHead>     */}
-
-                 
-
-                    {/* <TableBody>
-                            {visibleRows.map((row, index) => {
-                                //const isItemSelected = isSelected(row.id);
-                                //const labelId = `enhanced-table-checkbox-${index}`;
-                                //console.log(row)
-
-                                return (
-                                    <ContactRow
-                                        key={row.id}
-                                        contact={row}
-                                        currentUserId={currentUserId}
-                                        selectedContactId={selectedContactId}
-                                        setSelectedContact={setSelectedContact}
-                                        handleUpdateContact={handleUpdateContact}
-                                        handleDeleteContact={() => handleDeleteContact(row.id)}
-                                        diplayContactCard={diplayContactCard}
-                                        getPriorityTextAndColor={getPriorityTextAndColor}
-                                    //setContacts={setContacts} 
-                                    />
-                                );
-                            })}
-                        </TableBody> */}
+                    <TableBody>
+                        {visibleRows.map((row) => renderRow(row))}
 
 
+                        {/* {visibleRows.map((row: Contact) => {
+                            //const isItemSelected = isSelected(row.id);
+                            //const labelId = `enhanced-table-checkbox-${index}`;
+                            //console.log(row)                          
 
-
+                            return (
+                                // <ContactRow
+                                //     key={row.id}
+                                //     contact={row}
+                                //     currentUserId={currentUserId}
+                                //     selectedContactId={selectedContactId}
+                                //     setSelectedContact={setSelectedContact}
+                                //     handleUpdateContact={handleUpdateContact}
+                                //     handleDeleteContact={() => handleDeleteContact(row.id)}  
+                                //     displayContactCard={displayContactCard}
+                                //     getPriorityTextAndColor={getPriorityTextAndColor}
+                                // //setContacts={setContacts} 
+                                // />
+                                
+                                // Marche pas car row est un objet donc change à chaque fois et créé un rerender
+                                <ContactRowMemo
+                                    key={row.id}
+                                    contact={row}
+                                    currentUserId={currentUserId}
+                                    selectedContactId={selectedContactId}
+                                    setSelectedContact={memoizedSetSelectedContact}
+                                    handleUpdateContact={memoizedHandleUpdateContact}
+                                    handleDeleteContact={memoizedHandleDeleteContact}
+                                    displayContactCard={memoizedDisplayContactCard}
+                                    getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
+                                />
+                            );
+                        })} */}
+                    </TableBody>
                     {/* <TableBody>
                         {contacts.map((contact) => {
                             return (
@@ -600,11 +436,15 @@ const ContactsTable = ({ contacts, currentUserId, selectedContactId, setSelected
                             );
                         })}
                     </TableBody> */}
-                {/* </Table> */}
-                {/* </React.Suspense> */}
+                </Table>
             </TableContainer>
+
         </Paper>
     );
 }
 
-export default React.memo(ContactsTable)
+
+// Pour que le tableau ne se recharche pas à chaque changement d'onglet (que s'il y a un changement)
+// export default React.memo(ContactsTable)
+// Vraiment besoin maintenant qu'on a mémoisé els ROWs ???????
+export default ContactsTable

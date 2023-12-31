@@ -24,12 +24,12 @@ import Fade from '@mui/material/Fade';
 
 type CalendarProps = {
   contacts: Contact[];
-  diplayContactCardToUpdate: (contact: Contact) => void;
+  displayContactCardToUpdate: (contact: Contact) => void;
   updateContactInContactsAndDB: (id: string, keyAndValue: { key: string, value: Timestamp }) => void;
 };
 
 
-export default function CalendarScheduler({ contacts, diplayContactCardToUpdate, updateContactInContactsAndDB }: CalendarProps) {
+export default function CalendarScheduler({ contacts, displayContactCardToUpdate, updateContactInContactsAndDB }: CalendarProps) {
 
   const calendarRef = React.useRef(null);
 
@@ -178,7 +178,7 @@ export default function CalendarScheduler({ contacts, diplayContactCardToUpdate,
       eventClick: function (info) {
         //  alert('Event: ' + info.event.title + " " + info.event.extendedProps.contact.contactEmail);        
         //console.log('Event: ' + info.event.title + " " + info.event.extendedProps.contact.contactEmail);
-        diplayContactCardToUpdate(info.event.extendedProps.contact)
+        displayContactCardToUpdate(info.event.extendedProps.contact)
       },
 
       eventDrop: function (dropInfo) {

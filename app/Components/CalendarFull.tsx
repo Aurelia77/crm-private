@@ -39,11 +39,11 @@ const CustomDayHeader = ({ text }: {text: string}) => <div>!{text}!</div>;
 
 type CalendarProps = {
   contacts: Contact[];
-  diplayContactCardToUpdate: (contact: Contact) => void;
+  displayContactCardToUpdate: (contact: Contact) => void;
   updateContactInContactsAndDB: (id: string, keyAndValue: { key: string, value: Timestamp }) => void;
 };
 
-export default function CalendarFull({ contacts, diplayContactCardToUpdate, updateContactInContactsAndDB }: CalendarProps ) {
+export default function CalendarFull({ contacts, displayContactCardToUpdate, updateContactInContactsAndDB }: CalendarProps ) {
  
 
   // const fetchHighlightedDays = (contacts: Contact[], date: Dayjs) => {
@@ -201,7 +201,7 @@ export default function CalendarFull({ contacts, diplayContactCardToUpdate, upda
       eventClick: function (info) {
         //  alert('Event: ' + info.event.title + " " + info.event.extendedProps.contact.contactEmail);        
         //console.log('Event: ' + info.event.title + " " + info.event.extendedProps.contact.contactEmail);
-        diplayContactCardToUpdate(info.event.extendedProps.contact) 
+        displayContactCardToUpdate(info.event.extendedProps.contact) 
       },
       // eventClick: function (info) {
       // }

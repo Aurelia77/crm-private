@@ -33,6 +33,9 @@ import { Fab } from '@mui/material'
 import NewContactSearchForm from '../Components/NewContactSearchForm';
 import ContactCard from '../Components/ContactCard';
 import ContactsTable from '../Components/ContactsTable';
+import ContactsTable2 from '../Components/ContactsTable2';
+import ContactsTable3 from '../Components/ContactsTable3';
+import ContactsTable4 from '../Components/ContactsTable4';
 import SignIn from '../Components/auth/SignIn';
 import SignUp from '../Components/auth/SignUp';
 import AuthDetails from '../Components/AuthDetails';
@@ -87,17 +90,20 @@ import { getFirestore } from 'firebase/firestore';
 export default function Contacts() {
     const [allContacts, setAllContacts] = React.useState<Contact[]>([])
     const [filteredContacts, setFilteredContacts] = React.useState<Contact[]>([])
-    const [selectedContact, setSelectedContact] = React.useState<Contact | { id: string }>({ id: "0" })
-    const memoizedSetSelectedContact = React.useCallback(setSelectedContact, [])
+    const [selectedContactId, setSelectedContactId] = React.useState<string>("")
+
+    console.log("selectedContactId", selectedContactId)
+
+    const memoizedSetSelectedContactId = React.useCallback(setSelectedContactId, [])
     const [loading, setLoading] = React.useState(true)
     const [alerts, setAlerts] = React.useState<Alerts>({ nbContactsWithDatePassed: 0, nbContactsWithDateSoon: 0 })
     const [isContactTableFilled, setIsContactTableFilled] = React.useState(0)
-  
+
     // const [displayNewContactForms, setDisplayNewContactForms] = React.useState(false)
     const [contactToDisplay, setContactToDisplay] = React.useState<Contact>(emptyContact)
 
     const [messageNoContact, setMessageNoContact] = React.useState("") //Aucun contact pour l'instant, veuillez en ajouter ici :")
-    const [hasContactInfoChanged , setHasContactInfoChanged ] = React.useState(false)
+    const [hasContactInfoChanged, setHasContactInfoChanged] = React.useState(false)
     const [openWarningModal, setOpenWarningModal] = React.useState(false);
 
 
@@ -136,6 +142,9 @@ export default function Contacts() {
         { label: "Vu d'un contact", icon: <PersonIcon /> },
         { label: "Admin", icon: <SettingsIcon /> },
         { label: "Aide", icon: <HelpOutlineIcon /> },
+        { label: "Liste des contacts2", icon: <Diversity3Icon color="error" /> },
+        { label: "Liste des contacts3", icon: <Diversity3Icon color="error"  /> },
+        { label: "Liste des contacts4", icon: <Diversity3Icon color="error"  /> },
     ]
 
 
@@ -156,35 +165,35 @@ export default function Contacts() {
         updatDataWholeContactOnFirebase(contactToUpdate)
     }
 
-    const diplayContactCardToUpdate = (contact: Contact) => {
+    const displayContactCardToUpdate = (contact: Contact) => {
         setContactToDisplay(contact)
 
         setTabValue(3)  // On reste sur le même onglet
     }
 
-    const memoizedDiplayContactCardToUpdate = React.useCallback(diplayContactCardToUpdate, [])
- 
+    const memoizeddisplayContactCardToUpdate = React.useCallback(displayContactCardToUpdate, [])
+
 
     // Je ne peux pas mettre ces fonctions dans ToolBox car je peux utiliser les thème seulement dans un composant  (React Hooks must be called in a React function component or a custom React Hook function.)
     const getPriorityTextAndColor = (priority: number | null) => {
         switch (priority) {
-            case 1: return { 
-                text: "Faible", 
+            case 1: return {
+                text: "Faible",
                 color: muiTheme.palette.error.main,
                 bgColor: "#f3d0d0"
             }
-            case 2: return { 
-                text: "Moyenne", 
+            case 2: return {
+                text: "Moyenne",
                 color: "lightsalmon",
                 bgColor: "lightgoldenrodyellow"
             }
-            case 3: return { 
-                text: "Haute", 
+            case 3: return {
+                text: "Haute",
                 color: muiTheme.palette.primary.dark,
                 bgColor: muiTheme.palette.lightCyan.light
             }
-            default: return { 
-                text: "Aucune", 
+            default: return {
+                text: "Aucune",
                 color: muiTheme.palette.gray.dark,
                 bgColor: "muiTheme.palette.gray.light  "
             }
@@ -192,52 +201,52 @@ export default function Contacts() {
         }
     }
     const memoizedGetPriorityTextAndColor = React.useCallback(getPriorityTextAndColor, [])
-    
 
 
 
- // Créez une référence pour suivre le premier rendu
+
+    // Créez une référence pour suivre le premier rendu
     const firstRender = React.useRef(true);
 
 
 
-    React.useEffect(() => {       
+    React.useEffect(() => {
         // setAllContacts(TESTcontactsTest);
         // setFilteredContacts(TESTcontactsTest);
         // setAlerts(countContactsByAlertDates(TESTcontactsTest))
         // setLoading(false); 
-        
+
         currentUser && getContactsFromDatabase(currentUser.uid).then((contactsList) => {
             setAllContacts(contactsList);
             setFilteredContacts(contactsList);
             setAlerts(countContactsByAlertDates(contactsList))
-            setLoading(false); 
-        }) 
+            setLoading(false);
+        })
     }, [currentUser])
     // }, [currentUser?.uid])
 
-   
+
 
     const onChangeTabValue = (newValue: number) => {
         setTabValueWithoutSavingInfoChanges(newValue)
 
-        if ([2,3].includes(tabValue)  && hasContactInfoChanged) {
+        if ([2, 3].includes(tabValue) && hasContactInfoChanged) {
             setOpenWarningModal(true)
             return
         }
         setTabValue(newValue)
     }
 
-   const handleNotSaveContactInfo = () => {
-    console.log("********")
-    setOpenWarningModal(false)
+    const handleNotSaveContactInfo = () => {
+        console.log("********")
+        setOpenWarningModal(false)
 
-    setTabValue(tabValueWithoutSavingInfoChanges)
+        setTabValue(tabValueWithoutSavingInfoChanges)
 
-    setHasContactInfoChanged(false)
-   }
+        setHasContactInfoChanged(false)
+    }
 
-     
+
     // React.useEffect(() => {
     //     // Si c'est le premier rendu, ne faites rien et mettez à jour firstRender pour les rendus suivants
 
@@ -249,12 +258,12 @@ export default function Contacts() {
 
     //     console.log("2222222222222222222")
 
-       
+
 
     //     // Mettez à jour votre variable ici
     //     setIsContactTableFilled(isContactTableFilled + 1);
     // }, [contacts]);
-  
+
 
     //   React.useEffect(() => {
     //       // Si c'est le premier rendu, ne faites rien et mettez à jour firstRender pour les rendus suivants
@@ -264,10 +273,10 @@ export default function Contacts() {
     //       }
     //   }, [contacts]);     // 
 
-   
+
 
     React.useEffect(() => {
-        setAlerts(countContactsByAlertDates(filteredContacts))        
+        setAlerts(countContactsByAlertDates(filteredContacts))
     }, [filteredContacts])
 
 
@@ -288,8 +297,8 @@ export default function Contacts() {
                     //&& contact.businessCity.toLowerCase().includes(contactsSearchCriteria.businessCity.toLowerCase()
 
                     // Dans cette condition, si searchIsClient est null, la condition searchIsClient === null || contact.isClient === searchIsClient sera toujours vraie, donc elle n'affectera pas les résultats de la recherche. Si searchIsClient est true ou false, la condition vérifiera si contact.isClient est égal à searchIsClient.
-                    && (searchIsClient === null || contact.isClient === searchIsClient)                 
-                    && searchOnCity.some((city) => contact.businessCity.toLowerCase().includes(city.toLowerCase())) 
+                    && (searchIsClient === null || contact.isClient === searchIsClient)
+                    && searchOnCity.some((city) => contact.businessCity.toLowerCase().includes(city.toLowerCase()))
                     && searchOnCategory.some((cat) => contact.businessCategoryId.includes(cat))
                     && searchOnType.some((type) => {
                         return contact.contactType.includes(type)
@@ -301,10 +310,10 @@ export default function Contacts() {
         } else {
             setFilteredContacts(allContacts)
         }
-    }, [ contactsSearchCriteria,allContacts ])    
- 
-   
-   
+    }, [contactsSearchCriteria, allContacts])
+
+
+
 
     return (
         <Box sx={{
@@ -320,12 +329,12 @@ export default function Contacts() {
                 setSelectedContact={memoizedSetSelectedContact}
                 handleUpdateContact={memoizedUpdateContactInContactsAndDB}
                 handleDeleteContact={memoizedDeleteDataOnFirebaseAndReload}
-                diplayContactCard={memoizedDiplayContactCardToUpdate}
+                displayContactCard={memoizeddisplayContactCardToUpdate}
                 getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
             />
-            </Box> */}    
-            
-          
+            </Box> */}
+
+
 
             <Modal
                 open={openWarningModal}
@@ -381,11 +390,11 @@ export default function Contacts() {
 
                     : <Box sx={{}} >
 
-                        
+
                         {/* ///////////////////////ONGLETS - Tabs /////////////////////// */}
                         <Box
                             sx={{
-                                flexGrow: 1, 
+                                flexGrow: 1,
                                 bgcolor: 'background.paper', display: 'flex', height: '100vh',
                             }}
                         >
@@ -411,11 +420,11 @@ export default function Contacts() {
 
                             {/* ///////// LISTE DE CONTACTS + recherche) ///////// */}
                             {/* Je ne met pas le premier onglet dans un TAB sinon ça rerender à chaque fois qu'on revient dessus ! Même avec useCallback et useMemo !!!??? */}
-                            <Box hidden={tabValue !== 0} width= {`calc(100vw - ${TABS_WIDTH}px)`}  >
+                            <Box hidden={tabValue !== 0} width={`calc(100vw - ${TABS_WIDTH}px)`}  >
                                 <Box width="100%"
                                 //flexGrow={1} overflow="auto"
-                                 >
-                                      <SearchContactsForm
+                                >
+                                    <SearchContactsForm
                                         contacts={allContacts}
                                         currentUserId={currentUser.uid}
                                         emptySearchCriteria={emptySearchCriteria}
@@ -442,23 +451,22 @@ export default function Contacts() {
                                         : <Typography variant="h5" color="error.main">
                                             {messageNoContact}
                                             Aucun contact pour l'instant, veuillez en ajouter ici :
-                                            <Button variant="contained" color="primary" 
+                                            <Button variant="contained" color="primary"
 
-                                            onClick={() => { setTabValue(2); setTabNewContactValue(0) }} 
+                                                onClick={() => { setTabValue(2); setTabNewContactValue(0) }}
 
-                                            sx={{ ml: 2 }}>Nouveau contact</Button>
+                                                sx={{ ml: 2 }}>Nouveau contact</Button>
                                         </Typography>
                                         }
                                     </Box>
                                     <ContactsTable
                                         contacts={filteredContacts}
                                         currentUserId={currentUser ? currentUser.uid : ""}
-                                        selectedContactId={selectedContact.id}
-
-                                        setSelectedContact={memoizedSetSelectedContact}
+                                        //selectedContactId={selectedContactId}
+                                        //setSelectedContactId={memoizedSetSelectedContactId}
                                         handleUpdateContact={memoizedUpdateContactInContactsAndDB}
                                         handleDeleteContact={memoizedDeleteDataOnFirebaseAndReload}
-                                        diplayContactCard={memoizedDiplayContactCardToUpdate}
+                                        displayContactCard={memoizeddisplayContactCardToUpdate}
                                         getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
                                     />
                                 </Box>
@@ -482,25 +490,25 @@ export default function Contacts() {
                                             setSelectedContact={memoizedSetSelectedContact}
                                             handleUpdateContact={memoizedUpdateContactInContactsAndDB}
                                             handleDeleteContact={memoizedDeleteDataOnFirebaseAndReload}
-                                            diplayContactCard={memoizedDiplayContactCardToUpdate}
+                                            displayContactCard={memoizeddisplayContactCardToUpdate}
                                             getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
                                         />
                                     </Box>
                                 </Box>
                             </TabPanel> */}
-                              {/* <ContactsTable
+                            {/* <ContactsTable
                                             contacts={filteredContacts}
                                             currentUserId={currentUser.uid}
                                             selectedContactId={selectedContact.id}
                                             setSelectedContact={setSelectedContact}
                                             handleUpdateContact={updateContactInContactsAndDB}
                                             handleDeleteContact={deleteDataOnFirebaseAndReload}
-                                            diplayContactCard={diplayContactCardToUpdate}
+                                            displayContactCard={displayContactCardToUpdate}
                                             getPriorityTextAndColor={getPriorityTextAndColor}
                                         /> */}
 
                             {/* ///////// CALENDRIER ///////// */}
-                            <TabPanel key="1" value={tabValue} index={1}  width= {`calc(100vw - ${TABS_WIDTH}px)`} >
+                            <TabPanel key="1" value={tabValue} index={1} width={`calc(100vw - ${TABS_WIDTH}px)`} >
                                 <Tabs
                                     value={tabCalendarValue}
                                     onChange={(e, newValue: number) => setTabCalendarValue(newValue)}
@@ -508,7 +516,7 @@ export default function Contacts() {
                                 >
                                     <Tab key={0} label="Grand"
                                     />
-                                    <Tab key={1} label="Petit" 
+                                    <Tab key={1} label="Petit"
                                     />
                                     {/* <Tab key={2} label="Grand Calendrier"
                                     //icon={title.icon}
@@ -517,34 +525,34 @@ export default function Contacts() {
                                 </Tabs>
 
                                 {/* ///////// Petit Calendrier ///////// */}
-                                <TabPanel key="0" value={tabCalendarValue} index={0}  width= {`calc(100vw - ${TABS_WIDTH}px)`} >
+                                <TabPanel key="0" value={tabCalendarValue} index={0} width={`calc(100vw - ${TABS_WIDTH}px)`} >
                                     <CalendarScheduler
                                         contacts={allContacts}
-                                        diplayContactCardToUpdate={diplayContactCardToUpdate}
+                                        displayContactCardToUpdate={displayContactCardToUpdate}
                                         updateContactInContactsAndDB={updateContactInContactsAndDB}
                                     />
                                 </TabPanel>
 
                                 {/* ///////// Scheduler Calendrier ///////// */}
-                                <TabPanel key="1" value={tabCalendarValue} index={1}  width= {`calc(100vw - ${TABS_WIDTH}px)`} >
+                                <TabPanel key="1" value={tabCalendarValue} index={1} width={`calc(100vw - ${TABS_WIDTH}px)`} >
                                     <CalendarLittle
                                         contacts={allContacts}
-                                        diplayContactCardToUpdate={diplayContactCardToUpdate}
+                                        displayContactCardToUpdate={displayContactCardToUpdate}
                                     />
                                 </TabPanel>
 
                                 {/* ///////// Grand Calendrier ///////// */}
-                                <TabPanel key="2" value={tabCalendarValue} index={2}  width= {`calc(100vw - ${TABS_WIDTH}px)`} >
+                                <TabPanel key="2" value={tabCalendarValue} index={2} width={`calc(100vw - ${TABS_WIDTH}px)`} >
                                     <CalendarFull
                                         contacts={allContacts}
-                                        diplayContactCardToUpdate={diplayContactCardToUpdate}
+                                        displayContactCardToUpdate={displayContactCardToUpdate}
                                         updateContactInContactsAndDB={updateContactInContactsAndDB}
                                     />
                                 </TabPanel>
                             </TabPanel>
 
                             {/* ///////// Nouveau CONTACT ///////// */}
-                            <TabPanel key="2" value={tabValue} index={2}  width= {`calc(100vw - ${TABS_WIDTH}px)`} >
+                            <TabPanel key="2" value={tabValue} index={2} width={`calc(100vw - ${TABS_WIDTH}px)`} >
                                 <Tabs
                                     value={tabNewContactValue}
                                     onChange={(e, newValue) => setTabNewContactValue(newValue)}
@@ -564,7 +572,7 @@ export default function Contacts() {
                                         addContact={(e) => addContactOnFirebaseAndReload(currentUser.uid, e)}
                                         currentUserId={currentUser.uid}
                                         getPriorityTextAndColor={getPriorityTextAndColor}
-                                        setHasContactInfoChanged={setHasContactInfoChanged }
+                                        setHasContactInfoChanged={setHasContactInfoChanged}
                                     />
                                 </TabPanel>
 
@@ -574,34 +582,76 @@ export default function Contacts() {
                                         contact={emptyContact}
                                         currentUserId={currentUser.uid}
                                         getPriorityTextAndColor={getPriorityTextAndColor}
-                                        setHasContactInfoChanged={setHasContactInfoChanged }
+                                        setHasContactInfoChanged={setHasContactInfoChanged}
                                         addContact={(e) => addContactOnFirebaseAndReload(currentUser.uid, e)}
                                     />
                                 </TabPanel>
                             </TabPanel>
 
                             {/* ///////// Un CONTACT ///////// */}
-                            <TabPanel key="3" value={tabValue} index={3}  width= {`calc(100vw - ${TABS_WIDTH}px)`} >
+                            <TabPanel key="3" value={tabValue} index={3} width={`calc(100vw - ${TABS_WIDTH}px)`} >
                                 <ContactCard
                                     contact={contactToDisplay}
                                     currentUserId={currentUser.uid}
                                     getPriorityTextAndColor={getPriorityTextAndColor}
-                                    setHasContactInfoChanged={setHasContactInfoChanged }
+                                    setHasContactInfoChanged={setHasContactInfoChanged}
                                     handleDeleteContact={deleteDataOnFirebaseAndReload}
                                     updateContact={updateWholeContactInContactsAndDB}
                                 />
                             </TabPanel>
 
                             {/* /////////////////////// Admin /////////////////////// */}
-                            <TabPanel key="4" value={tabValue} index={4}  width= {`calc(100vw - ${TABS_WIDTH}px)`} >
-                                <Admin currentUserId={currentUser.uid}  />                              
+                            <TabPanel key="4" value={tabValue} index={4} width={`calc(100vw - ${TABS_WIDTH}px)`} >
+                                <Admin currentUserId={currentUser.uid} />
                             </TabPanel>
 
                             {/* /////////////////////// Aide /////////////////////// */}
-                            <TabPanel key="5" value={tabValue} index={5}  width= {`calc(100vw - ${TABS_WIDTH}px)`} >
-                                <Help />                              
+                            <TabPanel key="5" value={tabValue} index={5} width={`calc(100vw - ${TABS_WIDTH}px)`} >
+                                <Help />
                             </TabPanel>
-                        </Box>                      
+
+                            {/* /////////////////////// 2 /////////////////////// */}
+                            <TabPanel key="6" value={tabValue} index={6} width={`calc(100vw - ${TABS_WIDTH}px)`} >
+                                <ContactsTable2
+                                    contacts={filteredContacts}
+                                    currentUserId={currentUser ? currentUser.uid : ""}
+                                    // selectedContactId={selectedContactId}
+                                    // setSelectedContactId={memoizedSetSelectedContactId}
+                                    handleUpdateContact={memoizedUpdateContactInContactsAndDB}
+                                    handleDeleteContact={memoizedDeleteDataOnFirebaseAndReload}
+                                    displayContactCard={memoizeddisplayContactCardToUpdate}
+                                    getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
+                                />
+                            </TabPanel>
+
+                            {/* /////////////////////// 3 /////////////////////// */}
+                            <TabPanel key="7" value={tabValue} index={7} width={`calc(100vw - ${TABS_WIDTH}px)`} >
+                                <ContactsTable3
+                                    contacts={filteredContacts}
+                                    currentUserId={currentUser ? currentUser.uid : ""}
+                                    // selectedContactId={selectedContactId}
+                                    // setSelectedContactId={memoizedSetSelectedContactId}
+                                    handleUpdateContact={memoizedUpdateContactInContactsAndDB}
+                                    handleDeleteContact={memoizedDeleteDataOnFirebaseAndReload}
+                                    displayContactCard={memoizeddisplayContactCardToUpdate}
+                                    getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
+                                />
+                            </TabPanel>
+
+                            {/* /////////////////////// 4 /////////////////////// */}
+                            <TabPanel key="8" value={tabValue} index={8} width={`calc(100vw - ${TABS_WIDTH}px)`} >
+                                <ContactsTable4
+                                    contacts={filteredContacts}
+                                    currentUserId={currentUser ? currentUser.uid : ""}
+                                    // selectedContactId={selectedContactId}
+                                    // setSelectedContactId={memoizedSetSelectedContactId}
+                                    handleUpdateContact={memoizedUpdateContactInContactsAndDB}
+                                    handleDeleteContact={memoizedDeleteDataOnFirebaseAndReload}
+                                    displayContactCard={memoizeddisplayContactCardToUpdate}
+                                    getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
+                                />
+                            </TabPanel>
+                        </Box>
                     </Box>
             }
         </Box>

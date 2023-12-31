@@ -27,9 +27,11 @@ export default function Help() {
                 </ListItem>
                 <ListItem>
                     <ListItemText primary={
-                        <>
+                        <Typography>
                             Dans l'onglet LISTE DES CONTACTS <Diversity3Icon color="primary" /> vous pouvez voir tous les contacts que vous avez créés et les modifier directement dans le tableau (sauf le logo et les fichiers) ou lors de la vue d'un contact, en double cliquant sur son logo dans le tableau.
-                        </>
+                            <br />
+                            Lors d'un changement de texte (nom, téléphone), le champ se colore. Il s'enregistre quand vous cliquez ailleurs (même si vous changez d'onglet), mais pas lors de la fermeture de l'application. On voit qu'il est enregistré lorsqu'il n'est plus coloré.
+                        </Typography>
                     } />
                 </ListItem>
                 <ListItem>

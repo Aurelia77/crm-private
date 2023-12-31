@@ -116,20 +116,26 @@ const VisuallyHiddenInput = styled('input')({
 
 type ContactRowProps = {
     contact: Contact
-    selectedContactId: string,
-    setSelectedContact: (contact: Contact) => void       // (contact: Contact) => () => void    =>    (autre proposition copilot)   ???
+
+    // J'enlève le selectedContactId car sinon à chauqe clic sur une ligne => toutes les lignes se re-rendent pour savoir quelle est la ligne séléctionnée
+    // selectedContactId: string,
+    // setSelectedContactId: (id: string) => void       // (contact: Contact) => () => void    =>    (autre proposition copilot)   ???
+
     handleUpdateContact: (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => void   // obligé de mettre NULL pour la date ! (???)
     //handleUpdateContact: (contact: Contact) => void
-    handleDeleteContact: () => void
-    diplayContactCard: (contact: Contact) => void,
+    handleDeleteContact: (id: string) => void
+    displayContactCard: (contact: Contact) => void,
     currentUserId: string
-    getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
-    
+    getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }    
 }
 
-export default function ContactRow({ contact, selectedContactId, setSelectedContact, handleUpdateContact, handleDeleteContact, diplayContactCard, currentUserId, getPriorityTextAndColor }: ContactRowProps) {
+export default function ContactRow({ contact, 
 
-    //console.log("CONTACT ROW", contact)
+    //selectedContactId, setSelectedContactId, 
+    handleUpdateContact, handleDeleteContact, displayContactCard, currentUserId, getPriorityTextAndColor }: ContactRowProps) {
+
+    console.log("CONTACT ROW", contact)
+    //console.log("ROW selectedContactId", selectedContactId)
  
 
     //console.log(alerts.alerts)
@@ -380,7 +386,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
     const handleCloseDeleteModal = () => setOpenDeleteModal(false);
 
     const handleClickDeleteContact = () => {
-        handleDeleteContact()
+        handleDeleteContact(contact.id)
     }
 
 
@@ -536,15 +542,48 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         };
     }
 
+    type CellWidthType = {
+        [K in keyof Contact]?: { width: string };
+
+      };
+    
+    const cellWidth: CellWidthType = {
+        isClient: { width: "20em" },
+        businessCategoryId: { width: "2em" },
+        dateOfNextCall: { width: "10em" },
+        logo: { width: "2em" },
+        businessName: { width: "10em" },
+        priority: { width: "2em" },
+        contactPhone: { width: "5em" },
+        contactName: { width: "2em" },
+        contactEmail: { width: "2em" },
+        businessCity: { width: "2em" },
+        hasBeenCalled: { width: "2em" },
+        hasBeenSentEmailOrMeetUp: { width: "2em" },
+        comments: { width: "2em" },
+        interestGauge: { width: "2em" },
+        filesSent: { width: "2em" },
+        dateOfFirstCall: { width: "2em" },
+        dateOfLastCall: { width: "2em" },
+        contactType: { width: "2em" },
+    }
 
 
-    return (
+    return (    
         <StyledTableRow
             // className= "tableRowSelected"
             //hover 
-            key={contact.id} selected={selectedContactId === contact.id ? true : false}
+            key={contact.id} 
             //className={selectedContactId === contact.id ? 'tableRowSelected bg-cyan-400 ' : 'bg-yellow-200'}      // CYAN ne s'affiche pas, mais jaune oui
-            onClick={() => setSelectedContact(contact)}
+            
+            ////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////// Je dois l'enlevé sinon créé un rerender à chaque clic sur un contact !!!!!!!!!!
+            ////////////////////////////////////////////////////////////////////////////////////////////////////
+            // selected={selectedContactId === contact.id ? true : false}
+            // onClick={() => setSelectedContactId(contact.id)}
+
+
+
             style={{
                 //backgroundColor: contact.isClient ? muiTheme.palette.primary.light : muiTheme.palette.ochre.light 
                 //color: "blue" //contact.isClient ? "primary.main" : "secondary.main"
@@ -552,7 +591,12 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
         //className='demo'
         >
             {/* Client ? */}
-            <StyledTableCell component="td" scope="row" >
+            <StyledTableCell 
+                component="td" 
+                scope="row" 
+                //width= {cellWidth["isClient"]?.width} 
+                //sx={{ width: cellWidth["isClient"]?.width }}
+            >
                 <Switch
                     checked={contact.isClient}
                     onChange={() => handleUpdateContact(contact.id, { key: "isClient", value: !contact.isClient })}
@@ -612,8 +656,10 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         ? muiTheme.palette.warning.light
                         : isDateSoon(contact.dateOfNextCall)
                             ? muiTheme.palette.ochre.light
-                            : ""
+                            : "",
+                   // width: cellWidth["dateOfNextCall"]?.width
                 }}
+                
             >
                 {/* {contact.dateOfNextCall && <Typography variant="caption" display="block" gutterBottom>{Date.parse(contact.dateOfNextCall.toDate())}</Typography>}
                 {contact.dateOfNextCall && <Typography variant="caption" display="block" gutterBottom>{Date.parse(new Date().toString())}</Typography> } */}
@@ -635,21 +681,21 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                             sx={{ marginRight:"70%" }} 
                             //fontSize='large' 
                             />}
-                        {/* <Tooltip arrow title="Supprimer la date" placement='left' >
+                        {contact.dateOfNextCall && <Tooltip arrow title="Supprimer la date" placement='left' >
                             <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
                                 onClick={() => handleChangeDate(null, "dateOfNextCall")} >
                                 <ClearIcon
                                 //color='warning'
                                 />
                             </IconButton>
-                        </Tooltip> */}
+                        </Tooltip>}
                     </Box>
                     <Tooltip arrow title={isDatePassed(contact.dateOfNextCall)
                                             ? "Attention : La date est passée !!!"
                                             : isDateSoon(contact.dateOfNextCall)
                                                 ? "Attention : Relance dans les 7 jours !"
                                                 : ""
-                                        } placement='top' >
+                                        } placement='right' >
                         <Box 
                             sx={{ '& .MuiInput-underline:before': { display: 
                             contact.dateOfNextCall === null ? "block" : "none" } }}>
@@ -696,7 +742,7 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
             {/* LOGO */}
             <StyledTableCell component="td" scope="row"
                 sx={{ padding: 0, cursor:"pointer" }}
-                onDoubleClick={() => diplayContactCard(contact)}
+                onDoubleClick={() => displayContactCard(contact)}
             >
                 {/* <TextField type="file" onChange={handleChangeLogo2} /> */}
                 {/* {contact.logo && <Image src={contact.logo} alt={contact.businessName} width={100} height={100} style={{ borderRadius: "10%" }}  />} */}
@@ -1312,14 +1358,14 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         justifyContent: "end",
                         //marginBottom: "10px"
                     }}>
-                        <Tooltip arrow title="Supprimer la date"  placement='left' >
+                        {contact.dateOfFirstCall && <Tooltip arrow title="Supprimer la date"  placement='left' >
                             <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
                                 onClick={() => handleChangeDate(null, "dateOfFirstCall")} >
                                 <ClearIcon
                                 //color='warning'
                                 />
                             </IconButton>
-                        </Tooltip>
+                        </Tooltip>}
                     </Box>
                   
                     <Box 
@@ -1356,14 +1402,14 @@ export default function ContactRow({ contact, selectedContactId, setSelectedCont
                         justifyContent: "end",
                         //marginBottom: "10px"
                     }}>
-                        <Tooltip arrow title="Supprimer la date"  placement='left' >
+                        {contact.dateOfLastCall && <Tooltip arrow title="Supprimer la date"  placement='left' >
                             <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
                                 onClick={() => handleChangeDate(null, "dateOfLastCall")} >
                                 <ClearIcon
                                 //color='warning'
                                 />
                             </IconButton>
-                        </Tooltip>
+                        </Tooltip>}
                     </Box>
                   
                     <Box 

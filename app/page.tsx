@@ -39,6 +39,7 @@ export default function Home() {
         <Button variant="contained" color="primary" href= '/testPages/testTableSortLabel'>TestTableSortLabel OK</Button>
         <PurpleButton variant="contained" href= '/testPages/testFuncAsyncAndReRender'>Test ASYNC and RERENDER !</PurpleButton>
         <Button variant="contained" color="secondary" href= '/testPages/TestVirtualizedWithReactWindowsPage'>Test Virtualized with React Windows</Button>
+        <Button variant="contained" color="success" href= '/testPages/TestVirtualization2'>Test Virtualization 2</Button>
       </Stack>      
   )
 }

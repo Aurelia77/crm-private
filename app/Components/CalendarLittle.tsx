@@ -96,7 +96,7 @@ function getDaysOfNextCallsForMonth(contactsList: Contact[], targetDate: Dayjs) 
 
 type CalendarProps = {
   contacts: Contact[];
-  diplayContactCardToUpdate: (contact: Contact) => void;
+  displayContactCardToUpdate: (contact: Contact) => void;
 };
 
 type DayAndContactsToCallThisDayType = {
@@ -104,7 +104,7 @@ type DayAndContactsToCallThisDayType = {
   contactsToCallThisDay: Contact[];
 }
 
-export default function CalendarLittle({ contacts, diplayContactCardToUpdate }: CalendarProps) {
+export default function CalendarLittle({ contacts, displayContactCardToUpdate }: CalendarProps) {
   //const requestAbortController = React.useRef<AbortController | null>(null);
   //const [isLoading, setIsLoading] = React.useState(false);
   const [contactsToCallThisMonthAndToHighlight, setContactsToCallThisMonthAndToHighlight] = React.useState<Contact[]>([]);
@@ -208,7 +208,7 @@ export default function CalendarLittle({ contacts, diplayContactCardToUpdate }: 
       ? <Typography variant="body2" sx={{ mt: 2 }} >Aucun !</Typography> 
       : dayAndContactsToCallThisDay.contactsToCallThisDay.map((contact, index) => (
       <Typography key={index} variant="body2" sx={{ mt: 2, cursor: 'pointer' }}
-        onClick={() => diplayContactCardToUpdate(contact) }            
+        onClick={() => displayContactCardToUpdate(contact) }            
       >
         {contact.businessName}
       </Typography>
@@ -386,7 +386,7 @@ export default function CalendarLittle({ contacts, diplayContactCardToUpdate }: 
           ? <Typography variant="body2" sx={{ mt: 2 }} >Aucun !</Typography> 
           : dayAndContactsToCallThisDay.contactsToCallThisDay.map((contact, index) => (
           <Typography key={index} variant="body2" sx={{ mt: 2, cursor: 'pointer' }}
-            onClick={() => diplayContactCardToUpdate(contact) }            
+            onClick={() => displayContactCardToUpdate(contact) }            
           >
             {contact.businessName}
           </Typography>
