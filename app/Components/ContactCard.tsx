@@ -20,7 +20,6 @@ import dayjs, { Dayjs } from 'dayjs';       // npm install dayjs
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import ClearIcon from '@mui/icons-material/Clear';
-//import { ClearIcon, DatePicker } from '@mui/x-date-pickers';      // Bizarre ça a l'air de marcher aussi comme ça !!!???
 import { Timestamp } from 'firebase/firestore';
 import { useTheme } from '@mui/material/styles';
 import { storage, addFileOnFirebaseDB, getCategoriesFromDatabase } from '../utils/firebase'
@@ -63,31 +62,18 @@ type ContactCardProps = {
     handleDeleteContact?: (id: string) => void
     addContact?: (contact: Contact) => void
     updateContact?: (contact: Contact) => void
-    //contactCardDisplayStatus?: boolean
-    //setContactCardDisplayStatus?: (status: boolean) => void
 }
 
 export default function ContactCard({ contact, currentUserId, getPriorityTextAndColor, setHasContactInfoChanged, handleDeleteContact, addContact, updateContact,
-    //contactCardDisplayStatus=true, 
-    //setContactCardDisplayStatus
 }: ContactCardProps) {
 
     const [contactToAddOrUpdate, setContactToAddOrUpdate] = React.useState<Contact>(contact)
     const [tabValue, setTabValue] = React.useState<number>(0);
-    const [logoChoosen, setIsLogoChoosen] = React.useState(false);
-
-    //console.log("tabValue x", tabValue)
-    //console.log("tabValue x", typeof tabValue)
-
-    console.log("contactToAddOrUpdate", contactToAddOrUpdate)
-    //console.log("LOGO", contactToAddOrUpdate.logo)
+    const [logoChoosen, setIsLogoChoosen] = React.useState(false);   
 
     const muiTheme = useTheme();
 
     const inputFileRef = React.useRef<HTMLInputElement>(null);
-
-    //console.log("inputFileRef", inputFileRef)
-
 
     const [progresspercentLogo, setProgresspercentLogo] = React.useState(0);
     const [progresspercentFile, setProgresspercentFile] = React.useState(0);
@@ -96,14 +82,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
     const [newFileName, setNewFileName] = React.useState<string | null>(null);
 
-
-
-    console.log("newFileName", newFileName)
-
-    //console.log("firebaseFileSelected", firebaseFileSelected)
-
     const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[] | null>(null);
-
 
     const [openNoContactModal, setOpenNoContactModal] = React.useState(false);
     const [openDeleteContactModal, setOpenDeleteContactModal] = React.useState(false);
@@ -112,8 +91,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     const [openContactIsUpdatedModal, setOpenContactIsUpdatedModal] = React.useState(false);
 
     const [alertFileText, setAlertFileText] = React.useState("");
-
-
 
     const handleClickDeleteContact = () => {
         handleDeleteContact && handleDeleteContact(contact.id)
@@ -128,17 +105,11 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
     React.useEffect(() => {
 
-        //console.log("USE EFFECT !!!!!!!")
-
         getFilesFromDatabase(currentUserId).then((filesList) => {
             setFilesFirebaseArray(filesList)
-            // filesList.length > 0 && setFirebaseFileSelected({ fileName: filesList[0].fileName, fileRef: filesList[0].fileRef })
         });
 
         getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
-            //console.log("categories", categories)
-
-            // Pas besoin de l'attribut userId donc on garde juste ce qu'on veut
             const newCategoriesList = categories.map(category => ({
                 id: category.id,
                 label: category.label
@@ -154,70 +125,27 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && console.log("****CHANGE")
         JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && setHasContactInfoChanged(true)
     }, [contactToAddOrUpdate])
-
-
-    ///////////// Encore besoin ??????????
-    // React.useEffect(() => {
-    //     setContactToAddOrUpdate(contact)    // Sinon quand on clic ne change rien !
-    // }, [contact])
-
-    //console.log("contactToAddOrUpdate", contactToAddOrUpdate)
-    //console.log("files", contactToAddOrUpdate.filesSent)
-    //console.log(typeof contactToAddOrUpdate.filesSent)
-    //contactToAddOrUpdate.filesSent.length > 0 && console.log(typeof contactToAddOrUpdate.filesSent[0])
-    // console.log("dateOfNextCall", contactToAddOrUpdate.dateOfNextCall)
-    // console.log("dateOfNextCall?.toDate()", contactToAddOrUpdate.dateOfNextCall?.toDate())
+   
 
     const handleChangeText = (attribut: keyof Contact) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        //console.log("event.target.value", event.target.value)
         setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: event.target.value })
-        // handleUpdateContact({ ...contact, [attribut]: event.target.value })
     }
     const handleChangeSelect = (event: SelectChangeEvent, attribut: keyof Contact) => {
-        const type: string = event.target.value as string       // obligé de mettre as businessCategory car sinon type = string, on peut faire autrement ???
+        const type: string = event.target.value as string  
         setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: type })
     };
-    const handleChangeDate = (newDate: Dayjs | null, attribut: keyof Contact) => {
-        console.log("newDate", newDate)
-        //setContactToAddOrUpdate({...contactToAddOrUpdate, [attribut]: newDate ? Timestamp.fromDate(newDate.toDate()) : null })
-    }
-
-
-
-    const findLabelNafCodes = (code: string) => {
-        const codesNaf = require('../nafCodes.json');       // donc codesNaf = à ce qu'on a dans nafCodes.json => un tableau d'objets
-        const naf: CodeNaf = codesNaf.find((codeAndLabel: CodeNaf) => codeAndLabel.id === code);
-
-        //naf && console.log("----------", naf.id)
-        //naf && console.log(naf.label)
-
-        return naf ? naf.label : ''
-    }
-
-
     const handleChangeInputFile = (e: any) => {
         console.log(e.target.files[0])
         setNewFileName(e.target.files[0].name)
     }
-
-
     const handleSubmitFiles = (e: any, attribut: string) => {
         e.preventDefault()
-        // console.log("e", e)
-        // console.log("e.target", e.target)
-        // console.log("e.target", e.target.elements)
-        // console.log("e.target", e.target.elements[0])
-        // console.log("e.target", e.target.elements[0].files)
-        // console.log("e.target", e.target.elements[0].files[0])
-        //const file = e.target[0]?.files[0]
 
         if (newFileName === "") {
             setAlertFileText("Le nom du fichier doit contenir au moins un caractère !")
             return
         }
-
         setAlertFileText("")
-
 
         const file = e.target.elements[0].files[0]
 
@@ -225,9 +153,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         const storageRef = ref(storage, `${attribut}/${file.name}`);
 
         const uploadTask = uploadBytesResumable(storageRef, file);
-
-        console.log(uploadTask)
-
 
         uploadTask.on("state_changed",
             (snapshot) => {
@@ -258,8 +183,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         );
     }
 
-
-
     const handleChangeInputLogo = () => {
         setIsLogoChoosen(true)
         setContactToAddOrUpdate({ ...contactToAddOrUpdate, logo: "" })
@@ -279,12 +202,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     }
 
     const handleChangeNumber = (number: number | null, attribut: string) => {
-        //console.log(number);      // Obligé de mettre ; sinon erreur !!! (Uncaught TypeError: console.log(...) is not a function)
-        //newGauge && console.log(newGauge)
-
-        // (number && (number > 5 || number < 0))
-        //     ? alert("Doit être entre 0 et 5 !")
-        //    : 
         setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: number })
     }
 
@@ -300,110 +217,14 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     }, [])
 
 
-
-
-    // GESTION DES ICONES MAIL ET TELEPHONE
-    // hasBeenCalled => 0="no" | 1="yes but no answer" | 2="yes and answered",
-    // hasBeenSentEmailOrMeetUp =>  0="nothing" | 1="email sent" | 2="email sent and received" | 3="met up",
-
-    // Renvoie la bonne icone selon l'état de hasBeenCalled (non envoyé, envoyé, lu...)
-    const RightMailIcon = ({ hasBeenSentEmailOrMeetUp }: { hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3 }) => {
-        switch (hasBeenSentEmailOrMeetUp) {
-            case 1: return <MailIcon sx={{ color: muiTheme.palette.ochre.main }} />
-            case 2: return <MarkEmailReadIcon color='success' />
-            case 3: return <HandshakeTwoToneIcon color="success" />
-            default: return <MailOutlineIcon sx={{
-                color: "black" //muiTheme.palette.gray.main 
-            }} />
-        }
-    }
-    const getPhoneIconColor = (hasBeenCalled: 0 | 1 | 2) => {
-        //console.log("xxxusePhoneIconStyle")
-        switch (hasBeenCalled) {
-            case 1:
-                return muiTheme.palette.success.main;
-            case 2:
-                return muiTheme.palette.ochre.main;
-            default:
-                return "black"    //muiTheme.palette.gray.main;
-        }
-    };
-    const getEmailIconColor = (hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3) => {
-        //console.log("xxxusePhoneIconStyle")
-        switch (hasBeenSentEmailOrMeetUp) {
-            case 2:
-            case 3:
-                return muiTheme.palette.success.main;
-            case 1:
-                return muiTheme.palette.ochre.main;
-            default:
-                return "black"    //muiTheme.palette.gray.main;
-        }
-    };
-
-    const getEmailIconText = (hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3) => {
-        switch (hasBeenSentEmailOrMeetUp) {
-            case 1:
-                return "Mail envoyé"
-            case 2:
-                return "Mail reçu"
-            case 3:
-                return "Rencontre physique"
-            default:
-                return "Mail non envoyé"
-        }
-    };
-    const getPhoneIconText = (hasBeenCalled: 0 | 1 | 2) => {
-        switch (hasBeenCalled) {
-            case 1:
-                return "J'ai parlé à quelqu'un"
-            case 2:
-                return "J'ai appélé mais pas de réponse"
-            default:
-                return "Pas appelé"
-        }
-    };
-
-    //const handleClickHasBeenCalled = () => {
-    //     setContactToAddOrUpdate({ ...contactToAddOrUpdate, hasBeenCalled: contactToAddOrUpdate.hasBeenCalled === 0
-    //     handleUpdateContact(contact.id, {
-    //         key: "hasBeenCalled", value: contact.hasBeenCalled === 0
-    //             ? 1
-    //             : contact.hasBeenCalled === 1
-    //                 ? 2
-    //                 : 0
-    //     })
-    // }
-    // const handleClickhasBeenSentEmailOrMeetUp = () => {
-    //     handleUpdateContact(contact.id, {
-    //         key: "hasBeenSentEmailOrMeetUp", value: contact.hasBeenSentEmailOrMeetUp === 0
-    //             ? 1
-    //             : contact.hasBeenSentEmailOrMeetUp === 1
-    //                 ? 2
-    //                 : contact.hasBeenSentEmailOrMeetUp === 2
-    //                     ? 3
-    //                     : 0
-    //     })
-    // }
-
-
     return (
-        // <Zoom in={transition} // Non car erreur avec Tabs !!!
-        // //timeout={500}   
-        // //style={{ transitionDelay: transition ? '500ms' : '0ms' }}        
-        // >
         <Card key={contact.id} elevation={3}
             sx={{
                 margin: "auto",
-                //m: "1%",
                 position: "relative",
-                //mx: "auto",
                 padding: "2% 4%",
-                //maxWidth: "850px",
                 bgcolor: getPriorityTextAndColor(contactToAddOrUpdate.priority).bgColor,
-                // bgcolor: 'lightCyan.light',
-                //backgroundColor: muiTheme.palette.primary.light,
-            }}        // my = 0.5rem (donc 1/2 taille de la police de la racine (em pour l'élément))
+            }}     
         >
             <Modal
                 open={openNoContactModal}
@@ -415,11 +236,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
                         Aucun contact selectionné ! Pour cela, double cliquer sur le logo d'un contact dans la liste (onglet en haut à gauche)
                     </Typography>
-                    {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
-                    {/* <Box sx={{ display: "flex", justifyContent: "space-between" }} >
-                            <Button variant="contained" color='warning' onClick={handleClickDeleteContact} sx={{ marginRight: "15px" }} >Oui !</Button>
-                            <Button variant="contained" color='primary' sx={{ color: "white" }} onClick={() => setOpenDeleteContactModal(false)} >Non</Button>
-                        </Box> */}
                 </Box>
             </Modal>
             <Box
@@ -433,17 +249,11 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                 <Box sx={{
                     display: 'flex',
                     justifyContent: "space-between"
-                    //flexDirection: 'column',
-                    //gap: 10,
                 }} >
                     {/* ///////// CLIENT */}
                     <Box
                         sx={{
                             width: "80px"
-                            //     cursor: "pointer",
-                            //     position: "absolute",
-                            //     top: 10,
-                            //     left: 10
                         }}
                         onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, isClient: !contactToAddOrUpdate.isClient })}
                     >
@@ -462,23 +272,11 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             }
                         </Tooltip>
                     </Box>
-                    {/* <FormControlLabel
-                            control={<Switch
-                                checked={contactToAddOrUpdate.isClient}
-                                onChange={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, isClient: !contactToAddOrUpdate.isClient })}
-                                color="success"
-                                inputProps={{ 'aria-label': 'controlled' }}
-                            />}
-                            label={contactToAddOrUpdate.isClient ? "Client" : "Prospect"} /> */}
-
-
-                    {/* {addContact && <Button variant="contained" sx={{ width: '30%', height: "50px", mt: 1, mb: 2 }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
-                        {updateContact && <Button variant="contained" color='pink' sx={{ width: '30%', height: "50px", mt: 1, mb: 2 }} onClick={() => updateContact(contactToAddOrUpdate)} >Mettre à jour le contact</Button>} */}
+                    
 
                     {/* ////////////// SMILEYS */}
                     <Box
                         sx={{
-                            //mt: 8,
                             display: 'flex',
                             justifyContent: 'center',
                         }}
@@ -487,20 +285,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             sx={{
                                 position: 'relative',
                             }}
-                        >
-
-                            {/* {contactToAddOrUpdate.interestGauge && <Tooltip
-                                            arrow
-                                            title="Supprimer la gauge d'intérêt"
-                                            placement='left'
-                                        >
-                                            <IconButton color="primary" sx={{ padding: 0, position: "absolute", top: -5, right: -15 }}        // Car les boutons ont automatiquement un padding
-                                                onClick={() => handleChangeNumber(null, "interestGauge")} >
-                                                <ClearIcon fontSize='small' color='error' />
-                                            </IconButton>
-                                        </Tooltip>} */}
+                        >                            
                             <StyledRating
-                                //defaultValue={2}
                                 sx={{
                                     alignItems: 'center',
                                 }}
@@ -510,7 +296,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 getLabelText={(value: number) => customIcons[value].label}
                                 highlightSelectedOnly
                             />
-
                         </Box>
                     </Box>
 
@@ -518,34 +303,9 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     <FormControl
                         sx={{
                             width: "auto"
-                            //     cursor: "pointer",
-                            //     position: "absolute",
-                            //     top: 10,
-                            //     right: 40
                         }}
-                    >
-                        {/* {contactToAddOrUpdate.priority && <Tooltip
-                                arrow
-                                title="Supprimer la priorité"
-                                placement='left'
-                            >
-                                <IconButton color="primary" sx={{ padding: 0, position: "absolute", top: 0, right: -25 }}        // Car les boutons ont automatiquement un padding
-                                    onClick={() => handleChangeNumber(null, "priority")} >
-                                    <ClearIcon fontSize='small' color='error' />
-                                </IconButton>
-                            </Tooltip>} */}
-
-                        <Box sx={{
-                            //'& > legend': { mt: 2 }, 
-                            //width:"auto" 
-                        }} >
-                            {/* <Rating
-                                    sx={{ fontSize: '3rem' }}
-                                    name="customized-10"
-                                    value={contactToAddOrUpdate.priority ?? 0}
-                                    onChange={(e, newValue) => handleChangeNumber(newValue, "priority")}
-                                    max={3}
-                                /> */}
+                    >          
+                        <Box>                           
                             <StyledRatingStars
                                 sx={{ fontSize: '3rem' }}
                                 value={contactToAddOrUpdate.priority ?? 0}
@@ -555,13 +315,11 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             />
                         </Box>
                     </FormControl>
-
                 </Box>
 
-                {/* ///////// TYPE - CAT- FICHIERS ///////// */}
+                {/* ///////// CAT- TYPE - FICHIERS ///////// */}
                 <Box sx={{
                     display: 'flex', justifyContent: "space-around",
-                    //position:"relative" 
                 }} >
                     {/* ///////// CAT */}
                     <FormControl sx={{ width: "auto", backgroundColor: muiTheme.palette.primary.main, borderRadius: "50px" }} >
@@ -570,8 +328,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             sx={{
                                 color: 'white',
                                 textAlign: 'center',
-                                // display: 'flex',
-                                // alignItems: 'center'
                                 margin: "auto",
                                 padding: "15px 10px 25px 30px",
                                 marginTop: 0
@@ -607,8 +363,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             sx={{
                                 color: 'white',
                                 textAlign: 'center',
-                                // display: 'flex',
-                                // alignItems: 'center'
                                 margin: "auto",
                                 padding: "15px 10px 25px 30px"
                             }}
@@ -616,7 +370,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             value={contactToAddOrUpdate.contactType}
                             onChange={(e) => handleChangeSelect(e, "contactType")}
                             variant="standard"
-                            disableUnderline={true} // {contactToAddOrUpdate.contactType === "NON DEFINI" ? false : true}  
+                            disableUnderline={true} 
                         >
                             {contactTypes.map((type) => (
                                 <MenuItem key={type} value={type}>{type}</MenuItem>
@@ -628,7 +382,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     <Box  >
                         <Typography variant="h6">Fichiers associés au contact ({contactToAddOrUpdate.filesSent.length})</Typography>
                         <Typography
-                            //variant="caption" 
                             component="div"
                             sx={{ color: "text.secondary" }}
                         >
@@ -653,7 +406,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             ))}
                         </Typography>
                     </Box>
-
                 </Box>
 
 
@@ -670,7 +422,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 <Avatar
                                     variant="rounded"
                                     onClick={() => inputFileRef.current?.click()}
-                                    //onClick={() => inputFileRef && inputFileRef.current && inputFileRef.current.click()}
                                     src={contactToAddOrUpdate.logo
                                         ? contactToAddOrUpdate.logo
                                         : ""}
@@ -685,51 +436,32 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 marginTop: "5px", display: "flex", alignItems: "center",
                             }}>
                                 {/* => FormControl n'est pas conçu pour gérer les soumissions de formulaire. */}
-                                <form onSubmit={(e) => handleSubmitFiles(e, "logo")}
-                                //style={{ display:"flex", alignItems:"center", gap:"50px" }} 
-                                >
-                                    {/* <TextField
-                                            color="secondary"
-                                            name="upload-photo"
-                                            type="file"
-                                        //onChange={handleChangeLogo}
-                                        /> */}
-
-
+                                <form onSubmit={(e) => handleSubmitFiles(e, "logo")} >
                                     <Button variant="contained" component="label" sx={{ color: "white", display: 'none' }} >
                                         <Input
                                             type="file"
                                             ref={inputFileRef}
-                                            //sx={{ display: 'none' }}
                                             onChange={handleChangeInputLogo}
                                         />
-                                        {/* 1- Choisir */}
                                     </Button>
 
                                     {logoChoosen &&
                                         <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }} >
                                             <Button
                                                 color="pink"
-                                                //sx={{ p:1 }}
-                                                //component="label"
                                                 type="submit"
                                                 variant="contained" startIcon={<CloudUploadIcon />}
-                                            //onClick={handleChangeLogo}
                                             >
                                                 Télécharger / afficher
-                                                {/* <VisuallyHiddenInput type="file" /> */}
                                             </Button>
                                             <LinearProgress variant="determinate" value={progresspercentLogo} sx={{ marginTop: "10px" }} />
                                         </Box>
                                     }
 
                                 </form>
-                                {/* <Box className='innerbar' sx={{ width: `${progresspercent}%`, backgroundColor: "red" }}>{progresspercent}%</Box>
-                                </Box> */}
 
                                 {contactToAddOrUpdate.logo && <Button variant="contained" color="error" sx={{
                                     margin: "auto"
-                                    //marginTop: "5px" 
                                 }} onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, logo: "" })} >Supprimer logo</Button>}
                             </Box>
                         </Box>
@@ -761,68 +493,11 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         startAdornment: contactToAddOrUpdate.businessName.length === 0 && <span style={{ fontSize: "2.5em", marginLeft: "40%" }}>... </span>,
                                         disableUnderline: true
                                         //contactToAddOrUpdate.businessName.length > 0,
-                                    }}
-                                // inputProps={{ 
-                                //     style: 
-                                //         {color: getPriorityTextAndColor(contact.priority).color ?? ""}
-                                // }}
-                                />
-
-
-                                {/* hasBeenCalled */}
-
-                                {/* <Box display="flex"
-                                    // alignItems="center" 
-                                    justifyContent="center"
-                                >
-                                    <Avatar
-                                        sx={{ bgcolor: getPhoneIconColor(contact.hasBeenCalled), border: `4px solid ${getPhoneIconColor(contact.hasBeenCalled)}`, }}
-                                    // sx={{ bgcolor: "white", border: `4px solid ${getIconStyle(contact.hasBeenCalled)}`, }}
-                                    //className={classes.avatar}
-                                    >
-                                        <Tooltip arrow title={getPhoneIconText(contact.hasBeenCalled)}>
-                                            <IconButton color="primary" onClick={handleClickHasBeenCalled}>
-                                                <CallRoundedIcon fontSize="large"
-                                                    sx={{
-                                                        color: "white",
-                                                        //backgroundColor:getIconStyle(contact.hasBeenCalled), 
-                                                    }}
-                                                // color={usePhoneIconStyle(contact.hasBeenCalled)}
-                                                />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </Avatar>
-                                </Box>
-
-
-                                <Box display="flex"
-                                    // alignItems="center" 
-                                    justifyContent="center"
-                                >
-                                    <Avatar
-                                        sx={{
-                                            bgcolor: "white",
-                                            //bgcolor: getEmailIconColor(contact.hasBeenSentEmailOrMeetUp),     //"white", 
-                                            border: `4px solid ${getEmailIconColor(contact.hasBeenSentEmailOrMeetUp)}`,
-                                        }}
-                                    //className={classes.avatar}
-                                    >
-                                        <Tooltip arrow title={getEmailIconText(contact.hasBeenSentEmailOrMeetUp)}>
-                                            <IconButton color="primary" onClick={handleClickhasBeenSentEmailOrMeetUp}>
-                                                <RightMailIcon hasBeenSentEmailOrMeetUp={contact.hasBeenSentEmailOrMeetUp} />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </Avatar>
-                                </Box> */}
-
-
+                                    }}                               
+                                />  
                             </Box>
 
-
-
-
-                            {/* <TextField id="outlined-basic" label="Secteur d'activité"  value={findLabelNafCodes(contactToAdd.businessActivity)} /> */}
-
+                           
                             {/* ///////// DATES ///////// */}
                             <Box sx={{ display: 'flex', justifyContent: "space-around", mt: 8 }} >
                                 {/* ///////// 1er APPEL */}
@@ -921,8 +596,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     </Typography>
                                 </Box>
                             </Box>
-
-
                         </Box>
                     </Box>
                 </Box>
@@ -932,7 +605,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     <Box
                         sx={{
                             width: contactToAddOrUpdate.comments.length > 0 ? "48%" : "86%",
-                            //width: "48%", 
                             display: 'flex', justifyContent: "space-between", gap: "4%"
                         }}
                     >
@@ -989,29 +661,25 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 label="Ville"
                                 value={contactToAddOrUpdate.businessCity}
                                 onChange={handleChangeText("businessCity")}
-                            //sx={{ width: "48%" }} 
                             />
                             <TextField
                                 id="outlined-basic"
                                 label="Adresse"
                                 value={contactToAddOrUpdate.businessAddress}
                                 onChange={handleChangeText("businessAddress")}
-                            //sx={{ width: "48%", ml: "4%" }} 
                             />
                             <TextField
                                 id="outlined-basic"
                                 label="Site WEB"
                                 value={contactToAddOrUpdate.businessWebsite}
                                 onChange={handleChangeText("businessWebsite")}
-                                //sx={{ width: "48%", ml: "4%" }}
                                 InputProps={{
                                     startAdornment: contactToAddOrUpdate.businessWebsite && <Link
                                         href={contactToAddOrUpdate.businessWebsite}
                                         target="_blank"
-                                        underline="none" //color="inherit" 
+                                        underline="none" 
                                         sx={{
                                             mr: 1,
-                                            //fontSize: "0.8em" 
                                         }}
                                     >
                                         <LanguageIcon style={{ color: muiTheme.palette.gray.dark }} />
@@ -1023,20 +691,17 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 label="Téléphone STANDARD"
                                 value={contactToAddOrUpdate.businessPhone}
                                 onChange={handleChangeText("businessPhone")}
-                            //sx={{ width: "48%" }} 
                             />
                             <TextField
                                 id="outlined-basic"
                                 label="Email ENTREPRISE"
                                 value={contactToAddOrUpdate.businessEmail}
                                 onChange={handleChangeText("businessEmail")}
-                                //sx={{ width: "48%" }}
                                 InputProps={{
-                                    startAdornment: contactToAddOrUpdate.businessEmail && <Link href={`mailto:${contactToAddOrUpdate.businessEmail}`} underline="none" //color="inherit"                                        
+                                    startAdornment: contactToAddOrUpdate.businessEmail && <Link href={`mailto:${contactToAddOrUpdate.businessEmail}`} underline="none" 
                                         target="_blank"
                                         sx={{
                                             mr: 1,
-                                            //fontSize: "0.8em" 
                                         }}
                                     >
                                         <MailIcon color="secondary" />
@@ -1048,7 +713,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
                     {/* ///////// COMMENTAIRES ///////// */}
                     <TextField
-                        //variant="outlined"
                         sx={{
                             width: contactToAddOrUpdate.comments.length > 0 ? "48%" : "10%",
                             overflow: 'auto',
@@ -1091,7 +755,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         <IconButton
                                             size="small"
                                             color="error"
-                                            onClick={() => setOpenDeleteContactFileModal(true)}    // () => removeFile(file)}
+                                            onClick={() => setOpenDeleteContactFileModal(true)}  
                                         >
                                             <ClearIcon />
                                         </IconButton>
@@ -1128,28 +792,12 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
                             ))}
                         </Typography>
-
-                        {/* <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                                {contactToAddOrUpdate.filesSent.length} fichier(s)<br />
-                                {contactToAddOrUpdate.filesSent.map((file, index) => (
-                                    <React.Fragment key={index}>
-                                        --{file instanceof File ? <a href={URL.createObjectURL(file)} target="_blank" rel="noopener noreferrer">{file.name}</a> : file.name}<br />
-                                    </React.Fragment>
-                                ))}
-                            </Typography> */}
-
-                        {/* <MuiFileInput
-                                value={contactToAddOrUpdate.filesSent}
-                                onChange={handleChangeFile}
-                            /> */}
-
+                       
 
                         <Tabs
-                            sx={{ marginTop: "30px" }}
-                            //value={false}       // Sinon avec "value={tabValue}" => erreur dans Console : The `value` provided to the Tabs component is invalid. The Tab with this `value` ("0") is not part of the document layout. !!! (alors que dans page (contact) ça marche !!!???)
+                            sx={{ marginTop: "30px" }}                           
                             value={tabValue}
                             onChange={(e, newValue: number) => setTabValue(newValue)}
-                        //sx={{ borderRight: 1, borderColor: 'divider', width: "120px" }}
                         >
                             <Tab
                                 key={0}
@@ -1166,9 +814,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         <TabPanel key={0} value={tabValue} index={0}  >
                             <FormControl sx={{
                                 marginTop: "30px",
-                                //margin: "5%",
                                 width: "100%",
-                                //maxWidth: "800px",
                             }} >
                                 {filesFirebaseArray.length > 0
                                     ? <InputLabel id="type-label">Choisir un fichier existant</InputLabel>
@@ -1177,27 +823,10 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
                                 <Select
                                     id="type-label"
-                                    //sx={{ width: "200px" }}
                                     value={firebaseFileSelected.fileRef}
-                                    //name={firebaseFileSelected.fileName}  // SERT A RIEN !!!
                                     onChange={handleChangeExistingFile}
-                                >
-                                    {/* <MenuItem key="0" value="0">Choisir dans la liste</MenuItem> */}
+                                >                                   
                                     {filesFirebaseArray.map((file, index) => (
-
-                                        //     <Tooltip title="Associer au contact">
-                                        //         <IconButton color="secondary" sx={{
-                                        //             //padding: 0, 
-                                        //             //marginLeft:"10px" 
-                                        //         }}       // Car les boutons ont automatiquement un padding
-                                        //         //</Tooltip>onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, dateOfNextCall: null })} 
-                                        //         >
-                                        //             <AddIcon
-                                        //             //fontSize='small' sx={{ marginRight: "10px" }} 
-                                        //             />
-                                        //         </IconButton>
-                                        //     </Tooltip>
-
                                         <MenuItem
                                             key={file.fileRef}
                                             value={file.fileRef}
@@ -1205,25 +834,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                                 backgroundColor: index % 2 === 0 ? muiTheme.palette.lightCyan.light : '',
                                                 color: index % 2 === 1 ? muiTheme.palette.primary.dark : '',
                                             }}
-                                        //onClick={() => handleOpenFile(file.fileRef)}
-                                        >
-                                            {/* <Box>
-                                                    <Tooltip title="Voir le fichier">
-                                                        <IconButton
-                                                            onClick={() => handleOpenFile(file.fileRef)}
-                                                            color="primary" sx={{
-                                                                //padding: 0, 
-                                                                //marginLeft:"10px" 
-                                                            }}       // Car les boutons ont automatiquement un padding
-                                                        >
-                                                            <VisibilityIcon
-                                                            //fontSize='small'
-                                                            // sx={{ marginRight: "10px" }} 
-                                                            />
-                                                        </IconButton>
-                                                    </Tooltip> */}
+                                        >                                            
                                             {file.fileName}
-                                            {/* </Box> */}
                                         </MenuItem>
                                     ))}
                                 </Select>
@@ -1232,7 +844,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         <Button
                                             sx={{ marginTop: "10px" }}
                                             color="secondary"
-                                            //component="label"
                                             type="submit"
                                             variant="contained" startIcon={<VisibilityIcon />}
                                             onClick={() => handleOpenFile(firebaseFileSelected.fileRef)}
@@ -1241,7 +852,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         </Button>
                                         <Button
                                             sx={{ marginTop: "10px", color: "white" }}
-                                            //component="label"
                                             type="submit"
                                             variant="contained" startIcon={<AddIcon />}
                                             onClick={handleChangeSelectFirebaseFile}
@@ -1254,8 +864,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         </TabPanel>
 
                         <TabPanel key={1} value={tabValue} index={1}  >
-                            {/* => FormControl n'est pas conçu pour gérer les soumissions de formulaire. */}
-
                             <form
                                 style={{
                                     marginTop: "30px",
@@ -1266,7 +874,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 }}
                                 onSubmit={(e) => handleSubmitFiles(e, "filesSent")}
                             >
-
                                 <Input
                                     id="fileInput"
                                     type="file"
@@ -1294,11 +901,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }}  >
                                             <Button
                                                 color="pink"
-                                                //sx={{ marginLeft: "10px" }}
-                                                //component="label"
                                                 type="submit"
                                                 variant="contained" startIcon={<CloudUploadIcon />}
-                                            //onClick={handleChangeLogo}
                                             >
                                                 2- Télécharger/ajouter le fichier
                                             </Button>
@@ -1311,14 +915,12 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                             value={progresspercentFile}
                                             sx={{
                                                 marginTop: "10px",
-                                                //width: "90%"
                                             }}
                                         />
                                         {alertFileText && <Alert
                                             sx={{ marginTop: "10px", }}
                                             severity="warning">{alertFileText}</Alert>}
                                     </Box>
-
                                 </Box>
                                 }
                             </form>
@@ -1331,7 +933,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     color="error"
                                     sx={{
                                         marginTop: "50px",
-                                        //position: "absolute", top: 0, right: 0 
                                     }}
                                     onClick={() => setOpenDeleteContactFilesModal(true)} >
                                     Supprimer tous les fichiers associés
@@ -1347,7 +948,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
                                             Supprimer tous les fichiers associés au contact : <span style={{ fontWeight: "bold" }}>{contactToAddOrUpdate.businessName}</span> ?
                                         </Typography>
-                                        {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
                                         <Box sx={{ display: "flex", justifyContent: "space-between" }} >
                                             <Button
                                                 variant="contained"
@@ -1364,11 +964,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             </Box>
                         }
                     </Box>
-
-
-                    {/* <IconButton>
-                            <Edit sx={{ fontSize: 14 }} />
-                        </IconButton> */}
 
                     {addContact && <Button variant="contained" sx={{ width: '25%', height: "100px", mt: 3, }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
                     {updateContact && <Button variant="contained" color='secondary' sx={{ width: '25%', height: "100px", mt: 3 }} onClick={handleUpdateContact} >Mettre à jour le contact</Button>}
@@ -1412,7 +1007,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
                             Supprimer le contact : <span style={{ fontWeight: "bold" }}>{contact.businessName}</span> ?
                         </Typography>
-                        {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
                         <Box sx={{ display: "flex", justifyContent: "space-between" }} >
                             <Button variant="contained" color='warning' onClick={handleClickDeleteContact} sx={{ marginRight: "15px" }} >Oui !</Button>
                             <Button variant="contained" color='primary' sx={{ color: "white" }} onClick={() => setOpenDeleteContactModal(false)} >Non</Button>
@@ -1420,20 +1014,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     </Box>
                 </Modal>
             </Box>}
-
-            {/* <Divider />
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    sx={{ px: 2, py: 1, bgcolor: 'background.default' }}
-                >
-                    <Chip></Chip>
-                    <Switch />
-                </Stack> */}
-
         </Card>
-        // </Zoom>
     )
 }
 

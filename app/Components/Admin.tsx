@@ -8,18 +8,9 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import LinearProgress from '@mui/material/LinearProgress';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListSubheader from '@mui/material/ListSubheader';
 import { useTheme } from '@mui/material/styles';
 import { uid } from 'uid';
-
 import { modalStyle } from '../utils/StyledComponents'
-
-
-import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, deleteDoc, updateDoc, doc } from "firebase/firestore";
-import { fireStoreDb } from '../utils/firebase';
-
-
 
 type AdminType = {
   currentUserId: any
@@ -38,13 +29,7 @@ export default function Admin({ currentUserId }: AdminType) {
   const [alertFileText, setAlertFileText] = React.useState("");
   const [alertCatText, setAlertCatText] = React.useState("");
 
-  const [inputFileValue, setInputFileValue] = React.useState("")
 
-
-  //console.log("catToUpdate", catToUpdateOrDelete)
-  //console.log("newCat", newCat)
-
-  console.log("fileToUpdateOrDelete", fileToUpdateOrDelete)
   const muiTheme = useTheme();
 
 
@@ -56,7 +41,6 @@ export default function Admin({ currentUserId }: AdminType) {
     getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
       console.log("categories", categories)
 
-      // Pas besoin de l'attribut userId donc on garde juste ce qu'on veut
       const newCategoriesList = categories.map(category => ({
         id: category.id,
         label: category.label
@@ -75,31 +59,20 @@ export default function Admin({ currentUserId }: AdminType) {
     console.log(e.target.files[0])
     setNewFileName(e.target.files[0].name)
   }
-  
   const handleSubmitFiles = (e: any, attribut: string) => {
     e.preventDefault()
-    console.log("e", e)
-    console.log("e.target", e.target)
-    console.log("e.target", e.target.elements)
-    console.log("e.target", e.target.elements[0])
-    console.log("e.target", e.target.elements[0].files)
-    console.log("e.target", e.target.elements[0].files[0])
 
-    if (newFileName === "" ) {
+    if (newFileName === "") {
       setAlertFileText("Le nom du fichier doit contenir au moins un caractère !")
       return
     }
-
     setAlertFileText("")
 
-    //const file = e.target[0]?.files[0]
     const file = e.target.elements[0].files[0]
     if (!file) return;
     const storageRef = ref(storage, `${attribut}/${file.name}`);
 
     const uploadTask = uploadBytesResumable(storageRef, file);
-
-    //console.log(uploadTask)
 
     uploadTask.on("state_changed",
       (snapshot) => {
@@ -124,12 +97,11 @@ export default function Admin({ currentUserId }: AdminType) {
     );
   }
 
-
-  const handleUpdateFile = () => {    
+  const handleUpdateFile = () => {
     console.log("fileToUpdate", fileToUpdateOrDelete)
     if (fileToUpdateOrDelete.fileName === "") {
       setAlertFileText("Le nom du fichier doit contenir au moins un caractère !")
-      return 
+      return
     }
     setAlertFileText("")
     updateFileOnFirebase(fileToUpdateOrDelete)
@@ -140,9 +112,8 @@ export default function Admin({ currentUserId }: AdminType) {
   const handleAddCat = () => {
     if (newCatName === "") {
       setAlertCatText("Le nom de la catégorie doit contenir au moins un caractère !")
-      return 
+      return
     }
-
     setAlertCatText("")
 
     const newCatWithUpperCase: ContactCategorieType = { id: uid(), label: newCatName.charAt(0).toUpperCase() + newCatName.slice(1) }
@@ -158,76 +129,13 @@ export default function Admin({ currentUserId }: AdminType) {
 
     if (catToUpdateOrDelete.label === "") {
       setAlertCatText("Le nom de la catégorie doit contenir au moins un caractère !")
-      return 
+      return
     }
-
     setAlertCatText("")
     updateCategorieOnFirebase(catToUpdateOrDelete)
     setCategoriesList([...categoriesList.filter(cat => cat.id !== catToUpdateOrDelete.id), { ...catToUpdateOrDelete }]);
     setCatToUpdateOrDelete({ id: "", label: "" });
   }
-
-  // const handleDeleteCat = async () => {
-  //   console.log("catToUpdate", catToUpdateOrDelete)
-
-  //   try {
-  //     await deleteCategorieOnFirebase(catToUpdateOrDelete.id);
-
-  //     console.log("OKKKKKKKKKKKK")
-
-  //     setCategoriesList([...categoriesList.filter(cat => cat.id !== catToUpdateOrDelete.id)]);
-  //   } catch (error) {
-
-  //     console.log("NONNNNNNNNN")
-
-  //     console.log(error)
-  //   }
-
-  //   setCatToUpdateOrDelete({ id: "", label: "" });
-  // }
-
-
-
-  // const deleteCategorieOnFirebase2 = (catId: string) => {
-  //   console.log("catId", catId) 
-
-  //   const q = query(collection(fireStoreDb, "contacts"), where("businessCategoryId", "==", catId));
-
-  //   return getDocs(q).then((querySnapshot) => {
-  //     console.log("querySnapshot", querySnapshot.docs)
-
-  //     if (!querySnapshot.empty) {
-  //       throw new Error("Un contact est associé à cette catégorie.");
-  //     } else {
-  //       const q = query(collection(fireStoreDb, "categories"), where("id", "==", catId));
-  //       return getDocs(q).then((querySnapshot) => {
-  //         return querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
-  //         // Marche aussi mais pas besoin de Promise.all car une seule cat à supp !
-  //         // const deletePromises = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
-  //         // return Promise.all(deletePromises);
-  //       })
-  //       // Chat copilote : mais marche pas !!! :
-  //       // const docRef = doc(fireStoreDb, "categories", catId);
-  //       // return deleteDoc(docRef);
-  //     }
-  //   }).catch((error) => {
-  //     console.error("Erreur lors de la suppression de la catégorie : ", error);
-  //   });
-  // }
-
-  // const handleDeleteCat = () => {
-  //   console.log("catToUpdate", catToUpdateOrDelete)
-
-  //   deleteCategorieOnFirebase2(catToUpdateOrDelete.id)
-  //     .then(() => {
-  //     console.log("ok !!!!!!!!!")
-  //   }).catch((error) => {
-  //     console.log("non", error)
-  //   })
-  // }
-
-
-
   const handleDeleteCat = () => {
     console.log("catToUpdate", catToUpdateOrDelete)
 
@@ -243,13 +151,6 @@ export default function Admin({ currentUserId }: AdminType) {
     setOpenDeleteCatModal(false);
   }
 
-  const handleSaveAll = () => {
-    console.log("*/*/*/",getAllFirebaseUserDatasAndSave(currentUserId))
-  } 
-
-
-
-
   return (
     <Box>
       <Box sx={{ maxWidth: "1500px", margin: "auto" }} >
@@ -263,7 +164,6 @@ export default function Admin({ currentUserId }: AdminType) {
                 overflow: 'auto',
                 maxHeight: "40vh",
                 boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)'
-                //backgroundColor: muiTheme.palette.lightCyan.light
               }}
               subheader={<li />}
             >
@@ -273,7 +173,7 @@ export default function Admin({ currentUserId }: AdminType) {
                   <ListItemText
                     key={index}
                     onDoubleClick={() => handleOpenFile(file.fileRef)}
-                    onClick={() => setFileToUpdateOrDelete({fileName: file.fileName, fileRef: file.fileRef})}
+                    onClick={() => setFileToUpdateOrDelete({ fileName: file.fileName, fileRef: file.fileRef })}
                     sx={{
                       cursor: "pointer",
                       backgroundColor: index % 2 === 0 ? muiTheme.palette.lightCyan.light : '',
@@ -286,26 +186,18 @@ export default function Admin({ currentUserId }: AdminType) {
                 ))}
             </List>
 
-            <Box sx={{width:"48%" }}  >           
+            <Box sx={{ width: "48%" }}  >
 
               <form
                 style={{
-                  //marginLeft: "0px",
-                  //margin: "5%",
-                  //width: "48%",
                   display: "flex",
                   flexDirection: "column",
-                  //justifyContent: "start",
-                  //gap: "5%",
-                  //maxWidth: "500px",
                 }}
                 onSubmit={(e) => handleSubmitFiles(e, "filesSent")}
               >
                 <Input
                   id="fileInput"
                   type="file"
-                  // value={inputFileValue}
-                  //value={newFileName ?? ""}
                   style={{ display: 'none' }}
                   onChange={handleChangeInputFile}
                 />
@@ -315,7 +207,7 @@ export default function Admin({ currentUserId }: AdminType) {
                     1- Choisir un fichier à ajouter
                   </Button>
                 </label>
-                
+
                 {(newFileName !== null) && <Box>
                   <TextField
                     value={newFileName}
@@ -327,10 +219,8 @@ export default function Admin({ currentUserId }: AdminType) {
                   <Button
                     color="pink"
                     sx={{ fontWeight: "bold", marginTop: "15px" }}
-                    //component="label"
                     type="submit"
                     variant="contained" startIcon={<CloudUploadIcon />}
-                  //onClick={handleChangeLogo}
                   >
                     2-Télécharger/ajouter le fichier
                   </Button>
@@ -341,7 +231,7 @@ export default function Admin({ currentUserId }: AdminType) {
                 </Box>}
               </form>
 
-              {alertFileText && <Alert sx={{ mt:"70px" }} severity="warning">{alertFileText}</Alert>}
+              {alertFileText && <Alert sx={{ mt: "70px" }} severity="warning">{alertFileText}</Alert>}
 
               {fileToUpdateOrDelete.fileRef && <FormControl
                 sx={{
@@ -353,7 +243,6 @@ export default function Admin({ currentUserId }: AdminType) {
                 }}
               >
                 <TextField
-                  //disabled={fileToUpdateOrDelete.fileName === "" ? true : false}
                   value={fileToUpdateOrDelete.fileName}
                   //autoComplete="off"
                   onChange={(e) => setFileToUpdateOrDelete({ ...fileToUpdateOrDelete, fileName: e.target.value })}
@@ -362,15 +251,13 @@ export default function Admin({ currentUserId }: AdminType) {
                   sx={{ width: "60%" }}
                 />
                 {fileToUpdateOrDelete.fileRef && <Button
-                  //sx={{ marginTop: "15px", }}
-                  //component="label"
                   color="ochre"
                   type="submit"
-                  variant="contained" //startIcon={<CloudUploadIcon />}
+                  variant="contained"
                   onClick={handleUpdateFile}
                 >
                   Modifier le nom
-                </Button>  }            
+                </Button>}
               </FormControl>}
             </Box>
           </Box>
@@ -380,10 +267,9 @@ export default function Admin({ currentUserId }: AdminType) {
 
         <Box
           m={5}
-        //sx={{ marginTop: "100px" }} 
         >
           <Typography variant="h6">Mes catégories ({categoriesList.length}) {categoriesList.length > 0 && <span style={{ color: 'gray', fontSize: "0.8em" }}>(cliquer pour modifier)</span>}
-          </Typography>       
+          </Typography>
           <Box sx={{ display: "flex", justifyContent: "space-between", gap: "2%", mt: 2, }} >
             <List
               sx={{
@@ -412,7 +298,7 @@ export default function Admin({ currentUserId }: AdminType) {
                 ))}
             </List>
 
-            <Box sx={{width:"48%" }}  >   
+            <Box sx={{ width: "48%" }}  >
               <FormControl
                 sx={{
                   display: "flex",
@@ -431,20 +317,19 @@ export default function Admin({ currentUserId }: AdminType) {
                   sx={{ width: "60%" }}
                 />
                 <Button
-                  sx={{ 
-                    //width: "30%", 
-                    color:"white" }}
-                  //component="label"
+                  sx={{
+                    color: "white"
+                  }}
                   type="submit"
-                  variant="contained" 
+                  variant="contained"
                   startIcon={<CloudUploadIcon />}
                   onClick={handleAddCat}
                 >
                   Ajouter la catégorie
                 </Button>
               </FormControl>
-              
-              {alertCatText && <Alert sx={{ mt:"70px" }} severity="warning">{alertCatText}</Alert>}
+
+              {alertCatText && <Alert sx={{ mt: "70px" }} severity="warning">{alertCatText}</Alert>}
 
               {catToUpdateOrDelete.id && <FormControl
                 sx={{
@@ -458,28 +343,24 @@ export default function Admin({ currentUserId }: AdminType) {
                 <TextField
                   disabled={catToUpdateOrDelete.id === "" ? true : false}
                   value={catToUpdateOrDelete.label}
-                  //autoComplete="off"    // Marche pas !!!
+                  //autoComplete="off"    // Marche pas !!! (Parfois le navigateur met une valeur par défaut)
                   onChange={(e) => setCatToUpdateOrDelete({ ...catToUpdateOrDelete, label: e.target.value })}
                   label="Catégorie à modifier ou supprimer"
                   variant="outlined"
                   sx={{ width: "60%" }}
                 />
                 <Button
-                  //sx={{ width: "20%" }}
-                  //component="label"
                   color="ochre"
                   type="submit"
-                  variant="contained" //startIcon={<CloudUploadIcon />}
+                  variant="contained"
                   onClick={handleUpdateCat}
                 >
                   Modifier le nom
                 </Button>
                 <Button
-                  //sx={{ width: "20%" }}
-                  //component="label"
                   color="warning"
                   type="submit"
-                  variant="contained" //startIcon={<CloudUploadIcon />}
+                  variant="contained"
                   onClick={() => setOpenDeleteCatModal(true)}
                 >
                   Supprimer
@@ -494,7 +375,6 @@ export default function Admin({ currentUserId }: AdminType) {
                         {catToUpdateOrDelete.label}
                       </span> ?
                     </Typography>
-                    {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</Typography> */}
                     <Box sx={{ display: "flex", justifyContent: "space-between" }} >
                       <Button variant="contained" color='warning' onClick={handleDeleteCat} sx={{ marginRight: "15px" }} >Oui !</Button>
                       <Button variant="contained" color='primary' onClick={() => setOpenDeleteCatModal(false)} >Non</Button>
@@ -506,35 +386,28 @@ export default function Admin({ currentUserId }: AdminType) {
           </Box>
         </Box>
       </Box>
-        <Box sx={{
-          //display: "flex", justifyContent: "space-around", 
-          padding: "10px", border: "solid 3px blue", borderRadius: "10px", marginTop: "100px", width: "calc(100vw - 200px)"
+      <Box sx={{
+        padding: "10px", border: "solid 3px blue", borderRadius: "10px", marginTop: "100px", width: "calc(100vw - 200px)"
       }}>
-          <Typography
-              component="div"
-              textAlign="center"
-              style={{
-                  //display: "block",
-                  marginBottom: "50px"
-                  //width: "360px" 
-              }} >Pour Version TEST</Typography>
-          <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }} >
-              <Button variant="contained" color='success' onClick={() => addCategoriesOnFirebaseAndReload(currentUserId)}>1-Ajouter Catégories</Button>
-              <Button variant="contained" color='ochre' onClick={() => addFakeDataWithCat(currentUserId)}>2-Ajouter Contacts Test (x7)</Button>
-              <Button variant="contained" color='warning' onClick={() => addLaurianeDataWithCat(currentUserId)}>Ajouter Contacts LAURIANE (x199)</Button>
-              <Button variant="contained" onClick={handleSaveAll}>Sauvegarder TOUTES mes données</Button>
-              {/* <Button variant="contained" color='primary' onClick={() => addFakeDataOnFirebaseAndReload(currentUserId, contactsLaurianeCampings_x10)}>Ajouter Contacts Camping x10</Button>
-              <Button variant="contained" color='pink' onClick={() => addFakeDataOnFirebaseAndReload(currentUserId, contactsLaurianeCampings)}>Ajouter Contacts Camping (tous : x57)</Button> */}
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "space-around", }} >
-              <Button variant="contained" color='error' sx={{ width: "300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUserId)}>Supprimer tous mes contacts</Button>
-              {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer TOUS les contacts de l'appli !!!</Button> */}
-          </Box>
+        <Typography
+          component="div"
+          textAlign="center"
+          style={{
+            marginBottom: "50px"
+          }} >Pour Version TEST</Typography>
+        <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }} >
+          <Button variant="contained" color='success' onClick={() => addCategoriesOnFirebaseAndReload(currentUserId)}>1-Ajouter Catégories</Button>
+          <Button variant="contained" color='ochre' onClick={() => addFakeDataWithCat(currentUserId)}>2-Ajouter Contacts Test (x7)</Button>
+          {/* <Button variant="contained" color='warning' onClick={() => addLaurianeDataWithCat(currentUserId)}>Ajouter Contacts LAURIANE (x199)</Button>
+              <Button variant="contained" onClick={handleSaveAll}>Sauvegarder TOUTES mes données</Button> */}
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "space-around", }} >
+          <Button variant="contained" color='error' sx={{ width: "300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUserId)}>Supprimer tous mes contacts</Button>
+          {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer TOUS les contacts de l'appli !!!</Button> */}
+        </Box>
       </Box>
     </Box>
-
   );
-
 }
 
 
