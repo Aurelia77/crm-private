@@ -163,6 +163,7 @@ type ContactsTableProps = {
 }
 const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDeleteContact, displayContactCard, getPriorityTextAndColor}: ContactsTableProps) => {
 
+    // A garder si on veut utilisé un contact sélectionné
     const [selectedContactId, setSelectedContactId] = React.useState("");
 
     // J'ai utilisé Memo et useCallback pour pas que toute la liste ne se rerende à chaque changement sur un contact mais comme chaque contactId change à chaque fois dans le liste de contact, ça ne fonctionne pas...
@@ -173,8 +174,6 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
     const memoizedHandleDeleteContact = React.useCallback(handleDeleteContact, [handleDeleteContact])
     const memoizedDisplayContactCard = React.useCallback(displayContactCard, [displayContactCard])
     const memoizedGetPriorityTextAndColor = React.useCallback(getPriorityTextAndColor, [getPriorityTextAndColor])
-
-    const ContactRowMemo = React.memo(ContactRow) 
 
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof Contact>('businessName');
@@ -198,10 +197,11 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
     );   
 
 
+    // Pour ne pas que chaque ligne se re-render à chaque fois j'ai voulu utiliser Memo et Callback
      // Comme ROW est un objet => il change à chaque Rerender, donc on fait ça... Mais va être utilisé dans une boucle mais impossible d'utiliser les Hook dans une boucle donc je le mets en dehors
      const renderRow = React.useCallback((row: Contact) => {
         return (
-            <ContactRowMemo
+            <ContactRow
                 key={row.id}
                 contact={row}
                 currentUserId={currentUserId}
@@ -226,7 +226,7 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
         // //setContacts={setContacts} 
         // />
         );
-    }, [ContactRowMemo, currentUserId, memoizedHandleUpdateContact, memoizedHandleDeleteContact, memoizedDisplayContactCard, memoizedGetPriorityTextAndColor])
+    }, [currentUserId, memoizedHandleUpdateContact, memoizedHandleDeleteContact, memoizedDisplayContactCard, memoizedGetPriorityTextAndColor])
 
   
    
@@ -288,6 +288,6 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
 
 
 // Pour que le tableau ne se recharche pas à chaque changement d'onglet (que s'il y a un changement)
-// export default React.memo(ContactsTable)
-// Vraiment besoin maintenant qu'on a mémoisé els ROWs ???????
-export default ContactsTable
+export default React.memo(ContactsTable)
+// Vraiment besoin maintenant qu'on a mémoisé les ROWs ??????? oui !!!
+//export default ContactsTable

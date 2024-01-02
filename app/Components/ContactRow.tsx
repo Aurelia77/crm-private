@@ -62,9 +62,9 @@ type ContactRowProps = {
     getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
 }
 
-export default function ContactRow({ contact,
+const ContactRow = ({ contact,
 
-    handleUpdateContact, handleDeleteContact, displayContactCard, currentUserId, getPriorityTextAndColor }: ContactRowProps) {
+    handleUpdateContact, handleDeleteContact, displayContactCard, currentUserId, getPriorityTextAndColor }: ContactRowProps) => {
 
     const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[] | null>(null);
 
@@ -833,3 +833,5 @@ export default function ContactRow({ contact,
         </StyledTableRow>
     )
 }
+
+export default React.memo(ContactRow)  

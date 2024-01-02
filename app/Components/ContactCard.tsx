@@ -212,9 +212,9 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     }
 
     React.useEffect(() => {
-        // Si on est sur la VUE d'un contact et qu'on n'a pas cliqué sur un contact => modal 
+        // Si on est sur la VUE d'un contact et qu'on n'a pas cliqué sur un contact => modal qui dit qu'aucun contact est sélectionné 
         (updateContact && JSON.stringify(contactToAddOrUpdate) === JSON.stringify(emptyContact)) && setOpenNoContactModal(true)
-    }, [])
+    }, [contactToAddOrUpdate, updateContact])
 
 
     return (

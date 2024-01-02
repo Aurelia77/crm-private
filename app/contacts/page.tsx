@@ -211,6 +211,8 @@ export default function Contacts() {
 
 
     React.useEffect(() => {
+        console.log("USE EFFECT !!!")
+
         // setAllContacts(TESTcontactsTest);
         // setFilteredContacts(TESTcontactsTest);
         // setAlerts(countContactsByAlertDates(TESTcontactsTest))
@@ -419,7 +421,7 @@ export default function Contacts() {
                             </Tabs>
 
                             {/* ///////// LISTE DE CONTACTS + recherche) ///////// */}
-                            {/* Je ne met pas le premier onglet dans un TAB sinon ça rerender à chaque fois qu'on revient dessus ! Même avec useCallback et useMemo !!!??? */}
+                            {/* Je ne met pas les onglets dans des TAB sinon ça rerender à chaque fois qu'on revient dessus ! Même avec useCallback et useMemo !!! */}
                             <Box hidden={tabValue !== 0} width={`calc(100vw - ${TABS_WIDTH}px)`}  >
                                 <Box width="100%"
                                 //flexGrow={1} overflow="auto"
@@ -508,7 +510,8 @@ export default function Contacts() {
                                         /> */}
 
                             {/* ///////// CALENDRIER ///////// */}
-                            <TabPanel key="1" value={tabValue} index={1} width={`calc(100vw - ${TABS_WIDTH}px)`} >
+                            <Box hidden={tabValue !== 1} width={`calc(100vw - ${TABS_WIDTH}px)`}  >
+                            {/* <TabPanel key="1" value={tabValue} index={1} width={`calc(100vw - ${TABS_WIDTH}px)`} > */}
                                 <Tabs
                                     value={tabCalendarValue}
                                     onChange={(e, newValue: number) => setTabCalendarValue(newValue)}
@@ -549,10 +552,11 @@ export default function Contacts() {
                                         updateContactInContactsAndDB={updateContactInContactsAndDB}
                                     />
                                 </TabPanel>
-                            </TabPanel>
+                            </Box>
 
                             {/* ///////// Nouveau CONTACT ///////// */}
-                            <TabPanel key="2" value={tabValue} index={2} width={`calc(100vw - ${TABS_WIDTH}px)`} >
+                            <Box hidden={tabValue !== 2} width={`calc(100vw - ${TABS_WIDTH}px)`}  >
+                            {/* <TabPanel key="2" value={tabValue} index={2} width={`calc(100vw - ${TABS_WIDTH}px)`} > */}
                                 <Tabs
                                     value={tabNewContactValue}
                                     onChange={(e, newValue) => setTabNewContactValue(newValue)}
@@ -586,9 +590,11 @@ export default function Contacts() {
                                         addContact={(e) => addContactOnFirebaseAndReload(currentUser.uid, e)}
                                     />
                                 </TabPanel>
-                            </TabPanel>
+                            </Box>
 
                             {/* ///////// Un CONTACT ///////// */}
+                            {/* <Box hidden={tabValue !== 3} width={`calc(100vw - ${TABS_WIDTH}px)`}  > */}
+                            {/* Ici on laisse dans un TAB sinon on a le modal du composant qui s'affiche */}
                             <TabPanel key="3" value={tabValue} index={3} width={`calc(100vw - ${TABS_WIDTH}px)`} >
                                 <ContactCard
                                     contact={contactToDisplay}
@@ -601,31 +607,35 @@ export default function Contacts() {
                             </TabPanel>
 
                             {/* /////////////////////// Admin /////////////////////// */}
-                            <TabPanel key="4" value={tabValue} index={4} width={`calc(100vw - ${TABS_WIDTH}px)`} >
+                            <Box hidden={tabValue !== 4} width={`calc(100vw - ${TABS_WIDTH}px)`}  >
+                            {/* <TabPanel key="4" value={tabValue} index={4} width={`calc(100vw - ${TABS_WIDTH}px)`} > */}
                                 <Admin currentUserId={currentUser.uid} />
-                            </TabPanel>
+                            </Box>
 
                             {/* /////////////////////// Aide /////////////////////// */}
-                            <TabPanel key="5" value={tabValue} index={5} width={`calc(100vw - ${TABS_WIDTH}px)`} >
+                            <Box hidden={tabValue !== 5} width={`calc(100vw - ${TABS_WIDTH}px)`}  >
+                            {/* <TabPanel key="5" value={tabValue} index={5} width={`calc(100vw - ${TABS_WIDTH}px)`} > */}
                                 <Help />
-                            </TabPanel>
+                            </Box>
 
                             {/* /////////////////////// 2 /////////////////////// */}
-                            <TabPanel key="6" value={tabValue} index={6} width={`calc(100vw - ${TABS_WIDTH}px)`} >
+                            <Box hidden={tabValue !== 6} width={`calc(100vw - ${TABS_WIDTH}px)`}  >
+                            {/* <TabPanel key="6" value={tabValue} index={6} width={`calc(100vw - ${TABS_WIDTH}px)`} > */}
                                 <ContactsTable2
                                     contacts={filteredContacts}
                                     currentUserId={currentUser ? currentUser.uid : ""}
-                                    // selectedContactId={selectedContactId}
-                                    // setSelectedContactId={memoizedSetSelectedContactId}
+                                    //selectedContactId={selectedContactId}
+                                    //setSelectedContactId={memoizedSetSelectedContactId}
                                     handleUpdateContact={memoizedUpdateContactInContactsAndDB}
                                     handleDeleteContact={memoizedDeleteDataOnFirebaseAndReload}
                                     displayContactCard={memoizeddisplayContactCardToUpdate}
                                     getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
                                 />
-                            </TabPanel>
+                            </Box>
 
                             {/* /////////////////////// 3 /////////////////////// */}
-                            <TabPanel key="7" value={tabValue} index={7} width={`calc(100vw - ${TABS_WIDTH}px)`} >
+                            <Box hidden={tabValue !== 7} width={`calc(100vw - ${TABS_WIDTH}px)`}  >
+                            {/* <TabPanel key="7" value={tabValue} index={7} width={`calc(100vw - ${TABS_WIDTH}px)`} > */}
                                 <ContactsTable3
                                     contacts={filteredContacts}
                                     currentUserId={currentUser ? currentUser.uid : ""}
@@ -636,10 +646,11 @@ export default function Contacts() {
                                     displayContactCard={memoizeddisplayContactCardToUpdate}
                                     getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
                                 />
-                            </TabPanel>
+                            </Box>
 
                             {/* /////////////////////// 4 /////////////////////// */}
-                            <TabPanel key="8" value={tabValue} index={8} width={`calc(100vw - ${TABS_WIDTH}px)`} >
+                            <Box hidden={tabValue !== 8} width={`calc(100vw - ${TABS_WIDTH}px)`}  >
+                            {/* <TabPanel key="8" value={tabValue} index={8} width={`calc(100vw - ${TABS_WIDTH}px)`} > */}
                                 <ContactsTable4
                                     contacts={filteredContacts}
                                     currentUserId={currentUser ? currentUser.uid : ""}
@@ -650,7 +661,7 @@ export default function Contacts() {
                                     displayContactCard={memoizeddisplayContactCardToUpdate}
                                     getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
                                 />
-                            </TabPanel>
+                            </Box>
                         </Box>
                     </Box>
             }

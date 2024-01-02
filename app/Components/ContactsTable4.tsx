@@ -114,9 +114,6 @@ import { Column as ColumnVirtualized, Table as TableVirtualized, TableRowProps, 
 import 'react-virtualized/styles.css'; // only needs to be imported once
 
 
-const ContactRowMemo = React.memo(ContactRow)
-
-
 interface Column {
     id: keyof Contact   // | "supprimer"
     label: string | JSX.Element
@@ -418,9 +415,6 @@ const Inner = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(
 type ContactsTableProps = {
     contacts: Contact[],
     currentUserId: string,
-    //selectedContact: Contact,
-    // selectedContactId: string,
-    // setSelectedContactId: (id: string) => void
     handleUpdateContact: (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => void   // obligé de mettre NULL pour la date ! (???)
     // handleUpdateContact: (updatingContact: Contact) => void
     handleDeleteContact: (id: string) => void
@@ -428,11 +422,10 @@ type ContactsTableProps = {
     getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
     //setSelectedContactId: (id: string) => void
 }
-const ContactsTable = ({ contacts, currentUserId, 
-    //selectedContactId, setSelectedContactId, 
-    handleUpdateContact, handleDeleteContact, displayContactCard, getPriorityTextAndColor
+const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDeleteContact, displayContactCard, getPriorityTextAndColor
 }: ContactsTableProps) => {
 
+    // A garder si on veut utilisé un contact sélectionné
     const [selectedContactId, setSelectedContactId] = React.useState("");
 
 
@@ -929,7 +922,7 @@ const ContactsTable = ({ contacts, currentUserId,
                                 </tr> 
                             </TableBody> 
 
-                            // <ContactRowMemo
+                            // <ContactRow
                             //         key={row.id}
                             //         contact={row}
                             //         currentUserId={currentUserId}
@@ -1172,6 +1165,6 @@ const ContactsTable = ({ contacts, currentUserId,
 }
 
 // Pour que le tableau ne se recharche pas à chaque changement d'onglet (que s'il y a un changement)
-// export default React.memo(ContactsTable)
+ export default React.memo(ContactsTable)
 // Vraiment besoin maintenant qu'on a mémoisé les ROWs ???????
-export default ContactsTable
+//export default ContactsTable
