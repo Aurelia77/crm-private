@@ -40,6 +40,7 @@
     "react-gauge-chart": "^0.4.1",
     "react-gauge-component": "^1.1.22",
     "react-virtualized": "^9.22.5",
+    "react-virtualized-auto-sizer": "^1.0.20",
     "react-window": "^1.8.10",
     "uid": "^2.0.2"
   },

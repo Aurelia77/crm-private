@@ -1,3 +1,5 @@
+// Ici pas d'utilisation du composant ContactRow => On gère le tableau par ligne et non colonne
+
 import * as React from 'react';
 
 import { styled } from '@mui/material/styles';
@@ -7,7 +9,6 @@ import TableBody from '@mui/material/TableBody';
 // Aussi intaller les types de définitions pour TS ! (sinon erreur: Le fichier de déclaration du module 'react-window' est introuvable.) => pnpm install @types/react-window
 // Ensuite on importe et on utilise List à la place de Table
 
-import { FixedSizeList, FixedSizeListProps } from 'react-window';
 
 
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
@@ -101,7 +102,7 @@ import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import {modalStyle, StyledRating, StyledRatingStars, customIcons, IconContainer} from '../utils/StyledComponents'
 import { parse } from 'path';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
-import {isDatePassed, isDateSoon} from '../utils/toolbox'
+import {isDatePassed, isDateSoon, stringAvatar, stringToColor} from '../utils/toolbox'
 
 
 import { StyledTableCell } from '../utils/StyledComponents';
@@ -220,196 +221,6 @@ function stableSort(array: Contact[], comparator: (a: any, b: any) => number) { 
     });
     return stabilizedThis.map((el) => el[0]);
 }
-interface EnhancedTableProps {
-    numSelected: number;
-    onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Contact) => void;
-    //onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    order: Order;
-    orderBy: string;
-    //rowCount: number;
-}
-function EnhancedTableHead(props: EnhancedTableProps) {
-    const {
-        //onSelectAllClick,
-        order, orderBy, numSelected,
-        //rowCount,
-        onRequestSort } = props;
-    const createSortHandler =
-        (property: keyof Contact) => (event: React.MouseEvent<unknown>) => {
-            onRequestSort(event, property);
-        };
-    return (
-        <TableHead>
-            <TableRow>
-                {/*<TableCell padding="checkbox">
-          <Checkbox
-              color="primary"
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={rowCount > 0 && numSelected === rowCount}
-              onChange={onSelectAllClick}
-              inputProps={{
-                'aria-label': 'select all desserts',
-              }}
-            />
-          </TableCell> */}
-                {headCells.map((headCell) => (
-                    <StyledTableCell
-                        key={headCell.id}
-                        scope="col"
-                        //align={headCell.numeric ? 'right' : 'left'}
-                        //padding={headCell.disablePadding ? 'none' : 'normal'}
-                        //align="center"
-                        style={{
-                            height: "40px",
-                            minWidth: headCell.minWidth,
-                            padding: 0
-                            //minWidth: colWidth,
-                        }}
-                        sortDirection={orderBy === headCell.id ? order : false}
-                    >
-                        <TableSortLabel
-                            active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order : 'asc'}
-                            onClick={createSortHandler(headCell.id)}
-                        >
-                            {headCell.label}
-                            {orderBy === headCell.id ? (
-                                <Box component="span" sx={visuallyHidden}>
-                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                </Box>
-                            ) : null}
-                        </TableSortLabel>
-                    </StyledTableCell>
-                ))}
-                <StyledTableCell
-                    key="supprimer"
-                    //align={headCell.numeric ? 'right' : 'left'}
-                    //padding={headCell.disablePadding ? 'none' : 'normal'}
-                    align="center"
-                // style={{
-                //     minWidth: headCell.minWidth,
-                //     padding: 0
-                //     //minWidth: colWidth,
-                // }}
-                // sortDirection={orderBy === headCell.id ? order : false}
-                >
-                    <Box>
-                        <DeleteForeverRoundedIcon />
-                        <QuestionMarkIcon />
-                    </Box>
-                </StyledTableCell>
-                {/* {headCells.map((headCell) => (
-                    <TableCell
-                        key={headCell.id}
-                        //align={headCell.numeric ? 'right' : 'left'}
-                        //padding={headCell.disablePadding ? 'none' : 'normal'}
-                        sortDirection={orderBy === headCell.id ? order : false}
-                    >
-                        <TableSortLabel
-                            active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order : 'asc'}
-                            onClick={createSortHandler(headCell.id)}
-                        >
-                            {headCell.label}
-                            {orderBy === headCell.id ? (
-                                <Box component="span" sx={visuallyHidden}>
-                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                </Box>
-                            ) : null}
-                        </TableSortLabel>
-                    </TableCell>
-                ))} */}
-            </TableRow>
-        </TableHead>
-    );
-}
-
-
-// Pour améliorer les performances car très long ! => On utilise la virtualisation avec React Window
-/** Context for cross component communication */
-const VirtualTableContext = React.createContext<{
-    top: number
-    setTop: (top: number) => void
-    header: React.ReactNode
-    footer: React.ReactNode
-}>({
-    top: 0,
-    setTop: (value: number) => { },
-    header: <></>,
-    footer: <></>,
-})
-/** The virtual table. It basically accepts all of the same params as the original FixedSizeList.*/
-function VirtualTable({
-    row,
-    header,
-    footer,
-    ...rest
-}: {
-    header?: React.ReactNode
-    footer?: React.ReactNode
-    row: FixedSizeListProps['children']
-} & Omit<FixedSizeListProps, 'children' | 'innerElementType'>) {
-    const listRef = React.useRef<FixedSizeList | null>()
-    const [top, setTop] = React.useState(0)
-
-    return (
-        <VirtualTableContext.Provider value={{ top, setTop, header, footer }}>
-            <FixedSizeList
-                {...rest}
-                innerElementType={Inner}
-                onItemsRendered={props => {
-                    const style =
-                        listRef.current &&
-                        // @ts-ignore private method access
-                        listRef.current._getItemStyle(props.overscanStartIndex)
-                    setTop((style && style.top) || 0)
-
-                    // Call the original callback
-                    rest.onItemsRendered && rest.onItemsRendered(props)
-                }}
-                ref={el => (listRef.current = el)}
-            >
-                {row}
-            </FixedSizeList>
-        </VirtualTableContext.Provider>
-    )
-}
-/** The Row component. This should be a table row, and noted that we don't use the style that regular `react-window` examples pass in.*/
-function Row({ index }: { index: number }) {
-    return (
-        <tr>
-            {/** Make sure your table rows are the same height as what you passed into the list... */}
-            <td style={{ height: '36px' }}>Row {index}</td>
-            <td>Col 2</td>
-            <td>Col 3</td>
-            <td>Col 4</td>
-        </tr>
-    )
-}
-/**
- * The Inner component of the virtual list. This is the "Magic".
- * Capture what would have been the top elements position and apply it to the table.
- * Other than that, render an optional header and footer.
- **/
-const Inner = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(
-    function Inner({ children, ...rest }, ref) {
-        const { header, footer, top } = React.useContext(VirtualTableContext)
-        return (
-            <div {...rest} ref={ref}>
-                <table style={{ top, position: 'absolute', width: '100%' }}>
-                    {header}
-                    <tbody>{children}</tbody>
-                    {footer}
-                </table>
-            </div>
-        )
-    }
-)
-
-
-
-
-
 
 
 type ContactsTableProps = {
@@ -436,6 +247,20 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
     const memoizedDisplayContactCard = React.useCallback(displayContactCard, [displayContactCard])
     const memoizedGetPriorityTextAndColor = React.useCallback(getPriorityTextAndColor, [getPriorityTextAndColor])
 
+    const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[] | null>(null);
+
+    React.useEffect(() => {
+        getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
+
+            // Pas besoin de l'attribut userId donc on garde juste ce qu'on veut
+            const newCategoriesList = categories.map(category => ({
+              id: category.id,
+              label: category.label
+            }));
+            setCategoriesList(newCategoriesList);
+          })
+       
+    }, [currentUserId]);
 
     //console.log("CONTACT TABLE")
     console.log("CONTACT TABLE Contacts = ", contacts)
@@ -461,6 +286,7 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
 
     const muiTheme = useTheme();
 
+    // Je ne sais pas comment utiliser le tri ici...
     const visibleRows = React.useMemo(
         () =>
             stableSort(contacts, getComparator(order, orderBy))
@@ -474,59 +300,7 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
         ],
     );
 
-    const list = [
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-        { name: 'Brian Vaughn', description: 'Software engineer', coucou: "hello" },
-    ];
+  
 
     // // Pour tester les Grilles (Data Grid) car possibilité de filtrer, mais pas avec options ! Et on pt pas mettre d'icones dans les titres de colonnes je crois. Et puis je veux pas tout refaire donc je vais filtrer sur le tableau :)
     // const rows: GridRowsProp = contacts
@@ -615,10 +389,6 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
         );
     }
 
-
-    
-
-
     const MemoizedNameTextField = React.memo(({ cellData, onBlur, isClient, priority, contactId }: { cellData: string,onBlur : (value: string) => void, isClient: boolean, priority: number | null, contactId: string }) => {
         // Obligé de mettre à jour le contact lors du onBlur et donc de gérer l'état du TextField ici, car sinon à chaque changement le curseur revient à la fin => ajout du useEffect ! (si TextField non mémorisé pas besoin de faire tout ça)
         const [inputValue, setInputValue] = React.useState(cellData);
@@ -689,25 +459,35 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
                 contactId={rowData.id}
             />
         );
-    };
+    };   
 
     
-    const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[] | null>(null);
+    const MemoizedLogo = React.memo(({ cellData, businessName, rowIndex }: { cellData: string, businessName: string, rowIndex:number }) => {
+        // On peut récupérer cellData (la données qui correspond à dataKey de Column) ou rowData (tout le contact)
+        const contact = contacts[rowIndex];
 
-    React.useEffect(() => {
+        return <Avatar
+            onDoubleClick={() => displayContactCard(contact)} 
+            variant="rounded"
+            src={cellData
+                ? cellData
+                : ""}
+            {...stringAvatar(businessName, cellData)}
+        />
+    });
+    MemoizedLogo.displayName = 'MemoizedLogo';   
 
-        getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
-            //console.log("categories", categories)
-      
-            // Pas besoin de l'attribut userId donc on garde juste ce qu'on veut
-            const newCategoriesList = categories.map(category => ({
-              id: category.id,
-              label: category.label
-            }));
-            setCategoriesList(newCategoriesList);
-          })
-       
-    }, [currentUserId]);
+    const cellRendererLogo = ({ cellData, rowData, rowIndex }: TableCellProps) => {
+        return (
+            <MemoizedLogo
+                cellData={cellData}
+                businessName={rowData.businessName}
+                rowIndex={rowIndex}
+            />
+        );
+    };
+
+
 
     const MemoizedCat = React.memo(({ cellData, contactId }: { cellData: boolean, contactId: string }) => {
         return <FormControl >
@@ -743,9 +523,7 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
     });
     MemoizedCat.displayName = 'MemoizedCat';   
 
-    const cellRendererCat = ({ cellData, rowIndex, rowData }: TableCellProps) => {
-        // On peut récupérer cellData (la données qui correspond à dataKey de Column) ou rowData (tout le contact)
-        const contact = contacts[rowIndex];
+    const cellRendererCat = ({ cellData, rowData }: TableCellProps) => {
         return (
             <MemoizedCat
                 cellData={cellData}
@@ -753,8 +531,6 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
             />
         );
     };
-
-
 
     const MemoizedIsClientSwitch = React.memo(({ cellData, contactId }: { cellData: boolean, contactId: string }) => {
 
@@ -767,9 +543,7 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
     });
     MemoizedIsClientSwitch.displayName = 'MemoizedIsClientSwitch';   
 
-    const cellRendererIsClientSwitch = ({ cellData, rowIndex, rowData }: TableCellProps) => {
-        // On peut récupérer cellData (la données qui correspond à dataKey de Column) ou rowData (tout le contact)
-        const contact = contacts[rowIndex];
+    const cellRendererIsClientSwitch = ({ cellData, rowIndex, rowData }: TableCellProps) => {        
         return (
             <MemoizedIsClientSwitch
                 cellData={cellData}
@@ -777,26 +551,6 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
             />
         );
     };
-
-    // const cellRendererContact = ({ cellData, rowIndex }: TableCellProps) => {
-    //     const contact = contacts[rowIndex];
-
-    //     return (
-    //         <MemoizedTextFieldContact
-    //             cellData={cellData}
-    //             onBlur={handleOnBlur}
-    //             position={contact.contactPosition}
-    //             director={contact.directorName}
-    //         />
-    //     );
-    // };
-
-
-
-
-
-
-
 
     const cellsRendernerData = [
         {
@@ -812,17 +566,6 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
         //     cellRenderer: cellRendererType,
         // },        
     ]
-    
-
-    
-
-
-
-    const handleOnChange = (newValue: string) => {        
-        //handleUpdateContact(contacts[0].id, { key: 'businessName', value: newValue })
-    };
-  
-  
    
     const keys = contacts && Object.keys(contacts[0]);
 
@@ -896,6 +639,12 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
                         dataKey='businessName'
                         width={300}
                         cellRenderer={cellRendererName}
+                    />
+                    <ColumnVirtualized
+                        label='Logo'
+                        dataKey='logo'
+                        width={300}
+                        cellRenderer={cellRendererLogo}
                     />
                     
                 </TableVirtualized>

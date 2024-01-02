@@ -197,8 +197,9 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
     );   
 
 
+    // En fait pas besoin, si j'enlève ça ça marche donc même si row est un objet il ne change pas à chaque fois (les ref sont pourtant diff ???)
     // Pour ne pas que chaque ligne se re-render à chaque fois j'ai voulu utiliser Memo et Callback
-     // Comme ROW est un objet => il change à chaque Rerender, donc on fait ça... Mais va être utilisé dans une boucle mais impossible d'utiliser les Hook dans une boucle donc je le mets en dehors
+     // Comme ROW est un objet => il change à chaque Rerender, donc on fait ça... Et va être utilisé dans une boucle mais impossible d'utiliser les Hook dans une boucle donc je le mets en dehors
      const renderRow = React.useCallback((row: Contact) => {
         return (
             <ContactRow
@@ -242,43 +243,21 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
                         onRequestSort={handleRequestSort}
                     />                   
                     <TableBody>
-                        {visibleRows.map((row) => renderRow(row))}                      
+                        {/* {visibleRows.map((row) => renderRow(row))}                       */}
+                        {visibleRows.map((row) => (
+                             <ContactRow
+                             key={row.id}
+                             contact={row}
+                             currentUserId={currentUserId}
+                             // selectedContactId={selectedContactId}
+                             // setSelectedContactId={setSelectedContactId}
+                             handleUpdateContact={memoizedHandleUpdateContact}
+                             handleDeleteContact={memoizedHandleDeleteContact}
+                             displayContactCard={memoizedDisplayContactCard}
+                             getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
+                         />                            
+                        ))}                    
                     </TableBody>
-
-
-
-
-
-
-
-
-{/* ///////////////// Voir si je laisse le commentaire ci-dessous */}
-
-
-
-                    {/* <TableBody>
-                        {contacts.map((contact) => {
-                            return (
-                                <StyledTableRow hover role="checkbox" 
-                                    tabIndex={-1}       // ???
-                                    key={contact.id}>
-                                    {columns.map((column) => {
-                                        const value = contact[column.id];
-                                        return (
-                                            <StyledTableCell key={column.id} 
-                                            //align={column.align}
-                                            >
-                                                {column.format && typeof value === 'number'
-                                                    ? column.format(value)
-                                                    : value}
-                                                  //  {value}
-                                            </StyledTableCell>
-                                        );
-                                    })}
-                                </StyledTableRow>
-                            );
-                        })}
-                    </TableBody> */}
                 </Table>
             </TableContainer>
 

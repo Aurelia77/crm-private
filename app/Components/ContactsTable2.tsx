@@ -27,7 +27,7 @@ import GradeIcon from '@mui/icons-material/Grade';
 
 
 import { StyledTableCell } from '../utils/StyledComponents';
-import { Box, FormControl, ListItem, MenuItem, Select, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, FormControl, ListItem, MenuItem, Select, Table, TableBody, TextField, Tooltip, Typography } from '@mui/material';
 import { Timestamp } from 'firebase/firestore';
 import ContactRow from './ContactRow';
 
@@ -337,7 +337,7 @@ const Inner = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(
 type ContactsTableProps = {
     contacts: Contact[],
     currentUserId: string,
-    handleUpdateContact: (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => void 
+    handleUpdateContact: (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => void
     handleDeleteContact: (id: string) => void
     displayContactCard: (contact: Contact) => void
     getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
@@ -360,7 +360,7 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof Contact>('businessName');
     const [selected, setSelected] = React.useState<readonly number[]>([]);
- 
+
     const handleRequestSort = (
         event: React.MouseEvent<unknown>,
         property: keyof Contact,
@@ -473,7 +473,7 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
                 getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
             />
         );
-    }, [currentUserId, 
+    }, [currentUserId,
         //selectedContactId, setSelectedContactId, 
         memoizedHandleUpdateContact, memoizedHandleDeleteContact, memoizedDisplayContactCard, memoizedGetPriorityTextAndColor]);
 
@@ -499,6 +499,7 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
                 {/* <React.Suspense fallback={<div>Loading...</div>}> */}
 
                 {/* <Table stickyHeader> */}
+                <Table>
                     <EnhancedTableHead
                         numSelected={selected.length}
                         order={order}
@@ -507,39 +508,42 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
                         onRequestSort={handleRequestSort}
                     //rowCount={rows.length}
                     />
-                    <FixedSizeList
-                        height={document.documentElement.clientHeight * 0.3} // ou la hauteur de votre conteneur
-                        width='100%'
-                        itemCount={visibleRows.length}
-                        itemSize={5}
-                    >
-                        {({ index, style }) => {
-                            const row = visibleRows[index];
-                            return renderRow(row)
+                    <TableBody>
+                        <FixedSizeList
+                            height={document.documentElement.clientHeight * 0.5} // ou la hauteur de votre conteneur
+                            width='100%'
+                            itemCount={visibleRows.length}
+                            itemSize={5}
+                        >
+                            {({ index, style }) => {
+                                const row = visibleRows[index];
+                                //return renderRow(row)  
+                                return <ContactRow
+                                    //style={style}
+                                    key={row.id}
+                                    contact={row}
+                                    currentUserId={currentUserId}
+                                    // selectedContactId={selectedContactId}
+                                    // setSelectedContact={setSelectedContact}
+                                    handleUpdateContact={handleUpdateContact}
+                                    handleDeleteContact={() => handleDeleteContact(row.id)}
+                                    displayContactCard={displayContactCard}
+                                    getPriorityTextAndColor={getPriorityTextAndColor}
+                                />
 
-                                // <ContactRow
-                                //     //style={style}
-                                //     key={row.id}
-                                //     contact={row}
-                                //     currentUserId={currentUserId}
-                                //     selectedContactId={selectedContactId}
-                                //     setSelectedContact={setSelectedContact}
-                                //     handleUpdateContact={handleUpdateContact}
-                                //     handleDeleteContact={() => handleDeleteContact(row.id)}
-                                //     displayContactCard={displayContactCard}
-                                //     getPriorityTextAndColor={getPriorityTextAndColor}
-                                // />
-                        }}
-                    </FixedSizeList>
-
-
-
-
-
+                            }}
+                        </FixedSizeList>
+                    </TableBody>
+                </Table>
 
 
 
-                    {/* <TableHead>
+
+
+
+
+
+                {/* <TableHead>
                         <TableRow>
                             {headCells.map((column) => (
                                 <StyledTableCell
@@ -558,10 +562,10 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
                     </TableHead> */}
 
 
-                    {/* ///// Ok ///////// */}
+                {/* ///// Ok ///////// */}
 
 
-                    {/* <Table stickyHeader>
+                {/* <Table stickyHeader>
                     <EnhancedTableHead
                         numSelected={selected.length}
                         order={order}
@@ -597,7 +601,7 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
 
 
 
-                    {/* <TableBody>
+                {/* <TableBody>
                         {contacts.map((contact) => {
                             return (
                                 <StyledTableRow hover role="checkbox"

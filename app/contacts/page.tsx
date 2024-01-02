@@ -421,7 +421,7 @@ export default function Contacts() {
                             </Tabs>
 
                             {/* ///////// LISTE DE CONTACTS + recherche) ///////// */}
-                            {/* Je ne met pas les onglets dans des TAB sinon ça rerender à chaque fois qu'on revient dessus ! Même avec useCallback et useMemo !!! */}
+                            {/* Je ne met pas les onglets mémoïsés dans des TAB sinon ça rerender à chaque fois qu'on revient dessus ! Même avec useCallback et useMemo !!! */}
                             <Box hidden={tabValue !== 0} width={`calc(100vw - ${TABS_WIDTH}px)`}  >
                                 <Box width="100%"
                                 //flexGrow={1} overflow="auto"
@@ -510,8 +510,8 @@ export default function Contacts() {
                                         /> */}
 
                             {/* ///////// CALENDRIER ///////// */}
-                            <Box hidden={tabValue !== 1} width={`calc(100vw - ${TABS_WIDTH}px)`}  >
-                            {/* <TabPanel key="1" value={tabValue} index={1} width={`calc(100vw - ${TABS_WIDTH}px)`} > */}
+                            {/* <Box hidden={tabValue !== 1} width={`calc(100vw - ${TABS_WIDTH}px)`}  > */}
+                            <TabPanel key="1" value={tabValue} index={1} width={`calc(100vw - ${TABS_WIDTH}px)`} >
                                 <Tabs
                                     value={tabCalendarValue}
                                     onChange={(e, newValue: number) => setTabCalendarValue(newValue)}
@@ -552,11 +552,11 @@ export default function Contacts() {
                                         updateContactInContactsAndDB={updateContactInContactsAndDB}
                                     />
                                 </TabPanel>
-                            </Box>
+                            </TabPanel>
 
                             {/* ///////// Nouveau CONTACT ///////// */}
-                            <Box hidden={tabValue !== 2} width={`calc(100vw - ${TABS_WIDTH}px)`}  >
-                            {/* <TabPanel key="2" value={tabValue} index={2} width={`calc(100vw - ${TABS_WIDTH}px)`} > */}
+                            {/* <Box hidden={tabValue !== 2} width={`calc(100vw - ${TABS_WIDTH}px)`}  > */}
+                            <TabPanel key="2" value={tabValue} index={2} width={`calc(100vw - ${TABS_WIDTH}px)`} >
                                 <Tabs
                                     value={tabNewContactValue}
                                     onChange={(e, newValue) => setTabNewContactValue(newValue)}
@@ -590,7 +590,7 @@ export default function Contacts() {
                                         addContact={(e) => addContactOnFirebaseAndReload(currentUser.uid, e)}
                                     />
                                 </TabPanel>
-                            </Box>
+                            </TabPanel>
 
                             {/* ///////// Un CONTACT ///////// */}
                             {/* <Box hidden={tabValue !== 3} width={`calc(100vw - ${TABS_WIDTH}px)`}  > */}
@@ -607,21 +607,23 @@ export default function Contacts() {
                             </TabPanel>
 
                             {/* /////////////////////// Admin /////////////////////// */}
-                            <Box hidden={tabValue !== 4} width={`calc(100vw - ${TABS_WIDTH}px)`}  >
-                            {/* <TabPanel key="4" value={tabValue} index={4} width={`calc(100vw - ${TABS_WIDTH}px)`} > */}
+                            {/* <Box hidden={tabValue !== 4} width={`calc(100vw - ${TABS_WIDTH}px)`}  > */}
+                            <TabPanel key="4" value={tabValue} index={4} width={`calc(100vw - ${TABS_WIDTH}px)`} >
                                 <Admin currentUserId={currentUser.uid} />
-                            </Box>
+                            </TabPanel>
 
                             {/* /////////////////////// Aide /////////////////////// */}
-                            <Box hidden={tabValue !== 5} width={`calc(100vw - ${TABS_WIDTH}px)`}  >
-                            {/* <TabPanel key="5" value={tabValue} index={5} width={`calc(100vw - ${TABS_WIDTH}px)`} > */}
+                            {/* <Box hidden={tabValue !== 5} width={`calc(100vw - ${TABS_WIDTH}px)`}  > */}
+                            <TabPanel key="5" value={tabValue} index={5} width={`calc(100vw - ${TABS_WIDTH}px)`} >
                                 <Help />
-                            </Box>
+                            </TabPanel>
 
                             {/* /////////////////////// 2 /////////////////////// */}
-                            <Box hidden={tabValue !== 6} width={`calc(100vw - ${TABS_WIDTH}px)`}  >
                             {/* <TabPanel key="6" value={tabValue} index={6} width={`calc(100vw - ${TABS_WIDTH}px)`} > */}
-                                <ContactsTable2
+                            <Box hidden={tabValue !== 6} width={`calc(100vw - ${TABS_WIDTH}px)`} >
+                            {/* Je mets en commentaire car génère une erreur : <tr> cannot appear as a child of <div>... */}
+                            {/* Utilisation de FixedSizeList de react-window mais je n'arrive pas à gérer avec le header et de toute façon je vois que toutes les lignes se rerender à chaque scroll ! */}
+                                {/* <ContactsTable2
                                     contacts={filteredContacts}
                                     currentUserId={currentUser ? currentUser.uid : ""}
                                     //selectedContactId={selectedContactId}
@@ -630,7 +632,7 @@ export default function Contacts() {
                                     handleDeleteContact={memoizedDeleteDataOnFirebaseAndReload}
                                     displayContactCard={memoizeddisplayContactCardToUpdate}
                                     getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
-                                />
+                                /> */}
                             </Box>
 
                             {/* /////////////////////// 3 /////////////////////// */}
