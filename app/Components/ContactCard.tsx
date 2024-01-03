@@ -965,8 +965,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         }
                     </Box>
 
-                    {addContact && <Button variant="contained" sx={{ width: '25%', height: "100px", mt: 3, }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
-                    {updateContact && <Button variant="contained" color='secondary' sx={{ width: '25%', height: "100px", mt: 3 }} onClick={handleUpdateContact} >Mettre à jour le contact</Button>}
+                    {addContact && <Button variant="contained" sx={{ width: '30%', height: "200px", mt: 3, }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
+                    {updateContact && <Button variant="contained" color='secondary' sx={{ width: '30%', height: "200px", mt: 3 }} onClick={handleUpdateContact} >Mettre à jour le contact</Button>}
                     <Modal
                         open={openContactIsUpdatedModal}
                         onClose={() => setOpenContactIsUpdatedModal(false)}

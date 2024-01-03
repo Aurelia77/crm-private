@@ -294,7 +294,7 @@ export default function Contacts() {
                                                 {alerts.nbContactsWithDatePassed} relance(s) passée(s)
                                             </Typography>
                                             <Typography variant="h5" component="span" color="primary.main">
-                                                et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jours
+                                                et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jours.
                                             </Typography>
                                             {!isSearchCriteriaEmpty && <Fab disabled size="small" color="primary" sx={{
                                                 ml: 2
