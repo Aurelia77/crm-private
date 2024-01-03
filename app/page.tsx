@@ -230,15 +230,7 @@ export default function Contacts() {
                     </Box>
                 </Box>
             </Modal>
-
-            {/* /////////////////////// Info USER /////////////////////// */}
-            <Box sx={{
-            }} ><AuthDetails /></Box>
-            {loading
-                ? <Container sx={{ ml: "50%", mt: "20%" }} >
-                    <CircularProgress />
-                </Container>
-                : !currentUser
+            {!currentUser
                     //  {/* ///////// CONNEXION / INSCRIPTION ///////// */}
                     ? <Box sx={{
                         display: "flex", justifyContent: "space-around",
@@ -249,7 +241,15 @@ export default function Contacts() {
                         <SignUp />
                     </Box>
 
+                    : loading
+                        ? <Container sx={{ ml: "50%", mt: "20%" }} >
+                        <CircularProgress />
+                    </Container>
                     : <Box sx={{}} >
+                        {/* /////////////////////// Info USER /////////////////////// */}
+                        <Box sx={{
+                        }} ><AuthDetails /></Box>
+
                         {/* ///////////////////////ONGLETS - Tabs /////////////////////// */}
                         <Box
                             sx={{
