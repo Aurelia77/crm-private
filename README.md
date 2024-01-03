@@ -1,6 +1,6 @@
 Projet fait par : Aurélia HEYMANN en 2 mois, pour une amie auto-entrepreneuse.
 
-Outils utilisés : Next JS + MUI + GIT
+Outils utilisés : Next JS + TYPESCRIPT + MUI + GIT
 
 Description du projet :
 
@@ -16,8 +16,10 @@ Voir onglet AIDE !
 
 (pas de tests car difficultés à cause du contexte de MUI)
 
+Site en ligne : https://gestion-contacts.vercel.app/
 
-Message pour Mike (idem au mail du 03/01/2024) :
+
+*/ Message pour Mike (idem au mail du 03/01/2024, plus facile à lire sur le mail ! :)  /*
 
 Après avoir revu le cours (React Mastory) 2 fois, avoir fait un projet en équipe qui n'a pas abouti et passé 2 mois sur un projet perso, je suis prête à te le présenter.
 
@@ -42,7 +44,7 @@ Je vais en faire pour mes autres projets faits sans MUI.
 
 Tu verras que les 3 derniers onglets sont en rouge car ce sont des tests de virtualisation avec react-windows et react-virtualized.
 
-Je t'explique tout ici :
+*/ Je t'explique tout ici :*/
 
 Les listes de contacts sont toutes mémoïsées + enlevées de Tabs (qui fait un rerender à chaque fois) => donc pas de rerender quand on va sur un autre onglet et revient sur le même.
 
