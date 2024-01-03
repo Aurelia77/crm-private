@@ -5,10 +5,14 @@ import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import { StyledTableCell } from '../utils/StyledComponents';
+import ContactRow from './ContactRow';
+import { Box, TextField, Typography } from '@mui/material';
+import { Timestamp } from 'firebase/firestore';
 import Paper from '@mui/material/Paper';
 import { useTheme } from '@mui/material/styles';
 import TableSortLabel from '@mui/material/TableSortLabel';
-import { visuallyHidden } from '@mui/utils';   
+import { visuallyHidden } from '@mui/utils';
 import CallRoundedIcon from '@mui/icons-material/CallRounded';
 import MailIcon from '@mui/icons-material/Mail';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
@@ -23,12 +27,6 @@ import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import GradeIcon from '@mui/icons-material/Grade';
 
 
-import { StyledTableCell } from '../utils/StyledComponents';
-import ContactRow from './ContactRow';
-import { Box, TextField, Typography } from '@mui/material';
-import { Timestamp } from 'firebase/firestore';
-
-
 interface Column {
     id: keyof Contact   // | "supprimer"
     label: string | JSX.Element
@@ -37,34 +35,28 @@ interface Column {
     format?: (value: number) => string
 }
 
-
-
-const headCells: readonly Column[] = [               // readonly ???
-    { id: 'isClient', label: <HandshakeOutlinedIcon />, minWidth: "2em", },  
+const headCells: readonly Column[] = [
+    { id: 'isClient', label: <HandshakeOutlinedIcon />, minWidth: "2em", },
     { id: 'businessCategoryId', label: 'Catégorie', minWidth: "8em", },
-    { id: 'dateOfNextCall', label: <Box sx={{ display: 'flex', alignItems: 'center', }}
-    ><AccessAlarmRoundedIcon fontSize='large' sx={{ marginRight: "20px" }} />Relance</Box>, minWidth: "9em", },
+    {
+        id: 'dateOfNextCall', label: <Box sx={{ display: 'flex', alignItems: 'center', }}
+        ><AccessAlarmRoundedIcon fontSize='large' sx={{ marginRight: "20px" }} />Relance</Box>, minWidth: "9em",
+    },
     { id: 'logo', label: 'Logo', minWidth: "4em", },
     { id: 'businessName', label: 'Nom', minWidth: "10em", },
     { id: 'priority', label: <GradeIcon />, minWidth: "2em", },
     { id: 'contactPhone', label: <CallRoundedIcon fontSize='large' />, minWidth: "10em", },
-    { id: 'contactName', label: <AccountCircleRoundedIcon fontSize='large' />, minWidth: "10em",
-        //align: 'right', 
-        //format: (value: number) => value.toLocaleString('en-US'),
-    },
-    { id: 'contactEmail', label: <MailIcon fontSize='large' />, minWidth: "10em", },    
+    { id: 'contactName', label: <AccountCircleRoundedIcon fontSize='large' />, minWidth: "10em", },
+    { id: 'contactEmail', label: <MailIcon fontSize='large' />, minWidth: "10em", },
     { id: 'businessCity', label: 'Ville', minWidth: "10em", },
     { id: 'hasBeenCalled', label: <Box><CallRoundedIcon fontSize='large' /><QuestionMarkIcon /></Box>, minWidth: "5em", },
-    { id: 'hasBeenSentEmailOrMeetUp', label: 
-    //'mail/rencontre ?',
-    <Box><MailIcon /><HandshakeTwoToneIcon /><QuestionMarkIcon /></Box>,  minWidth: "6em", },
+    { id: 'hasBeenSentEmailOrMeetUp', label: <Box><MailIcon /><HandshakeTwoToneIcon /><QuestionMarkIcon /></Box>, minWidth: "6em", },
     { id: 'comments', label: <CommentRoundedIcon fontSize='large' />, minWidth: "5em", },
     { id: 'interestGauge', label: <FavoriteRoundedIcon fontSize='large' />, minWidth: "5em", },
     { id: 'filesSent', label: <AttachFileRoundedIcon fontSize='large' />, minWidth: "10em", },
     { id: 'dateOfFirstCall', label: 'Premier appel', minWidth: "9em", },
     { id: 'dateOfLastCall', label: 'Dernier appel', minWidth: "9em", },
-    { id: 'contactType', label: 'Type', minWidth: "7em", }, 
-    // { id: 'supprimer', label: 'Supprimer ?', minWidth: "5em", },
+    { id: 'contactType', label: 'Type', minWidth: "7em", },
 ];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -90,7 +82,7 @@ function getComparator<Key extends keyof any>(
         ? (a, b) => descendingComparator(a, b, orderBy)
         : (a, b) => -descendingComparator(a, b, orderBy);
 }
-function stableSort(array: Contact[], comparator: (a: any, b: any) => number) { 
+function stableSort(array: Contact[], comparator: (a: any, b: any) => number) {
     const stabilizedThis = array.map((el, index) => [el, index] as [any, number]);
     stabilizedThis.sort((a, b) => {
         const order = comparator(a[0], b[0]);
@@ -101,14 +93,15 @@ function stableSort(array: Contact[], comparator: (a: any, b: any) => number) {
     });
     return stabilizedThis.map((el) => el[0]);
 }
-interface EnhancedTableProps {
+
+interface SortableTableHeaderProps {
     onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Contact) => void;
     order: Order;
     orderBy: string;
 }
-function EnhancedTableHead(props: EnhancedTableProps) {
+function SortableTableHeader(props: SortableTableHeaderProps) {
     const {
-        order, orderBy, 
+        order, orderBy,
         onRequestSort } = props;
     const createSortHandler =
         (property: keyof Contact) => (event: React.MouseEvent<unknown>) => {
@@ -122,7 +115,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
                         key={headCell.id}
                         scope="col"
                         style={{
-                            height:"40px",
+                            height: "40px",
                             minWidth: headCell.minWidth,
                             padding: 0
                         }}
@@ -146,7 +139,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
                     key="supprimer"
                     align="center"
                 ><Box><DeleteForeverRoundedIcon /><QuestionMarkIcon /></Box>
-                </StyledTableCell>              
+                </StyledTableCell>
             </TableRow>
         </TableHead>
     );
@@ -156,14 +149,14 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 type ContactsTableProps = {
     contacts: Contact[],
     currentUserId: string,
-    handleUpdateContact: (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => void 
+    handleUpdateContact: (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => void
     handleDeleteContact: (id: string) => void
     displayContactCard: (contact: Contact) => void
     getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
 }
-const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDeleteContact, displayContactCard, getPriorityTextAndColor}: ContactsTableProps) => {
+const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDeleteContact, displayContactCard, getPriorityTextAndColor }: ContactsTableProps) => {
 
-    // A garder si on veut utilisé un contact sélectionné
+    // A garder si on veut utiliser un contact sélectionné
     const [selectedContactId, setSelectedContactId] = React.useState("");
 
     // J'ai utilisé Memo et useCallback pour pas que toute la liste ne se rerende à chaque changement sur un contact mais comme chaque contactId change à chaque fois dans le liste de contact, ça ne fonctionne pas...
@@ -185,88 +178,43 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };  
-
-    const muiTheme = useTheme();
+    };
 
     const visibleRows = React.useMemo(
-        () =>
-            stableSort(contacts, getComparator(order, orderBy))
-        ,
+        () => stableSort(contacts, getComparator(order, orderBy)),
         [order, orderBy, contacts],
-    );   
-
-
-    // En fait pas besoin, si j'enlève ça ça marche donc même si row est un objet il ne change pas à chaque fois (les ref sont pourtant diff ???)
-    // Pour ne pas que chaque ligne se re-render à chaque fois j'ai voulu utiliser Memo et Callback
-     // Comme ROW est un objet => il change à chaque Rerender, donc on fait ça... Et va être utilisé dans une boucle mais impossible d'utiliser les Hook dans une boucle donc je le mets en dehors
-     const renderRow = React.useCallback((row: Contact) => {
-        return (
-            <ContactRow
-                key={row.id}
-                contact={row}
-                currentUserId={currentUserId}
-                // selectedContactId={selectedContactId}
-                // setSelectedContactId={setSelectedContactId}
-                handleUpdateContact={memoizedHandleUpdateContact}
-                handleDeleteContact={memoizedHandleDeleteContact}
-                displayContactCard={memoizedDisplayContactCard}
-                getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
-            />
-
-        //     <ContactRow
-        //     key={row.id}
-        //     contact={row}
-        //     currentUserId={currentUserId}
-        //     selectedContactId={selectedContactId}
-        //     setSelectedContactId={setSelectedContactId}
-        //     handleUpdateContact={handleUpdateContact}
-        //     handleDeleteContact={() => handleDeleteContact(row.id)}  
-        //     displayContactCard={displayContactCard}
-        //     getPriorityTextAndColor={getPriorityTextAndColor}
-        // //setContacts={setContacts} 
-        // />
-        );
-    }, [currentUserId, memoizedHandleUpdateContact, memoizedHandleDeleteContact, memoizedDisplayContactCard, memoizedGetPriorityTextAndColor])
-
-  
+    );
    
     return (
-        <Paper sx={{ width: '100%',  }}  elevation={3} >
+        <Paper sx={{ width: '100%', }} elevation={3} >
             <TableContainer
-             sx={{ maxHeight:  "calc(100vh - 200px)" }} 
+                sx={{ maxHeight: "calc(100vh - 200px)" }}
             >
                 <Table stickyHeader>
-                    <EnhancedTableHead
+                    <SortableTableHeader
                         order={order}
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
-                    />                   
+                    />
                     <TableBody>
-                        {/* {visibleRows.map((row) => renderRow(row))}                       */}
                         {visibleRows.map((row) => (
-                             <ContactRow
-                             key={row.id}
-                             contact={row}
-                             currentUserId={currentUserId}
-                             // selectedContactId={selectedContactId}
-                             // setSelectedContactId={setSelectedContactId}
-                             handleUpdateContact={memoizedHandleUpdateContact}
-                             handleDeleteContact={memoizedHandleDeleteContact}
-                             displayContactCard={memoizedDisplayContactCard}
-                             getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
-                         />                            
-                        ))}                    
+                            // ContactRow mémoïsé + fonctions Callback
+                            <ContactRow
+                                key={row.id}
+                                contact={row}
+                                currentUserId={currentUserId}
+                                handleUpdateContact={memoizedHandleUpdateContact}
+                                handleDeleteContact={memoizedHandleDeleteContact}
+                                displayContactCard={memoizedDisplayContactCard}
+                                getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
+                            />
+                        ))}
                     </TableBody>
                 </Table>
             </TableContainer>
-
         </Paper>
     );
 }
 
-
-// Pour que le tableau ne se recharche pas à chaque changement d'onglet (que s'il y a un changement)
+// Pour que le tableau ne se recharche pas à chaque changement d'onglet (que s'il y a une modification)
 export default React.memo(ContactsTable)
-// Vraiment besoin maintenant qu'on a mémoisé les ROWs ??????? oui !!!
-//export default ContactsTable

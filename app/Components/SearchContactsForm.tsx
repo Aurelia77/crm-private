@@ -2,7 +2,6 @@ import React from 'react'
 import { FormControl, FormHelperText, Input, InputLabel, TextField, Typography, MenuItem, Checkbox, FormGroup, FormControlLabel, OutlinedInput, ListItemText, Box, Paper } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { getUniqueSortedValues } from '../utils/toolbox';
-
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -45,27 +44,14 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
 
     const muiTheme = useTheme();
 
-    //console.log("search", search)
-    //console.log(selectedCatIds)
-    //console.log(selectedCatLabels)
-
- 
-
-    // const businessCategorys = ["Camping", "Hôtel", "Congiergerie", "Agence Event", "Agence Artistique", "Mairie", "Lieu de réception", "Wedding Planer", "Restaurant Plage", "Piscine Municipale", "Yacht", "Plage Privée", "Agence Location Villa Luxe", "Aquarium", "Centre de Loisirs", "Centre de Plongée", "Agence Communication Audio Visuel", "Autre"];
-
     const allDifferentsBusinessCategoryValues = getUniqueSortedValues(contacts, 'businessCategoryId')
-
-    //console.log(allDifferentsBusinessCategoryValues)
 
     const allDifferentsBusinessCitiesValues = getUniqueSortedValues(contacts, 'businessCity')
     const allDifferentsContactTypesValues = getUniqueSortedValues(contacts, 'contactType')
-
   
 
     React.useEffect(() => {
         getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
-            //console.log("categories", categories)
-
             // Pas besoin de l'attribut userId donc on garde juste ce qu'on veut
             const newCategoriesList = categories.map(category => ({
                 id: category.id,
@@ -75,22 +61,15 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
         })
     }, [currentUserId]);
 
-     // Je me demandais s'il ne fallait pas mieux mettre onSearchChange dans handleChange et handleChangeType, mais apparemment non !!!
-    // Si vous déplacez l'appel à onSearchChange dans handleChange et handleChangeType, il sera appelé avant que l'état search ne soit mis à jour, car setState est asynchrone. Cela signifie que onSearchChange recevrait l'ancien état search, pas le nouvel état.
-    // => Mais non !!!!!!!!!!!!!!!!! ?????????????
+   
     React.useEffect(() => {
         onSearchChange(search)
-
-        //console.log("!!!!!!!!!! USEEFFECT")
-    }, [search, onSearchChange, 
-        //contacts
-    ])
+    }, [search, onSearchChange, ])
 
     React.useEffect(() => {
         if (selectedCatIds.length > 0) {
             Promise.all(selectedCatIds.map(catId => getCatLabelFromId(catId)))
                 .then(labels => {
-                   // console.log("labels", labels)
                     return setCatSelectedLabels(labels)
                 });
         } else {
@@ -101,22 +80,14 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
     const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>) => {
         console.log(event.target.name, event.target.value)
         setSearch({ ...search, [event.target.name]: event.target.value });
-        //onSearchChange({ ...search, [event.target.name]: event.target.value });
-        // setSearch({ ...search, [event.target.name]: event.target.checked });
     }
 
     const handleMultipleChangeSelect = (event: SelectChangeEvent<string[]>, attribut: keyof SearchContactCriteria) => {
-        // const { target: { value }, } = event;
         const value = event.target.value;
-
-        //console.log(value)
 
         attribut === "businessCategoryId" &&  setCatSelectedIds(value as string[]);
 
         setSearch({ ...search, [attribut]: typeof value === 'string' ? [value] : value });
-        //setSearch({ ...search, businessCategory: value });            // me dit que Value peut être de type String mais pourtant je ne vois pas quand c'est possible !!!???
-
-        // setSearch(typeof value === 'string' ? value.split(',') : value, );
     };
 
     const handleChangeRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -128,10 +99,6 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
         onSearchChange(emptySearchCriteria);
     }
 
-
-
-   
-
     return (
         <Paper sx={{ margin: "0 1em 0 1em", padding: "0.6em", bgcolor: 'primary.light', }} >
             <FormControl sx={{
@@ -139,23 +106,12 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                 bgcolor: 'lightCyan.light',
                 padding: "1%",
                 width: "98%",
-                //maxWidth: "1200px"    // A voir si très grand écran !!!
             }} >
-                {/* <Fab disabled size="small" color="primary" sx={{
-                    position: "absolute",
-                    top: "5px",
-                    left: "5px"
-                }} >
-                    <SearchIcon />
-                </Fab> */}
-
                 <Tooltip title="Supprimer la recherche">
                     <Fab
                         size="small"
                         color="error"
                         sx={{
-                            //width:"20px",
-                            //height:"20px",
                             position: "absolute",
                             bottom: -15,
                             right: -15,
@@ -167,16 +123,13 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                     </Fab>
                 </Tooltip>
 
-                {/* <FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText> */}
                 <Box sx={{
                     display: 'flex',
-                    justifyContent: 'space-around'// 
-                    // gap: "5%"
+                    justifyContent: 'space-around'
                 }}>
                     <FormControl>
                         <RadioGroup
                             aria-labelledby="radio-buttons-group-label"
-                            //defaultValue="both"
                             name="radio-buttons-group"
                             value={search.isClient}
                             onChange={handleChangeRadio}
@@ -198,8 +151,6 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             //width: '100%', 
                             marginRight: "30px"
                         }} />
-                    {/* <TextField id="search-city" label="Ville" name='businessCity' value={search.businessCity} onChange={handleChange} 
-                            sx={{ width: '200px', marginRight: "30px" }} />*/}
 
 
                     {/* //////////// CAT ///////////// */}
@@ -208,23 +159,11 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                         <Select
                             id="multiple-checkbox-type-label"
                             multiple={true}
-                            //multiline={true}
                             value={search.businessCategoryId}
-                            // value={search.businessCategoryId.map(
-                            //         (catId: string) => getCatLabelFromId(catId)                            
-                            //     ) }
                             onChange={(e) => handleMultipleChangeSelect(e, "businessCategoryId")}
                             input={<OutlinedInput label="Catégories"
-                            //sx={{ width: '300px', border: "solid 1px black" }} 
-                            />}
-                            // BIEN mais modifie la taille donc le tableau de contact dépasse...
-                            // renderValue={() => (
-                            //     <Box component="div" whiteSpace="pre-line">
-                            //       {selectedCatLabels.join('\n')}
-                            //     </Box>
-                            // )}
+                            />}                            
                             renderValue={() => selectedCatLabels.join(', ')}
-                            //renderValue={(selected) => selected).join(', ')}
                             sx={{ width: '100%' }}
                             MenuProps={MenuSelectProps}
                         >
@@ -232,17 +171,11 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                                 <Checkbox checked={search.businessCategoryId.includes("0")} />
                                 <ListItemText primary="NON DEFINIE" />
                             </MenuItem>
-
-                            {/* <MenuItem key="0" value="NON DEFINIE">
-                                <Checkbox checked={search.contactType.indexOf("NON DEFINIE") > -1} />
-                                <ListItemText primary="NON DEFINIE" />
-                            </MenuItem> */}
+                         
                             {categoriesList
                                 .filter(cat => allDifferentsBusinessCategoryValues.includes(cat.id))
                                 .sort((a, b) => a.label.localeCompare(b.label))
                                 .map((cat, index) => (
-                                    //{categoriesList.filter(cat => allDifferentsBusinessCategoryValues.includes(cat.id)).map((cat, index) => (
-                                    // {categoriesList.sort((a, b) => a.label.localeCompare(b.label)).map((cat, index) => (
                                     <MenuItem
                                         key={cat.id}
                                         value={cat.id}
@@ -266,13 +199,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             value={search.businessCity}
                             onChange={(e) => handleMultipleChangeSelect(e, "businessCity")}
                             input={<OutlinedInput label="Villes"         // ici le label est utilisé pour l'accessibilité et non pour l'affichage.                            
-                            />}
-                            // BIEN mais modifie la taille donc le tableau de contact dépasse...
-                            // renderValue={(selected) => (
-                            //     <Box component="div" whiteSpace="pre-line">
-                            //       {selected.join('\n')}
-                            //     </Box>
-                            // )}
+                            />}                            
                            renderValue={(selected) => selected.join(', ')}
                             MenuProps={MenuSelectProps}
                         >
@@ -292,23 +219,12 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             multiple={true}
                             value={search.contactType}
                             onChange={(e) => handleMultipleChangeSelect(e, "contactType")}
-                            input={<OutlinedInput label="Types"         // ici le label est utilisé pour l'accessibilité et non pour l'affichage.
-                            //sx={{ width: '300px' }} 
-                            />}
-                            // BIEN mais modifie la taille donc le tableau de contact dépasse...
-                            // renderValue={(selected) => (
-                            //     <Box component="div" whiteSpace="pre-line">
-                            //       {selected.join('\n')}
-                            //     </Box>
-                            // )}
+                            input={<OutlinedInput label="Types"  
+                            />}                          
                             renderValue={(selected) => selected.join(', ')}
                             sx={{ width: '100%' }}
                             MenuProps={MenuSelectProps}
-                        >                            
-                            {/* <MenuItem key="0" value="NON DEFINI">
-                                    <Checkbox checked={search.contactType.indexOf("NON DEFINI") > -1} />
-                                    <ListItemText primary="NON DEFINI" />                                
-                            </MenuItem> */}
+                        > 
                             {allDifferentsContactTypesValues.map((type) => (
                                 <MenuItem key={type} value={type}>
                                     <Checkbox checked={search.contactType.indexOf(type) > -1} />
@@ -317,67 +233,8 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             ))}
                         </Select>
                     </FormControl>
-
-
-
-
-
-                    {/* <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel>
-                    <Select
-                        labelId="demo-multiple-checkbox-label"
-                        id="demo-multiple-checkbox"
-                        multiple
-                        value={personName}
-                        onChange={handleChange2}
-                        input={<OutlinedInput label="Tag" />}
-                        renderValue={(selected) => selected.join(', ')}
-                        MenuProps={MenuProps}
-                    >
-                        {names.map((name) => (
-                            <MenuItem key={name} value={name}>
-                                <Checkbox checked={personName.indexOf(name) > -1} />
-                                <ListItemText primary={name} />
-                            </MenuItem>
-                        ))}
-                    </Select> */}
                 </Box>
-
-
-
-
-                {/* <FormControl component="fieldset">
-                    <Typography component="legend">Type</Typography>
-                    <FormGroup>
-                        {businessCategorys.map((type) => (
-                            <FormControlLabel
-                                key={type}
-                                control={<Checkbox 
-                                    // checked={search[type] || false} 
-                                    checked={false}   //{search[type]} 
-                                    onChange={handleChange} 
-                                    //name={type}
-                                    name='businessCategory'
-                                    value={type}
-                                    />}
-                                label={type}
-                            />
-                        ))}
-                    </FormGroup> */}
-
-                {/*          <InputLabel id="search-type-label">Type</InputLabel>
-                    <Select
-                        labelId="search-type-label"
-                        id="search-type"
-                        value={search.type}
-                        onChange={handleChange('type')}
-                    >
-                        {businessCategorys.map((type) => (
-                            <MenuItem key={type} value={type}>{type}</MenuItem>
-                        ))}
-                    </Select>
-                </FormControl> */}
             </FormControl>
         </Paper>
-
     )
 }

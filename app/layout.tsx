@@ -1,37 +1,12 @@
-'use client'
+'use client'    // Pour pouvoir utiliser le contexte
 
-// CSS
 import './globals.css'
 
 import UserAuthContextProvider from './context/UseAuthContext';
 import MuiProviders from './Components/MuiProviders';
-import { ErrorBoundary } from 'react-error-boundary'// + pnpm install --save react-error-boundary
-
+import { ErrorBoundary } from 'react-error-boundary'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-
-
-
-//import { makeStyles } from '@mui/styles';     // npm install @mui/styles
-
-
-
-
-// Pour ça : import { makeStyles }
-// const useStyles = makeStyles((muiTheme: any) => ({
-//   // your other styles
-//   tableRowRoot: {
-//     "&$tableRowSelected, &$tableRowSelected:hover": {
-//       backgroundColor: muiTheme.palette.primary.main
-//     }
-//   },
-//   tableRowSelected: {
-//     backgroundColor: muiTheme.palette.primary.main
-//   }
-// }));
-// => Et mettre ça sur le component voulu :   // classes={{ root: classes.tableRowRoot,  selected: classes. tableRowSelected,   }}
-
-
 
 
 export default function RootLayout({
@@ -41,10 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body
-      //</html>className={inter.className}
-      >
-        {/* ErrorBoundary => sinon erreur dans les tests */}
+      <body >
         <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => (
           <div>
             <h1>Une erreur s'est produite</h1>

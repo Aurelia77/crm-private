@@ -35,14 +35,10 @@ import ZoomInIcon from '@mui/icons-material/ZoomIn';
 
 import { StyledTableRow, StyledTableCell } from '../utils/StyledComponents';
 import { Timestamp } from 'firebase/firestore';
-
-import Rating, { IconContainerProps } from '@mui/material/Rating';
 import SettingsIcon from '@mui/icons-material/Settings';
-
 import Tooltip from '@mui/material/Tooltip';
 
-import { storage, getCategoriesFromDatabase } from '../utils/firebase'
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { getCategoriesFromDatabase } from '../utils/firebase'
 import { FormControl } from '@mui/material';
 import { handleOpenFile } from '../utils/firebase'
 import { modalStyle, StyledRating, StyledRatingStars, customIcons, IconContainer } from '../utils/StyledComponents'
@@ -62,9 +58,7 @@ type ContactRowProps = {
     getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
 }
 
-const ContactRow = ({ contact,
-
-    handleUpdateContact, handleDeleteContact, displayContactCard, currentUserId, getPriorityTextAndColor }: ContactRowProps) => {
+const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, displayContactCard, currentUserId, getPriorityTextAndColor }: ContactRowProps) => {
 
     const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[] | null>(null);
 
@@ -160,7 +154,6 @@ const ContactRow = ({ contact,
         })
     }
 
-
     const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>, attribut: keyof Contact) => {
         handleUpdateContact(contact.id, { key: attribut, value: event.target.value })
     }
@@ -174,7 +167,6 @@ const ContactRow = ({ contact,
         handleUpdateContact(contact.id, { key: attribut, value: number })
     }
 
-
     const [openCommentDialogue, setOpenCommentDialogue] = React.useState(false);
     const handleClickOpenCommentDialog = () => {
         setOpenCommentDialogue(true);
@@ -182,7 +174,6 @@ const ContactRow = ({ contact,
     const handleCloseCommentDialog = () => {
         setOpenCommentDialogue(false);
     };
-
     const [openFilesDialogue, setOpenFilesDialogue] = React.useState(false);
     const handleClickOpenFilesDialog = () => {
         setOpenFilesDialogue(true);
@@ -190,7 +181,6 @@ const ContactRow = ({ contact,
     const handleCloseFilesDialog = () => {
         setOpenFilesDialogue(false);
     };
-
     const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
     const handleOpenDeleteModal = () => setOpenDeleteModal(true);
     const handleCloseDeleteModal = () => setOpenDeleteModal(false);
@@ -198,7 +188,6 @@ const ContactRow = ({ contact,
     const handleClickDeleteContact = () => {
         handleDeleteContact(contact.id)
     }
-
 
     // J'ai voulu créer un composant commun pour tous les TextField, mais ça ne fonctionne pas => problème de onChange et de focus
     type CustomTextFieldProps = {
@@ -404,7 +393,6 @@ const ContactRow = ({ contact,
                         value={contact.contactPhone}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactPhone')}
                         InputProps={{
-                            //startAdornment: "Direct ",
                             disableUnderline: contact.contactPhone.length > 0
                         }}
                         inputProps={{ style: { textAlign: 'center' } }}

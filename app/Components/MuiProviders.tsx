@@ -3,7 +3,7 @@ import { cyan, grey, pink, yellow, deepOrange, lightGreen, green, teal, lime, pu
 
 // Pour ajouter une nouvelle couleur à la palette
 declare module '@mui/material/styles' {
-    interface Palette {    // Pour pouvoir récupérer ces couleurs dans les composants en faisant par exemple : color=muiTheme.palette.ochre.main
+    interface Palette {    // Pour pouvoir récupérer ces couleurs dans les composants faire par exemple : color=muiTheme.palette.ochre.main
         ochre: Palette['primary'];
         gray: Palette['primary'];
         pink: Palette['primary'];
@@ -29,23 +29,13 @@ declare module '@mui/material/Button' {
     }
 }
 
-
-
 export default function MuiProviders({ children }: { children: React.ReactNode }) {
-
     const muiTheme = createTheme({    // Tout ce qu'on ne redéfinit pas reste par défaut
         palette: {
             // Généralement PRIMARY = bleu et SECONDARY = rose
             primary: cyan,
             secondary: deepOrange,
-            // primary: {
-            //   main: cyan[500], // A partir de 700 la couleur du texte devient blanche pour les boutons MUI sur CYAN...
-            //   //main: pink[700], 
-            // },
-            // secondary: {
-            //   main: yellow[800]
-            // },
-            success: green,  //lime, // teal,
+            success: green, 
             ochre: {
                 main: '#E3D026',
                 light: '#E9DB5D',
@@ -75,109 +65,42 @@ export default function MuiProviders({ children }: { children: React.ReactNode }
         },
         typography: {
             fontFamily: 'comic sans ms, Roboto, Arial',
-            //fontSize: 20,
-            //fontFamily: 'Roboto, Arial',
-            // fontFamily: 'Raleway, Arial',
-            // h3: {
-            //     color: 'red',
-            // }
         },
         components: {
             
             MuiTextField: {
                 defaultProps: {
                     variant: "standard",
-                    inputProps: {
-                        //sx: { color: "darkCyan" },
-                    },
-                    InputProps: {
-                        //disableUnderline: true,
-                    },
                     InputLabelProps: {
                         style: { color: 'gray', fontSize: '0.8rem' },
                     }
                 },
                 styleOverrides: {
-                    "root": {
-                        //variant:"standard",        
+                    "root": {    
                         "& .MuiInputBase-input": {
                             overflow: "hidden",
-                            textOverflow: "ellipsis",   // Demande d'ajouter 3 petits points à la fin du texte si il est trop long
-                            //textAlign: "center",
+                            textOverflow: "ellipsis",   // Ajout de 3 ... à la fin du texte si il est trop long
                         },
                     },
                 }
-            },
-            MuiTableRow: {
-                defaultProps: {
-                    // The props to change the default for.
-                    //style: { backgroundColor: "blue" }, 
-                },
-                styleOverrides: {
-                    "root": {
-                        "&:nth-of-type(odd)": {
-                            //"backgroundColor": "#EEE", // Pas possible car écrase la couleur de fond de la ligne sélectionnée !
-                            //"backgroundColor": "gray.light",
-                            //opacity: 0.5,
-                        },
-                        "&:hover": {
-                            //"backgroundColor": "#DDD",
-                            "backgroundColor": "muiTheme.gray.main",   // Marche pas
-                            //"color": "#242105"
-                        },
-                        "&.Mui-selected": {
-                            // "backgroundColor": "blue",    // Marche pas, utilise tout le temps la couleur primaire très claire
-                            // "backgroundColor": "secondary.main",    // Marche pas, utilise tout le temps la couleur primaire très claire
-                            // "color": "#CCC",                         // Marche pas non plus
-                            // "border": "2px solid #CCC",
-                            // "&:hover": {"backgroundColor": "secondary.dark", },
-                            //"&.Mui-focusVisible": { background: "orange" }     // Marche pas non plus !
-                        },
-                    },
-                }
-            },
+            },          
             MuiButton: {
                 defaultProps: {
-                    //color: 'secondary',       // Marche !
                     style: {
                         fontWeight: 'bold',
                     },
                 },
-                // Marche aussi :
-                // styleOverrides: {
-                //     root: {
-                //       fontSize: '1rem',
-                //     },
-                //   },
             },
         },
-        // components: {
-        //   MuiCssBaseline: {
-        //     styleOverrides: `
-        //       @font-face {
-        //         font-family: 'Raleway';
-        //         font-style: normal;
-        //         font-display: swap;
-        //         font-weight: 400;
-        //         src: local('Raleway'), local('Raleway-Regular'), url(${RalewayWoff2}) format('woff2');
-        //         unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
-        //       }
-        //     `,
-        //   },
-        // },
-    });
+           });
 
-    // J'arrive pas à l'ajouter à muiTheme à cause de la donnée muiTheme, quoi mettre à la place ??? (apparemment c'est impossible d'utiliser des Breakpoints dans le thème)
+  
     muiTheme.typography.h3 = {
-        // fontSize: '1.2rem',
-        // '@media (min-width:600px)': {
-        //   fontSize: '1.5rem',
-        // },
-        [muiTheme.breakpoints.up('xs')]: {    // xs = 0px
+        [muiTheme.breakpoints.up('xs')]: {   
             fontSize: '1.8rem',
             display: 'none'
         },
-        [muiTheme.breakpoints.up('sm')]: {   // sm = 600px
+        [muiTheme.breakpoints.up('sm')]: { 
             fontSize: '2rem',
             overflow: 'auto',   // ajoute un scroll si on voit pas tout
             display: 'inline'
