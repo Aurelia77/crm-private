@@ -7,7 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { StyledTableCell } from '../utils/StyledComponents';
 import ContactRow from './ContactRow';
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, TextField, Tooltip, Typography } from '@mui/material';
 import { Timestamp } from 'firebase/firestore';
 import Paper from '@mui/material/Paper';
 import { useTheme } from '@mui/material/styles';
@@ -36,7 +36,7 @@ interface Column {
 }
 
 const headCells: readonly Column[] = [
-    { id: 'isClient', label: <HandshakeOutlinedIcon />, minWidth: "2em", },
+    { id: 'isClient', label: <Tooltip title="Client ou Prospect ?"><HandshakeOutlinedIcon /></Tooltip>, minWidth: "2em", },
     { id: 'businessCategoryId', label: 'Catégorie', minWidth: "8em", },
     {
         id: 'dateOfNextCall', label: <Box sx={{ display: 'flex', alignItems: 'center', }}
@@ -44,16 +44,16 @@ const headCells: readonly Column[] = [
     },
     { id: 'logo', label: 'Logo', minWidth: "4em", },
     { id: 'businessName', label: 'Nom', minWidth: "10em", },
-    { id: 'priority', label: <GradeIcon />, minWidth: "2em", },
+    { id: 'priority', label: <Tooltip title="Priorité"><GradeIcon /></Tooltip>, minWidth: "2em", },
     { id: 'contactPhone', label: <CallRoundedIcon fontSize='large' />, minWidth: "10em", },
     { id: 'contactName', label: <AccountCircleRoundedIcon fontSize='large' />, minWidth: "10em", },
     { id: 'contactEmail', label: <MailIcon fontSize='large' />, minWidth: "10em", },
     { id: 'businessCity', label: 'Ville', minWidth: "10em", },
-    { id: 'hasBeenCalled', label: <Box><CallRoundedIcon fontSize='large' /><QuestionMarkIcon /></Box>, minWidth: "5em", },
-    { id: 'hasBeenSentEmailOrMeetUp', label: <Box><MailIcon /><HandshakeTwoToneIcon /><QuestionMarkIcon /></Box>, minWidth: "6em", },
-    { id: 'comments', label: <CommentRoundedIcon fontSize='large' />, minWidth: "5em", },
-    { id: 'interestGauge', label: <FavoriteRoundedIcon fontSize='large' />, minWidth: "5em", },
-    { id: 'filesSent', label: <AttachFileRoundedIcon fontSize='large' />, minWidth: "10em", },
+    { id: 'hasBeenCalled', label: <Tooltip title="Contact appelé ?"><Box><CallRoundedIcon fontSize='large' /><QuestionMarkIcon /></Box></Tooltip>, minWidth: "5em", },
+    { id: 'hasBeenSentEmailOrMeetUp', label: <Tooltip title="Contact joint par mail ou rencontré ?"><Box><MailIcon /><HandshakeTwoToneIcon /><QuestionMarkIcon /></Box></Tooltip>, minWidth: "6em", },
+    { id: 'comments', label: <Tooltip title="Commentaires"><CommentRoundedIcon fontSize='large' /></Tooltip>, minWidth: "5em", },
+    { id: 'interestGauge', label: <Tooltip title="Niveau d'intéressement"><FavoriteRoundedIcon fontSize='large' /></Tooltip>, minWidth: "5em", },
+    { id: 'filesSent', label: <Tooltip title="Fichier(s) associés"><AttachFileRoundedIcon fontSize='large' /></Tooltip>, minWidth: "10em", },
     { id: 'dateOfFirstCall', label: 'Premier appel', minWidth: "9em", },
     { id: 'dateOfLastCall', label: 'Dernier appel', minWidth: "9em", },
     { id: 'contactType', label: 'Type', minWidth: "7em", },
