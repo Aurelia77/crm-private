@@ -639,7 +639,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 id="outlined-basic"
                                 label="Email DIRECT"
                                 value={contactToAddOrUpdate.contactEmail}
-                                onChange={handleChangeText("businessEmail")}
+                                onChange={handleChangeText("contactEmail")}
                                 sx={{ backgroundColor: muiTheme.palette.pink.main }}
                                 InputProps={{
                                     startAdornment: contactToAddOrUpdate.contactEmail && <Link href={`mailto:${contactToAddOrUpdate.contactEmail}`} underline="none" //color="inherit"                                       
