@@ -17,7 +17,9 @@ export default function AuthDetails() {
 
     const userSignOut = () => {
         signOut(auth).then(() => {
-            console.log("Déconnexion réussie")
+            //console.log("Déconnexion réussie")
+            // on redirige vers la page d'accueil
+            window.location.href = "/"
         }).catch((error) => {
             console.log("Déconnexion échouée", error)
         });

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Button, FormControl, Paper, TextField, Typography } from '@mui/material'
-import { useAuthUserContext } from '../../context/UseAuthContext'
+import { useAuthUserContext } from '../../context/UseAuthContextProvider'
 
 const SignUp = () => {
 

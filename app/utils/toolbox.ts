@@ -1,5 +1,7 @@
 import { Timestamp } from 'firebase/firestore';
 import { uid } from 'uid';
+import { useTheme } from '@mui/material/styles';
+
 
 const emptyContact: Contact = {
     id: uid(),
@@ -229,6 +231,41 @@ function stringAvatar(name: string, logo: string) {
     };
 }
 
+const TABS_WIDTH = 100
+
+ // Je ne peux pas mettre getPriorityTextAndColor ici car pour utiliser les thème on a besoin de useTheme qui est un hook => a utilisé seulement dans un composant ou un hook perso => donc je créé un hook perso
+const useGetPriorityTextAndColor = () => {
+    const muiTheme = useTheme();
+
+    const getPriorityTextAndColor = (priority: number | null) => {
+
+        switch (priority) {
+            case 1: return {
+                text: "Faible",
+                color: muiTheme.palette.error.main,
+                bgColor: "#f3d0d0"
+            }
+            case 2: return {
+                text: "Moyenne",
+                color: "lightsalmon",
+                bgColor: "lightgoldenrodyellow"
+            }
+            case 3: return {
+                text: "Haute",
+                color: muiTheme.palette.primary.dark,
+                bgColor: muiTheme.palette.lightCyan.light
+            }
+            default: return {
+                text: "Aucune",
+                color: muiTheme.palette.gray.dark,
+                bgColor: "muiTheme.palette.gray.light  "
+            }
+        }
+    }
+    return getPriorityTextAndColor
+}
+
+
 
 export { 
     emptyContact,
@@ -245,5 +282,7 @@ export {
     isDatePassed,
     isDateSoon,
     stringAvatar,
-    stringToColor
+    stringToColor,
+    TABS_WIDTH,
+    useGetPriorityTextAndColor
  }

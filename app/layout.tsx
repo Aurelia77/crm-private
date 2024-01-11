@@ -2,7 +2,7 @@
 
 import './globals.css'
 
-import UserAuthContextProvider from './context/UseAuthContext';
+import UserAuthContextProvider from './context/UseAuthContextProvider';
 import MuiProviders from './Components/MuiProviders';
 import { ErrorBoundary } from 'react-error-boundary'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';

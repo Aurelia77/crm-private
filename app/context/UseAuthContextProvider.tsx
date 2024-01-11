@@ -5,14 +5,14 @@ import { auth, fireStoreDb } from "../utils/firebase";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 
 const UserContext = React.createContext<{ 
-    currentUser: User | null;
-    signUp: (email: string, password: string, fullName: string) => void;
-    error: string;}>({      
-    currentUser: null,
-    signUp: (email: string, password: string, fullName: string) => { }, 
-    error: ""
+        currentUser: User | null;
+        signUp: (email: string, password: string, fullName: string) => void;
+        error: string;}
+    >({      
+        currentUser: null,
+        signUp: (email: string, password: string, fullName: string) => { }, 
+        error: ""
 });
-export const useAuthUserContext = () => React.useContext(UserContext);
 
 export default function UserAuthContextProvider({ children }: { children: React.ReactNode }) { 
     const [error, setError] = React.useState<string>("");
@@ -74,4 +74,7 @@ export default function UserAuthContextProvider({ children }: { children: React.
         <UserContext.Provider value={value} >{children}</UserContext.Provider>
     )
 }
+
+export const useAuthUserContext = () => React.useContext(UserContext);
+
 

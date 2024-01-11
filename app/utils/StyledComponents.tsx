@@ -11,6 +11,8 @@ import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAltOutlined';
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
 
+import {TABS_WIDTH} from './toolbox'
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   border: '1px solid #CCC',
@@ -43,7 +45,6 @@ const StyledTableRow = styled(TableRow)(({ theme } : any) => ({
   "&.Mui-selected:hover": { background: theme.palette.lightCyan.main,  }, 
 }));
 
-const TABS_WIDTH = 100
 
 interface TabPanelProps {
   children?: React.ReactNode;

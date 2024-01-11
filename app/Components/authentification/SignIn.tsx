@@ -1,5 +1,5 @@
 import React from 'react'
-import { auth } from './../../utils/firebase'
+import { auth } from '../../utils/firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { Button, FormControl, TextField, Paper, Typography } from '@mui/material'
 
@@ -10,12 +10,9 @@ const SignIn = () => {
     })
 
     const signIn = (e: React.MouseEvent<HTMLButtonElement>) => {
-        console.log("Sign In", e)
         e.preventDefault()
         signInWithEmailAndPassword(auth, authUserInfoSignIn.email, authUserInfoSignIn.password)
             .then((userCredential) => {
-                console.log(userCredential)
-                console.log(userCredential.user)
             })
             .catch((error) => {
                 console.log(error)
