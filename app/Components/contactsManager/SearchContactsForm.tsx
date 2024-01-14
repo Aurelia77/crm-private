@@ -1,7 +1,7 @@
 import React from 'react'
 import { FormControl, FormHelperText, Input, InputLabel, TextField, Typography, MenuItem, Checkbox, FormGroup, FormControlLabel, OutlinedInput, ListItemText, Box, Paper } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { getUniqueSortedValues } from '../utils/toolbox';
+import { getUniqueSortedValues } from '../../utils/toolbox';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -14,7 +14,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import NavigationIcon from '@mui/icons-material/Navigation';
 import { useTheme } from '@mui/material/styles';
-import { getCategoriesFromDatabase, getCatLabelFromId } from '../utils/firebase'
+import { getCategoriesFromDatabase, getCatLabelFromId } from '../../utils/firebase'
 
 interface SearchFormProps {
     contacts: Contact[];

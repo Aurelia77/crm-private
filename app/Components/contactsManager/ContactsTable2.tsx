@@ -1,16 +1,15 @@
-// Test avec VirtualTable qui utilise FixedSizeList (react-window) => mieux car ne rerender pas tout, mais pas fluide, le header ne reste pas en haut 
-// Je ne peux pas utiliser memo pour les ContactRow car FixedSizeList est rerender à chaque défilement car la props style change (utilisée pour positionner les éléments dans la liste et change donc à chaque défilement)
+// Utilisation de FixedSizeList de react-window mais je n'arrive pas à gérer avec le header (que les cellules soient de la même taille que le body) et de toute façon je vois que toutes les lignes se rerender à chaque scroll ! => Pas d'optimisation de perf
+// Aussi je n'arrive pas à gérer l'architecture du tableau car j'ai toujours une erreur :  <tr> cannot appear as a child of <div>.. (FixedSizeList est un div qui doit contenir les lignes : ContactRow, qui lui est un <tr>)
 
 import * as React from 'react';
 // Si beaucoup de contacts => très long à charger !!! Donc j'utilise la virtualisation avec react-window => pnpm install react-window
 // Aussi intaller les types de définitions pour TS ! (sinon erreur: Le fichier de déclaration du module 'react-window' est introuvable.) => pnpm install @types/react-window
 // Ensuite on importe et on utilise FixedSizeList à la place de Table
-import { FixedSizeList, FixedSizeListProps } from 'react-window';
+import { FixedSizeList } from 'react-window';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { useTheme } from '@mui/material/styles';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { visuallyHidden } from '@mui/utils';    // pnpm install @mui/utils
 import CallRoundedIcon from '@mui/icons-material/CallRounded';
@@ -22,12 +21,11 @@ import CommentRoundedIcon from '@mui/icons-material/CommentRounded';
 import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
-import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import GradeIcon from '@mui/icons-material/Grade';
-import { StyledTableCell } from '../utils/StyledComponents';
-import { Box, } from '@mui/material';
+import { StyledTableCell } from '../../utils/StyledComponents';
+import { Box, Table, TableBody, } from '@mui/material';
 import { Timestamp } from 'firebase/firestore';
 import ContactRow from './ContactRow';
 
@@ -115,6 +113,7 @@ function stableSort(array: Contact[], comparator: (a: any, b: any) => number) {
     });
     return stabilizedThis.map((el) => el[0]);
 }
+
 interface SortableTableHeaderProps {
     numSelected: number;
     onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Contact) => void;
@@ -122,14 +121,15 @@ interface SortableTableHeaderProps {
     orderBy: string;
 }
 function SortableTableHeader(props: SortableTableHeaderProps) {
-    const { order, orderBy, onRequestSort } = props;
+    const {
+        order, orderBy,
+        onRequestSort } = props;
     const createSortHandler =
         (property: keyof Contact) => (event: React.MouseEvent<unknown>) => {
             onRequestSort(event, property);
         };
     return (
-        // On bloque le header et le positionne en premier plan (sinon tBody passe par dessus quand on scroll)
-        <TableHead style={{ position: 'sticky', top: 0, zIndex: 99 }}>
+        <TableHead>
             <TableRow>
                 {headCells.map((headCell) => (
                     <StyledTableCell
@@ -171,97 +171,17 @@ function SortableTableHeader(props: SortableTableHeaderProps) {
 }
 
 
-// Pour améliorer les performances car très long ! => On utilise la virtualisation avec React Window
-/** Context for cross component communication */
-const VirtualTableContext = React.createContext<{
-    top: number
-    setTop: (top: number) => void
-    header: React.ReactNode
-    footer: React.ReactNode
-}>({
-    top: 0,
-    setTop: (value: number) => { },
-    header: <></>,
-    footer: <></>,
-})
-/**
- * The Inner component of the virtual list. This is the "Magic".
- * Capture what would have been the top elements position and apply it to the table.
- * Other than that, render an optional header and footer.
- **/
-const Inner = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(
-    function Inner({ children, ...rest }, ref) {
-        const { header, footer, top } = React.useContext(VirtualTableContext)
-        return (
-            <div {...rest} ref={ref}>
-                <table style={{ top, position: 'absolute', width: '100%', }}>
-                    {header}
-                    <tbody>{children}</tbody>
-                    {footer}
-                </table>
-            </div>
-        )
-    }
-)
-/** The virtual table. It basically accepts all of the same params as the original FixedSizeList.*/
-function VirtualTable({
-    row,
-    header,
-    footer,
-    ...rest
-}: {
-    header?: React.ReactNode
-    footer?: React.ReactNode
-    row: FixedSizeListProps['children']
-} & Omit<FixedSizeListProps, 'children' | 'innerElementType'>) {
-    const listRef = React.useRef<FixedSizeList | null>()
-    const [top, setTop] = React.useState(0)
-
-    return (
-        <VirtualTableContext.Provider value={{ top, setTop, header, footer }}>
-            <FixedSizeList
-                {...rest}
-                innerElementType={Inner}
-                onItemsRendered={props => {
-                    const style =
-                        listRef.current &&
-                        // @ts-ignore private method access
-                        listRef.current._getItemStyle(props.overscanStartIndex)
-                    setTop((style && style.top) || 0)
-
-                    // Call the original callback
-                    rest.onItemsRendered && rest.onItemsRendered(props)
-                }}
-                ref={el => (listRef.current = el)}
-            >
-                {row}
-            </FixedSizeList>
-        </VirtualTableContext.Provider>
-    )
-}
-/** The Row component. This should be a table row, and noted that we don't use the style that regular `react-window` examples pass in.*/
-function Row({ index }: { index: number }) {
-    return (
-        <tr>
-            {/** Make sure your table rows are the same height as what you passed into the list... */}
-            <td style={{ height: '36px' }}>Row {index}</td>
-            <td>Col 2</td>
-            <td>Col 3</td>
-            <td>Col 4</td>
-        </tr>
-    )
-}
-
-
 type ContactsTableProps = {
     contacts: Contact[],
     currentUserId: string,
     handleUpdateContact: (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => void
     handleDeleteContact: (id: string) => void
-    displayContactCard: (contact: Contact) => void
+    //displayContactCard: (contact: Contact) => void
     getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
 }
-const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDeleteContact, displayContactCard, getPriorityTextAndColor
+const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDeleteContact, 
+    //displayContactCard, 
+    getPriorityTextAndColor
 }: ContactsTableProps) => {
 
     // A garder si on veut utiliser un contact sélectionné
@@ -271,7 +191,7 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
     //const memoizedSetSelectedContactId = React.useCallback(setSelectedContactId, [setSelectedContactId])
     const memoizedHandleUpdateContact = React.useCallback(handleUpdateContact, [handleUpdateContact])
     const memoizedHandleDeleteContact = React.useCallback(handleDeleteContact, [handleDeleteContact])
-    const memoizedDisplayContactCard = React.useCallback(displayContactCard, [displayContactCard])
+    //const memoizedDisplayContactCard = React.useCallback(displayContactCard, [displayContactCard])
     const memoizedGetPriorityTextAndColor = React.useCallback(getPriorityTextAndColor, [getPriorityTextAndColor])
 
 
@@ -288,49 +208,48 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
         setOrderBy(property);
     };
 
-    const visibleRows: Contact[] = React.useMemo(
+    const visibleRows = React.useMemo(
         () => stableSort(contacts, getComparator(order, orderBy)),
         [order, orderBy, contacts],
     );
-
 
 
     return (
         <Paper sx={{
             width: '100%',
         }} elevation={3} >
-            <TableContainer sx={{ maxHeight: "calc(100vh - 200px)" }} >
-                <VirtualTable
-                    height={300}
-                    width="100%"
-                    itemCount={visibleRows.length}
-                    itemSize={100}
-                    header={
-                        <SortableTableHeader
-                            numSelected={selected.length}
-                            order={order}
-                            orderBy={orderBy}
-                            onRequestSort={handleRequestSort}
-                        />
-                    }
-                    //row={Row}
-
-                    row={({ index, style }) => {
-                        const rowData = visibleRows[index];
-                        return (
-                            // ContactRow mémoïsé + fonctions Callback
-                            <ContactRow
-                                key={rowData.id}
-                                contact={rowData}
-                                currentUserId={currentUserId}
-                                handleUpdateContact={memoizedHandleUpdateContact}
-                                handleDeleteContact={memoizedHandleDeleteContact}
-                                displayContactCard={memoizedDisplayContactCard}
-                                getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
-                            />
-                        )
-                    }}
-                />
+            <TableContainer >
+                {/* <Table stickyHeader> */}
+                <Table>
+                    <SortableTableHeader
+                        numSelected={selected.length}
+                        order={order}
+                        orderBy={orderBy}
+                        onRequestSort={handleRequestSort}
+                    />
+                    <TableBody>
+                        <FixedSizeList
+                            height={window.innerHeight - 190}
+                            width='100%'
+                            itemCount={visibleRows.length}
+                            itemSize={5}
+                        >
+                            {({ index, style }) => {
+                                const row = visibleRows[index];
+                                // ContactRow mémoïsé + fonctions Callback
+                                return <ContactRow
+                                    key={row.id}
+                                    contact={row}
+                                    currentUserId={currentUserId}
+                                    handleUpdateContact={memoizedHandleUpdateContact}
+                                    handleDeleteContact={memoizedHandleDeleteContact}
+                                    //displayContactCard={memoizedDisplayContactCard}
+                                    getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
+                                />
+                            }}
+                        </FixedSizeList>
+                    </TableBody>
+                </Table>
             </TableContainer>
         </Paper>
     );

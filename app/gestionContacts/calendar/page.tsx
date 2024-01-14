@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import CalendarScheduler from './../../Components/CalendarScheduler'
+import CalendarScheduler from '../../Components/contactsManager/CalendarScheduler'
 import { useContactsContext } from '@/app/context/UseContactsContextProvider';
 
 

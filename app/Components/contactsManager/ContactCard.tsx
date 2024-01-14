@@ -15,27 +15,27 @@ import { grey } from '@mui/material/colors';
 import Image from 'next/image'
 import { TextField, Stack, Button, FormControl, InputLabel, MenuItem, Autocomplete, Chip, ListItem, List, OutlinedInput, Checkbox, ListItemText, FormControlLabel, Tooltip, Modal, Rating, Link, InputAdornment, Alert } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { contactTypes, emptyContact } from '../utils/toolbox'
+import { contactTypes, emptyContact } from '../../utils/toolbox'
 import dayjs, { Dayjs } from 'dayjs';       // npm install dayjs
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import ClearIcon from '@mui/icons-material/Clear';
 import { Timestamp } from 'firebase/firestore';
 import { useTheme } from '@mui/material/styles';
-import { storage, addFileOnFirebaseDB, getCategoriesFromDatabase } from '../utils/firebase'
+import { storage, addFileOnFirebaseDB, getCategoriesFromDatabase } from '../../utils/firebase'
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import LinearProgress from '@mui/material/LinearProgress';
 import { Input } from '@mui/material';
-import { handleOpenFile } from '../utils/firebase'
+import { handleOpenFile } from '../../utils/firebase'
 import { Tab, Tabs } from '@mui/material';
-import { TabPanel } from '../utils/StyledComponents';
-import { getFilesFromDatabase } from '../utils/firebase'
+import { TabPanel } from '../../utils/StyledComponents';
+import { getFilesFromDatabase } from '../../utils/firebase'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { modalStyle } from '../utils/StyledComponents'
+import { modalStyle } from '../../utils/StyledComponents'
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import MailIcon from '@mui/icons-material/Mail';
@@ -44,13 +44,13 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
 import LanguageIcon from '@mui/icons-material/Language';
 import PsychologyAlt from '@mui/icons-material/PsychologyAlt';
-import { StyledRating, StyledRatingStars, IconContainer, customIcons } from '../utils/StyledComponents';
+import { StyledRating, StyledRatingStars, IconContainer, customIcons } from '../../utils/StyledComponents';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CallRoundedIcon from '@mui/icons-material/CallRounded';
 
 import Zoom from '@mui/material/Zoom';
 
-import { isDatePassed, isDateSoon } from '../utils/toolbox'
+import { isDatePassed, isDateSoon } from '../../utils/toolbox'
 import { truncate } from 'fs';
 
 

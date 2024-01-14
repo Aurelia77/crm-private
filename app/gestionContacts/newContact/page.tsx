@@ -6,8 +6,8 @@ import { useAuthUserContext } from '../../context/UseAuthContextProvider'
 import { addContactOnFirebaseAndReload } from './../../utils/firebase'
 import { emptyContact } from './../../utils/toolbox'
 import { useGetPriorityTextAndColor } from './../../utils/toolbox'
-import NewContactSearchForm from './../../Components/NewContactSearchForm'
-import ContactCard from './../../Components/ContactCard'
+import NewContactSearchForm from '../../Components/contactsManager/NewContactSearchForm'
+import ContactCard from '../../Components/contactsManager/ContactCard'
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { TabPanel } from './../../utils/StyledComponents'

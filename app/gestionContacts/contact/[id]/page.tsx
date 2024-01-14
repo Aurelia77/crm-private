@@ -60,7 +60,7 @@ import { useAuthUserContext } from './../../../context/UseAuthContextProvider'
 
 
 import { getContactInfoInDatabaseFromId } from './../../../utils/firebase';
-import ContactCard from '@/app/Components/ContactCard';
+import ContactCard from '@/app/Components/contactsManager/ContactCard';
 
 // const getUser = (userId: string) =>
 //   fetch(`/api/users/${userId}`)
@@ -90,8 +90,9 @@ export default function ContactCardPage() {
 
 
     const { data: contact, isLoading, isError } = useQuery({
-        queryKey: ['users', contactId],
+        queryKey: ['contacts', contactId],
         queryFn: () => getContactInfoInDatabaseFromId(contactIdStr),
+        enabled: contactIdStr !== undefined,
     });
 
     console.log("contactInfo : ", contact)

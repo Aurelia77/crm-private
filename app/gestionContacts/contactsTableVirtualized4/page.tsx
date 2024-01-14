@@ -9,16 +9,16 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Fab from '@mui/material/Fab';
 import SearchIcon from '@mui/icons-material/Search';
-import { TABS_WIDTH, emptyContact } from './../../utils/toolbox'
+import { TABS_WIDTH, emptyContact } from '../../utils/toolbox'
 //import { useSearchParams } from "next/navigation";
-import { useAuthUserContext } from './../../context/UseAuthContextProvider'
+import { useAuthUserContext } from '../../context/UseAuthContextProvider'
 import { redirect } from 'next/navigation';
-import { addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, updatDataWholeContactOnFirebase, deleteDataOnFirebaseAndReload, getUserContactsFromDatabase } from './../../utils/firebase'
-import { countContactsByAlertDates, updatedContactsInLocalList, updatedContactsInLocalListWithWholeContact, useGetPriorityTextAndColor } from './../../utils/toolbox';
+import { addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, updatDataWholeContactOnFirebase, deleteDataOnFirebaseAndReload, getUserContactsFromDatabase } from '../../utils/firebase'
+import { countContactsByAlertDates, updatedContactsInLocalList, updatedContactsInLocalListWithWholeContact, useGetPriorityTextAndColor } from '../../utils/toolbox';
 import { Timestamp } from 'firebase/firestore';
 
-import SearchContactsForm from './../../Components/SearchContactsForm';
-import ContactsTable3 from '@/app/Components/ContactsTable3';
+import SearchContactsForm from '../../Components/contactsManager/SearchContactsForm';
+import ContactsTable4 from '@/app/Components/contactsManager/ContactsTable4';
 import { Tooltip } from '@mui/material';
 import { useContactsContext } from '@/app/context/UseContactsContextProvider';
 import { useQuery } from '@tanstack/react-query';
@@ -32,8 +32,8 @@ export default function ContactsTablePage() {
 
   const contactsContextValue = useContactsContext()
 
-  const displayContactCardToUpdate = useContactsContext().displayContactCardToUpdate
-  const updateContactInContactsAndDB = useContactsContext().updateContactInContactsAndDB
+  //const displayContactCardToUpdate = useContactsContext().displayContactCardToUpdate
+  const updateContactInContactsAndDB = contactsContextValue.updateContactInContactsAndDB
 
   const updateContactInContactsAndDBAndFilteredContacts = (id: string, keyAndValue: { key: string; value: string | number | boolean | Timestamp | File[] | null; }) => {
     updateContactInContactsAndDB(id, keyAndValue)
@@ -41,13 +41,23 @@ export default function ContactsTablePage() {
   }
 
 
-  useContactsContext().updateContactInContactsAndDB
-
-
   //const searchParams = useSearchParams();
   //const allContacts = JSON.parse(searchParams.get("allContacts") || "[]");
   //const [allContacts, setAllContacts] = React.useState<Contact[]>(JSON.parse(localStorage.getItem('allContacts') || '[]'))
-  const [allContacts, setAllContacts] = React.useState<Contact[]>(contactsContextValue.allContacts)
+  //const [allContacts, setAllContacts] = React.useState<Contact[]>(contactsContextValue.allContacts)
+  const [allContacts, setAllContacts] = React.useState<Contact[]>([])  
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['contacts'],
+    queryFn: () => getUserContactsFromDatabase(currentUser?.uid),
+  });
+
+  React.useEffect(() => {
+    if (data) {
+      setAllContacts(data);
+    }
+  }, [data]);
+
   console.log("allContacts : ", allContacts)
 
   const [filteredContacts, setFilteredContacts] = React.useState<Contact[]>([])
@@ -71,8 +81,7 @@ export default function ContactsTablePage() {
   //const memoizedUpdateContactInContactsAndDB = React.useCallback(updateContactInContactsAndDB, [filteredContacts])
   const memoizedUpdateContactInContactsAndDB = React.useCallback(updateContactInContactsAndDBAndFilteredContacts, [filteredContacts])
   const memoizedDeleteDataOnFirebaseAndReload = React.useCallback(deleteDataOnFirebaseAndReload, []);
-  //REMETTRE !!!
-  const memoizeddisplayContactCardToUpdate = React.useCallback(displayContactCardToUpdate, [])
+  //const memoizeddisplayContactCardToUpdate = React.useCallback(displayContactCardToUpdate, [])
 
   const getPriorityTextAndColor = useGetPriorityTextAndColor();
   const memoizedGetPriorityTextAndColor = React.useCallback(getPriorityTextAndColor, [])
@@ -176,12 +185,12 @@ export default function ContactsTablePage() {
           }
         </Box>
         {/* Tableau VIRTUALISé */}
-        <ContactsTable3
+        <ContactsTable4
           contacts={filteredContacts}
           currentUserId={currentUser ? currentUser.uid : ""}
           handleUpdateContact={memoizedUpdateContactInContactsAndDB}
           handleDeleteContact={memoizedDeleteDataOnFirebaseAndReload}
-          displayContactCard={memoizeddisplayContactCardToUpdate}
+          //displayContactCard={memoizeddisplayContactCardToUpdate}
           getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
         />
       </Box>

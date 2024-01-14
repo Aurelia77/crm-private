@@ -4,6 +4,10 @@
 @tailwind components;
 @tailwind utilities; */
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
+
+
 /* :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -30,8 +34,14 @@ body {
 
 body {
   /* background-color: #b8fbff; */
-  font-family: cursive;
   margin: 0;
+}
+html, body {
+  font-family: Roboto;   /* cursive; */
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 /* .demo{

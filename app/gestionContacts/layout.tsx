@@ -8,15 +8,15 @@ import Typography from '@mui/material/Typography';
 import { Container, Tooltip, Paper, Modal, styled, TabProps } from '@mui/material';
 import { TextField, Select, MenuItem, Autocomplete, ListItem, List, InputLabel, Tabs, Tab, Box as CustomBox } from '@mui/material'
 import { Fab } from '@mui/material'
-import NewContactSearchForm from './../Components/NewContactSearchForm';
-import ContactCard from './../Components/ContactCard';
-import ContactsTable from './../Components/ContactsTable';
-import ContactsTable2 from './../Components/ContactsTable2';
-import ContactsTable3 from './../Components/ContactsTable3';
-import ContactsTable4 from './../Components/ContactsTable4';
-import ContactsTable5 from './../Components/ContactsTable5';
+import NewContactSearchForm from '../Components/contactsManager/NewContactSearchForm';
+import ContactCard from '../Components/contactsManager/ContactCard';
+import ContactsTable from '../Components/contactsManager/ContactsTable';
+import ContactsTable2 from '../Components/contactsManager/ContactsTable2';
+import ContactsTable3 from '../Components/contactsManager/ContactsTable3';
+import ContactsTable4 from '../Components/contactsManager/ContactsTable4';
+import ContactsTable5 from '../Components/contactsManager/ContactsTable5';
 import AuthDetails from './../Components/AuthDetails';
-import SearchContactsForm from './../Components/SearchContactsForm';
+import SearchContactsForm from '../Components/contactsManager/SearchContactsForm';
 import Admin from './../Components/Admin';
 import Help from './../Components/Help';
 import SearchIcon from '@mui/icons-material/Search';
@@ -33,9 +33,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import SettingsIcon from '@mui/icons-material/Settings';
-import CalendarLittle from './../Components/CalendarLittle';
-import CalendarFull from './../Components/CalendarFull';
-import CalendarScheduler from './../Components/CalendarScheduler';
+import CalendarScheduler from '../Components/contactsManager/CalendarScheduler';
 import { TabPanel } from './../utils/StyledComponents';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useTheme } from '@mui/material/styles';
@@ -71,20 +69,18 @@ export default function ContactsLayout({
     const [tabCalendarValue, setTabCalendarValue] = React.useState(0);
 
     const titles = [
-        { label: "Liste des contacts", icon: <Diversity3Icon />, href: "/gestionContacts/" },
+        { label: "Liste des contacts3 (virtualisée)", icon: <Diversity3Icon />, href: "/gestionContacts/contactsTableVirtualized3" },
         { label: "Calendrier", icon: <CalendarMonthIcon />, href: "/gestionContacts/calendar" },
-        { label: "Nouveau contact", icon: <PersonAddIcon />, href: "/gestionContacts/newContact" },
-
+        { label: "Nouveau contact", icon: <PersonAddIcon />, href: "/gestionContacts/newContact" },        
         // TOOLTIP ne marche pas !!!
-        // passer contact dynamiquement !!!
-
+        // passer contact dynamiquement !!!        
         { label: "Vu d'un contact", icon: <Tooltip title="Vu d'un contact (double cliquer sur un logo dans la liste"><PersonIcon /></Tooltip>, href: "/gestionContacts/contact" },
-        { label: "Admin", icon: <SettingsIcon />, href: "/gestionContacts/" },
-        { label: "Aide", icon: <HelpOutlineIcon />, href: "/gestionContacts/" },
-        { label: "Liste des contacts2", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/" },
-        { label: "Liste des contacts3", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTable3" },
-        { label: "Liste des contacts4", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/" },
-        { label: "Liste des contacts5", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/" },
+        { label: "Admin", icon: <SettingsIcon />, href: "/gestionContacts/admin" },
+        { label: "Aide", icon: <HelpOutlineIcon />, href: "/gestionContacts/help" },
+        { label: "Liste des contacts (sans la virtualisation)", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTableWithoutVirtualized" },
+        { label: "Liste des contacts2 (virtualisée)", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTableVirtualized2" },
+        { label: "Liste des contacts4 (virtualisée)", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTableVirtualized4" },
+        { label: "Liste des contacts5 (virtualisée)", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTableVirtualized5" },
     ]
 
 
@@ -218,12 +214,15 @@ export default function ContactsLayout({
                         ))}                        
                     </Tabs>
 
-                    <Box width={`calc(100vw - ${TABS_WIDTH}px)`}>
+                    <Box 
+                        //width={`calc(100vw - ${TABS_WIDTH}px)`}
+                        width= '100%'
+                    >
                         {/* <ReactQueryProvider> */}
                         <ContactsContext.Provider
                             value={{
-                                allContacts: allContacts,
-                                displayContactCardToUpdate: displayContactCardToUpdate,
+                                //allContacts: allContacts,
+                                //displayContactCardToUpdate: displayContactCardToUpdate,
                                 updateContactInContactsAndDB: updateContactInContactsAndDB,
                             }}
                         >

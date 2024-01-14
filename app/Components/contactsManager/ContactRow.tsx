@@ -30,21 +30,22 @@ import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
 import { InputLabel, MenuItem } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-import { contactTypes } from '../utils/toolbox'
+import { contactTypes } from '../../utils/toolbox'
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 
-import { StyledTableRow, StyledTableCell } from '../utils/StyledComponents';
+import { StyledTableRow, StyledTableCell } from '../../utils/StyledComponents';
 import { Timestamp } from 'firebase/firestore';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Tooltip from '@mui/material/Tooltip';
 
-import { getCategoriesFromDatabase } from '../utils/firebase'
+import { getCategoriesFromDatabase } from '../../utils/firebase'
 import { FormControl } from '@mui/material';
-import { handleOpenFile } from '../utils/firebase'
-import { modalStyle, StyledRating, StyledRatingStars, customIcons, IconContainer } from '../utils/StyledComponents'
+import { handleOpenFile } from '../../utils/firebase'
+import { modalStyle, StyledRating, StyledRatingStars, customIcons, IconContainer } from '../../utils/StyledComponents'
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
-import { isDatePassed, isDateSoon, stringAvatar, stringToColor } from '../utils/toolbox'
+import { isDatePassed, isDateSoon, stringAvatar, stringToColor } from '../../utils/toolbox'
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 
 type ContactRowProps = {
@@ -54,12 +55,14 @@ type ContactRowProps = {
     // setSelectedContactId: (id: string) => void 
     handleUpdateContact: (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => void
     handleDeleteContact: (id: string) => void
-    displayContactCard: (contact: Contact) => void,
+    //displayContactCard: (contact: Contact) => void,
     currentUserId: string
     getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
 }
 
-const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, displayContactCard, currentUserId, getPriorityTextAndColor }: ContactRowProps) => {
+const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, 
+    //displayContactCard, 
+    currentUserId, getPriorityTextAndColor }: ContactRowProps) => {
 
     const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[] | null>(null);
 
@@ -342,15 +345,20 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, display
             {/* LOGO */}
             <StyledTableCell component="td" scope="row" sx={{ padding: 0 }}             
             >
-                <Avatar
-                    //onDoubleClick={() => displayContactCard(contact)}    
-                    onClick={() => router.push(`/gestionContacts/contact/${contact.id}`)}
-                    variant="rounded"
-                    src={contact.logo
-                        ? contact.logo
-                        : ""}
-                    {...stringAvatar(contact.businessName, contact.logo)}
-                />  
+                <Link 
+                    href={`/gestionContacts/contact/${contact.id}`}
+                    style={{ textDecoration: "none" }}
+                >
+                    <Avatar
+                        //onDoubleClick={() => displayContactCard(contact)}    
+                        //onClick={() => router.push(`/gestionContacts/contact/${contact.id}`)}
+                        variant="rounded"
+                        src={contact.logo
+                            ? contact.logo
+                            : ""}
+                        {...stringAvatar(contact.businessName, contact.logo)}
+                    />
+                </Link>  
             </StyledTableCell>
 
             {/* businessName */}

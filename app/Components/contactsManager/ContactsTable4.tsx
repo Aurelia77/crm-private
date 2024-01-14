@@ -14,12 +14,13 @@ import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Switch from '@mui/material/Switch';
 import Avatar from '@mui/material/Avatar';
-import { getCategoriesFromDatabase } from '../utils/firebase'
-import {isDatePassed, isDateSoon, stringAvatar, stringToColor} from '../utils/toolbox'
-import { StyledTableCell } from '../utils/StyledComponents';
+import { getCategoriesFromDatabase } from '../../utils/firebase'
+import {isDatePassed, isDateSoon, stringAvatar, stringToColor} from '../../utils/toolbox'
+import { StyledTableCell } from '../../utils/StyledComponents';
 import { Paper, Box, FormControl, MenuItem, Select, TextField, Tooltip, Typography } from '@mui/material';
 import { Timestamp } from 'firebase/firestore';
 import { useTheme } from '@mui/material/styles';
+import Link from 'next/link';
 
 
 
@@ -28,10 +29,12 @@ type ContactsTableProps = {
     currentUserId: string,
     handleUpdateContact: (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => void  
     handleDeleteContact: (id: string) => void
-    displayContactCard: (contact: Contact) => void
+    //displayContactCard: (contact: Contact) => void
     getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
 }
-const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDeleteContact, displayContactCard, getPriorityTextAndColor
+const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDeleteContact, 
+    //displayContactCard, 
+    getPriorityTextAndColor
 }: ContactsTableProps) => {
 
     // A garder si on veut utiliser un contact sélectionné
@@ -179,14 +182,19 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
         // On peut récupérer cellData (la données qui correspond à dataKey de Column) ou rowData (tout le contact)
         const contact = contacts[rowIndex];
 
-        return <Avatar
-            onDoubleClick={() => displayContactCard(contact)} 
-            variant="rounded"
-            src={cellData
-                ? cellData
-                : ""}
-            {...stringAvatar(businessName, cellData)}
-        />
+        return <Link
+            href={`/gestionContacts/contact/${contact.id}`}
+            style={{ textDecoration: "none" }}
+        >
+            <Avatar
+                //onDoubleClick={() => displayContactCard(contact)} 
+                variant="rounded"
+                src={cellData
+                    ? cellData
+                    : ""}
+                {...stringAvatar(businessName, cellData)}
+            />
+        </Link>
     });
     MemoizedLogo.displayName = 'MemoizedLogo';   
 
@@ -267,10 +275,10 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
         <Paper sx={{
             width: '100%',
         }} elevation={3} > 
-            <TableContainer sx={{ maxHeight: "calc(100vh - 200px)" }} >              
+            <TableContainer >              
                 <TableVirtualized
                     width={1800}   
-                    height={200}
+                    height={400}   //  {window.innerHeight - 250}
                     headerHeight={40}
                     rowHeight={40}
                     rowCount={contacts.length}

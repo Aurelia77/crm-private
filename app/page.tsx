@@ -39,10 +39,7 @@ export default function Contacts() {
                 </Box>
 
                // {/* // /////////////////////// ONGLETS (Tabs) ///////////////////////*/}
-                : redirect('/gestionContacts')
-                // <TabsContainer
-                //     currentUser={currentUser}
-                // />
+                : redirect('/gestionContacts/contactsTableVirtualized3')
             } 
         </Box>
     )

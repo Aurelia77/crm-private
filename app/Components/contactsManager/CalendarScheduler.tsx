@@ -14,6 +14,7 @@ import { Timestamp } from 'firebase/firestore';
 import frLocale from '@fullcalendar/core/locales/fr'
 
 import Fade from '@mui/material/Fade';
+import { redirect } from 'next/navigation';
 
 
 type CalendarProps = {
@@ -100,7 +101,8 @@ export default function CalendarScheduler({ contacts, displayContactCardToUpdate
 
 
       eventClick: function (info) {
-        displayContactCardToUpdate(info.event.extendedProps.contact)
+        //displayContactCardToUpdate(info.event.extendedProps.contact)
+        redirect(`/gestionContacts/contact/${info.event.extendedProps.contact.id}`)
       },
 
       eventDrop: function (dropInfo) {
