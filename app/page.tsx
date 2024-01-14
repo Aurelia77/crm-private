@@ -3,7 +3,6 @@
 import * as React from 'react';
 
 import Box from '@mui/material/Box';
-import TabsContainer from './Components/TabsContainer';
 import SignIn from './Components/authentification/SignIn';
 import SignUp from './Components/authentification/SignUp';
 import { useAuthUserContext } from './context/UseAuthContextProvider'

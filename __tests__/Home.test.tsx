@@ -7,7 +7,7 @@ import Home from '../app/page'
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
-import MuiProviders from '../app/Components/MuiProviders';
+import MuiProviders from '../app/Components/providers/MuiProviders';
 
 // Fonctionne seulement si j'enlève MuiProviders dans le layout
 describe('RootLayout', () => {

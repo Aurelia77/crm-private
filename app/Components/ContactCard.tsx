@@ -122,7 +122,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
     React.useEffect(() => {
         console.log("****Comparaison des contacts")
-        JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && console.log("****CHANGE")
+        //JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && console.log("****CHANGE")
         JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && setHasContactInfoChanged(true)
     }, [contactToAddOrUpdate])
    

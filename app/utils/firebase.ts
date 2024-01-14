@@ -8,7 +8,7 @@ import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, d
 import { uid } from 'uid';
 import fakeContactsData from '../utils/contactsTest'
 import laurianeData from '../utils/contactsLaurianeTOUS'
-import { contactCategories } from '../utils/toolbox'
+import { contactCategories, emptyContact } from '../utils/toolbox'
 import contactsLaurianeNameAndCatLabel from '../utils/contactsLaurianeNomEtCat'
 
 
@@ -80,7 +80,7 @@ const addCatToFakeContactsAndReload = async (currentUserId: any, fakeContactsDat
           if (fakeContact.businessName === contactNameAndCatLabel.name) {
               const catId = await getCatIdFromLabel(currentUserId, contactNameAndCatLabel.catLabel); 
 
-              getContactsFromDatabase(currentUserId).then((contactsList) => {
+              getUserContactsFromDatabase(currentUserId).then((contactsList) => {
                   const updatePromises = contactsList.map((firebaseContact) => {
                       if (firebaseContact.businessName === fakeContact.businessName) {
                           console.log("***", firebaseContact, catId)
@@ -108,11 +108,10 @@ const addLaurianeDataWithCat = async(currentUserId: any) => {
   addCatToFakeContactsAndReload(currentUserId, laurianeData, contactsLaurianeNameAndCatLabel)        
 }
 
-const getContactsFromDatabase = async (currentUserId: any) => {
+const getUserContactsFromDatabase = async (currentUserId: any) => {
   let contactsArr: Contact[] = []
   const contactsCollectionRef = collection(fireStoreDb, "contacts");
-  const q =
-    query(contactsCollectionRef, where("userId", "==", currentUserId ?? ""));
+  const q = query(contactsCollectionRef, where("userId", "==", currentUserId ?? ""));
 
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
@@ -120,6 +119,22 @@ const getContactsFromDatabase = async (currentUserId: any) => {
   });
   return contactsArr;
 }
+
+const getContactInfoInDatabaseFromId = async (contactId: string) => {
+  let contact: Contact = emptyContact
+
+  const q = query(collection(fireStoreDb, "contacts"), where("id", "==", contactId));
+
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    contact = { ...doc.data() as Contact };      
+  });
+
+  return contact
+}
+
+
+
 
 const getFilesFromDatabase = async (currentUserId: any) => {
   let filesArr: FileNameAndRefType[] = []
@@ -336,7 +351,7 @@ const handleOpenFile = async (file: any) => {
 
 
 const getAllFirebaseUserDatasAndSave = async (currentUserId: any) => {  
-    const contacts = await getContactsFromDatabase(currentUserId)
+    const contacts = await getUserContactsFromDatabase(currentUserId)
     const files = await getFilesFromDatabase(currentUserId)
     const categories = await getCategoriesFromDatabase(currentUserId)
   
@@ -350,7 +365,8 @@ export {
   storage,
   addFakeDataWithCat,
   addLaurianeDataWithCat,
-  getContactsFromDatabase,
+  getUserContactsFromDatabase,
+  getContactInfoInDatabaseFromId,
   getFilesFromDatabase,
   getCategoriesFromDatabase,
   addFakeDataOnFirebaseAndReload,

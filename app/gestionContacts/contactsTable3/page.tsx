@@ -9,16 +9,16 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Fab from '@mui/material/Fab';
 import SearchIcon from '@mui/icons-material/Search';
-import { TABS_WIDTH, emptyContact } from './../utils/toolbox'
+import { TABS_WIDTH, emptyContact } from './../../utils/toolbox'
 //import { useSearchParams } from "next/navigation";
-import { useAuthUserContext } from './../context/UseAuthContextProvider'
+import { useAuthUserContext } from './../../context/UseAuthContextProvider'
 import { redirect } from 'next/navigation';
-import { addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, updatDataWholeContactOnFirebase, deleteDataOnFirebaseAndReload, getUserContactsFromDatabase } from './../utils/firebase'
-import { countContactsByAlertDates, updatedContactsInLocalList, updatedContactsInLocalListWithWholeContact, useGetPriorityTextAndColor } from './../utils/toolbox';
+import { addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, updatDataWholeContactOnFirebase, deleteDataOnFirebaseAndReload, getUserContactsFromDatabase } from './../../utils/firebase'
+import { countContactsByAlertDates, updatedContactsInLocalList, updatedContactsInLocalListWithWholeContact, useGetPriorityTextAndColor } from './../../utils/toolbox';
 import { Timestamp } from 'firebase/firestore';
 
-import SearchContactsForm from './../Components/SearchContactsForm';
-import ContactsTable from '@/app/Components/ContactsTable';
+import SearchContactsForm from './../../Components/SearchContactsForm';
+import ContactsTable3 from '@/app/Components/ContactsTable3';
 import { Tooltip } from '@mui/material';
 import { useContactsContext } from '@/app/context/UseContactsContextProvider';
 import { useQuery } from '@tanstack/react-query';
@@ -175,8 +175,8 @@ export default function ContactsTablePage() {
           </Typography>
           }
         </Box>
-        {/* Tableau normal mais très long dès qu'il y a plus de 20 contacts */}
-        <ContactsTable
+        {/* Tableau VIRTUALISé */}
+        <ContactsTable3
           contacts={filteredContacts}
           currentUserId={currentUser ? currentUser.uid : ""}
           handleUpdateContact={memoizedUpdateContactInContactsAndDB}

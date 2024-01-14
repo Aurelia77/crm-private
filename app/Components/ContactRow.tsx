@@ -44,6 +44,7 @@ import { handleOpenFile } from '../utils/firebase'
 import { modalStyle, StyledRating, StyledRatingStars, customIcons, IconContainer } from '../utils/StyledComponents'
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import { isDatePassed, isDateSoon, stringAvatar, stringToColor } from '../utils/toolbox'
+import { useRouter } from 'next/navigation';
 
 
 type ContactRowProps = {
@@ -63,6 +64,8 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, display
     const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[] | null>(null);
 
     const muiTheme = useTheme();
+    const router = useRouter();
+
 
     React.useEffect(() => {
         getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
@@ -338,15 +341,16 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, display
 
             {/* LOGO */}
             <StyledTableCell component="td" scope="row" sx={{ padding: 0 }}             
-            >               
+            >
                 <Avatar
-                    onDoubleClick={() => displayContactCard(contact)}    
+                    //onDoubleClick={() => displayContactCard(contact)}    
+                    onClick={() => router.push(`/gestionContacts/contact/${contact.id}`)}
                     variant="rounded"
                     src={contact.logo
                         ? contact.logo
                         : ""}
                     {...stringAvatar(contact.businessName, contact.logo)}
-                />               
+                />  
             </StyledTableCell>
 
             {/* businessName */}

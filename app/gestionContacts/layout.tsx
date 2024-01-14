@@ -42,12 +42,15 @@ import { useTheme } from '@mui/material/styles';
 
 import { useAuthUserContext } from './../context/UseAuthContextProvider'
 import ContactsContext from './../context/UseContactsContextProvider';
-//import Link from 'next/link';
-import { Link } from 'react-router-dom'
+import Link from 'next/link';
+//import { Link } from 'react-router-dom'
 
 import { useRouter } from 'next/navigation';
 import { redirect } from 'next/navigation';
-import { addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, updatDataWholeContactOnFirebase, deleteDataOnFirebaseAndReload, getContactsFromDatabase } from './../utils/firebase'
+import { addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, updatDataWholeContactOnFirebase, deleteDataOnFirebaseAndReload, getUserContactsFromDatabase } from './../utils/firebase'
+import ReactQueryProvider from '../Components/providers/ReactQueryProvider';
+
+import { useQuery } from '@tanstack/react-query';
 
 export default function ContactsLayout({
     children,
@@ -68,16 +71,20 @@ export default function ContactsLayout({
     const [tabCalendarValue, setTabCalendarValue] = React.useState(0);
 
     const titles = [
-        { label: "Liste des contacts", icon: <Diversity3Icon />, href: "/gestionContacts/contactsTable" },
+        { label: "Liste des contacts", icon: <Diversity3Icon />, href: "/gestionContacts/" },
         { label: "Calendrier", icon: <CalendarMonthIcon />, href: "/gestionContacts/calendar" },
         { label: "Nouveau contact", icon: <PersonAddIcon />, href: "/gestionContacts/newContact" },
-        { label: "Vu d'un contact", icon: <PersonIcon />, href: "/gestionContacts/contactsTable" },
-        { label: "Admin", icon: <SettingsIcon />, href: "/gestionContacts/contactsTable" },
-        { label: "Aide", icon: <HelpOutlineIcon />, href: "/gestionContacts/contactsTable" },
-        { label: "Liste des contacts2", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTable" },
-        { label: "Liste des contacts3", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTable" },
-        { label: "Liste des contacts4", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTable" },
-        { label: "Liste des contacts5", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTable" },
+
+        // TOOLTIP ne marche pas !!!
+        // passer contact dynamiquement !!!
+
+        { label: "Vu d'un contact", icon: <Tooltip title="Vu d'un contact (double cliquer sur un logo dans la liste"><PersonIcon /></Tooltip>, href: "/gestionContacts/contact" },
+        { label: "Admin", icon: <SettingsIcon />, href: "/gestionContacts/" },
+        { label: "Aide", icon: <HelpOutlineIcon />, href: "/gestionContacts/" },
+        { label: "Liste des contacts2", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/" },
+        { label: "Liste des contacts3", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTable3" },
+        { label: "Liste des contacts4", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/" },
+        { label: "Liste des contacts5", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/" },
     ]
 
 
@@ -103,7 +110,7 @@ export default function ContactsLayout({
     }
 
     React.useEffect(() => {
-        currentUser && getContactsFromDatabase(currentUser.uid).then((contactsList: Contact[]) => {
+        currentUser && getUserContactsFromDatabase(currentUser.uid).then((contactsList: Contact[]) => {
             setAllContacts(contactsList);
             //localStorage.setItem('allContacts', JSON.stringify(contactsList));
             setLoading(false);
@@ -142,65 +149,93 @@ export default function ContactsLayout({
 
 
 
+    const { data, isLoading, isError } = useQuery<Contact[]>({
+        queryKey: ['userContacts'],
+        queryFn: () => getUserContactsFromDatabase(currentUser?.uid),
+        // onSuccess: (contactsList: Contact[]) => {
+        //     setAllContacts(contactsList);
+        //     localStorage.setItem('allContacts', JSON.stringify(contactsList));
+        //     setLoading(false);
+        // }
+    });
+
+
+
 
 
     return (
         <Box sx={{
             position: "relative",
         }}>
-            {loading
-                ? <Container sx={{ ml: "50%", mt: "20%" }} >
+            {isLoading ? (
+                <Container sx={{ ml: "50%", mt: "20%" }} >
                     <CircularProgress />
                 </Container>
-                : <Box>
-                    <Box>
-                        <AuthDetails />
-                    </Box>
+            ) : isError ? (
+                <Typography>Une erreur s'est produite</Typography>
+            ) : data && <Box>
+                <Box>
+                    <AuthDetails />
+                </Box>
 
-                    {/* ///////////////////////ONGLETS - Tabs /////////////////////// */}
-                    <Box
-                        sx={{
-                            flexGrow: 1,
-                            bgcolor: 'background.paper', display: 'flex', height: '100vh',
-                        }}
+                {/* ///////////////////////ONGLETS - Tabs /////////////////////// */}
+                <Box
+                    sx={{
+                        flexGrow: 1,
+                        bgcolor: 'background.paper', display: 'flex', height: '100vh',
+                    }}
+                >
+                    <Tabs
+                        orientation="vertical"
+                        value={tabValue}
+                        // onChange={(e, newValue) => onChangeTabValue(newValue)}
+                        onChange={(e, newValue) => setTabValue(newValue)}
+                        aria-label="Vertical tabs"
+                        sx={{ borderRight: 1, borderColor: 'divider', width: TABS_WIDTH }}
                     >
-                        <Tabs
-                            orientation="vertical"
-                            value={tabValue}
-                            // onChange={(e, newValue) => onChangeTabValue(newValue)}
-                            onChange={(e, newValue) => setTabValue(newValue)}
-                            aria-label="Vertical tabs"
-                            sx={{ borderRight: 1, borderColor: 'divider', width: TABS_WIDTH }}
-                        >
-                            {titles.map((title, index) => (
-                                <Tab
-                                    key={index}
-                                    //href={title.href}     // Le href recharge le layour, pas le routeur !
-                                    onClick={() => router.push(title.href)}
-                                    title={title.label}
-                                    icon={title.icon}
-                                    value={index}
-                                    sx={{ margin: '10px 0 10px 0' }}
-                                />
-                            ))}
+                        {titles.map((title, index) => (
+                            <Tab
+                                key={index}
+                                //href={title.href}     // Le href recharge le layout, pas le routeur !
+                                onClick={() => router.push(title.href)}
+                                title={title.label}
+                                icon={title.icon}
+                                value={index}
+                                sx={{ margin: '10px 0 10px 0' }}
+                                disabled={index === 3}
+                            />
 
-                        </Tabs>
-                        <Box width={`calc(100vw - ${TABS_WIDTH}px)`}>
-                            <ContactsContext.Provider
-                                value={{
-                                    allContacts: allContacts,
-                                    displayContactCardToUpdate: displayContactCardToUpdate,
-                                    updateContactInContactsAndDB: updateContactInContactsAndDB,
-                                }}
-                            >
-                                {children}
-                            </ContactsContext.Provider>
-                            {/* <ContactsContextProvider>
+                        // Si j'utilise LINK j'ai une erreur : Warning: React does not recognize the `fullWidth` prop on a DOM element
+                        // <Link href={title.href} key={index}>
+                        //     <Tab
+                        //         title={title.label}
+                        //         icon={title.icon}
+                        //         value={index}
+                        //         sx={{ margin: '10px 0 10px 0' }}
+                        //         disabled={index === 3}
+                        //     />
+                        //</Link>
+                        ))}                        
+                    </Tabs>
+
+                    <Box width={`calc(100vw - ${TABS_WIDTH}px)`}>
+                        {/* <ReactQueryProvider> */}
+                        <ContactsContext.Provider
+                            value={{
+                                allContacts: allContacts,
+                                displayContactCardToUpdate: displayContactCardToUpdate,
+                                updateContactInContactsAndDB: updateContactInContactsAndDB,
+                            }}
+                        >
+                            {children}
+                        </ContactsContext.Provider>
+                        {/* </ReactQueryProvider> */}
+                        {/* <ContactsContextProvider>
                                 {children}
                             </ContactsContextProvider> */}
-                        </Box>
                     </Box>
                 </Box>
+            </Box>
             }
         </Box>
     )
