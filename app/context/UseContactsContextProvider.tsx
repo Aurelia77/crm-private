@@ -8,12 +8,16 @@ import { Timestamp } from 'firebase/firestore';
 const ContactsContext = React.createContext<{ 
         //allContacts: Contact[],
         //displayContactCardToUpdate: (contact: Contact) => void,
-        updateContactInContactsAndDB: (id: string, keyAndValue: { key: string; value: string | number | boolean | Timestamp | File[] | null; }) => void
+        updateContactInContactsAndDB: (id: string, keyAndValue: { key: string; value: string | number | boolean | Timestamp | File[] | null; }) => void,
+        deleteDataOnFirebaseAndReload: (id: string) => void,
+        updateWholeContactInContactsAndDB: (contact: Contact) => void,
     }>
     ({      
         //allContacts: [],
         //displayContactCardToUpdate: (contact: Contact) => {},
-        updateContactInContactsAndDB: (id: string, keyAndValue: { key: string; value: string | number | boolean | Timestamp | File[] | null; }) => {}
+        updateContactInContactsAndDB: (id: string, keyAndValue: { key: string; value: string | number | boolean | Timestamp | File[] | null; }) => {},
+        deleteDataOnFirebaseAndReload: (id: string) => {},
+        updateWholeContactInContactsAndDB: (contact: Contact) => {},
 });
 
 export default ContactsContext

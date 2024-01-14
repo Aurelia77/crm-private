@@ -224,6 +224,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                 position: "relative",
                 padding: "2% 4%",
                 bgcolor: getPriorityTextAndColor(contactToAddOrUpdate.priority).bgColor,
+                height: "100%", 
             }}     
         >
             <Modal

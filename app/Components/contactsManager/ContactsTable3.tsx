@@ -304,7 +304,7 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
         }} elevation={3} >
             <TableContainer >
                 <VirtualTable
-                    height={window.innerHeight - 190}
+                    height={window.innerHeight - 195}
                     width="100%"
                     itemCount={visibleRows.length}
                     itemSize={100}

@@ -224,6 +224,9 @@ export default function ContactsLayout({
                                 //allContacts: allContacts,
                                 //displayContactCardToUpdate: displayContactCardToUpdate,
                                 updateContactInContactsAndDB: updateContactInContactsAndDB,
+                                deleteDataOnFirebaseAndReload: deleteDataOnFirebaseAndReload,
+                                updateWholeContactInContactsAndDB: updateWholeContactInContactsAndDB,
+
                             }}
                         >
                             {children}

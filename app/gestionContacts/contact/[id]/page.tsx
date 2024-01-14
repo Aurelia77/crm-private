@@ -56,6 +56,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
 import { useAuthUserContext } from './../../../context/UseAuthContextProvider'
+import { useContactsContext } from '@/app/context/UseContactsContextProvider';
 
 
 
@@ -77,6 +78,9 @@ export default function ContactCardPage() {
     const { currentUser } = useAuthUserContext()
     const getPriorityTextAndColor = useGetPriorityTextAndColor();
 
+    const contactsContextValue = useContactsContext()
+    const deleteDataOnFirebaseAndReload = contactsContextValue.deleteDataOnFirebaseAndReload
+    const updateWholeContactInContactsAndDB = contactsContextValue.updateWholeContactInContactsAndDB
 
 
     const params = useParams()
@@ -106,27 +110,6 @@ export default function ContactCardPage() {
         //setTabValue(tabValueWithoutSavingInfoChanges)
         setHasContactInfoChanged(false)
     }
-
-
-
-    // React.useEffect(() => {
-    //     const handleBeforeUnload = (event) => {
-    //         if (hasContactInfoChanged) { 
-    //             event.preventDefault();
-    //             event.returnValue = '';
-    //             setOpenWarningModal(true)
-    //         }
-    //     };
-
-    //     window.addEventListener('beforeunload', handleBeforeUnload);
-
-    //     return () => {
-    //         window.removeEventListener('beforeunload', handleBeforeUnload);
-    //     };
-    // }, [hasContactInfoChanged]); 
-
-
-
 
 
 
@@ -174,8 +157,8 @@ export default function ContactCardPage() {
                 currentUserId={currentUser?.uid}
                 getPriorityTextAndColor={getPriorityTextAndColor}
                 setHasContactInfoChanged={setHasContactInfoChanged}
-            //handleDeleteContact={deleteDataOnFirebaseAndReload}
-            //updateContact={updateWholeContactInContactsAndDB}
+                handleDeleteContact={deleteDataOnFirebaseAndReload}
+                updateContact={updateWholeContactInContactsAndDB}
             />}
 
         </Box>

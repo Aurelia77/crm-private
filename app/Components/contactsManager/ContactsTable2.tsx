@@ -229,7 +229,7 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
                     />
                     <TableBody>
                         <FixedSizeList
-                            height={window.innerHeight - 190}
+                            height={window.innerHeight - 195}
                             width='100%'
                             itemCount={visibleRows.length}
                             itemSize={5}

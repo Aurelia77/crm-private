@@ -15,6 +15,7 @@ import frLocale from '@fullcalendar/core/locales/fr'
 
 import Fade from '@mui/material/Fade';
 import { redirect } from 'next/navigation';
+import { useNavigate } from 'react-router-dom';
 
 
 type CalendarProps = {
@@ -31,6 +32,10 @@ export default function CalendarScheduler({ contacts,
   const calendarRef = React.useRef(null);
 
   const muiTheme = useTheme(); 
+
+  //const navigate = useNavigate();
+
+
 
   const hightPriorityColor = muiTheme.palette.primary.main
   const mediumPriorityColor = muiTheme.palette.gray.main
@@ -94,17 +99,21 @@ export default function CalendarScheduler({ contacts,
         left: 'today prev,next',
         center: 'title',
         right: 'multiMonthSixMonth,resourceTimelineDay,dayGridMonth,listWeek'
-      },     
-
+      },   
+      
       events: events.map(event => ({
         ...event,
-        color: getPriorityColor(event.contact.priority) ?? "black"
+        color: getPriorityColor(event.contact.priority) ?? "black",
+        //onClick: () => { navigate(`/gestionContacts/contact/${event.contact.id}`) }
+        //Cannot update a component (`HotReload`) while rendering a different component (`CalendarScheduler`).
+        //onClick: () => { redirect(`/gestionContacts/contact/${event.contact.id}`) }
       })),
 
+    
 
       eventClick: function (info) {
         //displayContactCardToUpdate(info.event.extendedProps.contact)
-        redirect(`/gestionContacts/contact/${info.event.extendedProps.contact.id}`)
+        //redirect(`/gestionContacts/contact/${info.event.extendedProps.contact.id}`)
       },
 
       eventDrop: function (dropInfo) {

@@ -10,6 +10,7 @@ import Button from '@mui/material/Button';
 import Fab from '@mui/material/Fab';
 import SearchIcon from '@mui/icons-material/Search';
 import { useAuthUserContext } from '../../context/UseAuthContextProvider'
+import { useContactsContext } from '@/app/context/UseContactsContextProvider';
 import { redirect } from 'next/navigation';
 import { addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, updatDataWholeContactOnFirebase, deleteDataOnFirebaseAndReload, getUserContactsFromDatabase } from '../../utils/firebase'
 import { countContactsByAlertDates, updatedContactsInLocalList, updatedContactsInLocalListWithWholeContact, useGetPriorityTextAndColor } from '../../utils/toolbox';
@@ -18,7 +19,6 @@ import { Timestamp } from 'firebase/firestore';
 import SearchContactsForm from '../../Components/contactsManager/SearchContactsForm';
 import ContactsTable3 from '@/app/Components/contactsManager/ContactsTable3';
 import { Tooltip } from '@mui/material';
-import { useContactsContext } from '@/app/context/UseContactsContextProvider';
 import { useQuery } from '@tanstack/react-query';
 
 
