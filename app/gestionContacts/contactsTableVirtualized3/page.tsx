@@ -38,7 +38,6 @@ export default function ContactsTablePage() {
     setFilteredContacts(updatedContactsInLocalList(filteredContacts, id, keyAndValue))
   }
 
-
   //const searchParams = useSearchParams();
   //const allContacts = JSON.parse(searchParams.get("allContacts") || "[]");
   //const [allContacts, setAllContacts] = React.useState<Contact[]>(JSON.parse(localStorage.getItem('allContacts') || '[]'))

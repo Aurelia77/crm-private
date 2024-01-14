@@ -19,12 +19,14 @@ import { redirect } from 'next/navigation';
 
 type CalendarProps = {
   contacts: Contact[];
-  displayContactCardToUpdate: (contact: Contact) => void;
+  //displayContactCardToUpdate: (contact: Contact) => void;
   updateContactInContactsAndDB: (id: string, keyAndValue: { key: string, value: Timestamp }) => void;
 };
 
 
-export default function CalendarScheduler({ contacts, displayContactCardToUpdate, updateContactInContactsAndDB }: CalendarProps) {
+export default function CalendarScheduler({ contacts, 
+  //displayContactCardToUpdate, 
+  updateContactInContactsAndDB }: CalendarProps) {
 
   const calendarRef = React.useRef(null);
 
