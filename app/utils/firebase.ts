@@ -83,7 +83,8 @@ const addCatToFakeContactsAndReload = async (currentUserId: any, fakeContactsDat
               getUserContactsFromDatabase(currentUserId).then((contactsList) => {
                   const updatePromises = contactsList.map((firebaseContact) => {
                       if (firebaseContact.businessName === fakeContact.businessName) {
-                          console.log("***", firebaseContact, catId)
+                          //console.log("***", firebaseContact, catId)
+                          console.log(catId)
                           return updatDataOnFirebase(firebaseContact.id, { key: "businessCategoryId", value: catId })
                       }
                   });
