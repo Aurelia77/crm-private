@@ -36,7 +36,7 @@ export default function ContactsTablePage() {
 
   const updateContactInContactsAndDBAndFilteredContacts = (id: string, keyAndValue: { key: string; value: string | number | boolean | Timestamp | File[] | null; }) => {
     updateContactInContactsAndDB(id, keyAndValue)
-    setFilteredContacts(updatedContactsInLocalList(filteredContacts, id, keyAndValue))
+    setAllContacts(updatedContactsInLocalList(filteredContacts, id, keyAndValue))
   }
 
   //const searchParams = useSearchParams();
@@ -110,7 +110,6 @@ export default function ContactsTablePage() {
   }, [data]);
 
   const [filteredContacts, setFilteredContacts] = React.useState<Contact[]>([])
-  const [loadingFilteredContacts, setLoadingFilteredContacts] = React.useState<boolean>(true)
   //console.log("filteredContacts : ", filteredContacts)
 
   const [alerts, setAlerts] = React.useState<Alerts>({ nbContactsWithDatePassed: 0, nbContactsWithDateSoon: 0 })
@@ -129,9 +128,8 @@ export default function ContactsTablePage() {
   const getPriorityTextAndColor = useGetPriorityTextAndColor();
 
   React.useEffect(() => {
-    setFilteredContacts(allContacts);
-    setLoadingFilteredContacts(false);
     setAlerts(countContactsByAlertDates(allContacts))
+    setFilteredContacts(allContacts);
   }, [currentUser, allContacts])
 
   React.useEffect(() => {
@@ -171,7 +169,9 @@ export default function ContactsTablePage() {
     } else {
       setFilteredContacts(allContacts)
     }
-  }, [contactsSearchCriteria, allContacts])
+  }, [contactsSearchCriteria, allContacts, 
+    //emptySearchCriteria
+  ])
 
 
 
@@ -237,7 +237,7 @@ export default function ContactsTablePage() {
             }
           </Box>
           {/* Tableau normal mais très long dès qu'il y a plus de 20 contacts */}
-          {filteredContacts.length > 0 && <ContactsTable
+          {filteredContacts.length > 0 && <ContactsTable 
             contacts={filteredContacts}
             currentUserId={currentUser ? currentUser.uid : ""}
             handleUpdateContact={updateContactInContactsAndDBAndFilteredContacts}

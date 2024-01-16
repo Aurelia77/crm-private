@@ -45,7 +45,6 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
     const muiTheme = useTheme();
 
     const allDifferentsBusinessCategoryValues = getUniqueSortedValues(contacts, 'businessCategoryId')
-
     const allDifferentsBusinessCitiesValues = getUniqueSortedValues(contacts, 'businessCity')
     const allDifferentsContactTypesValues = getUniqueSortedValues(contacts, 'contactType')
   
@@ -182,8 +181,8 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                                 {contacts.length === 0
                                     ? <ListItemText primary="Aucun contact à chercher" />
                                     : <>
-                                        <Checkbox checked={search.businessCategoryId.includes("0")} />
-                                        <ListItemText primary="NON DEFINIE" />
+                                        {/* <Checkbox checked={search.businessCategoryId.includes("0")} />
+                                        <ListItemText primary="NON DEFINIE" /> */}
                                     </>
                                 }
                             </MenuItem>
