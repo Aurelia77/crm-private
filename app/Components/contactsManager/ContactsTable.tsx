@@ -8,7 +8,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { StyledTableCell } from '../../utils/StyledComponents';
 import ContactRow from './ContactRow';
-import { Box, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, FormControlLabel, Switch, TableCell, TextField, Tooltip, Typography } from '@mui/material';
 import { Timestamp } from 'firebase/firestore';
 import Paper from '@mui/material/Paper';
 import { useTheme } from '@mui/material/styles';
@@ -152,20 +152,17 @@ type ContactsTableProps = {
     currentUserId: string,
     handleUpdateContact: (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => void
     handleDeleteContact: (id: string) => void
-    //displayContactCard: (contact: Contact) => void
     getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
 }
-const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDeleteContact, 
-    //displayContactCard, 
-    getPriorityTextAndColor }: ContactsTableProps) => {
+const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDeleteContact, getPriorityTextAndColor }: ContactsTableProps) => {
 
-    console.log("filteredContacts : ", contacts)
+    //console.log("filteredContacts : ", contacts)
     
     // A garder si on veut utiliser un contact sélectionné
     //const [selectedContactId, setSelectedContactId] = React.useState("");
 
     const [page, setPage] = React.useState(0);
-    const [dense, setDense] = React.useState(false);
+    //const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof Contact>('businessName');
@@ -188,13 +185,13 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
         setPage(0);
     };
 
-    const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setDense(event.target.checked);
-    };
+    // const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     setDense(event.target.checked);
+    // };
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - contacts.length) : 0;
+    // const emptyRows =
+    //     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - contacts.length) : 0;
 
     const visibleRows = React.useMemo(
         () =>
@@ -203,23 +200,7 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
                 page * rowsPerPage + rowsPerPage,
             ),
         [order, orderBy, page, rowsPerPage, contacts],
-    );
-
-    // const visibleRows = React.useMemo(
-    //     () => stableSort(contacts, getComparator(order, orderBy)),
-    //     [order, orderBy, contacts],
-    // );
-
-    // J'ai utilisé Memo et useCallback pour pas que toute la liste ne se rerende à chaque changement sur un contact mais comme chaque contactId change à chaque fois dans le liste de contact, ça ne fonctionne pas...
-
-    // useCallback ne devrait pas être utilisé pour mémoriser les fonctions de mise à jour de l'état (useState), car ces fonctions ne changent pas entre les rendus. Vous pouvez simplement passer les fonctions de mise à jour de l'état directement à vos composants.
-    //const memoizedSetSelectedContactId = React.useCallback(setSelectedContactId, [setSelectedContactId])
-    const memoizedHandleUpdateContact = React.useCallback(handleUpdateContact, [handleUpdateContact])
-    const memoizedHandleDeleteContact = React.useCallback(handleDeleteContact, [handleDeleteContact])
-    //const memoizedDisplayContactCard = React.useCallback(displayContactCard, [displayContactCard])
-    const memoizedGetPriorityTextAndColor = React.useCallback(getPriorityTextAndColor, [getPriorityTextAndColor])
-
- 
+    ); 
    
     return (
         <Paper sx={{ width: '100%', }} elevation={3} >
@@ -239,27 +220,45 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
                                 key={row.id}
                                 contact={row}
                                 currentUserId={currentUserId}
-                                handleUpdateContact={memoizedHandleUpdateContact}
-                                handleDeleteContact={memoizedHandleDeleteContact}
-                                //displayContactCard={memoizedDisplayContactCard}
-                                getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
+                                handleUpdateContact={handleUpdateContact}
+                                handleDeleteContact={handleDeleteContact}
+                                getPriorityTextAndColor={getPriorityTextAndColor}
                             />
                         ))}
+                        {/* {emptyRows > 0 && (
+                            <TableRow style={{ height: 53 * emptyRows }}>
+                                <TableCell colSpan={6} />
+                            </TableRow>
+                        )} */}
                     </TableBody>
                 </Table>
             </TableContainer>
-            {(contacts.length > rowsPerPage) && <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
+            <TablePagination
+                rowsPerPageOptions={[5, 7, 10, 15, 20, 25]}
                 component="div"
                 count={contacts.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
-            />}
+                // On change le texte pour le mettre en français 
+                labelRowsPerPage="Lignes par page :"
+                labelDisplayedRows={({ from, to, count }) => `${from}-${to} sur ${count}`}
+                // getItemAriaLabel={(type) => {
+                //     if (type === 'previous') return 'Page précédente';
+                //     if (type === 'next') return 'Page suivante';
+                //     return '';
+                // }}
+            />
+            {/* <FormControlLabel
+                control={<Switch 
+                    checked={dense} 
+                    onChange={handleChangeDense} />}
+                label="Dense padding"
+            /> */}
         </Paper>
+
     );
 }
 
-// Pour que le tableau ne se recharche pas à chaque changement d'onglet (que s'il y a une modification)
-export default React.memo(ContactsTable)
+export default ContactsTable

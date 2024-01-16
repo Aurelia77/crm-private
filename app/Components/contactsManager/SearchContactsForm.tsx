@@ -107,6 +107,17 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                 padding: "1%",
                 width: "98%",
             }} >
+                <Typography 
+                    variant="body1" 
+                    component="div" 
+                    sx={{ 
+                        mb: 1, 
+                        mt: -1.5, //-11, 
+                        ml: -1, //-6, 
+                        color: "grey" 
+                    }}>
+                    Recherche dans mes contacts
+                </Typography>
                 <Tooltip title="Supprimer la recherche">
                     <Fab
                         size="small"
@@ -168,9 +179,19 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             MenuProps={MenuSelectProps}
                         >
                             <MenuItem key="0" value="0">
+                                {contacts.length === 0
+                                    ? <ListItemText primary="Aucun contact à chercher" />
+                                    : <>
+                                        <Checkbox checked={search.businessCategoryId.includes("0")} />
+                                        <ListItemText primary="NON DEFINIE" />
+                                    </>
+                                }
+                            </MenuItem>
+
+                            {/* {contacts.length > 0 && <MenuItem key="0" value="0">
                                 <Checkbox checked={search.businessCategoryId.includes("0")} />
                                 <ListItemText primary="NON DEFINIE" />
-                            </MenuItem>
+                            </MenuItem>} */}
                          
                             {categoriesList
                                 .filter(cat => allDifferentsBusinessCategoryValues.includes(cat.id))
@@ -203,6 +224,10 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                            renderValue={(selected) => selected.join(', ')}
                             MenuProps={MenuSelectProps}
                         >
+                            {contacts.length === 0 && <MenuItem key="0" value="0">
+                                <ListItemText primary="Aucun contact à chercher" />
+                            </MenuItem>
+                            }
                             {allDifferentsBusinessCitiesValues.map((city) => (
                                 <MenuItem key={city} value={city}>
                                     <Checkbox checked={search.businessCity.indexOf(city) > -1} />
@@ -224,7 +249,11 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             renderValue={(selected) => selected.join(', ')}
                             sx={{ width: '100%' }}
                             MenuProps={MenuSelectProps}
-                        > 
+                        >
+                            {contacts.length === 0 && <MenuItem key="0" value="0">
+                                <ListItemText primary="Aucun contact à chercher" />
+                            </MenuItem>
+                            }
                             {allDifferentsContactTypesValues.map((type) => (
                                 <MenuItem key={type} value={type}>
                                     <Checkbox checked={search.contactType.indexOf(type) > -1} />

@@ -15,27 +15,27 @@ import { grey } from '@mui/material/colors';
 import Image from 'next/image'
 import { TextField, Stack, Button, FormControl, InputLabel, MenuItem, Autocomplete, Chip, ListItem, List, OutlinedInput, Checkbox, ListItemText, FormControlLabel, Tooltip, Modal, Rating, Link, InputAdornment, Alert } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { contactTypes, emptyContact, useGetPriorityTextAndColor } from '../../../utils/toolbox'
+import { contactTypes, emptyContact, useGetPriorityTextAndColor } from '@/app/utils/toolbox'
 import dayjs, { Dayjs } from 'dayjs';       // npm install dayjs
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import ClearIcon from '@mui/icons-material/Clear';
 import { Timestamp } from 'firebase/firestore';
 import { useTheme } from '@mui/material/styles';
-import { storage, addFileOnFirebaseDB, getCategoriesFromDatabase } from '../../../utils/firebase'
+import { storage, addFileOnFirebaseDB, getCategoriesFromDatabase } from '@/app/utils/firebase'
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import LinearProgress from '@mui/material/LinearProgress';
 import { Input } from '@mui/material';
-import { handleOpenFile } from '../../../utils/firebase'
+import { handleOpenFile } from '@/app/utils/firebase'
 import { Tab, Tabs } from '@mui/material';
-import { TabPanel } from '../../../utils/StyledComponents';
-import { getFilesFromDatabase } from '../../../utils/firebase'
+import { TabPanel } from '@/app/utils/StyledComponents';
+import { getFilesFromDatabase } from '@/app/utils/firebase'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { modalStyle } from '../../../utils/StyledComponents'
+import { modalStyle } from '@/app/utils/StyledComponents'
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import MailIcon from '@mui/icons-material/Mail';
@@ -44,23 +44,20 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
 import LanguageIcon from '@mui/icons-material/Language';
 import PsychologyAlt from '@mui/icons-material/PsychologyAlt';
-import { StyledRating, StyledRatingStars, IconContainer, customIcons } from '../../../utils/StyledComponents';
+import { StyledRating, StyledRatingStars, IconContainer, customIcons } from '@/app/utils/StyledComponents';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CallRoundedIcon from '@mui/icons-material/CallRounded';
 
 import Zoom from '@mui/material/Zoom';
 
-import { isDatePassed, isDateSoon } from '../../../utils/toolbox'
+import { isDatePassed, isDateSoon } from '@/app/utils/toolbox'
 import { truncate } from 'fs';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
-import { useAuthUserContext } from './../../../context/UseAuthContextProvider'
+import { useAuthUserContext } from '@/app/context/UseAuthContextProvider'
 import { useContactsContext } from '@/app/context/UseContactsContextProvider';
-
-
-
-import { getContactInfoInDatabaseFromId } from './../../../utils/firebase';
+import { getContactInfoInDatabaseFromId } from '@/app/utils/firebase';
 import ContactCard from '@/app/Components/contactsManager/ContactCard';
 
 // const getUser = (userId: string) =>
@@ -77,19 +74,13 @@ export default function ContactCardPage() {
 
     const { currentUser } = useAuthUserContext()
     const getPriorityTextAndColor = useGetPriorityTextAndColor();
-
-    const contactsContextValue = useContactsContext()
-    const deleteDataOnFirebaseAndReload = contactsContextValue.deleteDataOnFirebaseAndReload
-    const updateWholeContactInContactsAndDB = contactsContextValue.updateWholeContactInContactsAndDB
-
+    const deleteDataOnFirebaseAndReload = useContactsContext().deleteDataOnFirebaseAndReload
+    const updateWholeContactInContactsAndDB = useContactsContext().updateWholeContactInContactsAndDB
 
     const params = useParams()
     const contactId = params.id
 
-    console.log("params : ", params)
-    console.log("contactId : ", contactId)
     console.log("typeof contactId : ", typeof contactId) // c'est bien une string pourtant erreur si pas ligne ci-dessous
-
     const contactIdStr = Array.isArray(contactId) ? contactId[0] : contactId;
 
 

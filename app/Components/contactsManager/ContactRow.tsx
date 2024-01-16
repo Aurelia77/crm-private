@@ -46,6 +46,7 @@ import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import { isDatePassed, isDateSoon, stringAvatar, stringToColor } from '../../utils/toolbox'
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+//import {Link} from 'react-router-dom';
 
 
 type ContactRowProps = {
@@ -55,14 +56,11 @@ type ContactRowProps = {
     // setSelectedContactId: (id: string) => void 
     handleUpdateContact: (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => void
     handleDeleteContact: (id: string) => void
-    //displayContactCard: (contact: Contact) => void,
     currentUserId: string
     getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
 }
 
-const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, 
-    //displayContactCard, 
-    currentUserId, getPriorityTextAndColor }: ContactRowProps) => {
+const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, currentUserId, getPriorityTextAndColor }: ContactRowProps) => {
 
     const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[] | null>(null);
 

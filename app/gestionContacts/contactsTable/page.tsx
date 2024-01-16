@@ -12,16 +12,18 @@ import SearchIcon from '@mui/icons-material/Search';
 import { TABS_WIDTH, emptyContact } from '../../utils/toolbox'
 //import { useSearchParams } from "next/navigation";
 import { useAuthUserContext } from '../../context/UseAuthContextProvider'
-import { redirect } from 'next/navigation';
 import { addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, updatDataWholeContactOnFirebase, deleteDataOnFirebaseAndReload, getUserContactsFromDatabase } from '../../utils/firebase'
 import { countContactsByAlertDates, updatedContactsInLocalList, updatedContactsInLocalListWithWholeContact, useGetPriorityTextAndColor } from '../../utils/toolbox';
 import { Timestamp } from 'firebase/firestore';
 
 import SearchContactsForm from '../../Components/contactsManager/SearchContactsForm';
 import ContactsTable from '@/app/Components/contactsManager/ContactsTable';
-import { Tooltip } from '@mui/material';
+import { CircularProgress, Container, Tooltip } from '@mui/material';
 import { useContactsContext } from '@/app/context/UseContactsContextProvider';
 import { useQuery } from '@tanstack/react-query';
+import { redirect } from 'next/navigation';
+//import { Link } from 'react-router-dom';  // to au lieu de href, recharche même le layout ! Et ici me met une erreur : Cannot update a component (`HotReload`) while rendering a different component (`Link`)
+import Link from 'next/link';
 
 
 export default function ContactsTablePage() {
@@ -30,19 +32,12 @@ export default function ContactsTablePage() {
 
   const muiTheme = useTheme()
 
-  const contactsContextValue = useContactsContext()
-
-  //const displayContactCardToUpdate = useContactsContext().displayContactCardToUpdate
   const updateContactInContactsAndDB = useContactsContext().updateContactInContactsAndDB
 
   const updateContactInContactsAndDBAndFilteredContacts = (id: string, keyAndValue: { key: string; value: string | number | boolean | Timestamp | File[] | null; }) => {
     updateContactInContactsAndDB(id, keyAndValue)
     setFilteredContacts(updatedContactsInLocalList(filteredContacts, id, keyAndValue))
   }
-
-
-  useContactsContext().updateContactInContactsAndDB
-
 
   //const searchParams = useSearchParams();
   //const allContacts = JSON.parse(searchParams.get("allContacts") || "[]");
@@ -100,7 +95,7 @@ export default function ContactsTablePage() {
     // {...emptyContact, id: "49", businessName: "coucou1"},
     // {...emptyContact, id: "50", businessName: "coucou2"},
   ])
-  
+
   //console.log("allContacts : ", allContacts)
 
   const { data, isLoading, isError } = useQuery({
@@ -115,6 +110,7 @@ export default function ContactsTablePage() {
   }, [data]);
 
   const [filteredContacts, setFilteredContacts] = React.useState<Contact[]>([])
+  const [loadingFilteredContacts, setLoadingFilteredContacts] = React.useState<boolean>(true)
   //console.log("filteredContacts : ", filteredContacts)
 
   const [alerts, setAlerts] = React.useState<Alerts>({ nbContactsWithDatePassed: 0, nbContactsWithDateSoon: 0 })
@@ -130,18 +126,11 @@ export default function ContactsTablePage() {
 
   const isSearchCriteriaEmpty = JSON.stringify(contactsSearchCriteria) === JSON.stringify(emptySearchCriteria)
 
-
-
-  //const memoizedUpdateContactInContactsAndDB = React.useCallback(updateContactInContactsAndDB, [filteredContacts])
-  const memoizedUpdateContactInContactsAndDB = React.useCallback(updateContactInContactsAndDBAndFilteredContacts, [filteredContacts])
-  const memoizedDeleteDataOnFirebaseAndReload = React.useCallback(deleteDataOnFirebaseAndReload, []);
-  //const memoizeddisplayContactCardToUpdate = React.useCallback(displayContactCardToUpdate, [])
-
   const getPriorityTextAndColor = useGetPriorityTextAndColor();
-  const memoizedGetPriorityTextAndColor = React.useCallback(getPriorityTextAndColor, [])
 
   React.useEffect(() => {
     setFilteredContacts(allContacts);
+    setLoadingFilteredContacts(false);
     setAlerts(countContactsByAlertDates(allContacts))
   }, [currentUser, allContacts])
 
@@ -206,51 +195,57 @@ export default function ContactsTablePage() {
           emptySearchCriteria={emptySearchCriteria}
           onSearchChange={setContactsSearchCriteria}
         />
-        <Box sx={{ display: "flex", alignItems: "center", margin: "13px 0 7px 15px", }}
-        >{allContacts.length > 0
-          ? <Typography variant="h5">
 
-            {!isSearchCriteriaEmpty && <Tooltip title="Selon votre recherche">
-              {/* On enveloppe le bouton (Fab) dans un <span> pour que le Tooltip fonctionne (ne foncitonne pas sur un bouton désactivé (Fab) */}
-              <span>
-                <Fab disabled size="small" color="primary" sx={{
-                  mr: 2
-                }} >
-                  <SearchIcon />
-                </Fab>
-              </span>
-            </Tooltip>
+        {filteredContacts && <>
+          <Box sx={{ display: "flex", alignItems: "center", margin: "13px 0 7px 15px", }}
+          >{allContacts.length > 0
+            ? <Typography variant="h5">
+              {!isSearchCriteriaEmpty && <Tooltip title="Selon votre recherche">
+                {/* On enveloppe le bouton (Fab) dans un <span> pour que le Tooltip fonctionne (Fab ne fonctionne pas sur un bouton désactivé) */}
+                <span>
+                  <Fab disabled size="small" color="primary" sx={{
+                    mr: 2
+                  }} >
+                    <SearchIcon />
+                  </Fab>
+                </span>
+              </Tooltip>
+              }
+              {filteredContacts.length} contacts :
+              <Typography variant="h5" component="span" color="warning.main" sx={{ px: 2 }}>
+                {alerts.nbContactsWithDatePassed} relance(s) passée(s)
+              </Typography>
+              <Typography variant="h5" component="span" color="primary.main">
+                et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jours.
+              </Typography>
+            </Typography>
+
+            : <Typography variant="h5" color="error.main">
+              Aucun contact pour l'instant, veuillez en ajouter ici :
+              <Link
+                href="/gestionContacts/newContact"
+              //to="/gestionContacts/newContact" 
+              >
+                <Button variant="contained" color="primary"
+                  //onClick={() => {redirect('/gestionContacts/newContact')}}
+                  sx={{ ml: 2 }}
+                >
+                  Nouveau contact
+                </Button>
+              </Link>
+            </Typography>
             }
-            {filteredContacts.length} contacts :
-            <Typography variant="h5" component="span" color="warning.main" sx={{ px: 2 }}>
-              {alerts.nbContactsWithDatePassed} relance(s) passée(s)
-            </Typography>
-            <Typography variant="h5" component="span" color="primary.main">
-              et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jours.
-            </Typography>
-
-          </Typography>
-          : <Typography variant="h5" color="error.main">
-            Aucun contact pour l'instant, veuillez en ajouter ici :
-            <Button variant="contained" color="primary"
-              onClick={() => {
-                // REMETTRE ???
-                //setTabValue(2); setTabNewContactValue(0) 
-              }}
-              sx={{ ml: 2 }}>Nouveau contact</Button>
-          </Typography>
-          }
-        </Box>
-        {/* Tableau normal mais très long dès qu'il y a plus de 20 contacts */}
-        <ContactsTable
-          contacts={filteredContacts}
-          currentUserId={currentUser ? currentUser.uid : ""}
-          handleUpdateContact={memoizedUpdateContactInContactsAndDB}
-          handleDeleteContact={memoizedDeleteDataOnFirebaseAndReload}
-          //displayContactCard={memoizeddisplayContactCardToUpdate}
-          getPriorityTextAndColor={memoizedGetPriorityTextAndColor}
-        />
-      </Box>
+          </Box>
+          {/* Tableau normal mais très long dès qu'il y a plus de 20 contacts */}
+          {filteredContacts.length > 0 && <ContactsTable
+            contacts={filteredContacts}
+            currentUserId={currentUser ? currentUser.uid : ""}
+            handleUpdateContact={updateContactInContactsAndDBAndFilteredContacts}
+            handleDeleteContact={deleteDataOnFirebaseAndReload}
+            getPriorityTextAndColor={getPriorityTextAndColor}
+          />}
+        </>}
+      </Box >
       : redirect('/')
   )
 }

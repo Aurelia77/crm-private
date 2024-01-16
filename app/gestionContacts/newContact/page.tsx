@@ -3,20 +3,20 @@
 import { Box } from '@mui/material'
 import React from 'react'
 import { useAuthUserContext } from '../../context/UseAuthContextProvider'
-import { addContactOnFirebaseAndReload } from './../../utils/firebase'
-import { emptyContact } from './../../utils/toolbox'
-import { useGetPriorityTextAndColor } from './../../utils/toolbox'
+import { addContactOnFirebaseAndReload } from '../../utils/firebase'
+import { emptyContact } from '../../utils/toolbox'
+import { useGetPriorityTextAndColor } from '../../utils/toolbox'
 import NewContactSearchForm from '../../Components/contactsManager/NewContactSearchForm'
 import ContactCard from '../../Components/contactsManager/ContactCard'
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { TabPanel } from './../../utils/StyledComponents'
+import { TabPanel } from '../../utils/StyledComponents'
 import { useContactsContext } from '@/app/context/UseContactsContextProvider';
 import { redirect } from 'next/navigation';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { modalStyle } from './../../utils/StyledComponents'
+import { modalStyle } from '../../utils/StyledComponents'
 import { useRouter } from 'next/router';
 
 
