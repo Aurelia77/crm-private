@@ -60,34 +60,35 @@ export default function ContactsLayout({
     //const ContactsContext = React.createContext("")
 
     const muiTheme = useTheme()
+    const router = useRouter();
+
 
     const [allContacts, setAllContacts] = React.useState<Contact[]>([])
-    const [contactToDisplay, setContactToDisplay] = React.useState<Contact>(emptyContact)
-    const [selectedContactId, setSelectedContactId] = React.useState<string>("")
-    const [loading, setLoading] = React.useState(true)
+    // const [contactToDisplay, setContactToDisplay] = React.useState<Contact>(emptyContact)
+    // const [selectedContactId, setSelectedContactId] = React.useState<string>("")
+    // const [loading, setLoading] = React.useState(true)
     const [tabValue, setTabValue] = React.useState(0);
-    const [tabCalendarValue, setTabCalendarValue] = React.useState(0);
+    //const [tabCalendarValue, setTabCalendarValue] = React.useState(0);
 
     const titles = [
-        { label: "Liste des contacts3 (virtualisée)", icon: <Diversity3Icon />, href: "/gestionContacts/contactsTableVirtualized3" },
+        { label: "Liste des contacts", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTable" },
         { label: "Calendrier", icon: <CalendarMonthIcon />, href: "/gestionContacts/calendar" },
         { label: "Nouveau contact", icon: <PersonAddIcon />, href: "/gestionContacts/newContact" },        
         // TOOLTIP ne marche pas !!!
-        // passer contact dynamiquement !!!        
-        { label: "Vu d'un contact", icon: <Tooltip title="Vu d'un contact (double cliquer sur un logo dans la liste"><PersonIcon /></Tooltip>, href: "/gestionContacts/contact" },
+        { label: "Vu d'un contact", icon: <Tooltip title="Vu d'un contact (double cliquer sur un logo dans la liste)"><PersonIcon /></Tooltip>, href: "/gestionContacts/contact" },
         { label: "Admin", icon: <SettingsIcon />, href: "/gestionContacts/admin" },
         { label: "Aide", icon: <HelpOutlineIcon />, href: "/gestionContacts/help" },
-        { label: "Liste des contacts (sans la virtualisation)", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTableWithoutVirtualized" },
-        { label: "Liste des contacts2 (virtualisée)", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTableVirtualized2" },
-        { label: "Liste des contacts4 (virtualisée)", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTableVirtualized4" },
-        { label: "Liste des contacts5 (virtualisée)", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTableVirtualized5" },
+        // { label: "Liste des contacts2 (virtualisée)", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTableVirtualized2" },
+        // { label: "Liste des contacts3 (virtualisée)", icon: <Diversity3Icon />, href: "/gestionContacts/contactsTableVirtualized3" },
+        // { label: "Liste des contacts4 (virtualisée)", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTableVirtualized4" },
+        // { label: "Liste des contacts5 (virtualisée)", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTableVirtualized5" },
     ]
 
 
-    const displayContactCardToUpdate = (contact: Contact) => {
-        setContactToDisplay(contact)
-        setTabValue(3)  // On reste sur le même onglet                                     // Voir ce que ça fait si on enlève ça
-    }
+    // const displayContactCardToUpdate = (contact: Contact) => {
+    //     setContactToDisplay(contact)
+    //     setTabValue(3)  // On reste sur le même onglet                                     // Voir ce que ça fait si on enlève ça
+    // }
 
     const updateContactInContactsAndDB = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
         setAllContacts(updatedContactsInLocalList(allContacts, id, keyAndValue))
@@ -95,7 +96,7 @@ export default function ContactsLayout({
         //setFilteredContacts(updatedContactsInLocalList(filteredContacts, id, keyAndValue))
         updatDataOnFirebase(id, keyAndValue)
     }
-
+    
     const updateWholeContactInContactsAndDB = (contactToUpdate: Contact) => {
         setAllContacts(updatedContactsInLocalListWithWholeContact(allContacts, contactToUpdate))
         //localStorage.setItem('allContacts', JSON.stringify(updatedContactsInLocalListWithWholeContact(allContacts, contactToUpdate)))
@@ -105,15 +106,14 @@ export default function ContactsLayout({
         updatDataWholeContactOnFirebase(contactToUpdate)
     }
 
-    React.useEffect(() => {
-        currentUser && getUserContactsFromDatabase(currentUser.uid).then((contactsList: Contact[]) => {
-            setAllContacts(contactsList);
-            //localStorage.setItem('allContacts', JSON.stringify(contactsList));
-            setLoading(false);
-        })
-    }, [currentUser])
+    // React.useEffect(() => {
+    //     currentUser && getUserContactsFromDatabase(currentUser.uid).then((contactsList: Contact[]) => {
+    //         setAllContacts(contactsList);
+    //         //localStorage.setItem('allContacts', JSON.stringify(contactsList));
+    //         setLoading(false);
+    //     })
+    // }, [currentUser])
 
-    const router = useRouter();
 
     // const onChangeTabValue = (newValue: number) => {
     //     setTabValueWithoutSavingInfoChanges(newValue)
@@ -145,15 +145,15 @@ export default function ContactsLayout({
 
 
 
-    const { data, isLoading, isError } = useQuery<Contact[]>({
-        queryKey: ['userContacts'],
-        queryFn: () => getUserContactsFromDatabase(currentUser?.uid),
-        // onSuccess: (contactsList: Contact[]) => {
-        //     setAllContacts(contactsList);
-        //     localStorage.setItem('allContacts', JSON.stringify(contactsList));
-        //     setLoading(false);
-        // }
-    });
+    // const { data, isLoading, isError } = useQuery<Contact[]>({
+    //     queryKey: ['userContacts'],
+    //     queryFn: () => getUserContactsFromDatabase(currentUser?.uid),
+    //     // onSuccess: (contactsList: Contact[]) => {
+    //     //     setAllContacts(contactsList);
+    //     //     localStorage.setItem('allContacts', JSON.stringify(contactsList));
+    //     //     setLoading(false);
+    //     // }
+    // });
 
 
 
@@ -163,13 +163,15 @@ export default function ContactsLayout({
         <Box sx={{
             position: "relative",
         }}>
-            {isLoading ? (
-                <Container sx={{ ml: "50%", mt: "20%" }} >
-                    <CircularProgress />
-                </Container>
-            ) : isError ? (
-                <Typography>Une erreur s'est produite</Typography>
-            ) : data && <Box>
+            {
+            // isLoading ? (
+            //     <Container sx={{ ml: "50%", mt: "20%" }} >
+            //         <CircularProgress />
+            //     </Container>
+            // ) : isError ? (
+            //     <Typography>Une erreur s'est produite</Typography>
+            // ) : data && 
+            <Box>
                 <Box>
                     <AuthDetails />
                 </Box>
@@ -215,8 +217,8 @@ export default function ContactsLayout({
                     </Tabs>
 
                     <Box 
-                        //width={`calc(100vw - ${TABS_WIDTH}px)`}
-                        width= '100%'
+                        width={`calc(100vw - ${TABS_WIDTH}px)`}
+                        //width= '100%'
                     >
                         {/* <ReactQueryProvider> */}
                         <ContactsContext.Provider

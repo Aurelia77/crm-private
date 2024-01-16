@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
+import TablePagination from '@mui/material/TablePagination';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
@@ -161,17 +162,11 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
     console.log("filteredContacts : ", contacts)
     
     // A garder si on veut utiliser un contact sélectionné
-    const [selectedContactId, setSelectedContactId] = React.useState("");
+    //const [selectedContactId, setSelectedContactId] = React.useState("");
 
-    // J'ai utilisé Memo et useCallback pour pas que toute la liste ne se rerende à chaque changement sur un contact mais comme chaque contactId change à chaque fois dans le liste de contact, ça ne fonctionne pas...
-
-    // useCallback ne devrait pas être utilisé pour mémoriser les fonctions de mise à jour de l'état (useState), car ces fonctions ne changent pas entre les rendus. Vous pouvez simplement passer les fonctions de mise à jour de l'état directement à vos composants.
-    //const memoizedSetSelectedContactId = React.useCallback(setSelectedContactId, [setSelectedContactId])
-    const memoizedHandleUpdateContact = React.useCallback(handleUpdateContact, [handleUpdateContact])
-    const memoizedHandleDeleteContact = React.useCallback(handleDeleteContact, [handleDeleteContact])
-    //const memoizedDisplayContactCard = React.useCallback(displayContactCard, [displayContactCard])
-    const memoizedGetPriorityTextAndColor = React.useCallback(getPriorityTextAndColor, [getPriorityTextAndColor])
-
+    const [page, setPage] = React.useState(0);
+    const [dense, setDense] = React.useState(false);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof Contact>('businessName');
 
@@ -182,12 +177,49 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
+    };   
+
+    const handleChangePage = (event: unknown, newPage: number) => {
+        setPage(newPage);
     };
 
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setDense(event.target.checked);
+    };
+
+    // Avoid a layout jump when reaching the last page with empty rows.
+    const emptyRows =
+        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - contacts.length) : 0;
+
     const visibleRows = React.useMemo(
-        () => stableSort(contacts, getComparator(order, orderBy)),
-        [order, orderBy, contacts],
+        () =>
+            stableSort(contacts, getComparator(order, orderBy)).slice(
+                page * rowsPerPage,
+                page * rowsPerPage + rowsPerPage,
+            ),
+        [order, orderBy, page, rowsPerPage, contacts],
     );
+
+    // const visibleRows = React.useMemo(
+    //     () => stableSort(contacts, getComparator(order, orderBy)),
+    //     [order, orderBy, contacts],
+    // );
+
+    // J'ai utilisé Memo et useCallback pour pas que toute la liste ne se rerende à chaque changement sur un contact mais comme chaque contactId change à chaque fois dans le liste de contact, ça ne fonctionne pas...
+
+    // useCallback ne devrait pas être utilisé pour mémoriser les fonctions de mise à jour de l'état (useState), car ces fonctions ne changent pas entre les rendus. Vous pouvez simplement passer les fonctions de mise à jour de l'état directement à vos composants.
+    //const memoizedSetSelectedContactId = React.useCallback(setSelectedContactId, [setSelectedContactId])
+    const memoizedHandleUpdateContact = React.useCallback(handleUpdateContact, [handleUpdateContact])
+    const memoizedHandleDeleteContact = React.useCallback(handleDeleteContact, [handleDeleteContact])
+    //const memoizedDisplayContactCard = React.useCallback(displayContactCard, [displayContactCard])
+    const memoizedGetPriorityTextAndColor = React.useCallback(getPriorityTextAndColor, [getPriorityTextAndColor])
+
+ 
    
     return (
         <Paper sx={{ width: '100%', }} elevation={3} >
@@ -216,6 +248,15 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
                     </TableBody>
                 </Table>
             </TableContainer>
+            {(contacts.length > rowsPerPage) && <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={contacts.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />}
         </Paper>
     );
 }

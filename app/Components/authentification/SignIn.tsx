@@ -3,7 +3,9 @@ import { auth } from '../../utils/firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { Button, FormControl, TextField, Paper, Typography } from '@mui/material'
 
+
 const SignIn = () => {
+    const [error, setError] = React.useState<string>("")
     const [authUserInfoSignIn, setAuthUserInfoSignIn] = React.useState<any>({
         email: '',
         password: '',
@@ -15,14 +17,14 @@ const SignIn = () => {
             .then((userCredential) => {
             })
             .catch((error) => {
-                console.log(error)
-                console.log(error.code)
-                console.log(error.message)
+                setError("L'email ou le mot de passe est incorrect")
+                console.error(error.message)
             });
     }
 
     return (
         <Paper sx={{ padding: "40px" }} elevation={5} >
+            {error && <Typography color="error">{error}</Typography> }
 
             <FormControl>
                 <Typography

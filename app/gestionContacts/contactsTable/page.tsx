@@ -48,9 +48,60 @@ export default function ContactsTablePage() {
   //const allContacts = JSON.parse(searchParams.get("allContacts") || "[]");
   //const [allContacts, setAllContacts] = React.useState<Contact[]>(JSON.parse(localStorage.getItem('allContacts') || '[]'))
   //const [allContacts, setAllContacts] = React.useState<Contact[]>(contactsContextValue.allContacts)
-  const [allContacts, setAllContacts] = React.useState<Contact[]>([])
+  const [allContacts, setAllContacts] = React.useState<Contact[]>([
+    // {...emptyContact, id: "1", businessName: "coucou1"}, 
+    // {...emptyContact, id: "2", businessName: "coucou2 2"},
+    // {...emptyContact, id: "3", businessName: "coucou3 3 3"},
+    // {...emptyContact, id: "4", businessName: "coucou4"},
+    // {...emptyContact, id: "5", businessName: "coucou5"},
+    // {...emptyContact, id: "6", businessName: "coucou6"},
+    // {...emptyContact, id: "7", businessName: "coucou7"},
+    // {...emptyContact, id: "8", businessName: "coucou8"},
+    // {...emptyContact, id: "9", businessName: "coucou1"}, 
+    // {...emptyContact, id: "10", businessName: "coucou2"},
+    // {...emptyContact, id: "11", businessName: "coucou3"},
+    // {...emptyContact, id: "12", businessName: "coucou4"},
+    // {...emptyContact, id: "13", businessName: "coucou5"},
+    // {...emptyContact, id: "14", businessName: "coucou6"},
+    // {...emptyContact, id: "15", businessName: "coucou7"},
+    // {...emptyContact, id: "16", businessName: "coucou8"},
+    // {...emptyContact, id: "17", businessName: "coucou1"},
+    // {...emptyContact, id: "18", businessName: "coucou2"},
+    // {...emptyContact, id: "19", businessName: "coucou3"},
+    // {...emptyContact, id: "20", businessName: "coucou4"},
+    // {...emptyContact, id: "21", businessName: "coucou5"},
+    // {...emptyContact, id: "22", businessName: "coucou6"},
+    // {...emptyContact, id: "23", businessName: "coucou7"},
+    // {...emptyContact, id: "24", businessName: "coucou8"},
+    // {...emptyContact, id: "25", businessName: "coucou1"},
+    // {...emptyContact, id: "26", businessName: "coucou2"},
+    // {...emptyContact, id: "27", businessName: "coucou3"},
+    // {...emptyContact, id: "28", businessName: "coucou4"},
+    // {...emptyContact, id: "29", businessName: "coucou5"},
+    // {...emptyContact, id: "30", businessName: "coucou6"},
+    // {...emptyContact, id: "31", businessName: "coucou7"},
+    // {...emptyContact, id: "32", businessName: "coucou8"},
+    // {...emptyContact, id: "33", businessName: "coucou1"},
+    // {...emptyContact, id: "34", businessName: "coucou2"},
+    // {...emptyContact, id: "35", businessName: "coucou3"},
+    // {...emptyContact, id: "36", businessName: "coucou4"},
+    // {...emptyContact, id: "37", businessName: "coucou5"},
+    // {...emptyContact, id: "38", businessName: "coucou6"},
+    // {...emptyContact, id: "39", businessName: "coucou7"},
+    // {...emptyContact, id: "40", businessName: "coucou8"},
+    // {...emptyContact, id: "41", businessName: "coucou1"},
+    // {...emptyContact, id: "42", businessName: "coucou2"},
+    // {...emptyContact, id: "43", businessName: "coucou3"},
+    // {...emptyContact, id: "44", businessName: "coucou4"},
+    // {...emptyContact, id: "45", businessName: "coucou5"},
+    // {...emptyContact, id: "46", businessName: "coucou6"},
+    // {...emptyContact, id: "47", businessName: "coucou7"},
+    // {...emptyContact, id: "48", businessName: "coucou8"},
+    // {...emptyContact, id: "49", businessName: "coucou1"},
+    // {...emptyContact, id: "50", businessName: "coucou2"},
+  ])
   
-  console.log("allContacts : ", allContacts)
+  //console.log("allContacts : ", allContacts)
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['contacts'],
@@ -64,7 +115,7 @@ export default function ContactsTablePage() {
   }, [data]);
 
   const [filteredContacts, setFilteredContacts] = React.useState<Contact[]>([])
-  console.log("filteredContacts : ", filteredContacts)
+  //console.log("filteredContacts : ", filteredContacts)
 
   const [alerts, setAlerts] = React.useState<Alerts>({ nbContactsWithDatePassed: 0, nbContactsWithDateSoon: 0 })
 
@@ -90,23 +141,26 @@ export default function ContactsTablePage() {
   const memoizedGetPriorityTextAndColor = React.useCallback(getPriorityTextAndColor, [])
 
   React.useEffect(() => {
-    console.log("useEffect 1")
     setFilteredContacts(allContacts);
     setAlerts(countContactsByAlertDates(allContacts))
   }, [currentUser, allContacts])
 
   React.useEffect(() => {
-    console.log("useEffect 2")
-
     setAlerts(countContactsByAlertDates(filteredContacts))
   }, [filteredContacts])
 
   React.useEffect(() => {
-    console.log("useEffect 3")
+
+    console.log("searchCriteria : ", contactsSearchCriteria)
 
     if (JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)) {
 
-      const searchIsClient = contactsSearchCriteria.isClient === "yes" ? true : contactsSearchCriteria.isClient === "no" ? false : null
+
+      const searchIsClient = contactsSearchCriteria.isClient === "yes"
+        ? true
+        : contactsSearchCriteria.isClient === "no"
+          ? false
+          : null
       const searchOnCity = contactsSearchCriteria.businessCity.length > 0 ? contactsSearchCriteria.businessCity : ['']
 
       const searchOnCategory = contactsSearchCriteria.businessCategoryId.length > 0 ? contactsSearchCriteria.businessCategoryId : ['']

@@ -1,73 +1,81 @@
-import React from "react";
-
+import * as React from 'react';
 import { AuthErrorCodes, createUserWithEmailAndPassword, onAuthStateChanged, User } from "firebase/auth";
 import { auth, fireStoreDb } from "../utils/firebase";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 
-const UserContext = React.createContext<{ 
-        currentUser: User | null;
-        signUp: (email: string, password: string, fullName: string) => void;
-        error: string;}
-    >({      
-        currentUser: null,
-        signUp: (email: string, password: string, fullName: string) => { }, 
-        error: ""
+const UserContext = React.createContext<{
+    currentUser: User | null;
+    signUp: (email: string, password: string, fullName: string) => void;
+    error: string;
+    isLoading: boolean;
+}
+>({
+    currentUser: null,
+    signUp: (email: string, password: string, fullName: string) => { },
+    error: "",
+    isLoading: true,
 });
 
-export default function UserAuthContextProvider({ children }: { children: React.ReactNode }) { 
-    const [error, setError] = React.useState<string>("");
-    const [currentUser, setCurrentUser] = React.useState<User | null>(null);
+const errorMessages: { [key: string]: string } = {
+    [AuthErrorCodes.EMAIL_EXISTS]: 'Cet email est déjà utilisé par un autre compte.',
+    [AuthErrorCodes.WEAK_PASSWORD]: 'Le mot de passe doit faire au minimum 6 caractères.',
+};
+
+
+export default function UserAuthContextProvider({ children }: { children: React.ReactNode }) {
+    const [errorTimeoutId, setErrorTimeoutId] = React.useState<NodeJS.Timeout | null>(null);
+    const [error, setError] = React.useState<string>("")
+    const [currentUser, setCurrentUser] = React.useState<User | null>(null)
+    const [isLoading, setIsLoading] = React.useState(true)
 
     React.useEffect(() => {
         onAuthStateChanged(auth, (user) => {
-            //console.log(user)
             if (user) {
                 setCurrentUser(user);
             } else {
                 setCurrentUser(null);
             }
+            setIsLoading(false)
         })
     }, [currentUser])
 
 
-    const signUp = async (email: string, password: string, fullName: string) => {       // mettre 1 seul arg pour le user (objet avec les 3 champs)
+    // Au démontage du composant, on supprime le timeout
+    React.useEffect(() => {
+        return () => {
+            if (errorTimeoutId) {
+                clearTimeout(errorTimeoutId);
+            }
+        };
+    }, [errorTimeoutId]);
+
+
+    const signUp = async (email: string, password: string, fullName: string) => {
         setError("");
 
         createUserWithEmailAndPassword(auth, email, password)
-        .then(async (result) => {
-            console.log(result)
-            try {
-                const docRef = await addDoc(collection(fireStoreDb, "users"), {
-                    fullName,
-                    userId: result.user.uid,
-                });
+            .then(async (result) => {
+                try {
+                    const docRef = await addDoc(collection(fireStoreDb, "users"), {
+                        fullName,
+                        userId: result.user.uid,
+                    });
 
-                alert('Nouvel utilisateur créé !')
-                console.log("Document écrit avec ID: ", docRef.id);
-            } catch (e) {
-                console.error("Erreur dans ajout document : ", e);
-            }
-        }).catch((error) => {
-            if (error.code === 'auth/email-already-in-use') {
-                setInterval(() => {
-                    setError('')
-                }, 5000)
-                setError('Cette adresse mail existe déjà !');
-            } else if (error.code === AuthErrorCodes.WEAK_PASSWORD) {
-                setInterval(() => {
-                    setError('')
-                }, 5000)
-                setError('Le mot de passe doit faire au minimum 6 caractères !');
-            } else {
-                setError(error.message);
-            }
-        })
+                    alert('Nouvel utilisateur créé !')
+                    console.log("Document écrit avec ID: ", docRef.id);
+                } catch (e) {
+                    console.error("Erreur dans ajout document : ", e);
+                }
+            }).catch((error) => {
+                setError(errorMessages[error.code] || error.message);
+            })
     }
 
     const value = {
         currentUser,
         signUp,
         error,
+        isLoading,
     }
 
     return (
