@@ -26,10 +26,10 @@ export default function NewContactPage() {
   const getPriorityTextAndColor = useGetPriorityTextAndColor()
 
   const [tabNewContactValue, setTabNewContactValue] = React.useState(0);
-  const [hasContactInfoChanged, setHasContactInfoChanged] = React.useState(false)
-  const [tabValueWithoutSavingInfoChanges, setTabValueWithoutSavingInfoChanges] = React.useState(0);
-  const [openWarningModal, setOpenWarningModal] = React.useState(false);
+  // const [tabValueWithoutSavingInfoChanges, setTabValueWithoutSavingInfoChanges] = React.useState(0);
+  // const [openWarningModal, setOpenWarningModal] = React.useState(false);
 
+  const setAreContactChangesSaved = useContactsContext().setAreContactChangesSaved
 
   // A VOIR !!
   // const router = useRouter();   // Si Warning: Cannot update a component (`HotReload`) while rendering a different component (`NewContactPage`).
@@ -50,16 +50,16 @@ export default function NewContactPage() {
   // }, [hasContactInfoChanged, router.events])
 
 
-  const handleNotSaveContactInfo = () => {
-    setOpenWarningModal(false)
-    //setTabValue(tabValueWithoutSavingInfoChanges)
-    setHasContactInfoChanged(false)
-  }
+  // const handleNotSaveContactInfo = () => {
+  //   setOpenWarningModal(false)
+  //   //setTabValue(tabValueWithoutSavingInfoChanges)
+  //   setAreContactChangesSaved(false)
+  // }
 
   return (
     currentUser
       ? <Box>
-        <Modal
+        {/* <Modal
           open={openWarningModal}
           onClose={() => setOpenWarningModal(false)}
         >
@@ -84,7 +84,7 @@ export default function NewContactPage() {
               <Button variant="contained" color='primary' sx={{ color: "white" }} onClick={() => setOpenWarningModal(false)} >Non</Button>
             </Box>
           </Box>
-        </Modal>
+        </Modal> */}
         <Tabs
           value={tabNewContactValue}
           onChange={(e, newValue) => setTabNewContactValue(newValue)}
@@ -102,7 +102,7 @@ export default function NewContactPage() {
             emptyContact={emptyContact}
             currentUserId={currentUser.uid}
             getPriorityTextAndColor={getPriorityTextAndColor}
-            setHasContactInfoChanged={setHasContactInfoChanged}
+            setAreContactChangesSaved={setAreContactChangesSaved}
             addContact={(e) => addContactOnFirebaseAndReload(currentUser.uid, e)}
           />
         </TabPanel>
@@ -113,7 +113,7 @@ export default function NewContactPage() {
             contact={emptyContact}
             currentUserId={currentUser.uid}
             getPriorityTextAndColor={getPriorityTextAndColor}
-            setHasContactInfoChanged={setHasContactInfoChanged}
+            setAreContactChangesSaved={setAreContactChangesSaved}
             addContact={(e) => addContactOnFirebaseAndReload(currentUser.uid, e)}
           />
         </TabPanel>

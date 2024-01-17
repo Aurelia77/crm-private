@@ -26,7 +26,7 @@ type NewContactSearchForm = {
     addContact: (contact: Contact) => void
     currentUserId: string
     getPriorityTextAndColor: (priority: number | null) => { text: string, color: string, bgColor: string }
-    setHasContactInfoChanged: (status: boolean) => void
+    setAreContactChangesSaved: (status: boolean) => void
 }
 
 export default function NewContactSearchForm({
@@ -34,7 +34,7 @@ export default function NewContactSearchForm({
     addContact,
     currentUserId,
     getPriorityTextAndColor,
-    setHasContactInfoChanged
+    setAreContactChangesSaved
 }: NewContactSearchForm) {
     const token = '613dca81-d71e-3b02-ac1a-b2170d2084c6'
     const nbResultInsee = 50
@@ -239,7 +239,7 @@ export default function NewContactSearchForm({
                             currentUserId={currentUserId}
                             addContact={addContact}
                             getPriorityTextAndColor={getPriorityTextAndColor}
-                            setHasContactInfoChanged={setHasContactInfoChanged}
+                            setAreContactChangesSaved={setAreContactChangesSaved}
                         /> 
                     </Box>
                 }

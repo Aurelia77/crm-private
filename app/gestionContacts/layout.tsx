@@ -166,24 +166,23 @@ export default function ContactsLayout({
     console.log("newPathname : ", newPathname)
 
 
-    const [redirectPathname, setRedirectPathname] = React.useState<boolean>(false)
-
-    const [openWarningModal, setOpenWarningModal] = React.useState<boolean>(false);
+    const [shouldRedirect, setShouldRedirect] = React.useState<boolean>(false)
+    const [isWarningModalOpen, setIsWarningModalOpen] = React.useState<boolean>(false);
 
 
     const handleNotSaveContactInfo = () => {
-        setOpenWarningModal(false)
+        setIsWarningModalOpen(false)
         setAreContactChangesSaved(true)
         //redirect(newPathname) // impossible ici ! Donc je l'ai mis dans un useEffect
-        setRedirectPathname(true)
+        setShouldRedirect(true)
     }
 
     React.useEffect(() => {
-        if (redirectPathname) {
-            setRedirectPathname(false)
+        if (shouldRedirect) {
+            setShouldRedirect(false)
             redirect(newPathname)
         }
-    }, [redirectPathname])
+    }, [shouldRedirect])
 
    
 
@@ -237,7 +236,7 @@ export default function ContactsLayout({
                                         console.log("CLIC")
                                         if (!areContactChangesSaved) {
                                             setNewPathname(title.href)
-                                            setOpenWarningModal(true)
+                                            setIsWarningModalOpen(true)
                                             e.preventDefault();
                                         }
                                     }}
@@ -322,8 +321,8 @@ export default function ContactsLayout({
                     </Box>
 
                     <Modal
-                        open={openWarningModal}
-                        onClose={() => setOpenWarningModal(false)}
+                        open={isWarningModalOpen}
+                        onClose={() => setIsWarningModalOpen(false)}
                     >
                         <Box sx={modalStyle} >
                             <Typography
@@ -343,7 +342,7 @@ export default function ContactsLayout({
                                 >
                                     Oui !
                                 </Button>
-                                <Button variant="contained" color='primary' sx={{ color: "white" }} onClick={() => setOpenWarningModal(false)} >Non</Button>
+                                <Button variant="contained" color='primary' sx={{ color: "white" }} onClick={() => setIsWarningModalOpen(false)} >Non</Button>
                             </Box>
                         </Box>
                     </Modal>
