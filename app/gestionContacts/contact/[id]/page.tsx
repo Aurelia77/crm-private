@@ -55,6 +55,9 @@ import { truncate } from 'fs';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
+import { useNavigate, useLocation, useBlocker } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
+
 import { useAuthUserContext } from '@/app/context/UseAuthContextProvider'
 import { useContactsContext } from '@/app/context/UseContactsContextProvider';
 import { getContactInfoInDatabaseFromId } from '@/app/utils/firebase';
@@ -76,6 +79,7 @@ export default function ContactCardPage() {
     const getPriorityTextAndColor = useGetPriorityTextAndColor();
     const deleteDataOnFirebaseAndReload = useContactsContext().deleteDataOnFirebaseAndReload
     const updateWholeContactInContactsAndDB = useContactsContext().updateWholeContactInContactsAndDB
+    const setAreContactChangesSaved = useContactsContext().setAreContactChangesSaved
 
     const params = useParams()
     const contactId = params.id
@@ -92,15 +96,48 @@ export default function ContactCardPage() {
 
     console.log("contactInfo : ", contact)
 
-    const [hasContactInfoChanged, setHasContactInfoChanged] = React.useState(false)
-    const [openWarningModal, setOpenWarningModal] = React.useState(false);
 
 
-    const handleNotSaveContactInfo = () => {
-        setOpenWarningModal(false)
-        //setTabValue(tabValueWithoutSavingInfoChanges)
-        setHasContactInfoChanged(false)
-    }
+   
+
+    
+    // const [hasUnsavedChanges, setHasUnsavedChanges] = React.useState(false);
+    // const navigate = useNavigate();
+    // const location = useLocation();
+
+    
+
+
+    // React.useEffect(() => {
+    //     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+    //         //if (hasContactInfoChanged) {
+    //             e.preventDefault();
+    //             e.returnValue = 'Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir quitter cette page ?';
+    //         //}
+    //     };
+        
+    //     const handleNavigation = (path: any) => {
+    //         if (
+    //             //hasUnsavedChanges && 
+    //             !window.confirm('Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir quitter cette page ?')) {
+    //             return;
+    //         }
+    //         navigate(path);
+    //     };
+
+    //     //window.addEventListener('beforeunload', handleBeforeUnload);
+    //     window.addEventListener('beforeunload', handleNavigation);
+
+    //     return () => {
+    //         //window.removeEventListener('beforeunload', handleBeforeUnload);
+    //         window.removeEventListener('beforeunload', handleNavigation);
+    //     };
+    // }, []);
+    // // }, [hasContactInfoChanged]);
+
+   
+
+
 
 
 
@@ -116,43 +153,15 @@ export default function ContactCardPage() {
         <Box sx={{
             position: "relative",
         }}>
-            <Modal
-                open={openWarningModal}
-                onClose={() => setOpenWarningModal(false)}
-            >
-                <Box sx={modalStyle} >
-                    <Typography
-                        id="modal-modal-title"
-                        variant="h6"
-                        component="h2"
-                        sx={{ mb: 5 }}
-                    >
-                        Attention, vous avez fait des changements non sauvegardés : êtes vous sûr de vouloir quitter ?
-                    </Typography>
-                    <Box sx={{ display: "flex", justifyContent: "space-between" }} >
-                        <Button
-                            variant="contained"
-                            color='warning'
-                            onClick={handleNotSaveContactInfo}
-                            sx={{ marginRight: "15px" }}
-                        >
-                            Oui !
-                        </Button>
-                        <Button variant="contained" color='primary' sx={{ color: "white" }} onClick={() => setOpenWarningModal(false)} >Non</Button>
-                    </Box>
-                </Box>
-            </Modal>
-
             {contact && <ContactCard
                 contact={contact}
                 currentUserId={currentUser?.uid}
                 getPriorityTextAndColor={getPriorityTextAndColor}
-                setHasContactInfoChanged={setHasContactInfoChanged}
+                //setHasContactInfoChanged={setHasContactInfoChanged}
+                setAreContactChangesSaved={setAreContactChangesSaved}
                 handleDeleteContact={deleteDataOnFirebaseAndReload}
                 updateContact={updateWholeContactInContactsAndDB}
             />}
-
         </Box>
-
     );
 }

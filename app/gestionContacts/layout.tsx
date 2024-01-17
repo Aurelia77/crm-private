@@ -50,6 +50,9 @@ import ReactQueryProvider from '../Components/providers/ReactQueryProvider';
 
 import { useQuery } from '@tanstack/react-query';
 
+import { useNavigate, useLocation } from 'react-router-dom';
+
+
 export default function ContactsLayout({
     children,
 }: {
@@ -73,7 +76,7 @@ export default function ContactsLayout({
         { label: "Liste des contacts", icon: <Diversity3Icon />, href: "/gestionContacts/contactsTable" },
         { label: "Calendrier", icon: <CalendarMonthIcon />, href: "/gestionContacts/calendar" },
         { label: "Nouveau contact", icon: <PersonAddIcon />, href: "/gestionContacts/newContact" },
-        { label: "Vu d'un contact (double cliquer sur un logo dans la liste)", icon: <PersonIcon />, href: "/gestionContacts/" },
+        { label: "Vu d'un contact (double cliquer sur un logo dans la liste des contacts)", icon: <PersonIcon />, href: "/" },
         { label: "Admin", icon: <SettingsIcon />, href: "/gestionContacts/admin" },
         { label: "Aide", icon: <HelpOutlineIcon />, href: "/gestionContacts/help" },
         // { label: "Liste des contacts2 (virtualisée)", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTableVirtualized2" },
@@ -154,6 +157,37 @@ export default function ContactsLayout({
     // });
 
 
+    console.log("pathname : ", pathname)
+
+    const [areContactChangesSaved, setAreContactChangesSaved] = React.useState(true)
+    console.log("areContactChangesSaved : ", areContactChangesSaved)
+
+    const [newPathname, setNewPathname] = React.useState("")
+    console.log("newPathname : ", newPathname)
+
+
+    const [redirectPathname, setRedirectPathname] = React.useState<boolean>(false)
+
+    const [openWarningModal, setOpenWarningModal] = React.useState<boolean>(false);
+
+
+    const handleNotSaveContactInfo = () => {
+        setOpenWarningModal(false)
+        setAreContactChangesSaved(true)
+        //redirect(newPathname) // impossible ici ! Donc je l'ai mis dans un useEffect
+        setRedirectPathname(true)
+    }
+
+    React.useEffect(() => {
+        if (redirectPathname) {
+            setRedirectPathname(false)
+            redirect(newPathname)
+        }
+    }, [redirectPathname])
+
+   
+
+   
 
 
 
@@ -195,13 +229,28 @@ export default function ContactsLayout({
                         >
                             {titles.map((title, index) => (
                                 // passHref est utilisé pour passer l'attribut href à son enfant
-                                <Link key={index} href={title.href} passHref >
+                                <Link 
+                                    key={index} 
+                                    href={title.href}
+                                    passHref
+                                    onClick={(e) => {
+                                        console.log("CLIC")
+                                        if (!areContactChangesSaved) {
+                                            setNewPathname(title.href)
+                                            setOpenWarningModal(true)
+                                            e.preventDefault();
+                                        }
+                                    }}
+                                >
                                     <ListItem sx={{ mt: 3 }} >
                                         <Tooltip title={title.label} placement="right">
                                         <ListItemIcon
                                             sx={{
                                                 minWidth:"23px",
-                                                color: pathname === title.href ? 'primary.main' : '' 
+                                                // Pour savoir sur quel onglet on est (pour la vue d'un contact on compare les chaines de caractères)
+                                                color: (pathname === title.href || (pathname.startsWith("/gestionContacts/contact/") && title.href === '/' ) )
+                                                    ? 'primary.main' 
+                                                    : '' 
                                             }}
                                         >
                                             {title.icon}
@@ -256,12 +305,11 @@ export default function ContactsLayout({
                             {/* <ReactQueryProvider> */}
                             <ContactsContext.Provider
                                 value={{
-                                    //allContacts: allContacts,
-                                    //displayContactCardToUpdate: displayContactCardToUpdate,
                                     updateContactInContactsAndDB: updateContactInContactsAndDB,
                                     deleteDataOnFirebaseAndReload: deleteDataOnFirebaseAndReload,
                                     updateWholeContactInContactsAndDB: updateWholeContactInContactsAndDB,
-
+                                    areContactChangesSaved: areContactChangesSaved,
+                                    setAreContactChangesSaved: setAreContactChangesSaved,
                                 }}
                             >
                                 {children}
@@ -272,6 +320,33 @@ export default function ContactsLayout({
                             </ContactsContextProvider> */}
                         </Box>
                     </Box>
+
+                    <Modal
+                        open={openWarningModal}
+                        onClose={() => setOpenWarningModal(false)}
+                    >
+                        <Box sx={modalStyle} >
+                            <Typography
+                                id="modal-modal-title"
+                                variant="h6"
+                                component="h2"
+                                sx={{ mb: 5 }}
+                            >
+                                Attention, vous avez fait des changements non sauvegardés : êtes vous sûr de vouloir quitter ?
+                            </Typography>
+                            <Box sx={{ display: "flex", justifyContent: "space-between" }} >
+                                <Button
+                                    variant="contained"
+                                    color='warning'
+                                    onClick={handleNotSaveContactInfo}
+                                    sx={{ marginRight: "15px" }}
+                                >
+                                    Oui !
+                                </Button>
+                                <Button variant="contained" color='primary' sx={{ color: "white" }} onClick={() => setOpenWarningModal(false)} >Non</Button>
+                            </Box>
+                        </Box>
+                    </Modal>
                 </Box>
             }
         </Box>

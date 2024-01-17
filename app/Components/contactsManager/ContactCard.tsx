@@ -52,19 +52,20 @@ import Zoom from '@mui/material/Zoom';
 
 import { isDatePassed, isDateSoon } from '../../utils/toolbox'
 import { truncate } from 'fs';
+import { useNavigate, useLocation, useBlocker } from 'react-router-dom';
 
 
 type ContactCardProps = {
     contact: Contact
     currentUserId: any
     getPriorityTextAndColor: (priority: number | null) => { text: string, color: string, bgColor: string }
-    setHasContactInfoChanged: (status: boolean) => void
+    setAreContactChangesSaved: (status: boolean) => void
     handleDeleteContact?: (id: string) => void
     addContact?: (contact: Contact) => void
     updateContact?: (contact: Contact) => void
 }
 
-export default function ContactCard({ contact, currentUserId, getPriorityTextAndColor, setHasContactInfoChanged, handleDeleteContact, addContact, updateContact,
+export default function ContactCard({ contact, currentUserId, getPriorityTextAndColor, setAreContactChangesSaved, handleDeleteContact, addContact, updateContact,
 }: ContactCardProps) {
 
     const [contactToAddOrUpdate, setContactToAddOrUpdate] = React.useState<Contact>(contact)
@@ -84,7 +85,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
     const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[] | null>(null);
 
-    const [openNoContactModal, setOpenNoContactModal] = React.useState(false);
     const [openDeleteContactModal, setOpenDeleteContactModal] = React.useState(false);
     const [openDeleteContactFileModal, setOpenDeleteContactFileModal] = React.useState(false);
     const [openDeleteContactFilesModal, setOpenDeleteContactFilesModal] = React.useState(false);
@@ -123,7 +123,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     React.useEffect(() => {
         console.log("****Comparaison des contacts")
         //JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && console.log("****CHANGE")
-        JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && setHasContactInfoChanged(true)
+        JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && setAreContactChangesSaved(false)
     }, [contactToAddOrUpdate])
    
 
@@ -206,15 +206,44 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     }
 
     const handleUpdateContact = () => {
-        setHasContactInfoChanged(false)
+        setAreContactChangesSaved(true)
         updateContact && updateContact(contactToAddOrUpdate)
         setOpenContactIsUpdatedModal(true)
-    }
+    }   
 
-    React.useEffect(() => {
-        // Si on est sur la VUE d'un contact et qu'on n'a pas cliqué sur un contact => modal qui dit qu'aucun contact est sélectionné 
-        (updateContact && JSON.stringify(contactToAddOrUpdate) === JSON.stringify(emptyContact)) && setOpenNoContactModal(true)
-    }, [contactToAddOrUpdate, updateContact])
+
+    // const location = useLocation();
+    // console.log("location : ", location)
+    // console.log("location.pathname : ", location.pathname)
+
+    // React.useEffect(() => {
+    //     // execute on location change
+    //     console.log('Location changed!', location.pathname);
+    //     alert("!!!!!!!!!")
+    // }, [location]);
+
+    // const [hasUnsavedChanges, setHasUnsavedChanges] = React.useState(false);
+    // const navigate = useNavigate();
+    // const location = useLocation();
+
+    // const handleNavigation = (path: any) => {
+    //     if (
+    //         //hasUnsavedChanges && 
+    //         !window.confirm('Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir quitter cette page ?')) {
+    //         return;
+    //     }
+
+    //     navigate(path);
+    // };
+
+    // React.useEffect(() => {
+    //     // execute on location change
+    //     console.log('Location changed!', location.pathname);
+    //     //if (hasUnsavedChanges) {
+    //         handleNavigation(location.pathname);
+    //         //alert("Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir quitter cette page ?");
+    //     //}
+    // }, [location, ]);
 
 
     return (
@@ -226,19 +255,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                 bgcolor: getPriorityTextAndColor(contactToAddOrUpdate.priority).bgColor,
                 height: "100%", 
             }}     
-        >
-            <Modal
-                open={openNoContactModal}
-                onClose={() => setOpenNoContactModal(false)}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box sx={modalStyle} >
-                    <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
-                        Aucun contact selectionné ! Pour cela, double cliquer sur le logo d'un contact dans la liste (onglet en haut à gauche)
-                    </Typography>
-                </Box>
-            </Modal>
+        >            
             <Box
                 sx={{
                     display: 'flex',
@@ -477,9 +494,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     required
                                     id="outlined-basic"
                                     //label="Nom"
-                                    value={contactToAddOrUpdate.businessName.length > 0
-                                        ? contactToAddOrUpdate.businessName
-                                        : "..." }
+                                    value={contactToAddOrUpdate.businessName}
                                     onChange={handleChangeText("businessName")}
                                     inputProps={{
                                         style: {
