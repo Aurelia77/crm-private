@@ -477,8 +477,9 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     required
                                     id="outlined-basic"
                                     //label="Nom"
-                                    //
-                                    value={contactToAddOrUpdate.businessName}
+                                    value={contactToAddOrUpdate.businessName.length > 0
+                                        ? contactToAddOrUpdate.businessName
+                                        : "..." }
                                     onChange={handleChangeText("businessName")}
                                     inputProps={{
                                         style: {

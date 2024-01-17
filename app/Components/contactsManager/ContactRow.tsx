@@ -603,7 +603,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
             {/* filesSent */}
             <StyledTableCell align="right">
                 <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                    {contact.filesSent.length} fichier(s)
+                    {contact.filesSent.length} fichier(s) associés
                 </Typography>
 
                 {contact.filesSent[0] && <Typography

@@ -142,29 +142,53 @@ export default function ContactsTablePage() {
 
     if (JSON.stringify(contactsSearchCriteria) !== JSON.stringify(emptySearchCriteria)) {
 
-
       const searchIsClient = contactsSearchCriteria.isClient === "yes"
         ? true
         : contactsSearchCriteria.isClient === "no"
           ? false
           : null
-      const searchOnCity = contactsSearchCriteria.businessCity.length > 0 ? contactsSearchCriteria.businessCity : ['']
+      const searchOnCity = contactsSearchCriteria.businessCity.length > 0 
+        ? contactsSearchCriteria.businessCity 
+        : ['']
+      const searchOnCategory = contactsSearchCriteria.businessCategoryId.length > 0 
+        ? contactsSearchCriteria.businessCategoryId 
+        : ['']
 
-      const searchOnCategory = contactsSearchCriteria.businessCategoryId.length > 0 ? contactsSearchCriteria.businessCategoryId : ['']
-      const searchOnType = contactsSearchCriteria.contactType.length > 0 ? contactsSearchCriteria.contactType : ['']
+        console.log("searchOnCategory : ", searchOnCategory)
 
+        allContacts.forEach((contact) => {
+          console.log(contact.businessCategoryId)
+        })
+
+      const searchOnType = contactsSearchCriteria.contactType.length > 0 
+        ? contactsSearchCriteria.contactType 
+        : ['']
       const searchedContacts: Contact[] = allContacts.filter((contact: Contact) => {
-
         return (
           contact.businessName.toLowerCase().includes(contactsSearchCriteria.businessName.toLowerCase())
+          // si searchIsClient est null, on ne filtre pas sur ce critère
           && (searchIsClient === null || contact.isClient === searchIsClient)
-          && searchOnCity.some((city) => contact.businessCity.toLowerCase().includes(city.toLowerCase()))
-          && searchOnCategory.some((cat) => contact.businessCategoryId.includes(cat))
-          && searchOnType.some((type) => {
-            return contact.contactType.includes(type)
-          })
+          
+          // Si aucune recherche sur la VILLE on ne fait rien   
+          && (JSON.stringify(searchOnCity) === JSON.stringify(['']) ||  searchOnCity.some((city) => contact.businessCity.toLowerCase() === city.toLowerCase()))
+                 
+          // Si aucune recherche sur la CATEGORIE on ne fait rien   
+          && (JSON.stringify(searchOnCategory) === JSON.stringify(['']) || searchOnCategory.some((cat) => contact.businessCategoryId === cat))
+          // && searchOnCategory.some((cat) => contact.businessCategoryId.includes(cat))        
+          
+       
+          // Si aucune recherche sur le TYPE on ne fait rien
+           && (JSON.stringify(searchOnType) === JSON.stringify(['']) || searchOnType.some((type) => {
+            console.log("type : ", type)
+            console.log("contact.contactType : ", contact.contactType)
+            console.log("contact.contactType.includes(type) : ", contact.contactType.includes(type))  
+            console.log(contact.contactType === type)
+            //return contact.contactType.includes(type)
+            return contact.contactType === type
+          }))
         )
       })
+
       setFilteredContacts(searchedContacts)
     } else {
       setFilteredContacts(allContacts)
@@ -200,7 +224,7 @@ export default function ContactsTablePage() {
           <Box sx={{ display: "flex", alignItems: "center", margin: "13px 0 7px 15px", }}
           >{allContacts.length > 0
             ? <Typography variant="h5">
-              {!isSearchCriteriaEmpty && <Tooltip title="Selon votre recherche">
+              {!isSearchCriteriaEmpty && <Tooltip title="Dans les résultats de votre recherche">
                 {/* On enveloppe le bouton (Fab) dans un <span> pour que le Tooltip fonctionne (Fab ne fonctionne pas sur un bouton désactivé) */}
                 <span>
                   <Fab disabled size="small" color="primary" sx={{

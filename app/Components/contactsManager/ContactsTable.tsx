@@ -156,7 +156,7 @@ type ContactsTableProps = {
 }
 const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDeleteContact, getPriorityTextAndColor }: ContactsTableProps) => {
 
-    //console.log("filteredContacts : ", contacts)
+    console.log("filteredContacts : ", contacts)
     
     // A garder si on veut utiliser un contact sélectionné
     //const [selectedContactId, setSelectedContactId] = React.useState("");

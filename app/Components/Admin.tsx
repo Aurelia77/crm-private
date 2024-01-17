@@ -167,7 +167,14 @@ export default function Admin({ currentUserId }: AdminType) {
               }}
               subheader={<li />}
             >
-              {filesList
+              {filesList.length === 0
+                ? <ListItemText
+                  sx={{
+                    color: "grey",
+                    pl: 1,
+                  }}
+                >Aucun fichier pour l'instant</ListItemText>
+                : filesList
                 .sort((a, b) => a.fileName.localeCompare(b.fileName))
                 .map((file, index) => (
                   <ListItemText
@@ -280,7 +287,14 @@ export default function Admin({ currentUserId }: AdminType) {
               }}
               subheader={<li />}
             >
-              {categoriesList
+              {categoriesList.length === 0
+                ? <ListItemText
+                  sx={{
+                    color: "grey",
+                    pl: 1,
+                  }}
+                >Aucune catégorie pour l'instant</ListItemText>
+                : categoriesList
                 .sort((a, b) => a.label.localeCompare(b.label))
                 .map((cat, index) => (
                   <ListItemText

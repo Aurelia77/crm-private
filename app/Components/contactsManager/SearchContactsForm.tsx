@@ -45,9 +45,10 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
     const muiTheme = useTheme();
 
     const allDifferentsBusinessCategoryValues = getUniqueSortedValues(contacts, 'businessCategoryId')
-    const allDifferentsBusinessCitiesValues = getUniqueSortedValues(contacts, 'businessCity')
+    const allDifferentsBusinessCitiesValues = getUniqueSortedValues(contacts, 'businessCity', false)
     const allDifferentsContactTypesValues = getUniqueSortedValues(contacts, 'contactType')
   
+    
 
     React.useEffect(() => {
         getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
@@ -180,9 +181,9 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             <MenuItem key="0" value="0">
                                 {contacts.length === 0
                                     ? <ListItemText primary="Aucun contact à chercher" />
-                                    : <>
-                                        {/* <Checkbox checked={search.businessCategoryId.includes("0")} />
-                                        <ListItemText primary="NON DEFINIE" /> */}
+                                    : contacts.some(contact => contact.businessCategoryId === "0") && <>
+                                        <Checkbox checked={search.businessCategoryId.includes("0")} />
+                                        <ListItemText primary="NON DEFINIE" />
                                     </>
                                 }
                             </MenuItem>

@@ -168,9 +168,10 @@ const updatedContactsInLocalListWithWholeContact = (contacts: Contact[], contact
     return tempUpdatedContacts
 }
 
-const getUniqueSortedValues = (contacts: Contact[], key: keyof Contact) => {
-
-    const allValues = contacts.map(contact => contact[key])
+const getUniqueSortedValues = (contacts: Contact[], key: keyof Contact, caseSensitive: boolean = true) => {
+    const allValues = caseSensitive
+        ? contacts.map(contact => contact[key])
+        : contacts.map(contact => contact[key].toUpperCase())
     // On élimine les doublons
     const uniqueValues = allValues.filter((value, index, self) => self.indexOf(value) === index);
     // On les classe par ordre alphabétique
@@ -181,6 +182,7 @@ const getUniqueSortedValues = (contacts: Contact[], key: keyof Contact) => {
     })
     return uniqueValues
 }
+
 
 const isDatePassed = (timeStampObj: Timestamp) => {
     const nowTimestamp = new Date().getTime()

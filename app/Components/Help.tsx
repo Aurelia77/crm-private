@@ -16,7 +16,7 @@ export default function Help() {
             <Typography variant='h3' component='h2' color='secondary' sx={{ textShadow: "1px 1px 2px blue", marginBottom: "25px" }} >Aide</Typography>
             <List sx={{ marginTop: "20px" }}>
                 <ListItem>
-                    <ListItemText primary="Dans cette aplication, vous pouvez créer des contacts :" />
+                    <ListItemText primary="Dans cette aplication, vous pouvez créer et gérer des contacts :" />
                 </ListItem>
                 <ListItem>
                     <ListItemText primary={
@@ -28,16 +28,14 @@ export default function Help() {
                 <ListItem>
                     <ListItemText primary={
                         <Typography>
-                            Dans l'onglet LISTE DES CONTACTS <Diversity3Icon color="primary" /> vous pouvez voir tous les contacts que vous avez créés et les modifier directement dans le tableau (sauf le logo et les fichiers) ou lors de la vue d'un contact, en double cliquant sur son logo dans le tableau.
-                            <br />
-                            Lors d'un changement de texte (nom, téléphone), le champ se colore. Il s'enregistre quand vous cliquez ailleurs (même si vous changez d'onglet), mais pas lors de la fermeture de l'application. On voit qu'il est enregistré lorsqu'il n'est plus coloré.
+                            Dans l'onglet LISTE DES CONTACTS <Diversity3Icon color="primary" /> vous pouvez voir tous les contacts que vous avez créés et les modifier directement dans le tableau (sauf le logo et les fichiers) ou lors de la vue d'un contact, qui s'ouvre en cliquant sur son logo dans le tableau.
                         </Typography>
                     } />
                 </ListItem>
                 <ListItem>
                     <ListItemText primary={
                         <>
-                            Dans cette onglet vous pouvez aussi classer les contacts par titre de colonne (nom, date...) en cliquant dessus, et faire des recherches selon si les contacts sont des clients / prospects, leur catégorie, ville et type (dans la recherche les propositions seront celles que contiennent vos contacts, par exemple si vous n'avez que des contacts de Paris et Marseille, dans ville(s) vous n'aurez que ces deux propositions).
+                            Dans cette onglet vous pouvez aussi classer les contacts par titre de colonne (nom, date...) en cliquant dessus, et faire des recherches selon si les contacts sont des clients / prospects, leur catégorie, ville et type (dans la recherche, les propositions seront celles que contiennent vos contacts, par exemple si vous n'avez que des contacts de Paris et Marseille, dans ville(s) vous n'aurez que ces deux propositions).
                         </>
                     } />
                 </ListItem>
@@ -52,14 +50,14 @@ export default function Help() {
                 <ListItem>
                     <ListItemText primary={
                         <>
-                            Lors du double clic sur le logo d'un contact dans le tableau, la VUE DU CONTACT s'ouvre <PersonIcon color="primary" /> et vous pouvez modifier toutes les informations du contact, comme ajouter un logo ou associer des fichiers à ce contact (fichiers qui existent déjà ou nouveaux fichiers, qui seront ensuite disponibles pour les autres contacts).
+                            Lors du clic sur le logo d'un contact dans le tableau, la VUE DU CONTACT s'ouvre <PersonIcon color="primary" /> et vous pouvez modifier toutes les informations du contact, par exemple ajouter / modifier le logo ou associer des fichiers à ce contact (fichiers qui existent déjà ou nouveaux fichiers, qui seront ensuite disponibles aussi pour les autres contacts).
                         </>
                     } />
                 </ListItem>
                 <ListItem>
                     <ListItemText primary={
                         <>
-                            Grâce au CALENDRIER <CalendarMonthIcon color="primary" /> vous pouvez voir les dates de relances de vos contacts, les modifier (glisser-déposer) et voir le contact (clic).
+                            Grâce au CALENDRIER <CalendarMonthIcon color="primary" /> vous pouvez voir les dates de relances de vos contacts, les modifier (glisser-déposer) et voir le contact (au clic).
                         </>
                     } />
                 </ListItem>
