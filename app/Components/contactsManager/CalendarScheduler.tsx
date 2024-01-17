@@ -20,21 +20,30 @@ import { useNavigate } from 'react-router-dom';
 
 type CalendarProps = {
   contacts: Contact[];
-  //displayContactCardToUpdate: (contact: Contact) => void;
+  setContacts: React.Dispatch<React.SetStateAction<Contact[]>>;
   updateContactInContactsAndDB: (id: string, keyAndValue: { key: string, value: Timestamp }) => void;
+  redirectToContact: (contactId: string) => void;
 };
 
 
-export default function CalendarScheduler({ contacts, 
-  //displayContactCardToUpdate, 
-  updateContactInContactsAndDB }: CalendarProps) {
+export default function CalendarScheduler({ contacts, setContacts, redirectToContact, updateContactInContactsAndDB }: CalendarProps) {
 
   const calendarRef = React.useRef(null);
 
   const muiTheme = useTheme(); 
+  const [shouldRedirect, setShouldRedirect] = React.useState<boolean>(false)
+
+  console.log("shouldRedirect : ", shouldRedirect)
+
 
   //const navigate = useNavigate();
 
+  React.useEffect(() => {
+    if (shouldRedirect) {
+      setShouldRedirect(false)
+      redirect('/')
+    }
+  }, [shouldRedirect])
 
 
   const hightPriorityColor = muiTheme.palette.primary.main
@@ -70,6 +79,9 @@ export default function CalendarScheduler({ contacts,
     })
   })
 
+
+   
+
   React.useEffect(() => {
     if (!calendarRef.current) return;
 
@@ -104,21 +116,22 @@ export default function CalendarScheduler({ contacts,
       events: events.map(event => ({
         ...event,
         color: getPriorityColor(event.contact.priority) ?? "black",
-        //onClick: () => { navigate(`/gestionContacts/contact/${event.contact.id}`) }
-        //Cannot update a component (`HotReload`) while rendering a different component (`CalendarScheduler`).
-        //onClick: () => { redirect(`/gestionContacts/contact/${event.contact.id}`) }
-      })),
-
-    
+        //onClick: () => redirectToContact(event.contact.id)  // marche pas
+      })),    
 
       eventClick: function (info) {
-        //displayContactCardToUpdate(info.event.extendedProps.contact)
+        console.log("info", info)
+        console.log("info.event", info.event)
+        console.log("info.event.extendedProps", info.event.extendedProps)
+        console.log("info.event.extendedProps.contact", info.event.extendedProps.contact)
+        console.log("info.event.extendedProps.contact.id", info.event.extendedProps.contact.id)
+        redirectToContact(info.event.extendedProps.contact.id)
         //redirect(`/gestionContacts/contact/${info.event.extendedProps.contact.id}`)
       },
 
       eventDrop: function (dropInfo) {
         const { event } = dropInfo;
-        console.log(event)
+        //console.log(event)
         const start = event.start;
         const end = event.end;
 
@@ -130,17 +143,22 @@ export default function CalendarScheduler({ contacts,
 
         start && updateContactInContactsAndDB(contact.id, { key: "dateOfNextCall", value: Timestamp.fromDate(start) })
 
-        // J'essaie de faire que quand on modifie un event, ça reste sur la VUE et la DATE !!! Mais ça revient comme au début !
-        // Sauvegardez la date et la vue actuelles
-        const currentView = calendar.view;
-        console.log("currentView.type : " + currentView.type)
-        const currentDate = calendar.getDate();
-        console.log("currentDate : " + currentDate)
+        start && setContacts(contacts.map(c => c.id === contact.id ? { ...c, dateOfNextCall: Timestamp.fromDate(start) } : c));
 
-        // Restaurez la date et la vue actuelles après un délai
-        setTimeout(() => {
-          calendar.changeView(currentView.type, currentDate);
-        }, 0);
+        //setContacts([...contacts, {...contact, dateOfNextCall: Timestamp.fromDate(start)}])
+
+
+        // // J'essaie de faire que quand on modifie un event, ça reste sur la VUE et la DATE !!! Mais ça revient comme au début !
+        // // Sauvegardez la date et la vue actuelles
+        // const currentView = calendar.view;
+        // console.log("currentView.type : " + currentView.type)
+        // const currentDate = calendar.getDate();
+        // console.log("currentDate : " + currentDate)
+
+        // // Restaurez la date et la vue actuelles après un délai
+        // setTimeout(() => {
+        //   calendar.changeView(currentView.type, currentDate);
+        // }, 0);
       },
 
  

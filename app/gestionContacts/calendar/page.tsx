@@ -6,19 +6,19 @@ import { useContactsContext } from '@/app/context/UseContactsContextProvider';
 import { useQuery } from '@tanstack/react-query';
 import { getUserContactsFromDatabase } from '../../utils/firebase'
 import { useAuthUserContext } from '../../context/UseAuthContextProvider'
+import { redirect, useRouter } from 'next/navigation';
+import { Timestamp } from 'firebase/firestore';
 
 
 
 export default function CalendarPage() {
     const { currentUser } = useAuthUserContext()
-
-    const contactsContextValue = useContactsContext()
-
-    console.log("contactsContextValue : ", contactsContextValue)
-
     const [allContacts, setAllContacts] = React.useState<Contact[]>([])
 
     console.log("allContacts : ", allContacts)
+
+
+    const updateContactInContactsAndDB = useContactsContext().updateContactInContactsAndDB
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ['contacts'],
@@ -31,11 +31,19 @@ export default function CalendarPage() {
         }
     }, [data]);
 
+    const router = useRouter();
+
+    const redirectToContact = (contactId: string) => {
+        router.push(`/gestionContacts/contact/${contactId}`)
+        //redirect(`/gestionContacts/contact/${contactId}`) // marche pas
+    }
+
     return (
         <CalendarScheduler
             contacts={allContacts}
-            //displayContactCardToUpdate={contactsContextValue.displayContactCardToUpdate}
-            updateContactInContactsAndDB={contactsContextValue.updateContactInContactsAndDB}
+            setContacts={setAllContacts}
+            updateContactInContactsAndDB={updateContactInContactsAndDB}
+            redirectToContact={redirectToContact}
         />
     )
 }

@@ -92,6 +92,8 @@ export default function ContactsLayout({
     // }
 
     const updateContactInContactsAndDB = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
+        console.log("keyAndValue : ", keyAndValue)
+        
         setAllContacts(updatedContactsInLocalList(allContacts, id, keyAndValue))
         //localStorage.setItem('allContacts', JSON.stringify(updatedContactsInLocalList(allContacts, id, keyAndValue)))
         //setFilteredContacts(updatedContactsInLocalList(filteredContacts, id, keyAndValue))
