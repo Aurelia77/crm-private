@@ -122,7 +122,7 @@ const getUserContactsFromDatabase = async (currentUserId: any) => {
 }
 
 const getContactInfoInDatabaseFromId = async (contactId: string) => {
-  let contact: Contact = emptyContact
+  let contact: Contact | null = null//= emptyContact
 
   const q = query(collection(fireStoreDb, "contacts"), where("id", "==", contactId));
 
@@ -130,6 +130,8 @@ const getContactInfoInDatabaseFromId = async (contactId: string) => {
   querySnapshot.forEach((doc) => {
     contact = { ...doc.data() as Contact };      
   });
+
+  console.log("contact", contact)
 
   return contact
 }

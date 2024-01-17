@@ -81,6 +81,9 @@ export default function ContactCardPage() {
     const updateWholeContactInContactsAndDB = useContactsContext().updateWholeContactInContactsAndDB
     const setAreContactChangesSaved = useContactsContext().setAreContactChangesSaved
 
+    const [isModalContactNotExistOpen, setIsModalContactNotExistOpen] = React.useState(true);
+
+
     const params = useParams()
     const contactId = params.id
 
@@ -153,15 +156,22 @@ export default function ContactCardPage() {
         <Box sx={{
             position: "relative",
         }}>
-            {contact && <ContactCard
+            {contact 
+                ? <ContactCard
                 contact={contact}
                 currentUserId={currentUser?.uid}
                 getPriorityTextAndColor={getPriorityTextAndColor}
                 //setHasContactInfoChanged={setHasContactInfoChanged}
-                setAreContactChangesSaved={setAreContactChangesSaved}
-                handleDeleteContact={deleteDataOnFirebaseAndReload}
-                updateContact={updateWholeContactInContactsAndDB}
-            />}
+                    setAreContactChangesSaved={setAreContactChangesSaved}
+                    handleDeleteContact={deleteDataOnFirebaseAndReload}
+                    updateContact={updateWholeContactInContactsAndDB}
+                />
+                : <Modal open={isModalContactNotExistOpen} onClose={() => setIsModalContactNotExistOpen(false) }>
+                    <Box sx={modalStyle}>
+                        <Typography color="error" >Ce contact n'existe pas.</Typography>
+                    </Box>
+                </Modal>
+            }
         </Box>
     );
 }
