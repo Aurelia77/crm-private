@@ -20,10 +20,9 @@ import SearchContactsForm from '../Components/contactsManager/SearchContactsForm
 import Admin from './../Components/Admin';
 import Help from './../Components/Help';
 import SearchIcon from '@mui/icons-material/Search';
-import { modalStyle } from './../utils/StyledComponents'
 
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import { TABS_WIDTH, emptyContact } from './../utils/toolbox'
+import { TABS_WIDTH, modalStyle } from './../utils/toolbox'
 import { countContactsByAlertDates, updatedContactsInLocalList, updatedContactsInLocalListWithWholeContact } from './../utils/toolbox';
 import { Timestamp } from 'firebase/firestore';
 
@@ -33,7 +32,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CalendarScheduler from '../Components/contactsManager/CalendarScheduler';
-import { TabPanel } from './../utils/StyledComponents';
+import { TabPanel } from '../utils/StyledComponentsAndUtilities';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useTheme } from '@mui/material/styles';
 
@@ -93,7 +92,7 @@ export default function ContactsLayout({
 
     const updateContactInContactsAndDB = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
         console.log("keyAndValue : ", keyAndValue)
-        
+
         setAllContacts(updatedContactsInLocalList(allContacts, id, keyAndValue))
         //localStorage.setItem('allContacts', JSON.stringify(updatedContactsInLocalList(allContacts, id, keyAndValue)))
         //setFilteredContacts(updatedContactsInLocalList(filteredContacts, id, keyAndValue))
@@ -159,15 +158,9 @@ export default function ContactsLayout({
     // });
 
 
-    console.log("pathname : ", pathname)
 
     const [areContactChangesSaved, setAreContactChangesSaved] = React.useState(true)
-    console.log("areContactChangesSaved : ", areContactChangesSaved)
-
     const [newPathname, setNewPathname] = React.useState("")
-    console.log("newPathname : ", newPathname)
-
-
     const [shouldRedirect, setShouldRedirect] = React.useState<boolean>(false)
     const [isWarningModalOpen, setIsWarningModalOpen] = React.useState<boolean>(false);
 

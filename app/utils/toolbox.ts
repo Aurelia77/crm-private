@@ -267,7 +267,17 @@ const useGetPriorityTextAndColor = () => {
     return getPriorityTextAndColor
 }
 
-
+const modalStyle = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',     // ???
+    width: 400,
+    bgcolor: 'white',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
 
 export { 
     emptyContact,
@@ -286,5 +296,6 @@ export {
     stringAvatar,
     stringToColor,
     TABS_WIDTH,
-    useGetPriorityTextAndColor
+    useGetPriorityTextAndColor,
+    modalStyle
  }

@@ -29,13 +29,12 @@ import LinearProgress from '@mui/material/LinearProgress';
 import { Input } from '@mui/material';
 import { handleOpenFile } from '../../utils/firebase'
 import { Tab, Tabs } from '@mui/material';
-import { TabPanel } from '../../utils/StyledComponents';
+import { TabPanel } from '../../utils/StyledComponentsAndUtilities';
 import { getFilesFromDatabase } from '../../utils/firebase'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { modalStyle } from '../../utils/StyledComponents'
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import MailIcon from '@mui/icons-material/Mail';
@@ -44,13 +43,13 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
 import LanguageIcon from '@mui/icons-material/Language';
 import PsychologyAlt from '@mui/icons-material/PsychologyAlt';
-import { StyledRating, StyledRatingStars, IconContainer, customIcons } from '../../utils/StyledComponents';
+import { StyledRating, StyledRatingStars, IconContainer, customIcons } from '../../utils/StyledComponentsAndUtilities';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CallRoundedIcon from '@mui/icons-material/CallRounded';
 
 import Zoom from '@mui/material/Zoom';
 
-import { isDatePassed, isDateSoon } from '../../utils/toolbox'
+import { isDatePassed, isDateSoon, modalStyle } from '../../utils/toolbox'
 import { truncate } from 'fs';
 import { useNavigate, useLocation, useBlocker } from 'react-router-dom';
 

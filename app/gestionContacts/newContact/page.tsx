@@ -10,13 +10,13 @@ import NewContactSearchForm from '../../Components/contactsManager/NewContactSea
 import ContactCard from '../../Components/contactsManager/ContactCard'
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { TabPanel } from '../../utils/StyledComponents'
+import { TabPanel } from '../../utils/StyledComponentsAndUtilities'
 import { useContactsContext } from '@/app/context/UseContactsContextProvider';
 import { redirect } from 'next/navigation';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { modalStyle } from '../../utils/StyledComponents'
+import { modalStyle } from '../../utils/StyledComponentsAndUtilities'
 import { useRouter } from 'next/router';
 
 

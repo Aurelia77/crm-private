@@ -33,7 +33,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { contactTypes } from '../../utils/toolbox'
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 
-import { StyledTableRow, StyledTableCell } from '../../utils/StyledComponents';
+import { StyledTableRow, StyledTableCell } from '../../utils/StyledComponentsAndUtilities';
 import { Timestamp } from 'firebase/firestore';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Tooltip from '@mui/material/Tooltip';
@@ -41,9 +41,10 @@ import Tooltip from '@mui/material/Tooltip';
 import { getCategoriesFromDatabase } from '../../utils/firebase'
 import { FormControl } from '@mui/material';
 import { handleOpenFile } from '../../utils/firebase'
-import { modalStyle, StyledRating, StyledRatingStars, customIcons, IconContainer } from '../../utils/StyledComponents'
+import { StyledRating, StyledRatingStars, customIcons, IconContainer } from '../../utils/StyledComponentsAndUtilities'
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
-import { isDatePassed, isDateSoon, stringAvatar, stringToColor } from '../../utils/toolbox'
+import { isDatePassed, isDateSoon, stringAvatar, stringToColor, modalStyle } from '../../utils/toolbox'
+import { useRightMailIcon, useIconUtilities, useHandleClickHasBeenCalledAndHasBeenSentEmailOrMeetUp } from '@/app/utils/StyledComponentsAndUtilities';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 //import {Link} from 'react-router-dom';
@@ -67,6 +68,13 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
     const muiTheme = useTheme();
     const router = useRouter();
 
+    const RightMailIcon = useRightMailIcon();
+
+    
+    const { getPhoneIconColor, getEmailIconColor, getEmailIconText, getPhoneIconText } = useIconUtilities(); 
+    const { handleClickHasBeenCalled, handleClickhasBeenSentEmailOrMeetUp } = useHandleClickHasBeenCalledAndHasBeenSentEmailOrMeetUp(contact, handleUpdateContact);
+
+
 
     React.useEffect(() => {
         getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
@@ -79,84 +87,11 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
     }, [currentUserId]);
 
 
-    // GESTION DES ICONES MAIL ET TELEPHONE
-    // hasBeenCalled => 0="no" | 1="yes but no answer" | 2="yes and answered",
-    // hasBeenSentEmailOrMeetUp =>  0="nothing" | 1="email sent" | 2="email sent and received" | 3="met up",
+ 
 
-    // Renvoie la bonne icone selon l'état de hasBeenCalled (non envoyé, envoyé, lu...)
-    const RightMailIcon = ({ hasBeenSentEmailOrMeetUp }: { hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3 }) => {
-        switch (hasBeenSentEmailOrMeetUp) {
-            case 1: return <MailIcon sx={{ color: muiTheme.palette.ochre.main }} />
-            case 2: return <MarkEmailReadIcon color='success' />
-            case 3: return <HandshakeTwoToneIcon color="success" />
-            default: return <MailOutlineIcon sx={{
-                color: "black"
-            }} />
-        }
-    }
-    const getPhoneIconColor = (hasBeenCalled: 0 | 1 | 2) => {
-        switch (hasBeenCalled) {
-            case 1:
-                return muiTheme.palette.success.main;
-            case 2:
-                return muiTheme.palette.ochre.main;
-            default:
-                return "black"
-        }
-    };
-    const getEmailIconColor = (hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3) => {
-        switch (hasBeenSentEmailOrMeetUp) {
-            case 2:
-            case 3:
-                return muiTheme.palette.success.main;
-            case 1:
-                return muiTheme.palette.ochre.main;
-            default:
-                return "black"
-        }
-    };
-    const getEmailIconText = (hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3) => {
-        switch (hasBeenSentEmailOrMeetUp) {
-            case 1:
-                return "Mail envoyé"
-            case 2:
-                return "Mail reçu"
-            case 3:
-                return "Rencontre physique"
-            default:
-                return "Mail non envoyé"
-        }
-    };
-    const getPhoneIconText = (hasBeenCalled: 0 | 1 | 2) => {
-        switch (hasBeenCalled) {
-            case 1:
-                return "J'ai parlé à quelqu'un"
-            case 2:
-                return "J'ai appélé mais pas de réponse"
-            default:
-                return "Pas appelé"
-        }
-    };
-    const handleClickHasBeenCalled = () => {
-        handleUpdateContact(contact.id, {
-            key: "hasBeenCalled", value: contact.hasBeenCalled === 0
-                ? 1
-                : contact.hasBeenCalled === 1
-                    ? 2
-                    : 0
-        })
-    }
-    const handleClickhasBeenSentEmailOrMeetUp = () => {
-        handleUpdateContact(contact.id, {
-            key: "hasBeenSentEmailOrMeetUp", value: contact.hasBeenSentEmailOrMeetUp === 0
-                ? 1
-                : contact.hasBeenSentEmailOrMeetUp === 1
-                    ? 2
-                    : contact.hasBeenSentEmailOrMeetUp === 2
-                        ? 3
-                        : 0
-        })
-    }
+
+
+
 
     const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>, attribut: keyof Contact) => {
         handleUpdateContact(contact.id, { key: attribut, value: event.target.value })

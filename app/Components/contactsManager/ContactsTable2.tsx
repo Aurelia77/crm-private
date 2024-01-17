@@ -24,7 +24,7 @@ import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import GradeIcon from '@mui/icons-material/Grade';
-import { StyledTableCell } from '../../utils/StyledComponents';
+import { StyledTableCell } from '../../utils/StyledComponentsAndUtilities';
 import { Box, Table, TableBody, } from '@mui/material';
 import { Timestamp } from 'firebase/firestore';
 import ContactRow from './ContactRow';

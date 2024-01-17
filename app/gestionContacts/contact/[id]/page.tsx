@@ -15,7 +15,7 @@ import { grey } from '@mui/material/colors';
 import Image from 'next/image'
 import { TextField, Stack, Button, FormControl, InputLabel, MenuItem, Autocomplete, Chip, ListItem, List, OutlinedInput, Checkbox, ListItemText, FormControlLabel, Tooltip, Modal, Rating, Link, InputAdornment, Alert } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { contactTypes, emptyContact, useGetPriorityTextAndColor } from '@/app/utils/toolbox'
+import { contactTypes, emptyContact, useGetPriorityTextAndColor, modalStyle } from '@/app/utils/toolbox'
 import dayjs, { Dayjs } from 'dayjs';       // npm install dayjs
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -29,13 +29,12 @@ import LinearProgress from '@mui/material/LinearProgress';
 import { Input } from '@mui/material';
 import { handleOpenFile } from '@/app/utils/firebase'
 import { Tab, Tabs } from '@mui/material';
-import { TabPanel } from '@/app/utils/StyledComponents';
+import { TabPanel } from '@/app/utils/StyledComponentsAndUtilities';
 import { getFilesFromDatabase } from '@/app/utils/firebase'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { modalStyle } from '@/app/utils/StyledComponents'
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import MailIcon from '@mui/icons-material/Mail';
@@ -44,7 +43,7 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
 import LanguageIcon from '@mui/icons-material/Language';
 import PsychologyAlt from '@mui/icons-material/PsychologyAlt';
-import { StyledRating, StyledRatingStars, IconContainer, customIcons } from '@/app/utils/StyledComponents';
+import { StyledRating, StyledRatingStars, IconContainer, customIcons } from '@/app/utils/StyledComponentsAndUtilities';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CallRoundedIcon from '@mui/icons-material/CallRounded';
 

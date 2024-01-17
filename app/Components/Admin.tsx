@@ -10,7 +10,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import List from '@mui/material/List';
 import { useTheme } from '@mui/material/styles';
 import { uid } from 'uid';
-import { modalStyle } from '../utils/StyledComponents'
+import { modalStyle } from '../utils/StyledComponentsAndUtilities'
 
 type AdminType = {
   currentUserId: any

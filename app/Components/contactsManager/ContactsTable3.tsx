@@ -26,7 +26,7 @@ import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import GradeIcon from '@mui/icons-material/Grade';
-import { StyledTableCell } from '../../utils/StyledComponents';
+import { StyledTableCell } from '../../utils/StyledComponentsAndUtilities';
 import { Box, } from '@mui/material';
 import { Timestamp } from 'firebase/firestore';
 import {getUserContactsFromDatabase} from '../../utils/firebase'

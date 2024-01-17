@@ -13,7 +13,7 @@ import Switch from '@mui/material/Switch';
 import Avatar from '@mui/material/Avatar';
 import { getCategoriesFromDatabase } from '../../utils/firebase'
 import { isDatePassed, isDateSoon, stringAvatar, stringToColor } from '../../utils/toolbox'
-import { StyledTableCell } from '../../utils/StyledComponents';
+import { StyledTableCell } from '../../utils/StyledComponentsAndUtilities';
 import { Paper, Box, FormControl, MenuItem, Select, TextField, Tooltip, Typography } from '@mui/material';
 import { Timestamp } from 'firebase/firestore';
 import { useTheme } from '@mui/material/styles';
