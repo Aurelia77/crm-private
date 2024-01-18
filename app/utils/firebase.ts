@@ -11,7 +11,7 @@ import laurianeData from '../utils/contactsLaurianeTOUS'
 import { contactCategories, emptyContact } from '../utils/toolbox'
 import contactsLaurianeNameAndCatLabel from '../utils/contactsLaurianeNomEtCat'
 
-
+console.log("url", window.location.href)
 
 const firebaseConfig = {
   apiKey: "AIzaSyB6NMs-i0R146R2qEVCTm9NgNSWtbZOEaI",

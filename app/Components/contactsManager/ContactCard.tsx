@@ -146,7 +146,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         console.log("****Comparaison des contacts")
         //JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && console.log("****CHANGE")
         JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && setAreContactChangesSaved(false)
-    }, [contactToAddOrUpdate])
+    }, [contactToAddOrUpdate, contact, setAreContactChangesSaved])
    
 
     const handleChangeText = (attribut: keyof Contact) => (event: React.ChangeEvent<HTMLInputElement>) => {

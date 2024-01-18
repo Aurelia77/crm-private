@@ -63,6 +63,8 @@ type ContactRowProps = {
 
 const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, currentUserId, getPriorityTextAndColor }: ContactRowProps) => {
 
+    const [localContactValue, setLocalContactValue] = React.useState<Contact>(contact);
+
     const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[] | null>(null);
 
     const muiTheme = useTheme();
@@ -83,12 +85,6 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
             setCategoriesList(newCategoriesList);
         })
     }, [currentUserId]);
-
-
- 
-
-
-
 
 
     const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>, attribut: keyof Contact) => {
@@ -295,7 +291,16 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
             {/* businessName */}
             <StyledTableCell component="td" scope="row" >
                 <TextField 
+                    //value={localContactValue.businessName}
                     value={contact.businessName}
+                    //onChange = {(event: React.ChangeEvent<HTMLInputElement>) => { setLocalContactValue({...localContactValue, businessName: event.target.value})}}
+                    //onBlur = {(e: React.FocusEvent<HTMLInputElement>) => {
+                        // Mettez à jour l'état du composant parent ici
+                    //     console.log("ON BLUR !!")
+                    //     console.log(e)
+                    //     console.log(e.target.value)
+                    //     handleChangeText(e, 'businessName');
+                    // }}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessName')}
                     InputProps={{
                         startAdornment: contact.isClient ? <HandshakeOutlinedIcon color='success' fontSize='large' /> : <PsychologyAltIcon

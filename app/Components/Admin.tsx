@@ -161,24 +161,17 @@ export default function Admin({ currentUserId }: AdminType) {
     setOpenDeleteCatModal(false);
   }
 
-  const [url, setUrl] = React.useState("")
-
-  const handleSaveAll = async () => {
+  const saveAll = async () => {
     const data = await getAllFirebaseUserDatasAndSave(currentUserId);
-
-    //console.log({ contacts, files, categories });
-
-    // Convertir les données en JSON
     const dataStr = JSON.stringify(data);
-
-    console.log("dataStr", dataStr)
-
-    // Créer un blob à partir des données
     const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob) // lien de téléchargement
 
-    // Créer un lien de téléchargement
-    setUrl(URL.createObjectURL(blob))
+    return url
+  }
 
+  const saveAllAndOpenFile = async () => {
+    const url = await saveAll();
     console.log("url", url)
 
     // Créer un élément de lien
@@ -193,6 +186,7 @@ export default function Admin({ currentUserId }: AdminType) {
     // Supprimer le lien du document
     document.body.removeChild(link);
   }
+
 
 
 
@@ -461,7 +455,8 @@ export default function Admin({ currentUserId }: AdminType) {
             <Button variant="contained" color='success' onClick={() => addCategoriesOnFirebaseAndReload(currentUserId)}>1-Ajouter Catégories</Button>
             <Button variant="contained" color='ochre' onClick={() => addFakeDataWithCat(currentUserId)}>2-Ajouter Contacts Test (x7)</Button>
             {/* <Button variant="contained" color='warning' onClick={() => addLaurianeDataWithCat(currentUserId)}>Ajouter Contacts LAURIANE (x 201)</Button> */}
-            <Button variant="contained" onClick={handleSaveAll}>Sauvegarder TOUTES mes données</Button>
+            <Button variant="contained" onClick={saveAllAndOpenFile}>Sauvegarder TOUTES mes données</Button>
+            {/* <a href={url} download="data.json">Télécharger les données</a> */}
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-around", }} >
             <Button variant="contained" color='error' sx={{ width: "300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUserId)
