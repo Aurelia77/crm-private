@@ -95,7 +95,7 @@ const addCatToFakeContactsAndReload = async (currentUserId: any, fakeContactsDat
 
   Promise.all(promises)
     .then(() => {
-      //window.location.reload()
+      window.location.reload()
     })
     .catch((error) => { console.error("Error reloading page: ", error); });
 }

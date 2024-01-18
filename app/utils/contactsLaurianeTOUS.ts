@@ -243,7 +243,7 @@ const contacts: Contact[] = [
         "interestGauge": 1,
         "dateOfFirstCall": null,
     },
-  /*  {
+    {
         ...emptyContact,
         "isClient": false,
         "contactType": "Entreprise",
@@ -3877,7 +3877,7 @@ const contacts: Contact[] = [
         "interestGauge": null,
         "dateOfFirstCall": new Date("2022-11-07"),
         "priority": 3,
-    }*/
+    }
 ]
 
 export default contacts;
