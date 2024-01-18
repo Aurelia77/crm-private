@@ -56,6 +56,8 @@ export default function NewContactSearchForm({
     const [resultInseeSearchDomainAndLogo, setResultInseeSearchDomainAndLogo] = React.useState<DomainAndLogo[]>([])
     const [infosContact, setInfosContact] = React.useState<Contact | {}>({})
 
+    console.log("infosContact : ", infosContact)
+
 
     const isFormEmpty = () => JSON.stringify(query) === JSON.stringify(emptyQuery)
     const isSearchOnSiret = () => query.siret !== ''

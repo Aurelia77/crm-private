@@ -69,6 +69,8 @@ type ContactCardProps = {
 export default function ContactCard({ contact, currentUserId, getPriorityTextAndColor, setAreContactChangesSaved, handleDeleteContact, addContact, updateContact,
 }: ContactCardProps) {
 
+    console.log("contact ContactCard : ", contact)
+
     const [contactToAddOrUpdate, setContactToAddOrUpdate] = React.useState<Contact>(contact)
     const [tabValue, setTabValue] = React.useState<number>(0);
     const [logoChoosen, setIsLogoChoosen] = React.useState(false);  
@@ -122,6 +124,9 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         setOpenContactIsUpdatedModal(true)
     } 
 
+    React.useEffect(() => {
+        setContactToAddOrUpdate(contact)
+    },[contact])
 
 
 

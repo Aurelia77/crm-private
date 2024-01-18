@@ -149,11 +149,8 @@ const getFilesFromDatabase = async (currentUserId: any) => {
   const querySnapshot = await getDocs(q)
 
   querySnapshot.forEach((doc) => {
-    console.log("file doc", doc.data)
     filesArr.push(doc.data() as FileNameAndRefType)
   });
-
-  console.log("filesArr", filesArr)
 
   return filesArr
 }
@@ -167,8 +164,6 @@ const getCategoriesFromDatabase = async (currentUserId: any) => {
   querySnapshot.forEach((doc) => {
     catsArr.push(doc.data())
   })
-
-  console.log("catsArr", catsArr)
 
   return catsArr
 }
