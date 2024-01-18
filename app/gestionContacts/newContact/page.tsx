@@ -5,7 +5,7 @@ import React from 'react'
 import { useAuthUserContext } from '../../context/UseAuthContextProvider'
 import { addContactOnFirebaseAndReload } from '../../utils/firebase'
 import { emptyContact } from '../../utils/toolbox'
-import { useGetPriorityTextAndColor } from '../../utils/toolbox'
+import { useGetPriorityTextAndColor, modalStyle } from '../../utils/toolbox'
 import NewContactSearchForm from '../../Components/contactsManager/NewContactSearchForm'
 import ContactCard from '../../Components/contactsManager/ContactCard'
 import Tabs from '@mui/material/Tabs';
@@ -16,7 +16,6 @@ import { redirect } from 'next/navigation';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { modalStyle } from '../../utils/StyledComponentsAndUtilities'
 import { useRouter } from 'next/router';
 
 
