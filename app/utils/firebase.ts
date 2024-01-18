@@ -11,31 +11,16 @@ import laurianeData from '../utils/contactsLaurianeTOUS'
 import { contactCategories, emptyContact } from '../utils/toolbox'
 import contactsLaurianeNameAndCatLabel from '../utils/contactsLaurianeNomEtCat'
 
-// let firebaseConfig
-
-// window.location.href === ""
-
 // LAURIANE Seulement
 const firebaseConfig = {
-  apiKey: "AIzaSyDr_PbgSd83f9V0htvtassFm_X1qFKaSUU",
-  authDomain: "private-lauriane-crm.firebaseapp.com",
-  projectId: "private-lauriane-crm",
-  storageBucket: "private-lauriane-crm.appspot.com",
-  messagingSenderId: "683022595926",
-  appId: "1:683022595926:web:178a3742633b5c1cc2c8f7"
+  apiKey: "AIzaSyB6NMs-i0R146R2qEVCTm9NgNSWtbZOEaI",
+  authDomain: "crm-lauriane-c8084.firebaseapp.com",
+  databaseURL: "https://crm-lauriane-c8084-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "crm-lauriane-c8084",
+  storageBucket: "crm-lauriane-c8084.appspot.com",
+  messagingSenderId: "882348983292",
+  appId: "1:882348983292:web:80587c355b2aae72702879",
 };
-
-
-// AUTRE
-// const firebaseConfig = {
-//   apiKey: "AIzaSyB6NMs-i0R146R2qEVCTm9NgNSWtbZOEaI",
-//   authDomain: "crm-lauriane-c8084.firebaseapp.com",
-//   databaseURL: "https://crm-lauriane-c8084-default-rtdb.europe-west1.firebasedatabase.app",
-//   projectId: "crm-lauriane-c8084",
-//   storageBucket: "crm-lauriane-c8084.appspot.com",
-//   messagingSenderId: "882348983292",
-//   appId: "1:882348983292:web:80587c355b2aae72702879",
-// };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

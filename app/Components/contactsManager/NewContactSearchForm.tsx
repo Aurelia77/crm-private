@@ -192,10 +192,12 @@ export default function NewContactSearchForm({
                     }}
                         bgcolor={'pink.light'} 
                     >
-                        {resultInseeSearchToKeepPlusDomainAndLogo.length === nbResultInsee &&
-                            <Typography variant="h6" sx={{ p: 2, bgcolor: 'background.default' }}>Plus de {nbResultInsee} résultats, veuillez affiner votre recherche
-                            </Typography>
+                        <Typography variant="h6" sx={{ p: 2, bgcolor: 'background.default' }}>
+                        {resultInseeSearchToKeepPlusDomainAndLogo.length === nbResultInsee
+                            ? "Plus de " + nbResultInsee + " résultats, veuillez affiner votre recherche"
+                            : resultInseeSearchToKeepPlusDomainAndLogo.length + " résultats" 
                         }
+                        </Typography>
                         <List
                             sx={{
                                 overflow: 'auto',
