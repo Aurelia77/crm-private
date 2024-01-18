@@ -65,6 +65,10 @@ export default function ContactsLayout({
     const pathname = usePathname()
 
     const [allContacts, setAllContacts] = React.useState<Contact[]>([])
+    const [areContactChangesSaved, setAreContactChangesSaved] = React.useState(true)
+    const [newPathname, setNewPathname] = React.useState("")
+    const [shouldRedirect, setShouldRedirect] = React.useState<boolean>(false)
+    const [isWarningModalOpen, setIsWarningModalOpen] = React.useState<boolean>(false);
     // const [contactToDisplay, setContactToDisplay] = React.useState<Contact>(emptyContact)
     // const [selectedContactId, setSelectedContactId] = React.useState<string>("")
     // const [loading, setLoading] = React.useState(true)
@@ -108,61 +112,7 @@ export default function ContactsLayout({
         updatDataWholeContactOnFirebase(contactToUpdate)
     }
 
-    // React.useEffect(() => {
-    //     currentUser && getUserContactsFromDatabase(currentUser.uid).then((contactsList: Contact[]) => {
-    //         setAllContacts(contactsList);
-    //         //localStorage.setItem('allContacts', JSON.stringify(contactsList));
-    //         setLoading(false);
-    //     })
-    // }, [currentUser])
-
-
-    // const onChangeTabValue = (newValue: number) => {
-    //     setTabValueWithoutSavingInfoChanges(newValue)
-
-    //     if ([2, 3].includes(tabValue) && hasContactInfoChanged) {
-    //         setOpenWarningModal(true)
-    //         return
-    //     }
-    //     setTabValue(newValue)
-    // }
-
-
-    React.useEffect(() => {
-        //redirect('/gestionContacts/contactsTable')
-
-        //     const queryParamString = new URLSearchParams(query).toString();
-        //    return redirect(`${url}?${queryParamString}`);
-
-        // if (router.isReady) {
-        //     if (currentUser) {
-        //         const stringifiedAllContacts = JSON.stringify(allContacts);
-        //         router.push({
-        //             pathname: '/gestionContacts/contactsTable', 
-        //             query: { allContacts: stringifiedAllContacts },
-        //         });
-        //     }
-        // }
-    }, []);
-
-
-
-    // const { data, isLoading, isError } = useQuery<Contact[]>({
-    //     queryKey: ['userContacts'],
-    //     queryFn: () => getUserContactsFromDatabase(currentUser?.uid),
-    //     // onSuccess: (contactsList: Contact[]) => {
-    //     //     setAllContacts(contactsList);
-    //     //     localStorage.setItem('allContacts', JSON.stringify(contactsList));
-    //     //     setLoading(false);
-    //     // }
-    // });
-
-
-
-    const [areContactChangesSaved, setAreContactChangesSaved] = React.useState(true)
-    const [newPathname, setNewPathname] = React.useState("")
-    const [shouldRedirect, setShouldRedirect] = React.useState<boolean>(false)
-    const [isWarningModalOpen, setIsWarningModalOpen] = React.useState<boolean>(false);
+   
 
 
     const handleNotSaveContactInfo = () => {
@@ -189,73 +139,65 @@ export default function ContactsLayout({
         <Box sx={{
             position: "relative",
         }}>
-            {
-                // isLoading ? (
-                //     <Container sx={{ ml: "50%", mt: "20%" }} >
-                //         <CircularProgress />
-                //     </Container>
-                // ) : isError ? (
-                //     <Typography>Une erreur s'est produite</Typography>
-                // ) : data && 
+            <Box>
                 <Box>
-                    <Box>
-                        <AuthDetails />
-                    </Box>
+                    <AuthDetails />
+                </Box>
 
-                    {/* ///////////////////////ONGLETS - Tabs /////////////////////// */}
-                    <Box
+                {/* ///////////////////////ONGLETS - Tabs /////////////////////// */}
+                <Box
+                    sx={{
+                        flexGrow: 1,
+                        //bgcolor: 'background.paper', 
+                        display: 'flex',
+                        height: '100vh',
+                    }}
+                >
+                    <List
                         sx={{
-                            flexGrow: 1,
-                            //bgcolor: 'background.paper', 
+                            borderRight: 1,
+                            borderColor: 'divider',
+                            width: TABS_WIDTH,
                             display: 'flex',
-                            height: '100vh',
+                            flexDirection: 'column',
+                            alignItems: 'center',
                         }}
                     >
-                        <List 
-                            sx={{ 
-                                borderRight: 1, 
-                                borderColor: 'divider', 
-                                width: TABS_WIDTH, 
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                            }}
-                        >
-                            {titles.map((title, index) => (
-                                // passHref est utilisé pour passer l'attribut href à son enfant
-                                <Link 
-                                    key={index} 
-                                    href={title.href}
-                                    passHref
-                                    onClick={(e) => {
-                                        console.log("CLIC")
-                                        if (!areContactChangesSaved) {
-                                            setNewPathname(title.href)
-                                            setIsWarningModalOpen(true)
-                                            e.preventDefault();
-                                        }
-                                    }}
-                                >
-                                    <ListItem sx={{ mt: 3 }} >
-                                        <Tooltip title={title.label} placement="right">
+                        {titles.map((title, index) => (
+                            // passHref est utilisé pour passer l'attribut href à son enfant
+                            <Link
+                                key={index}
+                                href={title.href}
+                                passHref
+                                onClick={(e) => {
+                                    console.log("CLIC")
+                                    if (!areContactChangesSaved) {
+                                        setNewPathname(title.href)
+                                        setIsWarningModalOpen(true)
+                                        e.preventDefault();
+                                    }
+                                }}
+                            >
+                                <ListItem sx={{ mt: 3 }} >
+                                    <Tooltip title={title.label} placement="right">
                                         <ListItemIcon
                                             sx={{
-                                                minWidth:"23px",
+                                                minWidth: "23px",
                                                 // Pour savoir sur quel onglet on est (pour la vue d'un contact on compare les chaines de caractères)
-                                                color: (pathname === title.href || (pathname.startsWith("/gestionContacts/contact/") && title.href === '/' ) )
-                                                    ? 'primary.main' 
-                                                    : '' 
+                                                color: (pathname === title.href || (pathname.startsWith("/gestionContacts/contact/") && title.href === '/'))
+                                                    ? 'primary.main'
+                                                    : ''
                                             }}
                                         >
                                             {title.icon}
                                         </ListItemIcon>
-                                        </Tooltip>
-                                    </ListItem>
-                                </Link>
-                            ))}
-                        </List>
+                                    </Tooltip>
+                                </ListItem>
+                            </Link>
+                        ))}
+                    </List>
 
-                        {/* <Tabs
+                    {/* <Tabs
                         orientation="vertical"
                         value={tabValue}
                         // onChange={(e, newValue) => onChangeTabValue(newValue)}
@@ -292,57 +234,57 @@ export default function ContactsLayout({
                         ))}                        
                     </Tabs> */}
 
-                        <Box
-                            width={`calc(100vw - ${TABS_WIDTH}px)`}
-                        //width= '100%'
+                    <Box
+                        width={`calc(100vw - ${TABS_WIDTH}px)`}
+                    //width= '100%'
+                    >
+                        {/* <ReactQueryProvider> */}
+                        <ContactsContext.Provider
+                            value={{
+                                updateContactInContactsAndDB: updateContactInContactsAndDB,
+                                deleteDataOnFirebaseAndReload: deleteDataOnFirebaseAndReload,
+                                updateWholeContactInContactsAndDB: updateWholeContactInContactsAndDB,
+                                areContactChangesSaved: areContactChangesSaved,
+                                setAreContactChangesSaved: setAreContactChangesSaved,
+                            }}
                         >
-                            {/* <ReactQueryProvider> */}
-                            <ContactsContext.Provider
-                                value={{
-                                    updateContactInContactsAndDB: updateContactInContactsAndDB,
-                                    deleteDataOnFirebaseAndReload: deleteDataOnFirebaseAndReload,
-                                    updateWholeContactInContactsAndDB: updateWholeContactInContactsAndDB,
-                                    areContactChangesSaved: areContactChangesSaved,
-                                    setAreContactChangesSaved: setAreContactChangesSaved,
-                                }}
-                            >
-                                {children}
-                            </ContactsContext.Provider>
-                            {/* </ReactQueryProvider> */}
-                            {/* <ContactsContextProvider>
+                            {children}
+                        </ContactsContext.Provider>
+                        {/* </ReactQueryProvider> */}
+                        {/* <ContactsContextProvider>
                                 {children}
                             </ContactsContextProvider> */}
+                    </Box>
+                </Box>
+
+                <Modal
+                    open={isWarningModalOpen}
+                    onClose={() => setIsWarningModalOpen(false)}
+                >
+                    <Box sx={modalStyle} >
+                        <Typography
+                            id="modal-modal-title"
+                            variant="h6"
+                            component="h2"
+                            sx={{ mb: 5 }}
+                        >
+                            Attention, vous avez fait des changements non sauvegardés : êtes vous sûr de vouloir quitter ?
+                        </Typography>
+                        <Box sx={{ display: "flex", justifyContent: "space-between" }} >
+                            <Button
+                                variant="contained"
+                                color='warning'
+                                onClick={handleNotSaveContactInfo}
+                                sx={{ marginRight: "15px" }}
+                            >
+                                Oui !
+                            </Button>
+                            <Button variant="contained" color='primary' sx={{ color: "white" }} onClick={() => setIsWarningModalOpen(false)} >Non</Button>
                         </Box>
                     </Box>
+                </Modal>
+            </Box>
 
-                    <Modal
-                        open={isWarningModalOpen}
-                        onClose={() => setIsWarningModalOpen(false)}
-                    >
-                        <Box sx={modalStyle} >
-                            <Typography
-                                id="modal-modal-title"
-                                variant="h6"
-                                component="h2"
-                                sx={{ mb: 5 }}
-                            >
-                                Attention, vous avez fait des changements non sauvegardés : êtes vous sûr de vouloir quitter ?
-                            </Typography>
-                            <Box sx={{ display: "flex", justifyContent: "space-between" }} >
-                                <Button
-                                    variant="contained"
-                                    color='warning'
-                                    onClick={handleNotSaveContactInfo}
-                                    sx={{ marginRight: "15px" }}
-                                >
-                                    Oui !
-                                </Button>
-                                <Button variant="contained" color='primary' sx={{ color: "white" }} onClick={() => setIsWarningModalOpen(false)} >Non</Button>
-                            </Box>
-                        </Box>
-                    </Modal>
-                </Box>
-            }
         </Box>
     )
 }

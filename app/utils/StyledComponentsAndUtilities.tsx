@@ -207,12 +207,9 @@ const useIconUtilities = () => {
 
 const useHandleClickHasBeenCalledAndHasBeenSentEmailOrMeetUp = (
   contact: Contact, 
-  handleUpdateContact?: (id: string, keyAndValue: { key: string; value: string | number | boolean | Timestamp | File[] | null; }) => void,
-  setContact?: React.Dispatch<React.SetStateAction<Contact>>,
+  handleUpdateContact?: (id: string, keyAndValue: { key: string; value: string | number | boolean | Timestamp | File[] | null; }) => void, // modif contact
+  setContact?: React.Dispatch<React.SetStateAction<Contact>>, // modif juste pour le state
   ) => {
-
-    console.log("contact.hasBeenCalled", contact.hasBeenCalled, "contact.hasBeenSentEmailOrMeetUp", contact.hasBeenSentEmailOrMeetUp)
-
   const handleClickHasBeenCalled = () => {
     handleUpdateContact && handleUpdateContact(contact.id, {
       key: "hasBeenCalled", value: contact.hasBeenCalled === 0

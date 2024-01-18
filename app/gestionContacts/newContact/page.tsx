@@ -5,7 +5,7 @@ import React from 'react'
 import { useAuthUserContext } from '../../context/UseAuthContextProvider'
 import { addContactOnFirebaseAndReload } from '../../utils/firebase'
 import { emptyContact } from '../../utils/toolbox'
-import { useGetPriorityTextAndColor, modalStyle } from '../../utils/toolbox'
+import { useGetPriorityTextAndColor } from '../../utils/toolbox'
 import NewContactSearchForm from '../../Components/contactsManager/NewContactSearchForm'
 import ContactCard from '../../Components/contactsManager/ContactCard'
 import Tabs from '@mui/material/Tabs';
@@ -57,33 +57,7 @@ export default function NewContactPage() {
 
   return (
     currentUser
-      ? <Box>
-        {/* <Modal
-          open={openWarningModal}
-          onClose={() => setOpenWarningModal(false)}
-        >
-          <Box sx={modalStyle} >
-            <Typography
-              id="modal-modal-title"
-              variant="h6"
-              component="h2"
-              sx={{ mb: 5 }}
-            >
-              Attention, vous avez fait des changements non sauvegardés : êtes vous sûr de vouloir quitter ?
-            </Typography>
-            <Box sx={{ display: "flex", justifyContent: "space-between" }} >
-              <Button
-                variant="contained"
-                color='warning'
-                onClick={handleNotSaveContactInfo}
-                sx={{ marginRight: "15px" }}
-              >
-                Oui !
-              </Button>
-              <Button variant="contained" color='primary' sx={{ color: "white" }} onClick={() => setOpenWarningModal(false)} >Non</Button>
-            </Box>
-          </Box>
-        </Modal> */}
+      ? <Box>        
         <Tabs
           value={tabNewContactValue}
           onChange={(e, newValue) => setTabNewContactValue(newValue)}

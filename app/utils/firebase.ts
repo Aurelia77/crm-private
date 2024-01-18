@@ -131,8 +131,6 @@ const getContactInfoInDatabaseFromId = async (contactId: string) => {
     contact = { ...doc.data() as Contact };      
   });
 
-  console.log("contact", contact)
-
   return contact
 }
 

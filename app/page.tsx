@@ -1,13 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import React from 'react'
 
 import Box from '@mui/material/Box';
 import SignIn from './Components/authentification/SignIn';
 import SignUp from './Components/authentification/SignUp';
 import { useAuthUserContext } from './context/UseAuthContextProvider'
-import { useRouter } from 'next/navigation';        // et non 'next/router' avec Next 13
-import { redirect } from 'next/navigation';
+import { useRouter, redirect } from 'next/navigation';        // et non 'next/router' depuis Next 12
 import { CircularProgress, Container } from '@mui/material';
 
 
@@ -17,13 +16,18 @@ export default function Contacts() {
 
     const router = useRouter();
 
+
+
+    // Si on met pas le REDIRECT tout en bas
     // React.useEffect(() => {
     //     if (currentUser) {
-    //         redirect('/gestionContacts');
-    //         // Idem :
-    //         //router.push('/gestionContacts'); 
+    //         redirect('/gestionContacts/contactsTable');
     //     }
-    // }, [currentUser, router]);
+    // }, [currentUser]);
+
+    // if (currentUser) {
+    //     return null;
+    // }
 
     
 
@@ -37,8 +41,9 @@ export default function Contacts() {
                 </Container>
 
                 : !currentUser
-               // {/* ///////// CONNEXION / INSCRIPTION ///////// */}
-                    ? <Box sx={{
+                    // {/* ///////// CONNEXION / INSCRIPTION ///////// */}
+                    ?
+                    <Box sx={{
                         display: "flex", justifyContent: "space-around",
                         margin: "20px",
                         padding: "20px",
@@ -47,9 +52,9 @@ export default function Contacts() {
                         <SignUp />
                     </Box>
 
-                // {/* // /////////////////////// ONGLETS (Tabs) ///////////////////////*/}
+                    // {/* // /////////////////////// ONGLETS (Tabs) ///////////////////////*/}
                     : redirect('/gestionContacts/contactsTable')
-            } 
+            }
         </Box>
     )
 }
