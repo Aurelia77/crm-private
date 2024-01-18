@@ -61,7 +61,7 @@ export default function UserAuthContextProvider({ children }: { children: React.
                         userId: result.user.uid,
                     });
 
-                    alert('Nouvel utilisateur créé !')
+                    //alert('Nouvel utilisateur créé !')
                     console.log("Document écrit avec ID: ", docRef.id);
                 } catch (e) {
                     console.error("Erreur dans ajout document : ", e);
