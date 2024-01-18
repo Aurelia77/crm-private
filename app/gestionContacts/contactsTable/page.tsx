@@ -117,6 +117,8 @@ export default function ContactsTablePage() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['contacts'],
     queryFn: () => getUserContactsFromDatabase(currentUser?.uid),
+    //staleTime: 2*60,    // Change rien !!???
+    //refetchOnReconnect: false,
   });
 
   React.useEffect(() => {

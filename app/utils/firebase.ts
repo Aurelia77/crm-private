@@ -131,6 +131,8 @@ const getContactInfoInDatabaseFromId = async (contactId: string) => {
     contact = { ...doc.data() as Contact };      
   });
 
+  console.log("contact", contact ?? "pas de contact")
+
   return contact
 }
 
@@ -238,7 +240,6 @@ const addCategorieOnFirebase = (currentUserId: any, category: ContactCategorieTy
     .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
     .catch((error) => { console.error("Error adding document: ", error); });
 }
-
 
 const addCategoriesOnFirebaseAndReload = (currentUserId: any) => {
   const promises = contactCategories.map((cat: ContactCategorieType) => {

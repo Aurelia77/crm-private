@@ -170,7 +170,6 @@ export default function ContactsLayout({
                                 href={title.href}
                                 passHref
                                 onClick={(e) => {
-                                    console.log("CLIC")
                                     if (!areContactChangesSaved) {
                                         setNewPathname(title.href)
                                         setIsWarningModalOpen(true)

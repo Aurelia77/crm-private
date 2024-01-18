@@ -39,11 +39,13 @@ export default function CalendarPage() {
     }
 
     return (
-        <CalendarScheduler
-            contacts={allContacts}
-            setContacts={setAllContacts}
-            updateContactInContactsAndDB={updateContactInContactsAndDB}
-            redirectToContact={redirectToContact}
-        />
+        currentUser
+            ? <CalendarScheduler
+                contacts={allContacts}
+                setContacts={setAllContacts}
+                updateContactInContactsAndDB={updateContactInContactsAndDB}
+                redirectToContact={redirectToContact}
+            />
+            : redirect('/')
     )
 }

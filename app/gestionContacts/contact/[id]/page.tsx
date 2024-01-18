@@ -51,7 +51,7 @@ import Zoom from '@mui/material/Zoom';
 
 import { isDatePassed, isDateSoon } from '@/app/utils/toolbox'
 import { truncate } from 'fs';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, QueryClient, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
 import { useNavigate, useLocation, useBlocker } from 'react-router-dom';
@@ -86,27 +86,76 @@ export default function ContactCardPage() {
     const params = useParams()
     const contactId = params.id
 
-    console.log("typeof contactId : ", typeof contactId) // c'est bien une string pourtant erreur si pas ligne ci-dessous
+    // !!!!! GARDER LIGNE !!!!!!!
+    //console.log("typeof contactId : ", typeof contactId) // c'est bien une string pourtant erreur si pas ligne ci-dessous
     const contactIdStr = Array.isArray(contactId) ? contactId[0] : contactId;
 
+    const queryClient = useQueryClient();
+  
+    const [contactToDisplay, setContactToDisplay] = React.useState<Contact | null>(null)
 
-    const { data: contact, isLoading, isError } = useQuery({
-        queryKey: ['contacts', contactId],
-        queryFn: () => getContactInfoInDatabaseFromId(contactIdStr),
-        enabled: contactIdStr !== undefined,
-    });
-
-    console.log("contactInfo : ", contact)
-
-    // Si les données ont chargées et que le contact n'existe pas => modal
     React.useEffect(() => {
-        if (!isLoading && !contact) {
-            setIsModalContactNotExistOpen(true);
-        }
-    }, [isLoading, contact]);
+        getContactInfoInDatabaseFromId(contactIdStr).then((contact: Contact | null) => {
+            console.log("contact : ", contact)
+            if (contact) {
+                setContactToDisplay(contact);
+            } else {
+                setIsModalContactNotExistOpen(true);
+            }
+        });
+    },[contactIdStr])
+
+    // J'ai enlevé l'utilisation de react-query car quand je faisait une modif d'un contact (dans le tableau ou sur une vue d'un contact, quand je recliquais sur un contact les changement n'étaient pas enregistrés ! (au 1er ou au 3ème clic c'était bon... J'ai essayé d'utiliser le staleTime à 0 mais ça ne changeait rien (je crois qu'il y est déjà par défaut), j'ai essayé aussi avec useMutation mais j'y arrive pas... ))
+/////////////////////////////////
+//// GARDER (React-query)
+/////////////////////////////////
+    // const { data: contact, isLoading, isError } = useQuery({
+    //     queryKey: ['contacts', contactId],
+    //     queryFn: () => getContactInfoInDatabaseFromId(contactIdStr),
+    //     enabled: contactIdStr !== undefined,
+    //     staleTime: 0
+    // });
+
+    //console.log("contactInfo : ", contact)
+    
+   
+    
+    // const mutation = useMutation({
+    //     mutationFn: () => updateWholeContactInContactsAndDB()
+    // })
+
+    // const mutation = useMutation({
+    //     mutationFn: () => getContactInfoInDatabaseFromId(contactIdStr),
+    //     onSuccess: (newData) => {
 
 
 
+    //         console.log("newData : ", newData)
+
+
+
+    //         if (JSON.stringify(newData) !== JSON.stringify(contact)) {
+    //             queryClient.invalidateQueries({ queryKey: ['contacts', contactId] });
+    //         }
+    //     },
+    //     // onSuccess: () => {
+    //     //   // Invalidate and refetch
+    //     //   queryClient.invalidateQueries({ queryKey: ['todos'] })
+    //     // },
+    // })
+
+    //console.log("mutation : ", mutation)
+
+
+/////////////////////////////////
+//// GARDER (React-query)
+/////////////////////////////////
+    // Si les données ont chargées et que le contact n'existe pas => modal
+    // React.useEffect(() => {
+    //     if (!isLoading && !contact) {
+    //         setIsModalContactNotExistOpen(true);
+    //     }
+    // }, [isLoading, contact]);
 
 
     // const [hasUnsavedChanges, setHasUnsavedChanges] = React.useState(false);
@@ -144,20 +193,21 @@ export default function ContactCardPage() {
     // // }, [hasContactInfoChanged]);
 
 
-
-
     return (
         <Box sx={{
             position: "relative",
         }}>
-            {isLoading
-                ? <Container sx={{ ml: "50%", mt: "20%" }} >
-                    <CircularProgress color='info' />
-                </Container>
-                : isError
-                    ? <Typography>Une erreur s'est produite</Typography>
-                    : contact && <ContactCard
-                        contact={contact}
+            {
+            // isLoading
+            //     ? <Container sx={{ ml: "50%", mt: "20%" }} >
+            //         <CircularProgress color='info' />
+            //     </Container>
+            //     : isError
+            //         ? <Typography>Une erreur s'est produite</Typography>
+            //         : 
+                    contactToDisplay && <ContactCard
+                        //contact={contact}
+                        contact={contactToDisplay}
                         currentUserId={currentUser?.uid}
                         getPriorityTextAndColor={getPriorityTextAndColor}
                         //setHasContactInfoChanged={setHasContactInfoChanged}

@@ -53,6 +53,7 @@ import Zoom from '@mui/material/Zoom';
 import { isDatePassed, isDateSoon, modalStyle } from '../../utils/toolbox'
 import { truncate } from 'fs';
 import { useNavigate, useLocation, useBlocker } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query'
 
 
 type ContactCardProps = {
@@ -73,8 +74,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     const [logoChoosen, setIsLogoChoosen] = React.useState(false);  
     
     console.log("contactToAddOrUpdate : ", contactToAddOrUpdate)
-    console.log("hasBeenCalled : ", contactToAddOrUpdate.hasBeenCalled)
-    console.log("hasBeenSentEmailOrMeetUp : ", contactToAddOrUpdate.hasBeenSentEmailOrMeetUp)
+    // console.log("hasBeenCalled : ", contactToAddOrUpdate.hasBeenCalled)
+    // console.log("hasBeenSentEmailOrMeetUp : ", contactToAddOrUpdate.hasBeenSentEmailOrMeetUp)
 
 
     const muiTheme = useTheme();
@@ -120,6 +121,9 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         updateContact && updateContact(contactToAddOrUpdate)
         setOpenContactIsUpdatedModal(true)
     } 
+
+
+
 
     React.useEffect(() => {
 
@@ -526,31 +530,33 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         //contactToAddOrUpdate.businessName.length > 0,
                                     }}
                                 />
-                                <Avatar
-                                    sx={{ bgcolor: getPhoneIconColor(contactToAddOrUpdate.hasBeenCalled), border: `4px solid ${getPhoneIconColor(contactToAddOrUpdate.hasBeenCalled)}`, }}
-                                >
-                                    <Tooltip arrow title={getPhoneIconText(contactToAddOrUpdate.hasBeenCalled)}>
-                                        <IconButton color="primary" onClick={handleClickHasBeenCalled}>
-                                            <CallRoundedIcon fontSize="large"
-                                                sx={{
-                                                    color: "white",
-                                                }}
-                                            />
-                                        </IconButton>
-                                    </Tooltip>
-                                </Avatar>
-                                <Avatar
-                                    sx={{
-                                        bgcolor: "white",
-                                        border: `4px solid ${getEmailIconColor(contactToAddOrUpdate.hasBeenSentEmailOrMeetUp)}`,
-                                    }}
-                                >
-                                    <Tooltip arrow title={getEmailIconText(contactToAddOrUpdate.hasBeenSentEmailOrMeetUp)}>
-                                        <IconButton color="primary" onClick={handleClickhasBeenSentEmailOrMeetUp}>
-                                            <RightMailIcon hasBeenSentEmailOrMeetUp={contactToAddOrUpdate.hasBeenSentEmailOrMeetUp} />
-                                        </IconButton>
-                                    </Tooltip>
-                                </Avatar>
+                                <Box sx={{display: "flex", justifyContent: "space-around", mt: 2 }} >
+                                    <Avatar
+                                        sx={{ bgcolor: getPhoneIconColor(contactToAddOrUpdate.hasBeenCalled), border: `4px solid ${getPhoneIconColor(contactToAddOrUpdate.hasBeenCalled)}`, }}
+                                    >
+                                        <Tooltip arrow title={getPhoneIconText(contactToAddOrUpdate.hasBeenCalled)}>
+                                            <IconButton color="primary" onClick={handleClickHasBeenCalled}>
+                                                <CallRoundedIcon fontSize="large"
+                                                    sx={{
+                                                        color: "white",
+                                                    }}
+                                                />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Avatar>
+                                    <Avatar
+                                        sx={{
+                                            bgcolor: "white",
+                                            border: `4px solid ${getEmailIconColor(contactToAddOrUpdate.hasBeenSentEmailOrMeetUp)}`,
+                                        }}
+                                    >
+                                        <Tooltip arrow title={getEmailIconText(contactToAddOrUpdate.hasBeenSentEmailOrMeetUp)}>
+                                            <IconButton color="primary" onClick={handleClickhasBeenSentEmailOrMeetUp}>
+                                                <RightMailIcon hasBeenSentEmailOrMeetUp={contactToAddOrUpdate.hasBeenSentEmailOrMeetUp} />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Avatar>
+                                </Box>
                             </Box>
 
 
@@ -1021,8 +1027,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         }
                     </Box>
 
-                    {addContact && <Button variant="contained" sx={{ width: '30%', height: "200px", mt: 3, }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
-                    {updateContact && <Button variant="contained" color='secondary' sx={{ width: '30%', height: "200px", mt: 3 }} onClick={handleWholeUpdateContact} >Mettre à jour le contact</Button>}
+                    {addContact && <Button variant="contained" color='secondary' sx={{ width: '30%', height: "200px", mt: 3, }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
+                    {updateContact && <Button variant="contained" sx={{ width: '30%', height: "200px", mt: 3 }} onClick={handleWholeUpdateContact} >Mettre à jour le contact</Button>}
                     <Modal
                         open={openContactIsUpdatedModal}
                         onClose={() => setOpenContactIsUpdatedModal(false)}
