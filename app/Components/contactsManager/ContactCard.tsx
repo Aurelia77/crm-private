@@ -43,7 +43,8 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
 import LanguageIcon from '@mui/icons-material/Language';
 import PsychologyAlt from '@mui/icons-material/PsychologyAlt';
-import { StyledRating, StyledRatingStars, IconContainer, customIcons } from '../../utils/StyledComponentsAndUtilities';
+import { StyledRating, StyledRatingStars, IconContainer, customIcons, useRightMailIcon, useIconUtilities, useHandleClickHasBeenCalledAndHasBeenSentEmailOrMeetUp  } from '@/app/utils/StyledComponentsAndUtilities';
+
 import SettingsIcon from '@mui/icons-material/Settings';
 import CallRoundedIcon from '@mui/icons-material/CallRounded';
 
@@ -69,7 +70,12 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
     const [contactToAddOrUpdate, setContactToAddOrUpdate] = React.useState<Contact>(contact)
     const [tabValue, setTabValue] = React.useState<number>(0);
-    const [logoChoosen, setIsLogoChoosen] = React.useState(false);   
+    const [logoChoosen, setIsLogoChoosen] = React.useState(false);  
+    
+    console.log("contactToAddOrUpdate : ", contactToAddOrUpdate)
+    console.log("hasBeenCalled : ", contactToAddOrUpdate.hasBeenCalled)
+    console.log("hasBeenSentEmailOrMeetUp : ", contactToAddOrUpdate.hasBeenSentEmailOrMeetUp)
+
 
     const muiTheme = useTheme();
 
@@ -91,6 +97,13 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
     const [alertFileText, setAlertFileText] = React.useState("");
 
+   
+
+    const RightMailIcon = useRightMailIcon();    
+    const { getPhoneIconColor, getEmailIconColor, getEmailIconText, getPhoneIconText } = useIconUtilities(); 
+    
+    const { handleClickHasBeenCalled, handleClickhasBeenSentEmailOrMeetUp } = useHandleClickHasBeenCalledAndHasBeenSentEmailOrMeetUp(contactToAddOrUpdate, undefined, setContactToAddOrUpdate);
+
     const handleClickDeleteContact = () => {
         handleDeleteContact && handleDeleteContact(contact.id)
     }
@@ -101,6 +114,12 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
         setFirebaseFileSelected({ fileName: selectedFile?.fileName ?? "", fileRef: selectedFileRef })
     }
+
+    const handleWholeUpdateContact = () => {
+        setAreContactChangesSaved(true)
+        updateContact && updateContact(contactToAddOrUpdate)
+        setOpenContactIsUpdatedModal(true)
+    } 
 
     React.useEffect(() => {
 
@@ -204,11 +223,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: number })
     }
 
-    const handleUpdateContact = () => {
-        setAreContactChangesSaved(true)
-        updateContact && updateContact(contactToAddOrUpdate)
-        setOpenContactIsUpdatedModal(true)
-    }   
+     
 
 
     // const location = useLocation();
@@ -483,10 +498,10 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             </Box>
                         </Box>
 
-                        {/* ///////// NOM et DATES */}
+                        {/* ///////// NOM, tel, mail et DATES */}
                         <Box sx={{ width: "80%" }} >
 
-                            {/* ///////// NOM */}
+                            {/* ///////// NOM, tel, mail */}
                             <Box>
                                 <TextField
                                     sx={{ width: "100%" }}
@@ -509,11 +524,36 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         startAdornment: contactToAddOrUpdate.businessName.length === 0 && <span style={{ fontSize: "2.5em", marginLeft: "40%" }}>... </span>,
                                         disableUnderline: true
                                         //contactToAddOrUpdate.businessName.length > 0,
-                                    }}                               
-                                />  
+                                    }}
+                                />
+                                <Avatar
+                                    sx={{ bgcolor: getPhoneIconColor(contactToAddOrUpdate.hasBeenCalled), border: `4px solid ${getPhoneIconColor(contactToAddOrUpdate.hasBeenCalled)}`, }}
+                                >
+                                    <Tooltip arrow title={getPhoneIconText(contactToAddOrUpdate.hasBeenCalled)}>
+                                        <IconButton color="primary" onClick={handleClickHasBeenCalled}>
+                                            <CallRoundedIcon fontSize="large"
+                                                sx={{
+                                                    color: "white",
+                                                }}
+                                            />
+                                        </IconButton>
+                                    </Tooltip>
+                                </Avatar>
+                                <Avatar
+                                    sx={{
+                                        bgcolor: "white",
+                                        border: `4px solid ${getEmailIconColor(contactToAddOrUpdate.hasBeenSentEmailOrMeetUp)}`,
+                                    }}
+                                >
+                                    <Tooltip arrow title={getEmailIconText(contactToAddOrUpdate.hasBeenSentEmailOrMeetUp)}>
+                                        <IconButton color="primary" onClick={handleClickhasBeenSentEmailOrMeetUp}>
+                                            <RightMailIcon hasBeenSentEmailOrMeetUp={contactToAddOrUpdate.hasBeenSentEmailOrMeetUp} />
+                                        </IconButton>
+                                    </Tooltip>
+                                </Avatar>
                             </Box>
 
-                           
+
                             {/* ///////// DATES ///////// */}
                             <Box sx={{ display: 'flex', justifyContent: "space-around", mt: 8 }} >
                                 {/* ///////// 1er APPEL */}
@@ -982,7 +1022,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     </Box>
 
                     {addContact && <Button variant="contained" sx={{ width: '30%', height: "200px", mt: 3, }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
-                    {updateContact && <Button variant="contained" color='secondary' sx={{ width: '30%', height: "200px", mt: 3 }} onClick={handleUpdateContact} >Mettre à jour le contact</Button>}
+                    {updateContact && <Button variant="contained" color='secondary' sx={{ width: '30%', height: "200px", mt: 3 }} onClick={handleWholeUpdateContact} >Mettre à jour le contact</Button>}
                     <Modal
                         open={openContactIsUpdatedModal}
                         onClose={() => setOpenContactIsUpdatedModal(false)}

@@ -68,9 +68,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
     const muiTheme = useTheme();
     const router = useRouter();
 
-    const RightMailIcon = useRightMailIcon();
-
-    
+    const RightMailIcon = useRightMailIcon();    
     const { getPhoneIconColor, getEmailIconColor, getEmailIconText, getPhoneIconText } = useIconUtilities(); 
     const { handleClickHasBeenCalled, handleClickhasBeenSentEmailOrMeetUp } = useHandleClickHasBeenCalledAndHasBeenSentEmailOrMeetUp(contact, handleUpdateContact);
 

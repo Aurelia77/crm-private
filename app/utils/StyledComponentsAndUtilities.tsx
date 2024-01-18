@@ -205,19 +205,33 @@ const useIconUtilities = () => {
   return { getPhoneIconColor, getEmailIconColor, getEmailIconText, getPhoneIconText };
 }
 
-const useHandleClickHasBeenCalledAndHasBeenSentEmailOrMeetUp = (contact: Contact, handleUpdateContact: (id: string, keyAndValue: { key: string; value: string | number | boolean | Timestamp | File[] | null; }) => void) => {
+const useHandleClickHasBeenCalledAndHasBeenSentEmailOrMeetUp = (
+  contact: Contact, 
+  handleUpdateContact?: (id: string, keyAndValue: { key: string; value: string | number | boolean | Timestamp | File[] | null; }) => void,
+  setContact?: React.Dispatch<React.SetStateAction<Contact>>,
+  ) => {
+
+    console.log("contact.hasBeenCalled", contact.hasBeenCalled, "contact.hasBeenSentEmailOrMeetUp", contact.hasBeenSentEmailOrMeetUp)
 
   const handleClickHasBeenCalled = () => {
-    handleUpdateContact(contact.id, {
+    handleUpdateContact && handleUpdateContact(contact.id, {
       key: "hasBeenCalled", value: contact.hasBeenCalled === 0
         ? 1
         : contact.hasBeenCalled === 1
           ? 2
           : 0
     })
+    setContact && setContact({
+      ...contact, hasBeenCalled: contact.hasBeenCalled === 0
+        ? 1
+        : contact.hasBeenCalled === 1
+          ? 2
+          : 0
+    })
   }
+
   const handleClickhasBeenSentEmailOrMeetUp = () => {
-    handleUpdateContact(contact.id, {
+    handleUpdateContact && handleUpdateContact(contact.id, {
       key: "hasBeenSentEmailOrMeetUp", value: contact.hasBeenSentEmailOrMeetUp === 0
         ? 1
         : contact.hasBeenSentEmailOrMeetUp === 1
@@ -226,8 +240,16 @@ const useHandleClickHasBeenCalledAndHasBeenSentEmailOrMeetUp = (contact: Contact
             ? 3
             : 0
     })
+    setContact && setContact({
+      ...contact, hasBeenSentEmailOrMeetUp: contact.hasBeenSentEmailOrMeetUp === 0
+        ? 1
+        : contact.hasBeenSentEmailOrMeetUp === 1
+          ? 2
+          : contact.hasBeenSentEmailOrMeetUp === 2
+            ? 3
+            : 0
+    })
   }
-
   return { handleClickHasBeenCalled, handleClickhasBeenSentEmailOrMeetUp }
 }
 
