@@ -145,6 +145,7 @@ export default function Admin({ currentUserId }: AdminType) {
     categoriesList && setCategoriesList([...categoriesList.filter(cat => cat.id !== catToUpdateOrDelete.id), { ...catToUpdateOrDelete }]);
     setCatToUpdateOrDelete({ id: "", label: "" });
   }
+
   const handleDeleteCat = () => {
     console.log("catToUpdate", catToUpdateOrDelete)
 
@@ -159,6 +160,44 @@ export default function Admin({ currentUserId }: AdminType) {
     setCatToUpdateOrDelete({ id: "", label: "" });
     setOpenDeleteCatModal(false);
   }
+
+  const [url, setUrl] = React.useState("")
+
+  const handleSaveAll = async () => {
+    const data = await getAllFirebaseUserDatasAndSave(currentUserId);
+
+    //console.log({ contacts, files, categories });
+
+    // Convertir les données en JSON
+    const dataStr = JSON.stringify(data);
+
+    console.log("dataStr", dataStr)
+
+    // Créer un blob à partir des données
+    const blob = new Blob([dataStr], { type: 'application/json' });
+
+    // Créer un lien de téléchargement
+    setUrl(URL.createObjectURL(blob))
+
+    console.log("url", url)
+
+    // Créer un élément de lien
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'data.json'; // Nom du fichier à télécharger
+
+    // Ajouter le lien au document et le cliquer pour déclencher le téléchargement
+    document.body.appendChild(link);
+    link.click();
+
+    // Supprimer le lien du document
+    document.body.removeChild(link);
+  }
+
+
+
+    
+  
 
   return (
     currentUserId
@@ -203,8 +242,7 @@ export default function Admin({ currentUserId }: AdminType) {
                   ))}
               </List>
 
-              <Box sx={{ width: "48%" }}  >
-
+              <Box sx={{ width: "48%" }} >
                 <form
                   style={{
                     display: "flex",
@@ -423,10 +461,11 @@ export default function Admin({ currentUserId }: AdminType) {
             <Button variant="contained" color='success' onClick={() => addCategoriesOnFirebaseAndReload(currentUserId)}>1-Ajouter Catégories</Button>
             <Button variant="contained" color='ochre' onClick={() => addFakeDataWithCat(currentUserId)}>2-Ajouter Contacts Test (x7)</Button>
             {/* <Button variant="contained" color='warning' onClick={() => addLaurianeDataWithCat(currentUserId)}>Ajouter Contacts LAURIANE (x 201)</Button> */}
-              {/*   <Button variant="contained" onClick={handleSaveAll}>Sauvegarder TOUTES mes données</Button> */}
+            <Button variant="contained" onClick={handleSaveAll}>Sauvegarder TOUTES mes données</Button>
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-around", }} >
-            <Button variant="contained" color='error' sx={{ width: "300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUserId)}>Supprimer tous mes contacts</Button>
+            <Button variant="contained" color='error' sx={{ width: "300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUserId)
+              }>Supprimer tous mes contacts</Button>
             {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer TOUS les contacts de l'appli !!!</Button> */}
           </Box>
         </Box>

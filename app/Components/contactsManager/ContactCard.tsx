@@ -73,7 +73,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     const [tabValue, setTabValue] = React.useState<number>(0);
     const [logoChoosen, setIsLogoChoosen] = React.useState(false);  
     
-    console.log("contactToAddOrUpdate : ", contactToAddOrUpdate)
+    // console.log("contactToAddOrUpdate : ", contactToAddOrUpdate)
     // console.log("hasBeenCalled : ", contactToAddOrUpdate.hasBeenCalled)
     // console.log("hasBeenSentEmailOrMeetUp : ", contactToAddOrUpdate.hasBeenSentEmailOrMeetUp)
 

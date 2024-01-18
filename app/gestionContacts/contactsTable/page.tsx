@@ -229,7 +229,7 @@ export default function ContactsTablePage() {
               <Box sx={{ display: "flex", alignItems: "center", margin: "13px 0 7px 15px", }}
               >{allContacts.length > 0
                 ? <Typography variant="h5">
-                  {!isSearchCriteriaEmpty && <Tooltip title="Dans les résultats de votre recherche">
+                  {!isSearchCriteriaEmpty && <Tooltip title="Résultat de recherche">
                     {/* On enveloppe le bouton (Fab) dans un <span> pour que le Tooltip fonctionne (Fab ne fonctionne pas sur un bouton désactivé) */}
                     <span>
                       <Fab disabled size="small" color="primary" sx={{
@@ -240,13 +240,13 @@ export default function ContactsTablePage() {
                     </span>
                   </Tooltip>
                   }
-                  {filteredContacts.length} contacts :
-                  <Typography variant="h5" component="span" color="warning.main" sx={{ px: 2 }}>
+                  {filteredContacts.length} contacts
+                  {filteredContacts.length > 0 && <Typography variant="h5" component="span" color="warning.main" sx={{ px: 2 }}>
                     {alerts.nbContactsWithDatePassed} relance(s) passée(s)
-                  </Typography>
-                  <Typography variant="h5" component="span" color="primary.main">
+                  </Typography>}
+                  {filteredContacts.length > 0 && <Typography variant="h5" component="span" color="primary.main">
                     et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jours.
-                  </Typography>
+                  </Typography>}
                 </Typography>
 
                 : <Typography variant="h5" color="error.main">
