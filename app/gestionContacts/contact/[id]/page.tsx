@@ -13,7 +13,7 @@ import Edit from '@mui/icons-material/Edit';
 import LocationOn from '@mui/icons-material/LocationOn';
 import { grey } from '@mui/material/colors';
 import Image from 'next/image'
-import { TextField, Stack, Button, FormControl, InputLabel, MenuItem, Autocomplete, Chip, ListItem, List, OutlinedInput, Checkbox, ListItemText, FormControlLabel, Tooltip, Modal, Rating, Link, InputAdornment, Alert } from '@mui/material'
+import { TextField, Stack, Button, FormControl, InputLabel, MenuItem, Autocomplete, Chip, ListItem, List, OutlinedInput, Checkbox, ListItemText, FormControlLabel, Tooltip, Modal, Rating, Link, InputAdornment, Alert, Container, CircularProgress } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { contactTypes, emptyContact, useGetPriorityTextAndColor, modalStyle } from '@/app/utils/toolbox'
 import dayjs, { Dayjs } from 'dayjs';       // npm install dayjs
@@ -80,7 +80,7 @@ export default function ContactCardPage() {
     const updateWholeContactInContactsAndDB = useContactsContext().updateWholeContactInContactsAndDB
     const setAreContactChangesSaved = useContactsContext().setAreContactChangesSaved
 
-    const [isModalContactNotExistOpen, setIsModalContactNotExistOpen] = React.useState(true);
+    const [isModalContactNotExistOpen, setIsModalContactNotExistOpen] = React.useState(false);
 
 
     const params = useParams()
@@ -98,16 +98,22 @@ export default function ContactCardPage() {
 
     console.log("contactInfo : ", contact)
 
+    // Si les données ont chargées et que le contact n'existe pas => modal
+    React.useEffect(() => {
+        if (!isLoading && !contact) {
+            setIsModalContactNotExistOpen(true);
+        }
+    }, [isLoading, contact]);
 
 
-   
 
-    
+
+
     // const [hasUnsavedChanges, setHasUnsavedChanges] = React.useState(false);
     // const navigate = useNavigate();
     // const location = useLocation();
 
-    
+
 
 
     // React.useEffect(() => {
@@ -117,7 +123,7 @@ export default function ContactCardPage() {
     //             e.returnValue = 'Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir quitter cette page ?';
     //         //}
     //     };
-        
+
     //     const handleNavigation = (path: any) => {
     //         if (
     //             //hasUnsavedChanges && 
@@ -137,40 +143,34 @@ export default function ContactCardPage() {
     // }, []);
     // // }, [hasContactInfoChanged]);
 
-   
 
 
-
-
-
-    //   if (isLoading) {
-    //     return <Loader />;
-    //   }
-
-    //   if (isError) {
-    //     return <div>Something went wrong</div>;
-    //   }
 
     return (
         <Box sx={{
             position: "relative",
         }}>
-            {contact 
-                ? <ContactCard
-                contact={contact}
-                currentUserId={currentUser?.uid}
-                getPriorityTextAndColor={getPriorityTextAndColor}
-                //setHasContactInfoChanged={setHasContactInfoChanged}
-                    setAreContactChangesSaved={setAreContactChangesSaved}
-                    handleDeleteContact={deleteDataOnFirebaseAndReload}
-                    updateContact={updateWholeContactInContactsAndDB}
-                />
-                : <Modal open={isModalContactNotExistOpen} onClose={() => setIsModalContactNotExistOpen(false) }>
-                    <Box sx={modalStyle}>
-                        <Typography color="error" >Ce contact n'existe pas.</Typography>
-                    </Box>
-                </Modal>
-            }
+            {isLoading
+                ? <Container sx={{ ml: "50%", mt: "20%" }} >
+                    <CircularProgress color='info' />
+                </Container>
+                : isError
+                    ? <Typography>Une erreur s'est produite</Typography>
+                    : contact && <ContactCard
+                        contact={contact}
+                        currentUserId={currentUser?.uid}
+                        getPriorityTextAndColor={getPriorityTextAndColor}
+                        //setHasContactInfoChanged={setHasContactInfoChanged}
+                        setAreContactChangesSaved={setAreContactChangesSaved}
+                        handleDeleteContact={deleteDataOnFirebaseAndReload}
+                        updateContact={updateWholeContactInContactsAndDB}
+                    />}
+
+            <Modal open={isModalContactNotExistOpen} onClose={() => setIsModalContactNotExistOpen(false)}>
+                <Box sx={modalStyle}>
+                    <Typography color="error" >Ce contact n'existe pas.</Typography>
+                </Box>
+            </Modal>
         </Box>
     );
 }
