@@ -47,7 +47,7 @@ export default function ContactsTablePage() {
   // J'initialise allContacts et filteredContacts à null pour éviter l'affichage rapide du tableau vide (avant que les données ne soient chargées)
   const [allContacts, setAllContacts] = React.useState<Contact[] | null>(null)
   const [filteredContacts, setFilteredContacts] = React.useState<Contact[] | null>(null)
-  console.log("filteredContacts : ", filteredContacts)
+  //console.log("filteredContacts : ", filteredContacts)
   // const [allContacts, setAllContacts] = React.useState<Contact[]>([
   //   // {...emptyContact, id: "1", businessName: "coucou1"}, 
   //   // {...emptyContact, id: "2", businessName: "coucou2 2"},

@@ -118,8 +118,6 @@ const getUserContactsFromDatabase = async (currentUserId: any) => {
     contactsArr.push({ ...doc.data() as Contact });
   });
 
-  console.log("contactsArr", contactsArr)
-
   return contactsArr;
 }
 
@@ -132,8 +130,6 @@ const getContactInfoInDatabaseFromId = async (contactId: string) => {
   querySnapshot.forEach((doc) => {
     contact = { ...doc.data() as Contact };
   });
-
-  console.log("contact", contact ?? "pas de contact")
 
   return contact
 }

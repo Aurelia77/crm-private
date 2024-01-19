@@ -216,10 +216,12 @@ function stringToColor(string: string) {
 }   
 
 function stringAvatar(name: string, logo: string) {
-    const words = name.split(' ');
+    const words = name.trim().split(' ');
+
     const initials = words.length > 1
         ? `${words[0][0]}${words[1][0]}`
         : words[0][0];
+
 
     return {
         sx: {
