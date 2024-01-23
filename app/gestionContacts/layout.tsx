@@ -11,10 +11,6 @@ import { Fab } from '@mui/material'
 import NewContactSearchForm from '../Components/contactsManager/NewContactSearchForm';
 import ContactCard from '../Components/contactsManager/ContactCard';
 import ContactsTable from '../Components/contactsManager/ContactsTable';
-import ContactsTable2 from '../Components/contactsManager/ContactsTable2';
-import ContactsTable3 from '../Components/contactsManager/ContactsTable3';
-import ContactsTable4 from '../Components/contactsManager/ContactsTable4';
-import ContactsTable5 from '../Components/contactsManager/ContactsTable5';
 import AuthDetails from './../Components/AuthDetails';
 import SearchContactsForm from '../Components/contactsManager/SearchContactsForm';
 import Admin from './../Components/Admin';
