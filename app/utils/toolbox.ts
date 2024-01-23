@@ -151,7 +151,7 @@ const countContactsByAlertDates = (contactsTab: Contact[]): Alerts => {
             isDateTimeStampObjBeforeAWeek(contact.dateOfNextCall) && nbContactsWithDateSoon++
         }              
     })
-    return { nbContactsWithDatePassed, nbContactsWithDateSoon }
+    return { nbContactsWithDatePassed, nbContactsDateSoon: nbContactsWithDateSoon }
 }
 
 const updatedContactsInLocalList = (contacts: Contact[], id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }): Contact[] => {

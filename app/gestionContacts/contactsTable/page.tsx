@@ -44,7 +44,7 @@ export default function ContactsTablePage() {
   //const [allContacts, setAllContacts] = React.useState<Contact[]>(JSON.parse(localStorage.getItem('allContacts') || '[]'))
   //const [allContacts, setAllContacts] = React.useState<Contact[]>(contactsContextValue.allContacts)
 
-  // J'initialise allContacts et filteredContacts à null pour éviter l'affichage rapide du tableau vide (avant que les données ne soient chargées)
+  // J'initialise allContacts et filteredContacts à null pour éviter l'affichage (rapide) du tableau VIDE (avant que les données ne soient chargées)
   const [allContacts, setAllContacts] = React.useState<Contact[] | null>(null)
   const [filteredContacts, setFilteredContacts] = React.useState<Contact[] | null>(null)
   //console.log("filteredContacts : ", filteredContacts)
@@ -129,7 +129,7 @@ export default function ContactsTablePage() {
 
  
 
-  const [alerts, setAlerts] = React.useState<Alerts>({ nbContactsWithDatePassed: 0, nbContactsWithDateSoon: 0 })
+  const [alerts, setAlerts] = React.useState<Alerts>({ nbContactsWithDatePassed: 0, nbContactsDateSoon: 0 })
 
   const emptySearchCriteria: SearchContactCriteria = {
     isClient: "all",
@@ -245,7 +245,7 @@ export default function ContactsTablePage() {
                     {alerts.nbContactsWithDatePassed} relance(s) passée(s)
                   </Typography>}
                   {filteredContacts.length > 0 && <Typography variant="h5" component="span" color="primary.main">
-                    et {alerts.nbContactsWithDateSoon} relance(s) à faire dans les 7 jours.
+                    et {alerts.nbContactsDateSoon} relance(s) à faire dans les 7 jours.
                   </Typography>}
                 </Typography>
 

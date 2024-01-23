@@ -518,7 +518,11 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     id="outlined-basic"
                                     //label="Nom"
                                     value={contactToAddOrUpdate.businessName}
-                                    onChange={handleChangeText("businessName")}
+
+
+                                    onChange={(event) => setContactToAddOrUpdate({ ...contactToAddOrUpdate, businessName: event.target.value }) }
+
+                                    //onChange={handleChangeText("businessName")}
                                     inputProps={{
                                         style: {
                                             //color: muiTheme.palette.primary.dark, 

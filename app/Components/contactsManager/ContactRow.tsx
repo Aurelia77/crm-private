@@ -70,8 +70,8 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
     const muiTheme = useTheme();
     const router = useRouter();
 
-    const RightMailIcon = useRightMailIcon();    
-    const { getPhoneIconColor, getEmailIconColor, getEmailIconText, getPhoneIconText } = useIconUtilities(); 
+    const RightMailIcon = useRightMailIcon();
+    const { getPhoneIconColor, getEmailIconColor, getEmailIconText, getPhoneIconText } = useIconUtilities();
     const { handleClickHasBeenCalled, handleClickhasBeenSentEmailOrMeetUp } = useHandleClickHasBeenCalledAndHasBeenSentEmailOrMeetUp(contact, handleUpdateContact);
 
 
@@ -158,14 +158,14 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
             inputProps={{ style: { textAlign: center ? 'center' : 'left', fontSize: smallLighter ? "0.8em" : "1em", color: smallLighter ? "gray" : "" } }}
         />
     }
-   
+
 
     return (
         <StyledTableRow
             key={contact.id}
-            //////////////////// Je dois les enlever sinon créé un rerender à chaque clic sur un contact !!!
-            // selected={selectedContactId === contact.id ? true : false}
-            // onClick={() => setSelectedContactId(contact.id)}
+        //////////////////// Je dois les enlever sinon créé un rerender à chaque clic sur un contact !!!
+        // selected={selectedContactId === contact.id ? true : false}
+        // onClick={() => setSelectedContactId(contact.id)}
         >
             {/* Client ? */}
             <StyledTableCell
@@ -181,7 +181,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
             </StyledTableCell>
 
             {/* catégorie */}
-            <StyledTableCell component="td" scope="row" >               
+            <StyledTableCell component="td" scope="row" >
                 <FormControl >
                     {categoriesList && <Select
                         id="checkbox-type-label"
@@ -220,18 +220,18 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                             ? muiTheme.palette.ochre.light
                             : "",
                 }}
-            >               
+            >
                 <Box sx={{ pl: 0 }}
                 >
                     <Box sx={{
                         display: "flex",
                         justifyContent: "end",
-                    }}> 
+                    }}>
                         {isDatePassed(contact.dateOfNextCall) && <NotificationsNoneOutlinedIcon color="error"
                             sx={{ marginRight: "70%" }}
                         />}
                         {contact.dateOfNextCall && <Tooltip arrow title="Supprimer la date" placement='left' >
-                            <IconButton color="primary" sx={{ padding: 0 }}  
+                            <IconButton color="primary" sx={{ padding: 0 }}
                                 onClick={() => handleChangeDate(null, "dateOfNextCall")} >
                                 <ClearIcon />
                             </IconButton>
@@ -256,8 +256,8 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                                 label=" "
                                 sx={{
                                     '& .MuiInputBase-root': {
-                                        padding: 0, 
-                                        margin: 0, 
+                                        padding: 0,
+                                        margin: 0,
                                     },
                                 }}
                                 onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfNextCall")}
@@ -266,13 +266,13 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                             />
                         </Box>
                     </Tooltip>
-                </ Box>             
+                </ Box>
             </StyledTableCell>
 
             {/* LOGO */}
-            <StyledTableCell component="td" scope="row" sx={{ padding: 0 }}             
+            <StyledTableCell component="td" scope="row" sx={{ padding: 0 }}
             >
-                <Link 
+                <Link
                     href={`/gestionContacts/contact/${contact.id}`}
                     style={{ textDecoration: "none" }}
                 >
@@ -285,23 +285,29 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                             : ""}
                         {...stringAvatar(contact.businessName, contact.logo)}
                     />
-                </Link>  
+                </Link>
             </StyledTableCell>
 
             {/* businessName */}
             <StyledTableCell component="td" scope="row" >
-                <TextField 
-                    //value={localContactValue.businessName}
-                    value={contact.businessName}
-                    //onChange = {(event: React.ChangeEvent<HTMLInputElement>) => { setLocalContactValue({...localContactValue, businessName: event.target.value})}}
-                    //onBlur = {(e: React.FocusEvent<HTMLInputElement>) => {
-                        // Mettez à jour l'état du composant parent ici
+                <Typography sx={{ color: getPriorityTextAndColor(contact.priority).color }} >
+                    {contact.isClient
+                        ? <HandshakeOutlinedIcon color='success' fontSize='large' />
+                        : <PsychologyAltIcon sx={{ color: muiTheme.palette.gray.main, }} fontSize='large' />}
+                    {contact.businessName}
+                </Typography>
+                {/* <TextField 
+                    //value={contact.businessName}
+                    value={localContactValue.businessName}    
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessName')}
+                    // onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLocalContactValue({...localContactValue, businessName: e.target.value})}
+                    // onBlur = {(e: React.FocusEvent<HTMLInputElement>) => {
+                    //     // Mettez à jour l'état du composant parent ici
                     //     console.log("ON BLUR !!")
                     //     console.log(e)
                     //     console.log(e.target.value)
                     //     handleChangeText(e, 'businessName');
                     // }}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessName')}
                     InputProps={{
                         startAdornment: contact.isClient ? <HandshakeOutlinedIcon color='success' fontSize='large' /> : <PsychologyAltIcon
                             sx={{
@@ -314,7 +320,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                         style:
                             { color: getPriorityTextAndColor(contact.priority).color }
                     }}
-                />              
+                />               */}
             </StyledTableCell>
 
             {/* Priorité */}
@@ -322,7 +328,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                 sx={{
                     position: "relative",
                 }}
-            >         
+            >
 
                 <Box sx={{ '& > legend': { mt: 2 }, }} >
                     <StyledRatingStars
@@ -330,24 +336,36 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                         onChange={(e, newValue) => handleChangeNumber(newValue, "priority")}
                         max={3}
                         color={getPriorityTextAndColor(contact.priority).color}
-                    />                  
-                </Box>              
+                    />
+                </Box>
             </StyledTableCell>
 
             {/* contactPhone + businessPhone */}
             <StyledTableCell component="td" align="center">
                 <Tooltip arrow title="Tél direct" placement='top'>
-                    <TextField id="standard-basic" 
+                    <Typography sx={{ textAlign: 'center' }} >
+                        {contact.contactPhone || "..."}
+                    </Typography>
+                    {/* <TextField id="standard-basic" 
                         value={contact.contactPhone}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactPhone')}
                         InputProps={{
                             disableUnderline: contact.contactPhone.length > 0
                         }}
                         inputProps={{ style: { textAlign: 'center' } }}
-                    />
+                    /> */}
                 </Tooltip>
                 <Tooltip arrow title="Tél standard">
-                    <TextField id="standard-basic"
+                    {/* !!!!! Si on met SX au lieu de STYLE => ne met pas en gris !!! mais le reste marche */}
+                    <Typography style={{ textAlign: 'center', color: 'gray', fontSize: "0.8em" }} >
+                        {contact.businessPhone || <span style={{ color: 'gray', fontSize: "0.8em", }}>... </span>}
+                        {/* idem */}
+                        {/* {contact.businessPhone.length === 0
+                            ? <span style={{ color: 'gray', fontSize: "0.8em",  }}>... </span>
+                            : contact.businessPhone
+                        } */}
+                    </Typography>
+                    {/* <TextField id="standard-basic"
                         value={contact.businessPhone}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessPhone')}
                         color="secondary"
@@ -357,8 +375,8 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                             disableUnderline: true
                         }}
                         inputProps={{ style: { textAlign: 'center', color: "gray", fontSize: "0.8em" } }}
-                    />
-                </Tooltip>             
+                    /> */}
+                </Tooltip>
             </StyledTableCell>
 
             {/* ContactName */}
@@ -366,23 +384,38 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                 sx={{ py: 0 }}
             >
                 <Tooltip arrow title="Contact direct" placement='bottom'>
-                    <TextField id="standard-basic" 
+                    <Typography sx={{ textAlign: 'center' }} >
+                        {contact.contactName || "..."}
+                    </Typography>
+                    {/* <TextField id="standard-basic"
                         value={contact.contactName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactName')}
                         InputProps={{
                             disableUnderline: contact.contactName.length > 0
                         }}
-                    />
+                    /> */}
                 </Tooltip>
-                <TextField id="standard-basic" 
-                    value={contact.contactPosition} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactPosition')}
-                    InputProps={{
-                        startAdornment: contact.contactPosition.length === 0 && <span style={{ color: 'gray', fontSize: "0.8em", marginLeft: "40%" }}>... </span>,
-                        disableUnderline: true
-                    }}
-                    inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
-                />
+                <Tooltip arrow title="Contact entreprise" placement='bottom'>
+                    <Typography style={{ textAlign: 'center', color: 'gray', fontSize: "0.8em" }} >
+                        {contact.contactPosition || <span style={{ color: 'gray', fontSize: "0.8em", }}>... </span>}
+                    </Typography>
+                    {/* <TextField id="standard-basic"
+                        value={contact.contactPosition} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactPosition')}
+                        InputProps={{
+                            startAdornment: contact.contactPosition.length === 0 && <span style={{ color: 'gray', fontSize: "0.8em", marginLeft: "40%" }}>... </span>,
+                            disableUnderline: true
+                        }}
+                        inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
+                    /> */}
+                </Tooltip>
                 <Tooltip arrow title="Dirigeant" placement='bottom'>
-                    <TextField id="standard-basic" 
+                    <Typography style={{ textAlign: 'center', color: 'gray', fontSize: "0.8em" }} >
+                        {contact.directorName
+                            ? <Box display="flex"
+                                //flexDirection="row" 
+                                alignItems="center" justifyContent="center" gap={0.5} ><ArrowCircleUpIcon color='primary' fontSize="small" /> {contact.directorName}</Box>
+                            : <span style={{ color: 'gray', fontSize: "0.8em", }}>... </span>}
+                    </Typography>
+                    {/* <TextField id="standard-basic"
                         value={contact.directorName}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'directorName')}
                         InputProps={{
@@ -390,25 +423,32 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                             disableUnderline: true
                         }}
                         inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
-                    />
+                    /> */}
                 </Tooltip>
             </StyledTableCell>
 
             {/* contactEmail */}
             <StyledTableCell component="td"
                 sx={{ py: 0 }}
-            >               
-                <Tooltip arrow title="Contact direct" placement='top'>
-                    <TextField id="standard-basic" 
+            >
+                <Tooltip arrow title="Email direct" placement='top'>
+                    <Typography style={{ textAlign: 'center' }} >
+                        {contact.contactEmail || <span>...</span>}
+                    </Typography>
+                    {/* <TextField id="standard-basic"
                         value={contact.contactEmail} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'contactEmail')}
                         InputProps={{
                             disableUnderline: contact.contactEmail.length > 0
                         }}
                         inputProps={{ style: { padding: 0 } }}
-                    />
+                    /> */}
                 </Tooltip>
-                <Tooltip arrow title="Contact entreprise" placement='left'>
-                    <TextField id="standard-basic"
+                <Tooltip arrow title="Email entreprise" placement='left'>
+                    <Typography style={{ textAlign: 'center', color: 'gray', fontSize: "0.8em" }} >
+                        {contact.businessEmail || <span style={{ color: 'gray', fontSize: "0.8em", }}>...</span>}
+                    </Typography>
+
+                    {/* <TextField id="standard-basic"
                         value={contact.businessEmail}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessEmail')}
                         InputProps={{
@@ -416,10 +456,13 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                             disableUnderline: true//contact.businessEmail.length > 0
                         }}
                         inputProps={{ style: { fontSize: "0.8em", color: "gray", padding: 0, margin: 'auto' } }}
-                    />
+                    /> */}
                 </Tooltip>
                 <Tooltip arrow title="Site Web">
-                    <TextField id="standard-basic"
+                    <Typography style={{ textAlign: 'center', color: 'gray', fontSize: "0.8em" }} >
+                        {contact.businessWebsite || <span style={{ color: 'gray', fontSize: "0.8em", }}>...</span>}
+                    </Typography>
+                    {/* <TextField id="standard-basic"
                         value={contact.businessWebsite}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessWebsite')}
                         InputProps={{
@@ -427,30 +470,42 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                             disableUnderline: true
                         }}
                         inputProps={{ style: { fontSize: "0.8em", color: "gray", padding: 0 } }}
-                    />
+                    /> */}
                 </Tooltip>
             </StyledTableCell>
 
             {/* businessCity */}
             <StyledTableCell
                 component="td" scope="row" >
-                <TextField id="standard-basic"
-                    value={contact.businessCity}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessCity')}
-                    InputProps={{
-                        disableUnderline: contact.businessCity.length > 0
-                    }}
-                />
-                <TextField id="standard-basic"
-                    value={contact.businessAddress} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessAddress')}
-                    InputProps={{
-                        startAdornment: contact.businessAddress.length === 0 && <span style={{ color: 'gray', fontSize: "0.8em", marginLeft: "40%" }}>... </span>,
-                        disableUnderline: true
-                    }}
-                    inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
-                />
-            </StyledTableCell>
+                <Tooltip arrow title="Ville">
+                    <Typography style={{ textAlign: 'center'}} >
+                        {contact.businessCity || <span>...</span>}
+                    </Typography>
+                    {/* <TextField id="standard-basic"
+                        value={contact.businessCity}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessCity')}
+                        InputProps={{
+                            disableUnderline: contact.businessCity.length > 0
+                        }}
+                    /> */}
+                </Tooltip>
 
+
+                <Tooltip arrow title="Adresse">
+                    <Typography style={{ textAlign: 'center', color: 'gray', fontSize: "0.8em" }} >
+                        {contact.businessAddress || <span style={{ color: 'gray', fontSize: "0.8em", }}>...</span>}
+                    </Typography>
+                    {/* <TextField id="standard-basic"
+                        value={contact.businessAddress} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessAddress')}
+                        InputProps={{
+                            startAdornment: contact.businessAddress.length === 0 && <span style={{ color: 'gray', fontSize: "0.8em", marginLeft: "40%" }}>... </span>,
+                            disableUnderline: true
+                        }}
+                        inputProps={{ style: { fontSize: "0.8em", color: "gray" } }}
+                    /> */}
+                </Tooltip>
+            </StyledTableCell>
+                
             {/* hasBeenCalled */}
             <StyledTableCell align="center">
                 <Box display="flex"
@@ -468,8 +523,8 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                                 />
                             </IconButton>
                         </Tooltip>
-                    </Avatar>                
-                </Box>               
+                    </Avatar>
+                </Box>
             </StyledTableCell>
 
             {/* hasBeenSentEmailOrMeetUp */}
@@ -489,7 +544,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                             </IconButton>
                         </Tooltip>
                     </Avatar>
-                </Box>              
+                </Box>
             </StyledTableCell>
 
             {/* comments */}
@@ -522,7 +577,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                     <DialogActions>
                         <Button variant="contained" color='primary' onClick={handleCloseCommentDialog}>Valider</Button>
                     </DialogActions>
-                </Dialog>            
+                </Dialog>
             </StyledTableCell>
 
             {/* interestGauge */}
@@ -610,7 +665,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                         justifyContent: "end",
                     }}>
                         {contact.dateOfFirstCall && <Tooltip arrow title="Supprimer la date" placement='left' >
-                            <IconButton color="primary" sx={{ padding: 0 }} 
+                            <IconButton color="primary" sx={{ padding: 0 }}
                                 onClick={() => handleChangeDate(null, "dateOfFirstCall")} >
                                 <ClearIcon />
                             </IconButton>
@@ -627,7 +682,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                         <DatePicker
                             format="DD MMM YYYY"
                             value={contact.dateOfFirstCall !== null ? dayjs(contact.dateOfFirstCall.toDate()) : null}
-                            onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfFirstCall")}    
+                            onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfFirstCall")}
                             label=" "
                             sx={{
                                 '& .MuiInputBase-root': {
@@ -648,7 +703,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                         justifyContent: "end",
                     }}>
                         {contact.dateOfLastCall && <Tooltip arrow title="Supprimer la date" placement='left' >
-                            <IconButton color="primary" sx={{ padding: 0 }}  
+                            <IconButton color="primary" sx={{ padding: 0 }}
                                 onClick={() => handleChangeDate(null, "dateOfLastCall")} >
                                 <ClearIcon />
                             </IconButton>
@@ -665,7 +720,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                         <DatePicker
                             format="DD MMM YYYY"
                             value={contact.dateOfLastCall !== null ? dayjs(contact.dateOfLastCall.toDate()) : null}
-                            onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfLastCall")}    
+                            onChange={(newDate: Dayjs | null) => handleChangeDate(newDate, "dateOfLastCall")}
                             label=" "
                             sx={{
                                 '& .MuiInputBase-root': {

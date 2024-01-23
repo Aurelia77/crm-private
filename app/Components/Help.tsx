@@ -28,7 +28,7 @@ export default function Help() {
                 <ListItem>
                     <ListItemText primary={
                         <Typography>
-                            Dans l'onglet LISTE DES CONTACTS <Diversity3Icon color="primary" /> vous pouvez voir tous les contacts que vous avez créés et les modifier directement dans le tableau (sauf le logo et les fichiers) ou lors de la vue d'un contact, qui s'ouvre en cliquant sur son logo dans le tableau.
+                            Dans l'onglet LISTE DES CONTACTS <Diversity3Icon color="primary" /> vous pouvez voir tous les contacts que vous avez créés et les modifier directement dans le tableau certains champs (pas le texte, le logo et les fichiers) ou lors de la vue d'un contact, qui s'ouvre en cliquant sur son logo dans le tableau.
                         </Typography>
                     } />
                 </ListItem>
@@ -50,7 +50,7 @@ export default function Help() {
                 <ListItem>
                     <ListItemText primary={
                         <>
-                            Lors du clic sur le logo d'un contact dans le tableau, la VUE DU CONTACT s'ouvre <PersonIcon color="primary" /> et vous pouvez modifier toutes les informations du contact, par exemple ajouter / modifier le logo ou associer des fichiers à ce contact (fichiers qui existent déjà ou nouveaux fichiers, qui seront ensuite disponibles aussi pour les autres contacts).
+                            Lors du clic sur le logo d'un contact dans le tableau, la VUE DU CONTACT s'ouvre <PersonIcon color="primary" /> et vous pouvez modifier toutes les informations du contact, par exemple ajouter/modifier le logo ou associer des fichiers à ce contact (fichiers qui existent déjà ou nouveaux fichiers, qui seront ensuite disponibles aussi pour les autres contacts).
                         </>
                     } />
                 </ListItem>

@@ -72,7 +72,7 @@ type UserInfos = {
 
 type Alerts = {
   nbContactsWithDatePassed: number,
-  nbContactsWithDateSoon: number,
+  nbContactsDateSoon: number,
 }
 
 type SearchContactCriteria = {
