@@ -47,8 +47,6 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
     const allDifferentsBusinessCategoryValues = getUniqueSortedValues(contacts, 'businessCategoryId')
     const allDifferentsBusinessCitiesValues = getUniqueSortedValues(contacts, 'businessCity', false)
     const allDifferentsContactTypesValues = getUniqueSortedValues(contacts, 'contactType')
-  
-    console.log(getUniqueSortedValues(contacts, 'businessCity', false))
 
     React.useEffect(() => {
         getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {

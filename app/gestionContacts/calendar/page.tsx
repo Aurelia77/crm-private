@@ -15,7 +15,7 @@ export default function CalendarPage() {
     const { currentUser } = useAuthUserContext()
     const [allContacts, setAllContacts] = React.useState<Contact[]>([])
 
-    console.log("allContacts : ", allContacts)
+    //console.log("allContacts : ", allContacts)
 
 
     const updateContactInContactsAndDB = useContactsContext().updateContactInContactsAndDB

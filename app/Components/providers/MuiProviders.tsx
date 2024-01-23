@@ -67,7 +67,16 @@ export default function MuiProviders({ children }: { children: React.ReactNode }
             fontFamily: 'comic sans ms, Roboto, Arial',
         },
         components: {
-            
+            MuiTypography: {
+                styleOverrides: {
+                    "root": {
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",   // Ajout de 3 ... à la fin du texte si il est trop long
+                        whiteSpace: 'nowrap'
+                    },
+                }
+            },
+
             MuiTextField: {
                 defaultProps: {
                     variant: "standard",

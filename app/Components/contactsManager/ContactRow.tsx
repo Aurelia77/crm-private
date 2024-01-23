@@ -290,7 +290,9 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
 
             {/* businessName */}
             <StyledTableCell component="td" scope="row" >
-                <Typography sx={{ color: getPriorityTextAndColor(contact.priority).color }} >
+                <Typography sx={{ color: getPriorityTextAndColor(contact.priority).color,
+                    overflow:"visible", whiteSpace: 'normal' // ne pas utilisé l'ellipsis appliqué à tous les composants typographys ici
+                     }} >
                     {contact.isClient
                         ? <HandshakeOutlinedIcon color='success' fontSize='large' />
                         : <PsychologyAltIcon sx={{ color: muiTheme.palette.gray.main, }} fontSize='large' />}
@@ -408,7 +410,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                     /> */}
                 </Tooltip>
                 <Tooltip arrow title="Dirigeant" placement='bottom'>
-                    <Typography style={{ textAlign: 'center', color: 'gray', fontSize: "0.8em" }} >
+                    <Typography component="div" style={{ textAlign: 'center', color: 'gray', fontSize: "0.8em" }} >
                         {contact.directorName
                             ? <Box display="flex"
                                 //flexDirection="row" 
