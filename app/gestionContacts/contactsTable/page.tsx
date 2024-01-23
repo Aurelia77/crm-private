@@ -162,17 +162,14 @@ export default function ContactsTablePage() {
         : contactsSearchCriteria.isClient === "no"
           ? false
           : null
-      const searchOnCity = contactsSearchCriteria.businessCity.length > 0 
-        ? contactsSearchCriteria.businessCity 
+      const searchOnCity = contactsSearchCriteria.businessCity.length > 0
+        ? contactsSearchCriteria.businessCity
         : ['']
-      const searchOnCategory = contactsSearchCriteria.businessCategoryId.length > 0 
-        ? contactsSearchCriteria.businessCategoryId 
-        : ['']
-        allContacts.forEach((contact) => {
-          console.log(contact.businessCategoryId)
-        })
-      const searchOnType = contactsSearchCriteria.contactType.length > 0 
-        ? contactsSearchCriteria.contactType 
+      const searchOnCategory = contactsSearchCriteria.businessCategoryId.length > 0
+        ? contactsSearchCriteria.businessCategoryId
+        : ['']     
+      const searchOnType = contactsSearchCriteria.contactType.length > 0
+        ? contactsSearchCriteria.contactType
         : ['']
 
       const searchedContacts: Contact[] = allContacts.filter((contact: Contact) => {

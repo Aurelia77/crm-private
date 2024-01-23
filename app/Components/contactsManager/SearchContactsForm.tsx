@@ -48,7 +48,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
     const allDifferentsBusinessCitiesValues = getUniqueSortedValues(contacts, 'businessCity', false)
     const allDifferentsContactTypesValues = getUniqueSortedValues(contacts, 'contactType')
   
-    
+    console.log(getUniqueSortedValues(contacts, 'businessCity', false))
 
     React.useEffect(() => {
         getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
@@ -64,7 +64,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
    
     React.useEffect(() => {
         onSearchChange(search)
-    }, [search, onSearchChange, ])
+    }, [search, onSearchChange])
 
     React.useEffect(() => {
         if (selectedCatIds.length > 0) {
