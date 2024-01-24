@@ -25,7 +25,7 @@ const emptyContact: Contact = {
     contactPosition: '',
     hasBeenCalled: 0,
     hasBeenSentEmailOrMeetUp: 0,
-    filesSent: [],
+    filesSentRef: [],
     tag: [],
     interestGauge: null,
     dateOfFirstCall: null,
@@ -222,7 +222,7 @@ const getUniqueSortedValues = (contacts: Contact[], key: keyof Contact, caseSens
         value,
         count: counts[value]
     }));
-    
+
     return uniqueValues
 }
 

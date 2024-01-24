@@ -38,7 +38,7 @@ import { Timestamp } from 'firebase/firestore';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Tooltip from '@mui/material/Tooltip';
 
-import { getCategoriesFromDatabase } from '../../utils/firebase'
+import { getCategoriesFromDatabase, getFileNameFromRef } from '../../utils/firebase'
 import { FormControl } from '@mui/material';
 import { handleOpenFile } from '../../utils/firebase'
 import { StyledRating, StyledRatingStars, customIcons, IconContainer } from '../../utils/StyledComponentsAndUtilities'
@@ -494,7 +494,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                         }}
                     /> */}
                 </Tooltip>
-                
+
                 <Tooltip arrow title="Adresse">
                     <Typography style={{ color: 'gray', fontSize: "0.8em" }} >
                         {contact.businessAddress || <span style={{ color: 'gray', fontSize: "0.8em", }}>...</span>}
@@ -597,60 +597,64 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                 />
             </StyledTableCell>
 
-            {/* filesSent */}
+            {/* filesSentRef */}
             <StyledTableCell align="right">
                 <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                    {contact.filesSent.length} fichier(s) associés
+                    {contact.filesSentRef.length} fichier(s) associés
                 </Typography>
 
-                {contact.filesSent[0] && <Typography
-                    onClick={() => handleOpenFile(contact.filesSent[0].fileRef)}
+                {contact.filesSentRef[0] && <Typography
+                    onClick={() => handleOpenFile(contact.filesSentRef[0])}
                     sx={{ cursor: "pointer" }}
                     align="left"
                 >
-                    {contact.filesSent[0].fileName.length < 15
-                        ? contact.filesSent[0].fileName
-                        : contact.filesSent[0].fileName.substring(0, 15) + "..."
-                    }
+                    {contact.filesSentRef[0]}
+                    {/* {getFileNameFromRef(contact.filesSentRef[0])} */}
+
+                    {/* // {contact.filesSentRef[0].fileName.length < 15
+                    //     ? contact.filesSentRef[0].fileName
+                    //     : contact.filesSentRef[0].fileName.substring(0, 15) + "..."
+                    // } */}
                 </Typography>
                 }
 
-                {contact.filesSent[1] && <Typography
-                    onClick={() => handleOpenFile(contact.filesSent[1].fileRef)}
+                {contact.filesSentRef[1] && <Typography
+                    onClick={() => handleOpenFile(contact.filesSentRef[1])}
                     sx={{ cursor: "pointer" }}
                     align="left"
                 >
-                    {contact.filesSent[1].fileName.length < 15
-                        ? contact.filesSent[1].fileName
-                        : contact.filesSent[1].fileName.substring(0, 15) + "..."
-                    }
+                     {getFileNameFromRef(contact.filesSentRef[0])}
+                    {/* {contact.filesSentRef[1].fileName.length < 15
+                        ? contact.filesSentRef[1].fileName
+                        : contact.filesSentRef[1].fileName.substring(0, 15) + "..."
+                    } */}
                 </Typography>
                 }
 
-                {contact.filesSent.length > 2 && <IconButton aria-label="files" color="primary" onClick={handleClickOpenFilesDialog}>
+                {contact.filesSentRef.length > 2 && <IconButton aria-label="files" color="primary" onClick={handleClickOpenFilesDialog}>
                     <ZoomInIcon />
                     <Typography >
-                        + {contact.filesSent.length - 2}
+                        + {contact.filesSentRef.length - 2}
                     </Typography>
                 </IconButton>
                 }
 
-                {/* Dialog pour modifier */}
                 <Dialog open={openFilesDialogue} onClose={handleCloseFilesDialog} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="lg" fullWidth
                     disableRestoreFocus // sinon le focus ne se fait pas sur le TextField
                 >
-                    <DialogTitle id="alert-dialog-title">Commentaires pour {contact.businessName}</DialogTitle>
+                    <DialogTitle id="alert-dialog-title">Fichiers associés au contact {contact.businessName}</DialogTitle>
                     <DialogContent
                         dividers
                     >
-                        {contact.filesSent.map((file, index) => (
+                        {contact.filesSentRef.map((fileRef, index) => (
                             <Box key={index} sx={{ display: "flex" }} >
-                                <Avatar sx={{ width: 40, height: 40, backgroundColor: stringToColor(file.fileName.slice(-3)), }} >{file.fileName.slice(-3)}</Avatar>
+                                {/* <Avatar sx={{ width: 40, height: 40, backgroundColor: stringToColor(file.fileName.slice(-3)), }} >{file.fileName.slice(-3)}</Avatar> */}
                                 <Typography
-                                    onClick={() => handleOpenFile(file.fileRef)}
+                                    onClick={() => handleOpenFile(fileRef)}
                                     sx={{ cursor: "pointer" }}
                                 >
-                                    {file.fileName}
+                                    {fileRef}
+                                    {/* {getFileNameFromRef(fileRef)} */}
                                 </Typography>
                             </Box>
                         ))}

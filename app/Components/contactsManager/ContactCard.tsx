@@ -22,7 +22,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import ClearIcon from '@mui/icons-material/Clear';
 import { Timestamp } from 'firebase/firestore';
 import { useTheme } from '@mui/material/styles';
-import { storage, addFileOnFirebaseDB, getCategoriesFromDatabase } from '../../utils/firebase'
+import { storage, addFileOnFirebaseDB, getCategoriesFromDatabase, getFileNameFromRef } from '../../utils/firebase'
+
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import LinearProgress from '@mui/material/LinearProgress';
@@ -72,6 +73,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     //console.log("contact ContactCard : ", contact)
 
     const [contactToAddOrUpdate, setContactToAddOrUpdate] = React.useState<Contact>(contact)
+    const [contactFilesWithNames, setContactFilesWithNames] = React.useState<FileNameAndRefType[]>([])
+
     const [tabValue, setTabValue] = React.useState<number>(0);
     const [logoChoosen, setIsLogoChoosen] = React.useState(false);  
     
@@ -88,6 +91,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     const [progresspercentFile, setProgresspercentFile] = React.useState(0);
     const [filesFirebaseArray, setFilesFirebaseArray] = React.useState<FileNameAndRefType[]>([])
     const [firebaseFileSelected, setFirebaseFileSelected] = React.useState<FileNameAndRefType>({ fileName: "", fileRef: "" })
+
+    console.log("firebaseFileSelected", firebaseFileSelected)
 
     const [newFileName, setNewFileName] = React.useState<string | null>(null);
 
@@ -194,13 +199,16 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                     addFileOnFirebaseDB(currentUserId, { fileName: file.name, fileRef: downloadURL })
 
-                    console.log("downloadURL", downloadURL)
+                    //console.log("downloadURL", downloadURL)
+
                     if (attribut === "logo") {
                         setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: downloadURL })
                         setIsLogoChoosen(false)
                         setProgresspercentLogo(0)
                     } else {
-                        setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: [...contactToAddOrUpdate.filesSent, { fileName: newFileName, fileRef: downloadURL }] })
+                        //setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: [...contactToAddOrUpdate.filesSentRef, { fileName: newFileName, fileRef: downloadURL }] })
+                        setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: contactToAddOrUpdate.filesSentRef.concat(downloadURL) })
+
                         setProgresspercentFile(0)
                         setNewFileName(null);
                     }
@@ -214,16 +222,20 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         setContactToAddOrUpdate({ ...contactToAddOrUpdate, logo: "" })
     }
 
-    const handleChangeSelectFirebaseFile = () => {
+    const handleAddSelectFirebaseFileToContact = () => {
 
-        setContactToAddOrUpdate({ ...contactToAddOrUpdate, filesSent: [...contactToAddOrUpdate.filesSent, { fileName: firebaseFileSelected.fileName, fileRef: firebaseFileSelected.fileRef }] })
+        console.log(contactToAddOrUpdate.filesSentRef)
+        console.log(contactToAddOrUpdate.filesSentRef.concat(firebaseFileSelected.fileRef))
+
+        setContactToAddOrUpdate({ ...contactToAddOrUpdate, filesSentRef: contactToAddOrUpdate.filesSentRef.concat(firebaseFileSelected.fileRef) })
+
         setFirebaseFileSelected({ fileName: "", fileRef: "" })
     }
 
-    const removeFile = (file: FileNameAndRefType) => {
-        console.log(file.fileRef)
-        console.log(file.fileName)
-        setContactToAddOrUpdate({ ...contactToAddOrUpdate, filesSent: contactToAddOrUpdate.filesSent.filter((oneFile: FileNameAndRefType) => oneFile.fileRef !== file.fileRef) })
+    const removeFile = (fileRef: string) => {
+        // console.log(file.fileRef)
+        // console.log(file.fileName)
+        setContactToAddOrUpdate({ ...contactToAddOrUpdate, filesSentRef: contactToAddOrUpdate.filesSentRef.filter((oneFile: string) => oneFile !== fileRef) })
         setOpenDeleteContactFileModal(false)
     }
 
@@ -231,6 +243,32 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: number })
     }
 
+
+    
+
+
+    React.useEffect(() => {
+        const fetchFileNames = async () => {
+            const filesWithNames = await Promise.all(
+                contactToAddOrUpdate.filesSentRef.map(async (fileRef: string) => {
+                    const fileName = await getFileNameFromRef(fileRef);
+                    return { fileName, fileRef };
+                })
+            );
+
+            setContactFilesWithNames(filesWithNames);
+        };
+
+        fetchFileNames();
+
+
+
+
+        // setContactFilesWithNames(contactToAddOrUpdate.filesSentRef.map((fileRef: string) => ({
+        //     fileName: getFileNameFromRef(fileRef),
+        //     fileRef: fileRef
+        // })))
+    }, [contactToAddOrUpdate.filesSentRef])
      
 
 
@@ -266,6 +304,10 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     //         //alert("Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir quitter cette page ?");
     //     //}
     // }, [location, ]);
+
+
+
+
 
 
     return (
@@ -420,24 +462,32 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
                     {/* ///////// FICHIERS */}
                     <Box  >
-                        <Typography variant="h6">Fichiers associés au contact ({contactToAddOrUpdate.filesSent.length})</Typography>
+                        <Typography variant="h6">Fichiers associés au contact ({contactToAddOrUpdate.filesSentRef.length})</Typography>
                         <Typography
                             component="div"
                             sx={{ color: "text.secondary" }}
                         >
-                            {contactToAddOrUpdate.filesSent.map((file, index) => (
+                            {/* {contactToAddOrUpdate.filesSentRef.map((fileRef, index) => ( */}
+                            {contactFilesWithNames.map((file, index) => (
                                 <Box key={index} sx={{ display: "flex", alignItems: "center" }} >
                                     <ArrowRightIcon sx={{ color: "text.secondary" }} />
                                     <Button
-                                        onClick={() => handleOpenFile(file.fileRef)}
+                                        onClick={() => handleOpenFile(file)}
                                     >
-                                        {index + 1} - {file.fileName}<br />
+
+
+                                        {/* {index + 1} - {fileRef}  */}
+                                        {/* {index + 1} - {getFileNameFromRef(file)}  */}
+                                        {index + 1} - {file.fileName} 
+
+
+                                        {/* <br /> */}
                                     </Button>
                                     <Tooltip title="Désassocier ce fichier du contact">
                                         <IconButton
                                             size="small"
                                             color="error"
-                                            onClick={() => removeFile(file)}
+                                            onClick={() => removeFile(file.fileRef)}
                                         >
                                             <ClearIcon />
                                         </IconButton>
@@ -807,19 +857,20 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
                     {/* ///////// FICHIERS ///////// */}
                     <Box sx={{ width: "70%" }}>
-                        <Typography variant="h6">Fichiers associés au contact ({contactToAddOrUpdate.filesSent.length})</Typography>
+                        <Typography variant="h6">Fichiers associés au contact ({contactToAddOrUpdate.filesSentRef.length})</Typography>
                         <Typography
                             //variant="caption" 
                             component="div"
                             sx={{ color: "text.secondary" }}
                         >
-                            {contactToAddOrUpdate.filesSent.map((file, index) => (
+                            {contactToAddOrUpdate.filesSentRef.map((fileRef, index) => (
                                 <Box key={index} sx={{ display: "flex", alignItems: "center" }} >
                                     <ArrowRightIcon sx={{ color: "text.secondary" }} />
                                     <Button
-                                        onClick={() => handleOpenFile(file.fileRef)}
+                                        onClick={() => handleOpenFile(fileRef)}
                                     >
-                                        {index + 1} - {file.fileName}<br />
+                                        {index + 1} - {fileRef}<br />
+                                        {/* {index + 1} - {getFileNameFromRef(fileRef)}<br /> */}
                                     </Button>
                                     <Tooltip arrow title="Désassocier ce fichier du contact">
                                         <IconButton
@@ -843,13 +894,13 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                                 component="h2"
                                                 sx={{ mb: 5 }}
                                             >
-                                                Supprimer le fichier associé : <span style={{ fontWeight: "bold" }}>{file.fileName}</span> ?
+                                                Supprimer le fichier associé : <span style={{ fontWeight: "bold" }}>{getFileNameFromRef(fileRef)}</span> ?
                                             </Typography>
                                             <Box sx={{ display: "flex", justifyContent: "space-between" }} >
                                                 <Button
                                                     variant="contained"
                                                     color='warning'
-                                                    onClick={() => removeFile(file)}
+                                                    onClick={() => removeFile(fileRef)}
                                                     sx={{ marginRight: "15px" }}
                                                 >
                                                     Oui !
@@ -924,7 +975,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                             sx={{ marginTop: "10px", color: "white" }}
                                             type="submit"
                                             variant="contained" startIcon={<AddIcon />}
-                                            onClick={handleChangeSelectFirebaseFile}
+                                            onClick={handleAddSelectFirebaseFileToContact}
                                         >
                                             Associer ce fichier
                                         </Button>
@@ -942,7 +993,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     display: "flex",
                                     gap: "5%"
                                 }}
-                                onSubmit={(e) => handleSubmitFiles(e, "filesSent")}
+                                onSubmit={(e) => handleSubmitFiles(e, "filesSentRef")}
                             >
                                 <Input
                                     id="fileInput"
@@ -996,7 +1047,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             </form>
                         </TabPanel>
 
-                        {contactToAddOrUpdate.filesSent.length > 0 &&
+                        {contactToAddOrUpdate.filesSentRef.length > 0 &&
                             <Box>
                                 <Button
                                     variant="contained"
@@ -1022,7 +1073,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                             <Button
                                                 variant="contained"
                                                 color='warning'
-                                                onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, filesSent: [] })}
+                                                onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, filesSentRef: [] })}
                                                 sx={{ marginRight: "15px" }}
                                             >
                                                 Oui !

@@ -140,6 +140,21 @@ const getContactInfoInDatabaseFromId = async (contactId: string) => {
 }
 
 
+const getFileNameFromRef = async (fileRef: string) => {
+  let fileName = ""
+  const q = query(collection(fireStoreDb, "files"), where("fileRef", "==", fileRef));
+
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    fileName = doc.data().fileName
+  });
+
+  console.log(fileName)
+
+  return fileName
+}
+
+
 
 
 const getFilesFromDatabase = async (currentUserId: any) => {
@@ -375,6 +390,7 @@ export {
   addLaurianeDataWithCatx50,
   getUserContactsFromDatabase,
   getContactInfoInDatabaseFromId,
+  getFileNameFromRef,
   getFilesFromDatabase,
   getCategoriesFromDatabase,
   addFakeDataOnFirebaseAndReload,

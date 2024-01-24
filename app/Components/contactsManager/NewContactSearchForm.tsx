@@ -179,7 +179,9 @@ export default function NewContactSearchForm({
                             />
                         </Box>
                     </Stack>
-                    <p>Si recherche par SIRET le reste n'est pas pris en compte (enlever le SIRET pour qu'elle se fasse sur le reste)</p>
+                    <p>Si recherche par SIRET le reste n'est pas pris en compte<br/>
+                        (enlever le SIRET pour qu'elle se fasse sur le reste)
+                    </p>
                     <Box
                         sx={{ display: 'flex', alignItems: 'flex-end' }}>
                         <DialpadRoundedIcon id='siret' sx={{ color: 'action.active', mr: 1, mb: 2 }} />

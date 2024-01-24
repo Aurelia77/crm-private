@@ -13,7 +13,6 @@ type CategorieType = "NON DEFINI" | "Camping" | "Hôtel" | "Conciergerie" | "Age
 type NameAndCatType = {
   catLabel: CategorieType,
   name: string,
-
 }
 
 type FileNameAndRefType = {
@@ -43,7 +42,7 @@ type Contact = {
   contactPosition: string,
   hasBeenCalled: 0 | 1 | 2,       // 0="no" | 1="yes but no answer" | 2="yes and answered",
   hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3,  // 0="nothing" | 1="email sent" | 2="email sent and received" | 3="met up",
-  filesSent: FileNameAndRefType[],
+  filesSentRef: string[],
   //filesSent: File,
   //filesSent: File[] | null,
   tag: string[],
