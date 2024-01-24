@@ -40,10 +40,14 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
 
     const [search, setSearch] = React.useState<SearchContactCriteria>(emptySearchCriteria);
 
+    //console.log("search CAT Ids", search.businessCategoryIds)
+
     const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[]>([]);
 
-    const [selectedCatIds, setCatSelectedIds] = React.useState<string[]>([]);
-    const [selectedCatLabels, setCatSelectedLabels] = React.useState<string[]>([]);
+    //const [selectedCatIds, setSelectedCatIds] = React.useState<string[]>([]);
+    //console.log("selectedCatIds", selectedCatIds)
+
+    const [selectedCatLabels, setSelectedCatLabels] = React.useState<string[]>([]);
 
     const muiTheme = useTheme();
 
@@ -64,7 +68,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
     const [allDifferentsBusinessCitiesValues, setAllDifferentsBusinessCitiesValues] = React.useState<{ value: string, count: number }[]>([]);
     const [allDifferentsContactTypesValues, setAllDifferentsContactTypesValues] = React.useState<{ value: ContactTypeType, count: number }[]>([]);
 
-    console.log("allDifferentsContactTypesValues", allDifferentsContactTypesValues)
+    //console.log("allDifferentsContactTypesValues", allDifferentsContactTypesValues)
 
 
     React.useEffect(() => {
@@ -90,20 +94,41 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
 
 
 
-    
-    React.useEffect(() => {
-        console.log("*********search CAT_ID", search.businessCategoryIds)
-        console.log("*********allDifferentsBusinessCategoryIds", allDifferentsBusinessCategoryIds)
 
-        setSearch({...search, businessCategoryIds: search.businessCategoryIds.filter(catId => allDifferentsBusinessCategoryIds.map(item => 
-            {
-                console.log("**************catId", catId)
-                console.log("**************allDifferentsBusinessCategoryIds Item", item.value)
+    React.useEffect(() => {
+        // console.log("*********search CAT_ID", search.businessCategoryIds)
+        // console.log("*********allDifferentsBusinessCategoryIds", allDifferentsBusinessCategoryIds)
+
+
+        // const xxx = search.businessCategoryIds.filter(catId => allDifferentsBusinessCategoryIds.map(item => 
+        //     {
+        //         console.log("**************catId", catId)
+        //         console.log("**************allDifferentsBusinessCategoryIds Item", item.value)
+
+        //         return item.value
+        //     }).includes(catId))
+
+        //     console.log("************xxxxxxxxxxx", xxx)
+
+
+
+        setSearch({
+            ...search, businessCategoryIds: search.businessCategoryIds.filter(catId => allDifferentsBusinessCategoryIds.map(item => {
+                // console.log("**************catId", catId)
+                // console.log("**************allDifferentsBusinessCategoryIds Item", item.value)
 
                 return item.value
             }
-        ).includes(catId))
-         })
+            ).includes(catId))
+        })
+
+
+
+        // setSelectedCatIds(selectedCatIds
+        //     .filter(catId => allDifferentsBusinessCategoryIds
+        //         .map(item => item.value).includes(catId) ))
+
+
     },[allDifferentsBusinessCategoryIds])
 
 
@@ -129,16 +154,28 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
         onSearchChange(search)
     }, [search, onSearchChange])
 
+
+
+    // React.useEffect(() => {
+    //     if (selectedCatIds.length > 0) {
+    //         Promise.all(selectedCatIds.map(catId => getCatLabelFromId(catId)))
+    //             .then(labels => {
+    //                 return setSelectedCatLabels(labels)
+    //             });
+    //     } else {
+    //         setSelectedCatLabels([]);
+    //     }
+    // }, [selectedCatIds]);
     React.useEffect(() => {
-        if (selectedCatIds.length > 0) {
-            Promise.all(selectedCatIds.map(catId => getCatLabelFromId(catId)))
+        if (search.businessCategoryIds.length > 0) {
+            Promise.all(search.businessCategoryIds.map(catId => getCatLabelFromId(catId)))
                 .then(labels => {
-                    return setCatSelectedLabels(labels)
+                    return setSelectedCatLabels(labels)
                 });
         } else {
-            setCatSelectedLabels([]);
+            setSelectedCatLabels([]);
         }
-    }, [selectedCatIds]);
+    }, [search.businessCategoryIds]);
 
     const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearch({ ...search, [event.target.name]: event.target.value });
@@ -147,7 +184,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
     const handleMultipleChangeSelect = (event: SelectChangeEvent<string[]>, attribut: keyof SearchContactCriteria) => {
         const value = event.target.value;
 
-        attribut === "businessCategoryIds" && setCatSelectedIds(value as string[]);
+        //attribut === "businessCategoryIds" && setSelectedCatIds(value as string[]);
 
         setSearch({ ...search, [attribut]: typeof value === 'string' ? [value] : value });
     };
@@ -159,6 +196,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
     const resetSearch = () => {
         setSearch(emptySearchCriteria);
         onSearchChange(emptySearchCriteria);
+        //setSelectedCatIds([]);
     }
 
     // React.useEffect(() => {
@@ -210,9 +248,9 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             name="radio-buttons-group"
                             value={search.isClient}
                             onChange={handleChangeRadio}
-                        >
-                            <FormControlLabel value="yes" control={<Radio />} label="Clients" sx={{ height: "25px" }} />
-                            <FormControlLabel value="no" control={<Radio />} label="Prospects" sx={{ height: "25px" }} />
+                        >                        
+                            <FormControlLabel value="yes" control={<Radio />} label={`Clients (${contacts.filter(contact => contact.isClient === true).length})`} sx={{ height: "25px" }} />
+                            <FormControlLabel value="no" control={<Radio />} label={`Prospects (${contacts.filter(contact => contact.isClient === false).length})`} sx={{ height: "25px" }} />
                             <FormControlLabel value="all" control={<Radio />} label="TOUS" sx={{ height: "25px" }} />
                         </RadioGroup>
                     </FormControl>

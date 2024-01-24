@@ -343,9 +343,11 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
             </StyledTableCell>
 
             {/* contactPhone + businessPhone */}
-            <StyledTableCell component="td" align="center">
+            <StyledTableCell component="td" 
+            //align="center"
+            >
                 <Tooltip arrow title="Tél direct" placement='top'>
-                    <Typography sx={{ textAlign: 'center' }} >
+                    <Typography>
                         {contact.contactPhone || "..."}
                     </Typography>
                     {/* <TextField id="standard-basic" 
@@ -359,7 +361,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                 </Tooltip>
                 <Tooltip arrow title="Tél standard">
                     {/* !!!!! Si on met SX au lieu de STYLE => ne met pas en gris !!! mais le reste marche */}
-                    <Typography style={{ textAlign: 'center', color: 'gray', fontSize: "0.8em" }} >
+                    <Typography style={{ color: 'gray', fontSize: "0.8em" }} >
                         {contact.businessPhone || <span style={{ color: 'gray', fontSize: "0.8em", }}>... </span>}
                         {/* idem */}
                         {/* {contact.businessPhone.length === 0
@@ -384,9 +386,10 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
             {/* ContactName */}
             <StyledTableCell
                 sx={{ py: 0 }}
+                //align='center'
             >
                 <Tooltip arrow title="Contact direct" placement='bottom'>
-                    <Typography sx={{ textAlign: 'center' }} >
+                    <Typography>
                         {contact.contactName || "..."}
                     </Typography>
                     {/* <TextField id="standard-basic"
@@ -397,7 +400,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                     /> */}
                 </Tooltip>
                 <Tooltip arrow title="Contact entreprise" placement='bottom'>
-                    <Typography style={{ textAlign: 'center', color: 'gray', fontSize: "0.8em" }} >
+                    <Typography style={{color: 'gray', fontSize: "0.8em" }} >
                         {contact.contactPosition || <span style={{ color: 'gray', fontSize: "0.8em", }}>... </span>}
                     </Typography>
                     {/* <TextField id="standard-basic"
@@ -410,7 +413,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                     /> */}
                 </Tooltip>
                 <Tooltip arrow title="Dirigeant" placement='bottom'>
-                    <Typography component="div" style={{ textAlign: 'center', color: 'gray', fontSize: "0.8em" }} >
+                    <Typography component="div" style={{ color: 'gray', fontSize: "0.8em" }} >
                         {contact.directorName
                             ? <Box display="flex"
                                 //flexDirection="row" 
@@ -432,9 +435,10 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
             {/* contactEmail */}
             <StyledTableCell component="td"
                 sx={{ py: 0 }}
+            //align='center'
             >
                 <Tooltip arrow title="Email direct" placement='top'>
-                    <Typography style={{ textAlign: 'center' }} >
+                    <Typography >
                         {contact.contactEmail || <span>...</span>}
                     </Typography>
                     {/* <TextField id="standard-basic"
@@ -446,10 +450,9 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                     /> */}
                 </Tooltip>
                 <Tooltip arrow title="Email entreprise" placement='left'>
-                    <Typography style={{ textAlign: 'center', color: 'gray', fontSize: "0.8em" }} >
+                    <Typography style={{ color: 'gray', fontSize: "0.8em" }} >
                         {contact.businessEmail || <span style={{ color: 'gray', fontSize: "0.8em", }}>...</span>}
                     </Typography>
-
                     {/* <TextField id="standard-basic"
                         value={contact.businessEmail}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'businessEmail')}
@@ -461,7 +464,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                     /> */}
                 </Tooltip>
                 <Tooltip arrow title="Site Web">
-                    <Typography style={{ textAlign: 'center', color: 'gray', fontSize: "0.8em" }} >
+                    <Typography style={{ color: 'gray', fontSize: "0.8em" }} >
                         {contact.businessWebsite || <span style={{ color: 'gray', fontSize: "0.8em", }}>...</span>}
                     </Typography>
                     {/* <TextField id="standard-basic"
@@ -491,10 +494,9 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                         }}
                     /> */}
                 </Tooltip>
-
-
+                
                 <Tooltip arrow title="Adresse">
-                    <Typography style={{ textAlign: 'center', color: 'gray', fontSize: "0.8em" }} >
+                    <Typography style={{ color: 'gray', fontSize: "0.8em" }} >
                         {contact.businessAddress || <span style={{ color: 'gray', fontSize: "0.8em", }}>...</span>}
                     </Typography>
                     {/* <TextField id="standard-basic"
