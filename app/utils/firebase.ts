@@ -6,10 +6,11 @@ import { getStorage, ref, uploadBytes, uploadBytesResumable, getDownloadURL } fr
 import { Timestamp } from 'firebase/firestore';
 import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, deleteDoc, updateDoc, doc } from "firebase/firestore";
 import { uid } from 'uid';
-import fakeContactsData from '../utils/contactsTest'
-import laurianeData from '../utils/contactsLaurianeTOUS'
-import { contactCategories, emptyContact } from '../utils/toolbox'
-import contactsLaurianeNameAndCatLabel from '../utils/contactsLaurianeNomEtCat'
+import fakeContactsData from '../data/contactsTest'
+import laurianeData from '../data/contactsLaurianeTOUS'
+import laurianeDatax54 from '../data/contactsLaurianex50'
+import { contactCategories, emptyContact } from './toolbox'
+import contactsLaurianeNameAndCatLabel from '../data/contactsLaurianeNomEtCat'
 
 // LAURIANE Seulement
 const firebaseConfig = {
@@ -106,6 +107,10 @@ const addFakeDataWithCat = async (currentUserId: any) => {
 const addLaurianeDataWithCat = async (currentUserId: any) => {
   await addFakeDataOnFirebase(currentUserId, laurianeData)
   addCatToFakeContactsAndReload(currentUserId, laurianeData, contactsLaurianeNameAndCatLabel)
+}
+const addLaurianeDataWithCatx50 = async (currentUserId: any) => {
+  await addFakeDataOnFirebase(currentUserId, laurianeDatax54)
+  addCatToFakeContactsAndReload(currentUserId, laurianeDatax54, contactsLaurianeNameAndCatLabel)
 }
 
 const getUserContactsFromDatabase = async (currentUserId: any) => {
@@ -367,6 +372,7 @@ export {
   storage,
   addFakeDataWithCat,
   addLaurianeDataWithCat,
+  addLaurianeDataWithCatx50,
   getUserContactsFromDatabase,
   getContactInfoInDatabaseFromId,
   getFilesFromDatabase,

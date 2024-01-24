@@ -21,7 +21,8 @@ export default function Help() {
                 <ListItem>
                     <ListItemText primary={
                         <>
-                            Dans l'onglet NOUVEAU CONTACT <PersonAddIcon color="primary" /> grâce à une recherche INSEE ou à partir de zéro.
+                            Dans l'onglet NOUVEAU CONTACT <PersonAddIcon color="primary" /> grâce à une recherche INSEE ou à partir de zéro.<br/>
+                            Un logo par défaut s'affichera dans le tableau, en fonction du nom du contact, si vous n'en avez pas attribué un.
                         </>
                     } />
                 </ListItem>

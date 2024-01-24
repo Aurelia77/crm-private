@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { addFakeDataWithCat, addLaurianeDataWithCat, addCategoriesOnFirebaseAndReload, getFilesFromDatabase, getCategoriesFromDatabase, storage, addFileOnFirebaseDB, addCategorieOnFirebase, updateCategorieOnFirebase, updateFileOnFirebase, deleteCategorieOnFirebase, deleteAllDatasOnFirebaseAndReload, handleOpenFile, getAllFirebaseUserDatasAndSave } from '../utils/firebase'
+import { addFakeDataWithCat, addLaurianeDataWithCat, addLaurianeDataWithCatx50, addCategoriesOnFirebaseAndReload, getFilesFromDatabase, getCategoriesFromDatabase, storage, addFileOnFirebaseDB, addCategorieOnFirebase, updateCategorieOnFirebase, updateFileOnFirebase, deleteCategorieOnFirebase, deleteAllDatasOnFirebaseAndReload, handleOpenFile, getAllFirebaseUserDatasAndSave } from '../utils/firebase'
 import { Alert, Box, Divider, ListItemText, Modal, Paper, TextField, Typography } from '@mui/material'
 import { Button, FormControl, InputLabel, MenuItem, Select, Input } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -448,7 +448,8 @@ export default function Admin({ currentUserId }: AdminType) {
           <Box sx={{ display: "flex", justifyContent: "space-around", marginBottom: "20px" }} >
             <Button variant="contained" color='success' onClick={() => addCategoriesOnFirebaseAndReload(currentUserId)}>1-Ajouter Catégories</Button>
             <Button variant="contained" color='ochre' onClick={() => addFakeDataWithCat(currentUserId)}>2-Ajouter Contacts Test (x7)</Button>
-            <Button variant="contained" color='warning' onClick={() => addLaurianeDataWithCat(currentUserId)}>Ajouter Contacts LAURIANE (x 307)</Button>
+            <Button variant="contained" color='warning' onClick={() => addLaurianeDataWithCat(currentUserId)}>2-Ajouter Contacts LAURIANE (x 307)</Button>
+            <Button variant="contained" color='info' onClick={() => addLaurianeDataWithCatx50(currentUserId)}>2-Ajouter Contacts LAURIANE (x 50)</Button>
             <Button variant="contained" onClick={saveAllAndOpenFile}>Sauvegarder TOUTES mes données</Button>
             {/* <a href={url} download="data.json">Télécharger les données</a> */}
           </Box>
