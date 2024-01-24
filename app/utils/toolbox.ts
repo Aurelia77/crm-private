@@ -112,6 +112,34 @@ const contactCategories: ContactCategorieType[] = [
         id: "",
         label: "Mairie / médiathèque",
     },
+    {
+        id: "",
+        label: "Journal / magazine",
+    },
+    {
+        id: "",
+        label: "piscine vitrée",
+    },
+    {
+        id: "",
+        label: "TV",
+    },
+    {
+        id: "",
+        label: "Maquilleuse",
+    },
+    {
+        id: "",
+        label: "Photographe",
+    },
+    {
+        id: "",
+        label: "Vidéate",
+    },
+    {
+        id: "",
+        label: "Evénementiel",
+    },
 ]
 
 
@@ -172,14 +200,29 @@ const getUniqueSortedValues = (contacts: Contact[], key: keyof Contact, caseSens
     const allValues = caseSensitive
         ? contacts.map(contact => contact[key].trim())
         : contacts.map(contact => contact[key].trim().toUpperCase())
-    // On élimine les doublons
-    const uniqueValues = allValues.filter((value, index, self) => self.indexOf(value) === index);
-    // On les classe par ordre alphabétique
-    uniqueValues.sort((a, b) => {
-        if (a < b) return -1
-        if (a > b) return 1
-        return 0;
-    })
+
+    // // On élimine les doublons
+    // const uniqueValues : string[] = allValues.filter((value, index, self) => self.indexOf(value) === index);
+    // // On les classe par ordre alphabétique
+    // uniqueValues.sort((a, b) => {
+    //     if (a < b) return -1
+    //     if (a > b) return 1
+    //     return 0;
+    // })
+
+    // On ajoute le nombre de chaque occurence
+    // On compte les occurrences de chaque valeur
+    const counts: { [key: string]: number } = {};
+    allValues.forEach(value => {
+        counts[value] = (counts[value] || 0) + 1;
+    });
+
+    // On élimine les doublons et on les classe par ordre alphabétique
+    const uniqueValues: { value: string, count: number }[] = Object.keys(counts).sort().map(value => ({
+        value,
+        count: counts[value]
+    }));
+    
     return uniqueValues
 }
 

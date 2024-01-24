@@ -3,7 +3,7 @@ import { auth } from './../utils/firebase'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { Sign } from 'crypto'
 import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material'
-import LogoutIcon from '@mui/icons-material/Logout';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 export default function AuthDetails() {
     const [authUserInfo, setAuthUserInfo] = React.useState<any>(null)
@@ -28,7 +28,7 @@ export default function AuthDetails() {
     return (
         <Box>
             {authUserInfo
-                && <Box sx={{ display: "flex", justifyContent: 'space-between', height: "22px" }} >
+                && <Box sx={{ display: "flex", justifyContent: 'space-between', height: "30px" }} >
                     <Typography
                         variant="h6"
                         color="primary"
@@ -37,7 +37,7 @@ export default function AuthDetails() {
 
                     <Tooltip title="Déconnexion" placement="left">
                         <IconButton onClick={userSignOut} color="error" >
-                            <LogoutIcon />
+                            <ExitToAppIcon />
                         </IconButton>
                     </Tooltip>
                 </Box>

@@ -103,7 +103,7 @@ export default function ContactsLayout({
         setAllContacts(updatedContactsInLocalListWithWholeContact(allContacts, contactToUpdate))
         //localStorage.setItem('allContacts', JSON.stringify(updatedContactsInLocalListWithWholeContact(allContacts, contactToUpdate)))
 
-        // Je l'ai enlevé (01/2024) ùais voir si besoin car de toutes façon filterContacts est calculé à partir de allContacts
+        // Je l'ai enlevé (01/2024) mais voir si besoin car de toutes façon filterContacts est calculé à partir de allContacts
         //setFilteredContacts(updatedContactsInLocalListWithWholeContact(allContacts, contactToUpdate))
         updatDataWholeContactOnFirebase(contactToUpdate)
     }

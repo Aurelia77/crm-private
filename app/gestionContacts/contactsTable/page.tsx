@@ -13,7 +13,7 @@ import { TABS_WIDTH, emptyContact } from '../../utils/toolbox'
 //import { useSearchParams } from "next/navigation";
 import { useAuthUserContext } from '../../context/UseAuthContextProvider'
 import { addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, updatDataWholeContactOnFirebase, deleteDataOnFirebaseAndReload, getUserContactsFromDatabase } from '../../utils/firebase'
-import { countContactsByAlertDates, updatedContactsInLocalList, updatedContactsInLocalListWithWholeContact, useGetPriorityTextAndColor } from '../../utils/toolbox';
+import { countContactsByAlertDates, updatedContactsInLocalList, useGetPriorityTextAndColor } from '../../utils/toolbox';
 import { Timestamp } from 'firebase/firestore';
 
 import SearchContactsForm from '../../Components/contactsManager/SearchContactsForm';
@@ -32,12 +32,7 @@ export default function ContactsTablePage() {
 
   const muiTheme = useTheme()
 
-  const updateContactInContactsAndDB = useContactsContext().updateContactInContactsAndDB
-
-  const updateContactInContactsAndDBAndFilteredContacts = (id: string, keyAndValue: { key: string; value: string | number | boolean | Timestamp | File[] | null; }) => {
-    updateContactInContactsAndDB(id, keyAndValue)
-    filteredContacts && setAllContacts(updatedContactsInLocalList(filteredContacts, id, keyAndValue))
-  }
+  
 
   //const searchParams = useSearchParams();
   //const allContacts = JSON.parse(searchParams.get("allContacts") || "[]");
@@ -46,74 +41,26 @@ export default function ContactsTablePage() {
 
   // J'initialise allContacts et filteredContacts à null pour éviter l'affichage (rapide) du tableau VIDE (avant que les données ne soient chargées)
   const [allContacts, setAllContacts] = React.useState<Contact[] | null>(null)
+  //console.log("allContacts : ", allContacts)
+  // allContacts && allContacts[0] && console.log("allContacts 1 : ", allContacts[0].id[0] , allContacts[0].isClient )
+  // allContacts && allContacts[1] && console.log("allContacts 2 : ", allContacts[1].id[0], allContacts[1].isClient )
+
   const [filteredContacts, setFilteredContacts] = React.useState<Contact[] | null>(null)
   //console.log("filteredContacts : ", filteredContacts)
-  // const [allContacts, setAllContacts] = React.useState<Contact[]>([
-  //   // {...emptyContact, id: "1", businessName: "coucou1"}, 
-  //   // {...emptyContact, id: "2", businessName: "coucou2 2"},
-  //   // {...emptyContact, id: "3", businessName: "coucou3 3 3"},
-  //   // {...emptyContact, id: "4", businessName: "coucou4"},
-  //   // {...emptyContact, id: "5", businessName: "coucou5"},
-  //   // {...emptyContact, id: "6", businessName: "coucou6"},
-  //   // {...emptyContact, id: "7", businessName: "coucou7"},
-  //   // {...emptyContact, id: "8", businessName: "coucou8"},
-  //   // {...emptyContact, id: "9", businessName: "coucou1"}, 
-  //   // {...emptyContact, id: "10", businessName: "coucou2"},
-  //   // {...emptyContact, id: "11", businessName: "coucou3"},
-  //   // {...emptyContact, id: "12", businessName: "coucou4"},
-  //   // {...emptyContact, id: "13", businessName: "coucou5"},
-  //   // {...emptyContact, id: "14", businessName: "coucou6"},
-  //   // {...emptyContact, id: "15", businessName: "coucou7"},
-  //   // {...emptyContact, id: "16", businessName: "coucou8"},
-  //   // {...emptyContact, id: "17", businessName: "coucou1"},
-  //   // {...emptyContact, id: "18", businessName: "coucou2"},
-  //   // {...emptyContact, id: "19", businessName: "coucou3"},
-  //   // {...emptyContact, id: "20", businessName: "coucou4"},
-  //   // {...emptyContact, id: "21", businessName: "coucou5"},
-  //   // {...emptyContact, id: "22", businessName: "coucou6"},
-  //   // {...emptyContact, id: "23", businessName: "coucou7"},
-  //   // {...emptyContact, id: "24", businessName: "coucou8"},
-  //   // {...emptyContact, id: "25", businessName: "coucou1"},
-  //   // {...emptyContact, id: "26", businessName: "coucou2"},
-  //   // {...emptyContact, id: "27", businessName: "coucou3"},
-  //   // {...emptyContact, id: "28", businessName: "coucou4"},
-  //   // {...emptyContact, id: "29", businessName: "coucou5"},
-  //   // {...emptyContact, id: "30", businessName: "coucou6"},
-  //   // {...emptyContact, id: "31", businessName: "coucou7"},
-  //   // {...emptyContact, id: "32", businessName: "coucou8"},
-  //   // {...emptyContact, id: "33", businessName: "coucou1"},
-  //   // {...emptyContact, id: "34", businessName: "coucou2"},
-  //   // {...emptyContact, id: "35", businessName: "coucou3"},
-  //   // {...emptyContact, id: "36", businessName: "coucou4"},
-  //   // {...emptyContact, id: "37", businessName: "coucou5"},
-  //   // {...emptyContact, id: "38", businessName: "coucou6"},
-  //   // {...emptyContact, id: "39", businessName: "coucou7"},
-  //   // {...emptyContact, id: "40", businessName: "coucou8"},
-  //   // {...emptyContact, id: "41", businessName: "coucou1"},
-  //   // {...emptyContact, id: "42", businessName: "coucou2"},
-  //   // {...emptyContact, id: "43", businessName: "coucou3"},
-  //   // {...emptyContact, id: "44", businessName: "coucou4"},
-  //   // {...emptyContact, id: "45", businessName: "coucou5"},
-  //   // {...emptyContact, id: "46", businessName: "coucou6"},
-  //   // {...emptyContact, id: "47", businessName: "coucou7"},
-  //   // {...emptyContact, id: "48", businessName: "coucou8"},
-  //   // {...emptyContact, id: "49", businessName: "coucou1"},
-  //   // {...emptyContact, id: "50", businessName: "coucou2"},
-  // ])
+  // filteredContacts && filteredContacts[0] && console.log("filteredContacts 1 : ", filteredContacts[0].id[0], filteredContacts[0].isClient )
+  // filteredContacts && filteredContacts[1] && console.log("filteredContacts 2 : ", filteredContacts[1].id[0] , filteredContacts[1].isClient)
 
-  //console.log("allContacts : ", allContacts)
+  const updateContactInContactsAndDB = useContactsContext().updateContactInContactsAndDB
 
-  
-  // const { data, isLoading, isError } = useQuery<Contact[]>({
-  //   queryKey: ['userContacts'],
-  //   queryFn: () => getUserContactsFromDatabase(currentUser?.uid),
-  //   // onSuccess: (contactsList: Contact[]) => {
-  //   //     setAllContacts(contactsList);
-  //   //     localStorage.setItem('allContacts', JSON.stringify(contactsList));
-  //   //     setLoading(false);
-  //   // }
-  // });
-  
+  const updateContactInContactsAndDBAndFilteredContacts = (id: string, keyAndValue: { key: string; value: string | number | boolean | Timestamp | File[] | null; }) => {
+    console.log("modif allContact :", id, keyAndValue)
+
+    updateContactInContactsAndDB(id, keyAndValue)
+    allContacts && setAllContacts(updatedContactsInLocalList(allContacts, id, keyAndValue))
+    //filteredContacts && setAllContacts(updatedContactsInLocalList(filteredContacts, id, keyAndValue))
+    
+  }
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ['contacts'],
     queryFn: () => getUserContactsFromDatabase(currentUser?.uid),
@@ -133,21 +80,19 @@ export default function ContactsTablePage() {
 
   const emptySearchCriteria: SearchContactCriteria = {
     isClient: "all",
-    contactType: [],
-    businessName: '',
-    businessCity: [],
-    businessCategoryId: []
+    contactTypes: [],
+    businessNames: '',
+    businessCities: [],
+    businessCategoryIds: []
   }
   const [contactsSearchCriteria, setContactsSearchCriteria] = React.useState<SearchContactCriteria>(emptySearchCriteria)
-
   const isSearchCriteriaEmpty = JSON.stringify(contactsSearchCriteria) === JSON.stringify(emptySearchCriteria)
-
   const getPriorityTextAndColor = useGetPriorityTextAndColor();
 
   React.useEffect(() => {
     allContacts && setAlerts(countContactsByAlertDates(allContacts))
     allContacts && setFilteredContacts(allContacts);
-  }, [currentUser, allContacts])
+  }, [allContacts])
 
   React.useEffect(() => {
     filteredContacts && setAlerts(countContactsByAlertDates(filteredContacts))
@@ -162,43 +107,37 @@ export default function ContactsTablePage() {
         : contactsSearchCriteria.isClient === "no"
           ? false
           : null
-      const searchOnCity = contactsSearchCriteria.businessCity.length > 0
-        ? contactsSearchCriteria.businessCity
+      const searchOnCity = contactsSearchCriteria.businessCities.length > 0
+        ? contactsSearchCriteria.businessCities
         : ['']
-      const searchOnCategory = contactsSearchCriteria.businessCategoryId.length > 0
-        ? contactsSearchCriteria.businessCategoryId
+      const searchOnCategory = contactsSearchCriteria.businessCategoryIds.length > 0
+        ? contactsSearchCriteria.businessCategoryIds
         : ['']     
-      const searchOnType = contactsSearchCriteria.contactType.length > 0
-        ? contactsSearchCriteria.contactType
+      const searchOnType = contactsSearchCriteria.contactTypes.length > 0
+        ? contactsSearchCriteria.contactTypes
         : ['']
 
       const searchedContacts: Contact[] = allContacts.filter((contact: Contact) => {
         return (
-          contact.businessName.toLowerCase().includes(contactsSearchCriteria.businessName.toLowerCase())
+          contact.businessName.toLowerCase().includes(contactsSearchCriteria.businessNames.toLowerCase())
           // si searchIsClient est null, on ne filtre pas sur ce critère
-          && (searchIsClient === null || contact.isClient === searchIsClient)
-          
+          && (searchIsClient === null || contact.isClient === searchIsClient)          
           // Si aucune recherche sur la VILLE on ne fait rien   
-          && (JSON.stringify(searchOnCity) === JSON.stringify(['']) ||  searchOnCity.some((city) => contact.businessCity.toLowerCase() === city.toLowerCase()))
-                 
+          && (JSON.stringify(searchOnCity) === JSON.stringify(['']) ||  searchOnCity.some((city) => contact.businessCity.toLowerCase() === city.toLowerCase()))                 
           // Si aucune recherche sur la CATEGORIE on ne fait rien   
-          && (JSON.stringify(searchOnCategory) === JSON.stringify(['']) || searchOnCategory.some((cat) => contact.businessCategoryId === cat))
-          // && searchOnCategory.some((cat) => contact.businessCategoryId.includes(cat))        
-          
-       
+          && (JSON.stringify(searchOnCategory) === JSON.stringify(['']) || searchOnCategory.some((cat) => contact.businessCategoryId === cat))               
           // Si aucune recherche sur le TYPE on ne fait rien
            && (JSON.stringify(searchOnType) === JSON.stringify(['']) || searchOnType.some((type) => {
-            console.log("type : ", type)
-            console.log("contact.contactType : ", contact.contactType)
-            console.log("contact.contactType.includes(type) : ", contact.contactType.includes(type))  
-            console.log(contact.contactType === type)
-            //return contact.contactType.includes(type)
             return contact.contactType === type
           }))
         )
       })
       setFilteredContacts(searchedContacts)
-    } else {
+
+
+      // BESOIN DU ELSE ??????????????????????????????????????????????? OUI !!!!!!!! PK ???????? => qd on fait un modif
+    } 
+    else {
       setFilteredContacts(allContacts)
     }
   }, [contactsSearchCriteria, allContacts, 
@@ -262,7 +201,6 @@ export default function ContactsTablePage() {
                 </Typography>
                 }
               </Box>
-              {/* Tableau normal mais très long dès qu'il y a plus de 20 contacts */}
               {filteredContacts.length > 0 && <ContactsTable
                 contacts={filteredContacts}
                 currentUserId={currentUser ? currentUser.uid : ""}

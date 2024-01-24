@@ -1,4 +1,4 @@
-const contactsLaurianeNameAndCatLabel = [
+const contactsLaurianeNameAndCatLabel:NameAndCatType[] =  [
     {
         "catLabel": "Centre de Plongée",
         "name": "La fée plongée",
@@ -341,11 +341,7 @@ const contactsLaurianeNameAndCatLabel = [
     },
     {
         "catLabel": "Agence Event",
-        "name": "\"Twice Agency  ; evenements privé et autre"
-    },
-    {
-        "catLabel": "TWICE AGENCY\"",
-        "name": ""
+        "name": "TWICE AGENCY - evenements privé et autre",
     },
     {
         "catLabel": "Agence Event",
@@ -685,11 +681,7 @@ const contactsLaurianeNameAndCatLabel = [
     },
     {
         "catLabel": "Camping",
-        "name": "\""
-    },
-    {
-        "catLabel": "Holiday Marina Resort \"",
-        "name": ""
+        "name": "Holiday Marina Resort",
     },
     {
         "catLabel": "Camping",
@@ -810,7 +802,435 @@ const contactsLaurianeNameAndCatLabel = [
     {
         "catLabel": "Mairie / médiathèque",
         "name": "Mairie ",
+    },
+
+
+    /////////////////// AJOUTES
+    {
+        "catLabel": "Agence Artistique",
+        "name": "h bart."
+    },
+    {
+        "catLabel": "Agence Artistique",
+        "name": "sequence sud"
+    },
+    {
+        "catLabel": "Agence Artistique",
+        "name": "Luna Rossa"
+    },
+    {
+        "catLabel": "Agence Artistique",
+        "name": "galacticaproduction"
+    },
+    {
+        "catLabel": "Agence Artistique",
+        "name": "EKLABUL - Shows and Events"
+    },
+    {
+        "catLabel": "Agence Artistique",
+        "name": "VILProd Agency"
+    },
+    {
+        "catLabel": "Agence Artistique",
+        "name": "svp spectacles"
+    },
+    {
+        "catLabel": "Aquarium",
+        "name": "casino barriere"
+    },
+    {
+        "catLabel": "Aquarium",
+        "name": "Musée Océanographique de Monaco"
+    },
+    {
+        "catLabel": "Aquarium",
+        "name": "Seaquarium du Grau-du-Roi"
+    },
+    {
+        "catLabel": "Aquarium",
+        "name": "Planet Ocean Montpellier"
+    },
+    {
+        "catLabel": "Aquarium",
+        "name": "Aquarium de Lyon"
+    },
+    {
+        "catLabel": "Aquarium",
+        "name": "Aquarium Marin du Cap d'Agde"
+    },
+    {
+        "catLabel": "Aquarium",
+        "name": "aquarium-st-malo"
+    },
+    {
+        "catLabel": "Aquarium",
+        "name": "Aquarium de biartiz"
+    },
+    {
+        "catLabel": "Aquarium",
+        "name": "Cité de la Mer "
+    },
+    {
+        "catLabel": "Aquarium",
+        "name": "Océarium du Croisic (Croisic)"
+    },
+    {
+        "catLabel": "Aquarium",
+        "name": "Aquarium De Lyon"
+    },
+    {
+        "catLabel": "Aquarium",
+        "name": "Aqurium leclerc BALEONE centre commercial "
+    },
+    {
+        "catLabel": "Conciergerie",
+        "name": "leconciergedesainttropez"
+    },
+    {
+        "catLabel": "Conciergerie",
+        "name": "location villa de luxe st tropezL'Office by Angel Properties int officebyap"
+    },
+    {
+        "catLabel": "Conciergerie",
+        "name": "bo-house  location villa de luxe st tropez"
+    },
+    {
+        "catLabel": "Conciergerie",
+        "name": "Bliss and Privilege Conciergerie Privée Saint-Tropez"
+    },
+    {
+        "catLabel": "Conciergerie",
+        "name": "your host helper"
+    },
+    {
+        "catLabel": "Conciergerie",
+        "name": "caconciergerie golfe azur"
+    },
+    {
+        "catLabel": "Conciergerie",
+        "name": "conciergerie-decoration-services"
+    },
+    {
+        "catLabel": "Conciergerie",
+        "name": "Conciergerie Home Management Services de luxe St Tropez"
+    },
+    {
+        "catLabel": "Conciergerie",
+        "name": "Care4you Lifestyle Solutions” Saint Tropez Conciergerie"
+    },
+    {
+        "catLabel": "Conciergerie",
+        "name": "Dumez Conciergerie - Golfe de Saint-Tropez - Gassin - Ramatuelle"
+    },
+    {
+        "catLabel": "Conciergerie",
+        "name": "Conciergerie privée du Golfe - Saint Tropez"
+    },
+    {
+        "catLabel": "Conciergerie",
+        "name": "Excellency Monte-Carlo Conciergerie Privée"
+    },
+    {
+        "catLabel": "Conciergerie",
+        "name": "LM for VIP Saint tropez Conciergerie haut de Gamme"
+    },
+    {
+        "catLabel": "Conciergerie",
+        "name": " Luxe Experience"
+    },
+    {
+        "catLabel": "Conciergerie",
+        "name": "TOUR JARLIER"
+    },
+    {
+        "catLabel": "Conciergerie",
+        "name": "welcomeworld"
+    },
+    {
+        "catLabel": "Conciergerie",
+        "name": "severaldrivers"
+    },
+    {
+        "catLabel": "Conciergerie",
+        "name": "aequoretmontis"
+    },
+    {
+        "catLabel": "Journal / magazine",
+        "name": "Var Matin"
+    },
+    {
+        "catLabel": "Journal / magazine",
+        "name": "ELLE"
+    },
+    {
+        "catLabel": "Journal / magazine",
+        "name": "ELLE"
+    },
+    {
+        "catLabel": "Journal / magazine",
+        "name": "ELLE"
+    },
+    {
+        "catLabel": "Journal / magazine",
+        "name": "ELLE"
+    },
+    {
+        "catLabel": "Journal / magazine",
+        "name": "cote magazine"
+    },
+    {
+        "catLabel": "Journal / magazine",
+        "name": "riviera magazine"
+    },
+    {
+        "catLabel": "Journal / magazine",
+        "name": "PURE St Tropez"
+    },
+    {
+        "catLabel": "Journal / magazine",
+        "name": "gazette tropezienne"
+    },
+    {
+        "catLabel": "Lieu de réception",
+        "name": "Côté Jardin"
+    },
+    {
+        "catLabel": "Lieu de réception",
+        "name": "Domaine des Danjean"
+    },
+    {
+        "catLabel": "Lieu de réception",
+        "name": "Queen South (bateau mariage)"
+    },
+    {
+        "catLabel": "Lieu de réception",
+        "name": "Logo du marchand HAPPY HOME CONCIERGERIE",
+    },
+    {
+        "catLabel": "Lieu de réception",
+        "name": "château maravelle avec piscine"
+    },
+    {
+        "catLabel": "Lieu de réception",
+        "name": "Domaine de l'Octopus"
+    },
+    {
+        "catLabel": "Lieu de réception",
+        "name": "best-events Mariage evenement "
+    },
+    {
+        "catLabel": "Lieu de réception",
+        "name": "Les Bastidières"
+    },
+    {
+        "catLabel": "Lieu de réception",
+        "name": "Domaine le Billardier"
+    },
+    {
+        "catLabel": "Lieu de réception",
+        "name": "Villa Casalive"
+    },
+    {
+        "catLabel": "Lieu de réception",
+        "name": "Villa La Lanterne"
+    },
+    {
+        "catLabel": "Lieu de réception",
+        "name": "Chambre d'hôtes Villa Goa Spa"
+    },
+    {
+        "catLabel": "Lieu de réception",
+        "name": "domaines des gueules cassé"
+    },
+    {
+        "catLabel": "piscine vitrée",
+        "name": "piscines-mazure"
+    },
+    {
+        "catLabel": "piscine vitrée",
+        "name": "servibat"
+    },
+    {
+        "catLabel": "piscine vitrée",
+        "name": "Vision d'O"
+    },
+    {
+        "catLabel": "piscine vitrée",
+        "name": "Aquarêve"
+    },
+    {
+        "catLabel": "piscine vitrée",
+        "name": "Aquaset Piscines"
+    },
+    {
+        "catLabel": "piscine vitrée",
+        "name": "AQUATIC CONCEPT"
+    },
+    {
+        "catLabel": "piscine vitrée",
+        "name": "waterworld"
+    },
+    {
+        "catLabel": "piscine vitrée",
+        "name": "Magicien d'eau"
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "Nikki Beach Saint-Tropez "
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "Azura Plage"
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "Bagatelle Beach"
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "Bar du Soleil"
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "Barco Beach"
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "Byblos Beach"
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "Cap 21 Les Murènes"
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "Eden Plage"
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "Filao Plage"
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "La Réserve à la Plage"
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "Havana Plage"
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "bouillabaisse  plage"
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "plage des salins"
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "the pearl beach"
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "Jardin Tropezina"
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "mooreaplage."
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "le 1051"
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "CLUB LES PALMIERS"
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "Tahiti Beach"
+    },
+    {
+        "catLabel": "Plage Privée",
+        "name": "Plage Restaurant L'Orangerie"
+    },
+    {
+        "catLabel": "TV",
+        "name": "TF1"
+    },
+    {
+        "catLabel": "TV",
+        "name": "France 3"
+    },
+    {
+        "catLabel": "TV",
+        "name": "France 3"
+    },
+    {
+        "catLabel": "TV",
+        "name": "France 3"
+    },
+    {
+        "catLabel": "TV",
+        "name": "France 3"
+    },
+    {
+        "catLabel": "TV",
+        "name": "BFM TV "
+    },
+    {
+        "catLabel": "Maquilleuse",
+        "name": "Iconics fx project"
+    },
+    {
+        "catLabel": "Maquilleuse",
+        "name": " "
+    },
+    {
+        "catLabel": "Maquilleuse",
+        "name": "Happy Face maquillage"
+    },
+    {
+        "catLabel": "Maquilleuse",
+        "name": "Red mermaid "
+    },
+    {
+        "catLabel": "Photographe",
+        "name": "Déborahs photographe"
+    },
+    {
+        "catLabel": "Photographe",
+        "name": "Modern'photo"
+    },
+    {
+        "catLabel": "Photographe",
+        "name": "i droner"
+    },
+    {
+        "catLabel": "Lieu de réception",
+        "name": "La villa d'aimee maison d'hotel"
+    },
+    {
+        "catLabel": "Vidéate",
+        "name": "Le Baroudeur "
+    },
+    {
+        "catLabel": "Vidéate",
+        "name": "Quadriviews"
+    },
+    {
+        "catLabel": "Evénementiel",
+        "name": "  "
+    },
+    {
+        "catLabel": "Evénementiel",
+        "name": "tout compte fête"
+    },
+    {
+        "catLabel": "Evénementiel",
+        "name": "Sole Event"
     }
+
 ]
 
 

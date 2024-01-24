@@ -5,7 +5,15 @@ type ContactTypeType= "NON DEFINI" | "Particulier" | "Entreprise" | "Partenaire"
 
 type ContactCategorieType= {
   id: string,
-  label: string,
+  label: string // "NON DEFINI" | "Camping" | "Hôtel" | "Conciergerie" | "Agence Event" | "Agence Artistique" | "Mairie" | "Lieu de réception" | "Wedding Planer" | "Restaurant Plage" | "Piscine Municipale" | "Yacht" | "Plage Privée" | "Agence Location Villa Luxe" | "Aquarium" | "Centre de Loisirs" | "Centre de Plongée" | "Agence Communication Audio Visuel" | "Autre" | "Mairie / médiathèque" | "Journal / magazine" | "piscine vitrée" | "TV" | "Maquilleuse" | "Photographe" | "Vidéate" | "Evénementiel"
+}
+
+type CategorieType = "NON DEFINI" | "Camping" | "Hôtel" | "Conciergerie" | "Agence Event" | "Agence Artistique" | "Mairie" | "Lieu de réception" | "Wedding Planer" | "Restaurant Plage" | "Piscine Municipale" | "Yacht" | "Plage Privée" | "Agence Location Villa Luxe" | "Aquarium" | "Centre de Loisirs" | "Centre de Plongée" | "Agence Communication Audio Visuel" | "Autre" | "Mairie / médiathèque" | "Journal / magazine" | "piscine vitrée" | "TV" | "Maquilleuse" | "Photographe" | "Vidéate" | "Evénementiel"
+
+type NameAndCatType = {
+  catLabel: CategorieType,
+  name: string,
+
 }
 
 type FileNameAndRefType = {
@@ -77,8 +85,8 @@ type Alerts = {
 
 type SearchContactCriteria = {
   isClient: "yes" | "no" | "all",
-  contactType : ContactTypeType[],
-  businessName: string,
-  businessCity: string[],
-  businessCategoryId: string[],
+  contactTypes : ContactTypeType[],
+  businessNames: string,
+  businessCities: string[],
+  businessCategoryIds: string[],
 }

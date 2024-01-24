@@ -15,6 +15,9 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import NavigationIcon from '@mui/icons-material/Navigation';
 import { useTheme } from '@mui/material/styles';
 import { getCategoriesFromDatabase, getCatLabelFromId } from '../../utils/firebase'
+import PeopleIcon from '@mui/icons-material/People';
+import AccessibilityIcon from '@mui/icons-material/Accessibility';
+import BusinessIcon from '@mui/icons-material/Business';
 
 interface SearchFormProps {
     contacts: Contact[];
@@ -44,18 +47,80 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
 
     const muiTheme = useTheme();
 
-    const allDifferentsBusinessCategoryValues = getUniqueSortedValues(contacts, 'businessCategoryId')
-    const allDifferentsBusinessCitiesValues = getUniqueSortedValues(contacts, 'businessCity', false)
-    const allDifferentsContactTypesValues = getUniqueSortedValues(contacts, 'contactType')
+    const typeIcons : { [key: string]: JSX.Element } = {
+        "Partenaire": <PeopleIcon color='secondary' />,
+        "Entreprise": <BusinessIcon color='primary' />,
+        "Particulier": <AccessibilityIcon sx={{ color: muiTheme.palette.ochre.main }} />,
+      };
+
+    // const allDifferentsBusinessCategoryValues = getUniqueSortedValues(contacts, 'businessCategoryId')
+    // const allDifferentsBusinessCitiesValues = getUniqueSortedValues(contacts, 'businessCity', false)
+    // const allDifferentsContactTypesValues = getUniqueSortedValues(contacts, 'contactType')
+
+    const [allDifferentsBusinessCategoryIds, setAllDifferentsBusinessCategoryIds] = React.useState<{ value: string, count: number }[]>([]);
+
+    //console.log("allDifferentsBusinessCategoryValues", allDifferentsBusinessCategoryIds)
+
+    const [allDifferentsBusinessCitiesValues, setAllDifferentsBusinessCitiesValues] = React.useState<{ value: string, count: number }[]>([]);
+    const [allDifferentsContactTypesValues, setAllDifferentsContactTypesValues] = React.useState<{ value: ContactTypeType, count: number }[]>([]);
+
+    console.log("allDifferentsContactTypesValues", allDifferentsContactTypesValues)
+
+
+    React.useEffect(() => {
+        setAllDifferentsBusinessCategoryIds(getUniqueSortedValues(contacts, 'businessCategoryId'));
+        setAllDifferentsBusinessCitiesValues(getUniqueSortedValues(contacts, 'businessCity', false));
+        setAllDifferentsContactTypesValues(getUniqueSortedValues(contacts, 'contactType') as { value: ContactTypeType, count: number }[] );
+    }, [contacts]); 
+
+
+
+
+
+
+    // On met à jour la recherche de CATEGORIE et TYPE quand les valeurs correspondantes des contacts changent
+    React.useEffect(() => {
+        //console.log("*********search", search.contactType)
+        //console.log("*********allDifferentsContactTypesValues", allDifferentsContactTypesValues)
+
+        setSearch({...search, contactTypes: search.contactTypes.filter(type => allDifferentsContactTypesValues.map(item => item.value).includes(type))
+         })
+    },[allDifferentsContactTypesValues])
+
+
+
+
+    
+    React.useEffect(() => {
+        console.log("*********search CAT_ID", search.businessCategoryIds)
+        console.log("*********allDifferentsBusinessCategoryIds", allDifferentsBusinessCategoryIds)
+
+        setSearch({...search, businessCategoryIds: search.businessCategoryIds.filter(catId => allDifferentsBusinessCategoryIds.map(item => 
+            {
+                console.log("**************catId", catId)
+                console.log("**************allDifferentsBusinessCategoryIds Item", item.value)
+
+                return item.value
+            }
+        ).includes(catId))
+         })
+    },[allDifferentsBusinessCategoryIds])
+
+
+
+
+
+
+
 
     React.useEffect(() => {
         getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
             // Pas besoin de l'attribut userId donc on garde juste ce qu'on veut
-            const newCategoriesList = categories.map(category => ({
+            const updatedCategoriesList = categories.map(category => ({
                 id: category.id,
                 label: category.label
             }));
-            setCategoriesList(newCategoriesList);
+            setCategoriesList(updatedCategoriesList);
         })
     }, [currentUserId]);
 
@@ -76,14 +141,13 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
     }, [selectedCatIds]);
 
     const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event.target.name, event.target.value)
         setSearch({ ...search, [event.target.name]: event.target.value });
     }
 
     const handleMultipleChangeSelect = (event: SelectChangeEvent<string[]>, attribut: keyof SearchContactCriteria) => {
         const value = event.target.value;
 
-        attribut === "businessCategoryId" &&  setCatSelectedIds(value as string[]);
+        attribut === "businessCategoryIds" && setCatSelectedIds(value as string[]);
 
         setSearch({ ...search, [attribut]: typeof value === 'string' ? [value] : value });
     };
@@ -96,6 +160,10 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
         setSearch(emptySearchCriteria);
         onSearchChange(emptySearchCriteria);
     }
+
+    // React.useEffect(() => {
+    //     setSearch
+    // },[contacts])
 
     return (
         <Paper sx={{ margin: "0 1em 0 1em", padding: "0.6em", bgcolor: 'primary.light', }} >
@@ -154,7 +222,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                         id="search-name"
                         label="Nom"
                         name='businessName'
-                        value={search.businessName}
+                        value={search.businessNames}
                         onChange={handleChangeText}
                         sx={{
                             //width: '100%', 
@@ -168,8 +236,8 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                         <Select
                             id="multiple-checkbox-type-label"
                             multiple={true}
-                            value={search.businessCategoryId}
-                            onChange={(e) => handleMultipleChangeSelect(e, "businessCategoryId")}
+                            value={search.businessCategoryIds}
+                            onChange={(e) => handleMultipleChangeSelect(e, "businessCategoryIds")}
                             input={<OutlinedInput label="Catégories"
                             />}                            
                             renderValue={() => selectedCatLabels.join(', ')}
@@ -180,8 +248,8 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                                 {contacts.length === 0
                                     ? <ListItemText primary="Aucun contact à chercher" />
                                     : contacts.some(contact => contact.businessCategoryId === "0") && <>
-                                        <Checkbox checked={search.businessCategoryId.includes("0")} />
-                                        <ListItemText primary="NON DEFINIE" />
+                                        <Checkbox checked={search.businessCategoryIds.includes("0")} />
+                                        <ListItemText primary={`NON DEFINIE (${contacts.filter(contact => contact.businessCategoryId === "0").length})`} />
                                     </>
                                 }
                             </MenuItem>
@@ -192,7 +260,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             </MenuItem>} */}
                          
                             {categoriesList
-                                .filter(cat => allDifferentsBusinessCategoryValues.includes(cat.id))
+                                .filter(cat => allDifferentsBusinessCategoryIds.map(item => item.value).includes(cat.id))
                                 .sort((a, b) => a.label.localeCompare(b.label))
                                 .map((cat, index) => (
                                     <MenuItem
@@ -200,14 +268,14 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                                         value={cat.id}
                                         sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}
                                     >
-                                        <Checkbox checked={search.businessCategoryId.indexOf(cat.id) > -1} />
-                                        <ListItemText primary={cat.label} />
+                                        <Checkbox checked={search.businessCategoryIds.indexOf(cat.id) > -1} />
+                                        {/* <ListItemText primary={cat.label} /> */}
+                                        <ListItemText primary= {`${cat.label} (${allDifferentsBusinessCategoryIds.find(item => item.value === cat.id)?.count || 0})`}
+                                        />
                                     </MenuItem>
                                 ))}
                         </Select>
                     </FormControl>
-
-
 
                     {/* //////////// VILLE ///////////// */}
                     <FormControl sx={{ width: "20%" }} >
@@ -215,8 +283,8 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                         <Select
                             id="multiple-checkbox-city-label"
                             multiple={true}
-                            value={search.businessCity}
-                            onChange={(e) => handleMultipleChangeSelect(e, "businessCity")}
+                            value={search.businessCities}
+                            onChange={(e) => handleMultipleChangeSelect(e, "businessCities")}
                             input={<OutlinedInput label="Villes"         // ici le label est utilisé pour l'accessibilité et non pour l'affichage.                            
                             />}                            
                            renderValue={(selected) => selected.join(', ')}
@@ -226,10 +294,10 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                                 <ListItemText primary="Aucun contact à chercher" />
                             </MenuItem>
                             }
-                            {allDifferentsBusinessCitiesValues.map((city) => (
-                                <MenuItem key={city} value={city}>
-                                    <Checkbox checked={search.businessCity.indexOf(city) > -1} />
-                                    <ListItemText primary={city} />
+                            {allDifferentsBusinessCitiesValues.map((city, index) => (
+                                <MenuItem key={city.value} value={city.value} sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }} >
+                                    <Checkbox checked={search.businessCities.indexOf(city.value) > -1} />
+                                    <ListItemText primary={`${city.value} (${city.count})`} />
                                 </MenuItem>
                             ))}
                         </Select>
@@ -240,8 +308,8 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                         <InputLabel>Type(s)</InputLabel>
                         <Select
                             multiple={true}
-                            value={search.contactType}
-                            onChange={(e) => handleMultipleChangeSelect(e, "contactType")}
+                            value={search.contactTypes}
+                            onChange={(e) => handleMultipleChangeSelect(e, "contactTypes")}
                             input={<OutlinedInput label="Types"  
                             />}                          
                             renderValue={(selected) => selected.join(', ')}
@@ -252,10 +320,13 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                                 <ListItemText primary="Aucun contact à chercher" />
                             </MenuItem>
                             }
-                            {allDifferentsContactTypesValues.map((type) => (
-                                <MenuItem key={type} value={type}>
-                                    <Checkbox checked={search.contactType.indexOf(type) > -1} />
-                                    <ListItemText primary={type} />
+                            {allDifferentsContactTypesValues.map((type, index) => (
+                                <MenuItem key={type.value} value={type.value}  sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }}>
+                                    <Checkbox checked={search.contactTypes.indexOf(type.value) > -1} />
+                                    <ListItemText primary={`${type.value} (${type.count})`} />
+                                    <Typography sx={{display:"flex", flexDirection:"row", justifyContent:"center", gap:1 }} >
+                                        {typeIcons[type.value]}
+                                    </Typography>                                    
                                 </MenuItem>
                             ))}
                         </Select>

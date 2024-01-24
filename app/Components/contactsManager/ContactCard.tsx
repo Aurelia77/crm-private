@@ -69,7 +69,7 @@ type ContactCardProps = {
 export default function ContactCard({ contact, currentUserId, getPriorityTextAndColor, setAreContactChangesSaved, handleDeleteContact, addContact, updateContact,
 }: ContactCardProps) {
 
-    console.log("contact ContactCard : ", contact)
+    //console.log("contact ContactCard : ", contact)
 
     const [contactToAddOrUpdate, setContactToAddOrUpdate] = React.useState<Contact>(contact)
     const [tabValue, setTabValue] = React.useState<number>(0);
@@ -143,12 +143,11 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
             }));
             setCategoriesList(newCategoriesList);
         })
-
     }, [currentUserId]);
 
 
     React.useEffect(() => {
-        console.log("****Comparaison des contacts")
+        //console.log("****Comparaison des contacts")
         //JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && console.log("****CHANGE")
         JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && setAreContactChangesSaved(false)
     }, [contactToAddOrUpdate, contact, setAreContactChangesSaved])

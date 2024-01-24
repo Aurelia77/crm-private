@@ -185,13 +185,7 @@ export default function Admin({ currentUserId }: AdminType) {
 
     // Supprimer le lien du document
     document.body.removeChild(link);
-  }
-
-
-
-
-    
-  
+  }  
 
   return (
     currentUserId
@@ -454,7 +448,7 @@ export default function Admin({ currentUserId }: AdminType) {
           <Box sx={{ display: "flex", justifyContent: "space-around", marginBottom: "20px" }} >
             <Button variant="contained" color='success' onClick={() => addCategoriesOnFirebaseAndReload(currentUserId)}>1-Ajouter Catégories</Button>
             <Button variant="contained" color='ochre' onClick={() => addFakeDataWithCat(currentUserId)}>2-Ajouter Contacts Test (x7)</Button>
-            <Button variant="contained" color='warning' onClick={() => addLaurianeDataWithCat(currentUserId)}>Ajouter Contacts LAURIANE (x 201)</Button>
+            <Button variant="contained" color='warning' onClick={() => addLaurianeDataWithCat(currentUserId)}>Ajouter Contacts LAURIANE (x 307)</Button>
             <Button variant="contained" onClick={saveAllAndOpenFile}>Sauvegarder TOUTES mes données</Button>
             {/* <a href={url} download="data.json">Télécharger les données</a> */}
           </Box>
