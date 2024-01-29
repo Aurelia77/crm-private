@@ -811,7 +811,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                     aria-describedby="modal-modal-description"
                 >
                     <Box sx={modalStyle}>
-                        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
+                        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5, textOverflow: "clip", whiteSpace: "normal" }} >
                             Supprimer le contact : <span style={{ fontWeight: "bold" }}>{contact.businessName}</span> ?
                         </Typography>
                         <Box sx={{ display: "flex", justifyContent: "space-between" }} >
