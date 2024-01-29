@@ -623,11 +623,9 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                             sx={{ textAlign: 'left' }}
                         />
                     </DialogContent>
-                    <DialogActions>
-                        <Box sx={{ display: "flex", justifyContent: "space-between" }} >
-                            <Button variant="contained" color='secondary' onClick={handleNotSaveComments}>Annuler</Button>
-                            <Button variant="contained" color='primary' onClick={handleSaveComments}>Valider</Button>
-                        </Box>
+                    <DialogActions sx={{ display: "flex", justifyContent: "space-between" }}>
+                        <Button variant="contained" color='secondary' onClick={handleNotSaveComments}>Annuler</Button>
+                        <Button variant="contained" color='primary' onClick={handleSaveComments}>Valider</Button>
                     </DialogActions>
                 </Dialog>
             </StyledTableCell>
