@@ -54,7 +54,7 @@ const headCells: readonly Column[] = [
     { id: 'hasBeenSentEmailOrMeetUp', label: <Tooltip title="Contact joint par mail ou rencontré ?"><Box><MailIcon /><HandshakeTwoToneIcon /><QuestionMarkIcon /></Box></Tooltip>, minWidth: "6em", },
     { id: 'comments', label: <Tooltip title="Commentaires"><CommentRoundedIcon fontSize='large' /></Tooltip>, minWidth: "5em", },
     { id: 'interestGauge', label: <Tooltip title="Niveau d'intéressement"><FavoriteRoundedIcon fontSize='large' /></Tooltip>, minWidth: "5em", },
-    { id: 'filesSent', label: <Tooltip title="Fichier(s) associés"><AttachFileRoundedIcon fontSize='large' /></Tooltip>, minWidth: "10em", },
+    { id: 'filesSentRef', label: <Tooltip title="Fichier(s) associés"><AttachFileRoundedIcon fontSize='large' /></Tooltip>, minWidth: "10em", },
     { id: 'dateOfFirstCall', label: 'Premier appel', minWidth: "9em", },
     { id: 'dateOfLastCall', label: 'Dernier appel', minWidth: "9em", },
     { id: 'contactType', label: 'Type', minWidth: "7em", },
