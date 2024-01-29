@@ -508,6 +508,10 @@ const contactsLaurianeNameAndCatLabel:NameAndCatType[] =  [
         "name": "Sole event",
     },
     {
+        "catLabel": "Agence Event",
+        "name": "Sole  event",
+    },
+    {
         "catLabel": "Camping",
         "name": "Port Pothiau ",
     },

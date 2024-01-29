@@ -40,6 +40,9 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
 
     const [search, setSearch] = React.useState<SearchContactCriteria>(emptySearchCriteria);
 
+    console.log("search", search)
+    console.log("search Names", search.businessNames)
+
     //console.log("search CAT Ids", search.businessCategoryIds)
 
     const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[]>([]);
@@ -51,11 +54,11 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
 
     const muiTheme = useTheme();
 
-    const typeIcons : { [key: string]: JSX.Element } = {
+    const typeIcons: { [key: string]: JSX.Element } = {
         "Partenaire": <PeopleIcon color='secondary' />,
         "Entreprise": <BusinessIcon color='primary' />,
         "Particulier": <AccessibilityIcon sx={{ color: muiTheme.palette.ochre.main }} />,
-      };
+    };
 
     // const allDifferentsBusinessCategoryValues = getUniqueSortedValues(contacts, 'businessCategoryId')
     // const allDifferentsBusinessCitiesValues = getUniqueSortedValues(contacts, 'businessCity', false)
@@ -259,7 +262,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                     <TextField
                         id="search-name"
                         label="Nom"
-                        name='businessName'
+                        name='businessNames'
                         value={search.businessNames}
                         onChange={handleChangeText}
                         sx={{

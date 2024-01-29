@@ -161,7 +161,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
 
     const [contactFilesWithNames, setContactFilesWithNames] = React.useState<FileNameAndRefType[]>([])
 
-    console.log("contactFilesWithNames : ", contactFilesWithNames)
+    //console.log("contactFilesWithNames : ", contactFilesWithNames)
 
 
     React.useEffect(() => {

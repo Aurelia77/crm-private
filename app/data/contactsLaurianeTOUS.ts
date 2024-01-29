@@ -2453,6 +2453,19 @@ const contacts: Contact[] = [
     },
     {
         ...emptyContact,
+        "contactType": "Partenaire",
+        "dateOfLastCall": new Date("2023-12-13"),
+        "businessName": "Sole  Event",
+        "businessPhone": "07 85 72 11 74",
+        "contactName": "Rachel et Luziano",
+        "contactEmail": "solevent.paca@gmail.com  ",
+        "businessCity": "St Maxime",
+        "comments": "Rencontrer au salon de l'entreprise à grimaud. Projet en cours, ils vont me proposer à leurs clients et super lieu de réception ",
+        "interestGauge": 5,
+        "dateOfFirstCall": new Date("2023-11-17")
+    },
+    {
+        ...emptyContact,
         "isClient": true,
         "contactType": "Entreprise",
         "dateOfLastCall": null,
@@ -5065,21 +5078,6 @@ const contacts: Contact[] = [
     "interestGauge": 4,
     "dateOfFirstCall": new Date("2023-10-01")
 },
-{
-    ...emptyContact,
-    "contactType": "Partenaire",
-    "dateOfLastCall": new Date("2023-12-13"),
-    "businessName": "Sole Event",
-    "businessPhone": "07 85 72 11 74",
-    "contactName": "Rachel et Luziano",
-    "contactEmail": "solevent.paca@gmail.com  ",
-    "businessCity": "St Maxime",
-    "comments": "Rencontrer au salon de l'entreprise à grimaud. Projet en cours, ils vont me proposer à leurs clients et super lieu de réception ",
-    "interestGauge": 5,
-    "dateOfFirstCall": new Date("2023-11-17")
-}
-
-
 
 
 ]
