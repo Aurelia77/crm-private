@@ -119,7 +119,7 @@ export default function Admin({ currentUserId }: AdminType) {
   }
 
   const handleAddCat = () => {
-    if (newCatName === "") {
+    if (newCatName.trim() === "") {
       setAlertCatText("Le nom de la catégorie doit contenir au moins un caractère !")
       return
     }
