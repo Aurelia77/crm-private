@@ -159,6 +159,33 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
         />
     }
 
+    const [contactFilesWithNames, setContactFilesWithNames] = React.useState<FileNameAndRefType[]>([])
+
+    console.log("contactFilesWithNames : ", contactFilesWithNames)
+
+
+    React.useEffect(() => {
+        const fetchFileNames = async () => {
+            const filesWithNames : any = await Promise.all(
+                contact.filesSentRef.map(async (fileRef: string) => {
+                    const fileName : any = await getFileNameFromRef(fileRef);
+                    return { fileName, fileRef };
+                })
+            );
+
+            setContactFilesWithNames(filesWithNames);
+        };
+
+        fetchFileNames();
+
+        // setContactFilesWithNames(contactToAddOrUpdate.filesSentRef.map((fileRef: string) => ({
+        //     fileName: getFileNameFromRef(fileRef),
+        //     fileRef: fileRef
+        // })))
+    }, [contact.filesSentRef])
+
+
+
 
     return (
         <StyledTableRow
@@ -600,41 +627,42 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
             {/* filesSentRef */}
             <StyledTableCell align="right">
                 <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                    {contact.filesSentRef.length} fichier(s) associés
+                    {contactFilesWithNames.length} fichier(s) associés
                 </Typography>
 
-                {contact.filesSentRef[0] && <Typography
-                    onClick={() => handleOpenFile(contact.filesSentRef[0])}
+                {contactFilesWithNames[0] && <Typography
+                    onClick={() => handleOpenFile(contactFilesWithNames[0])}
                     sx={{ cursor: "pointer" }}
                     align="left"
                 >
-                    {contact.filesSentRef[0]}
-                    {/* {getFileNameFromRef(contact.filesSentRef[0])} */}
+                    {contactFilesWithNames[0].fileName}
+                    {/* {getFileNameFromRef(contactFilesWithNames[0])} */}
 
-                    {/* // {contact.filesSentRef[0].fileName.length < 15
-                    //     ? contact.filesSentRef[0].fileName
-                    //     : contact.filesSentRef[0].fileName.substring(0, 15) + "..."
+                    {/* // {contactFilesWithNames[0].fileName.length < 15
+                    //     ? contactFilesWithNames[0].fileName
+                    //     : contactFilesWithNames[0].fileName.substring(0, 15) + "..."
                     // } */}
                 </Typography>
                 }
 
-                {contact.filesSentRef[1] && <Typography
-                    onClick={() => handleOpenFile(contact.filesSentRef[1])}
+                {contactFilesWithNames[1] && <Typography
+                    onClick={() => handleOpenFile(contactFilesWithNames[1])}
                     sx={{ cursor: "pointer" }}
                     align="left"
                 >
-                     {getFileNameFromRef(contact.filesSentRef[0])}
-                    {/* {contact.filesSentRef[1].fileName.length < 15
-                        ? contact.filesSentRef[1].fileName
-                        : contact.filesSentRef[1].fileName.substring(0, 15) + "..."
+                    {contactFilesWithNames[1].fileName}
+                     {/* {getFileNameFromRef(contactFilesWithNames[1])} */}
+                    {/* {contactFilesWithNames[1].fileName.length < 15
+                        ? contactFilesWithNames[1].fileName
+                        : contactFilesWithNames[1].fileName.substring(0, 15) + "..."
                     } */}
                 </Typography>
                 }
 
-                {contact.filesSentRef.length > 2 && <IconButton aria-label="files" color="primary" onClick={handleClickOpenFilesDialog}>
+                {contactFilesWithNames.length > 2 && <IconButton aria-label="files" color="primary" onClick={handleClickOpenFilesDialog}>
                     <ZoomInIcon />
                     <Typography >
-                        + {contact.filesSentRef.length - 2}
+                        + {contactFilesWithNames.length - 2}
                     </Typography>
                 </IconButton>
                 }
@@ -646,14 +674,14 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                     <DialogContent
                         dividers
                     >
-                        {contact.filesSentRef.map((fileRef, index) => (
+                        {contactFilesWithNames.map((file, index) => (
                             <Box key={index} sx={{ display: "flex" }} >
                                 {/* <Avatar sx={{ width: 40, height: 40, backgroundColor: stringToColor(file.fileName.slice(-3)), }} >{file.fileName.slice(-3)}</Avatar> */}
                                 <Typography
-                                    onClick={() => handleOpenFile(fileRef)}
+                                    onClick={() => handleOpenFile(file.fileRef)}
                                     sx={{ cursor: "pointer" }}
                                 >
-                                    {fileRef}
+                                    {file.fileName}
                                     {/* {getFileNameFromRef(fileRef)} */}
                                 </Typography>
                             </Box>
