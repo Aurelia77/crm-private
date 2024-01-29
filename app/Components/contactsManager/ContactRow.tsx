@@ -63,11 +63,11 @@ type ContactRowProps = {
 
 const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, currentUserId, getPriorityTextAndColor }: ContactRowProps) => {
 
-    console.log(contact.comments,contact.businessName)
+    //console.log(contact.comments,contact.businessName)
 
     //const [localContactValue, setLocalContactValue] = React.useState<Contact>(contact);
     const [commentsValue, setCommentsValue] = React.useState<string>(contact.comments);
-    console.log("commentsValue : ", commentsValue)
+    //console.log("commentsValue : ", commentsValue)
 
     const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[] | null>(null);
 

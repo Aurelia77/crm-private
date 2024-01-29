@@ -61,6 +61,16 @@ const headCells: readonly Column[] = [
 ];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+
+    if (typeof orderBy === 'string' && orderBy.includes('date')) {
+    
+        // On ne veut pas les date null en premier donc : Si la date est null, on la considère comme étant infiniment grande
+        const dateA = a[orderBy] ? (a[orderBy] as Timestamp).toDate().getTime() : Infinity;
+        const dateB = b[orderBy] ? (b[orderBy] as Timestamp).toDate().getTime() : Infinity;
+
+        return dateB - dateA;
+    }
+
     if (b[orderBy] < a[orderBy]) {
         return -1;
     }
@@ -215,7 +225,6 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
                     />
                     <TableBody>
                         {visibleRows.map((row) => (
-                            // ContactRow mémoïsé + fonctions Callback
                             <ContactRow
                                 key={row.id}
                                 contact={row}
