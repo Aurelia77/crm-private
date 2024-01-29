@@ -177,9 +177,9 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
 
     React.useEffect(() => {
         const fetchFileNames = async () => {
-            const filesWithNames : any = await Promise.all(
+            const filesWithNames: any = await Promise.all(
                 contact.filesSentRef.map(async (fileRef: string) => {
-                    const fileName : any = await getFileNameFromRef(fileRef);
+                    const fileName: any = await getFileNameFromRef(fileRef);
                     return { fileName, fileRef };
                 })
             );
@@ -259,28 +259,30 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                             : "",
                 }}
             >
-                <Box sx={{ pl: 0 }}
-                >
-                    <Box sx={{
-                        display: "flex",
-                        justifyContent: "end",
-                    }}>
-                        {isDatePassed(contact.dateOfNextCall) && <NotificationsNoneOutlinedIcon color="error"
-                            sx={{ marginRight: "70%" }}
-                        />}
-                        {contact.dateOfNextCall && <Tooltip arrow title="Supprimer la date" placement='left' >
-                            <IconButton color="primary" sx={{ padding: 0 }}
-                                onClick={() => handleChangeDate(null, "dateOfNextCall")} >
-                                <ClearIcon />
-                            </IconButton>
-                        </Tooltip>}
-                    </Box>
-                    <Tooltip arrow title={isDatePassed(contact.dateOfNextCall)
-                        ? "Attention : La date est passée !!!"
-                        : isDateSoon(contact.dateOfNextCall)
-                            ? "Attention : Relance dans les 7 jours !"
-                            : ""
-                    } placement='right' >
+                <Tooltip arrow title={isDatePassed(contact.dateOfNextCall)
+                    ? "Attention : La date est passée !!!"
+                    : isDateSoon(contact.dateOfNextCall)
+                        ? "Attention : Relance dans les 7 jours !"
+                        : ""
+                } placement='right' >
+                    <Box sx={{ pl: 0 }}
+                    >
+                        <Box sx={{
+                            display: "flex",
+                            justifyContent: "end",
+                        }}>
+                            {isDatePassed(contact.dateOfNextCall) &&
+                                <NotificationsNoneOutlinedIcon color="error"
+                                    sx={{ marginRight: "70%" }}
+                                />}
+                            {contact.dateOfNextCall && <Tooltip arrow title="Supprimer la date" placement='left' >
+                                <IconButton color="primary" sx={{ padding: 0 }}
+                                    onClick={() => handleChangeDate(null, "dateOfNextCall")} >
+                                    <ClearIcon />
+                                </IconButton>
+                            </Tooltip>}
+                        </Box>
+
                         <Box
                             sx={{
                                 '& .MuiInput-underline:before': {
@@ -303,8 +305,9 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                                 }}
                             />
                         </Box>
-                    </Tooltip>
-                </ Box>
+
+                    </ Box>
+                </Tooltip>
             </StyledTableCell>
 
             {/* LOGO */}
@@ -328,9 +331,10 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
 
             {/* businessName */}
             <StyledTableCell component="td" scope="row" >
-                <Typography sx={{ color: getPriorityTextAndColor(contact.priority).color,
-                    overflow:"visible", whiteSpace: 'normal' // ne pas utilisé l'ellipsis appliqué à tous les composants typographys ici
-                     }} >
+                <Typography sx={{
+                    color: getPriorityTextAndColor(contact.priority).color,
+                    overflow: "visible", whiteSpace: 'normal' // ne pas utilisé l'ellipsis appliqué à tous les composants typographys ici
+                }} >
                     {contact.isClient
                         ? <HandshakeOutlinedIcon color='success' fontSize='large' />
                         : <PsychologyAltIcon sx={{ color: muiTheme.palette.gray.main, }} fontSize='large' />}
@@ -381,7 +385,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
             </StyledTableCell>
 
             {/* contactPhone + businessPhone */}
-            <StyledTableCell component="td" 
+            <StyledTableCell component="td"
             //align="center"
             >
                 <Tooltip arrow title="Tél direct" placement='top'>
@@ -424,7 +428,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
             {/* ContactName */}
             <StyledTableCell
                 sx={{ py: 0 }}
-                //align='center'
+            //align='center'
             >
                 <Tooltip arrow title="Contact direct" placement='bottom'>
                     <Typography>
@@ -438,7 +442,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                     /> */}
                 </Tooltip>
                 <Tooltip arrow title="Contact entreprise" placement='bottom'>
-                    <Typography style={{color: 'gray', fontSize: "0.8em" }} >
+                    <Typography style={{ color: 'gray', fontSize: "0.8em" }} >
                         {contact.contactPosition || <span style={{ color: 'gray', fontSize: "0.8em", }}>... </span>}
                     </Typography>
                     {/* <TextField id="standard-basic"
@@ -521,7 +525,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
             <StyledTableCell
                 component="td" scope="row" >
                 <Tooltip arrow title="Ville">
-                    <Typography style={{ textAlign: 'center'}} >
+                    <Typography style={{ textAlign: 'center' }} >
                         {contact.businessCity || <span>...</span>}
                     </Typography>
                     {/* <TextField id="standard-basic"
@@ -547,7 +551,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                     /> */}
                 </Tooltip>
             </StyledTableCell>
-                
+
             {/* hasBeenCalled */}
             <StyledTableCell align="center">
                 <Box display="flex"
@@ -600,11 +604,11 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                 </IconButton>
 
                 {/* Dialog pour modifier */}
-                <Dialog 
-                    open={openCommentDialogue} 
+                <Dialog
+                    open={openCommentDialogue}
                     //onClose={handleSaveComments} 
-                    aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" 
-                    maxWidth="lg" 
+                    aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description"
+                    maxWidth="lg"
                     fullWidth
                     disableRestoreFocus // sinon le focus ne se fait pas sur le TextField
                 >
@@ -670,7 +674,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                     align="left"
                 >
                     {contactFilesWithNames[1].fileName}
-                     {/* {getFileNameFromRef(contactFilesWithNames[1])} */}
+                    {/* {getFileNameFromRef(contactFilesWithNames[1])} */}
                     {/* {contactFilesWithNames[1].fileName.length < 15
                         ? contactFilesWithNames[1].fileName
                         : contactFilesWithNames[1].fileName.substring(0, 15) + "..."

@@ -61,19 +61,38 @@ export default function ContactsTablePage() {
     
   }
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['contacts'],
-    queryFn: () => getUserContactsFromDatabase(currentUser?.uid),
-    //staleTime: 2*60,    // Change rien !!???
-    //refetchOnReconnect: false,
-  });
+
+
+  // const { data, isLoading, isError } = useQuery({
+  //   queryKey: ['contacts'],
+  //   queryFn: () => getUserContactsFromDatabase(currentUser?.uid),
+  //   //staleTime: 2*60,    // Change rien !!???
+  //   //refetchOnReconnect: false,
+  // });
+
+  // React.useEffect(() => {
+  //   if (data) {
+  //     setAllContacts(data);
+  //   }
+  // }, [data]);
+
+  
+  // console.log("isLoading : ", isLoading)
+  // console.log("data : ", data)
+
+
+  // Pbm qd on actualise => plus aucun contact !!!!!!!!! J'essaie sans le useQuery
+
+  const [isLoading, setLoading] = React.useState<boolean>(true)
 
   React.useEffect(() => {
-    if (data) {
-      setAllContacts(data);
-    }
-  }, [data]);
-
+    currentUser && getUserContactsFromDatabase(currentUser.uid).then((contactsList) => {
+        setAllContacts(contactsList);
+        //setFilteredContacts(contactsList);
+        //setAlerts(countContactsByAlertDates(contactsList))
+        setLoading(false);
+    })
+}, [currentUser])
  
 
   const [alerts, setAlerts] = React.useState<Alerts>({ nbContactsWithDatePassed: 0, nbContactsDateSoon: 0 })
@@ -88,6 +107,7 @@ export default function ContactsTablePage() {
   const [contactsSearchCriteria, setContactsSearchCriteria] = React.useState<SearchContactCriteria>(emptySearchCriteria)
   const isSearchCriteriaEmpty = JSON.stringify(contactsSearchCriteria) === JSON.stringify(emptySearchCriteria)
   const getPriorityTextAndColor = useGetPriorityTextAndColor();
+
 
   React.useEffect(() => {
     allContacts && setAlerts(countContactsByAlertDates(allContacts))
@@ -149,8 +169,8 @@ export default function ContactsTablePage() {
       ? <Container sx={{ ml: "50%", mt: "20%" }} >
         <CircularProgress color='secondary' />
       </Container>
-      : isError
-        ? <Typography>Une erreur s'est produite</Typography>
+      // : isError
+      //   ? <Typography>Une erreur s'est produite</Typography>
         : currentUser
           ? <Box width="100%"
           >
