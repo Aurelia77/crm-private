@@ -891,7 +891,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                                 id="modal-modal-title"
                                                 variant="h6"
                                                 component="h2"
-                                                sx={{ mb: 5 }}
+                                                sx={{ mb: 5, textOverflow: "clip", whiteSpace: "normal" }}
                                             >
                                                 Supprimer le fichier associé : <span style={{ fontWeight: "bold" }}>{(file.fileName)}</span> ?
                                             </Typography>
@@ -1065,7 +1065,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     aria-describedby="modal-modal-description"
                                 >
                                     <Box sx={modalStyle} >
-                                        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
+                                        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5, textOverflow: "clip", whiteSpace: "normal" }} >
                                             Supprimer tous les fichiers associés au contact : <span style={{ fontWeight: "bold" }}>{contactToAddOrUpdate.businessName}</span> ?
                                         </Typography>
                                         <Box sx={{ display: "flex", justifyContent: "space-between" }} >
@@ -1086,7 +1086,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     </Box>
 
                     {addContact && <Button variant="contained" color='secondary' sx={{ width: '30%', height: "200px", mt: 3, }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
-                    {updateContact && <Button variant="contained" sx={{ width: '30%', height: "200px", mt: 3 }} onClick={handleWholeUpdateContact} >Mettre à jour le contact</Button>}
+                    {updateContact && <Button variant="contained" sx={{ width: '30%', height: "200px", mt: 3 }} onClick={handleWholeUpdateContact}>Mettre à jour le contact</Button>}
                     <Modal
                         open={openContactIsUpdatedModal}
                         onClose={() => setOpenContactIsUpdatedModal(false)}
@@ -1096,7 +1096,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 id="modal-modal-title"
                                 variant="h6"
                                 component="h2"
-                                sx={{ mb: 5 }}
+                                sx={{ mb: 5, overflow: "visible", textOverflow: "clip", whiteSpace: "normal" }}
                             >
                                 Contact <span style={{ fontWeight: "bold" }}>{contactToAddOrUpdate.businessName}</span> mis à jour !
                             </Typography>
@@ -1124,7 +1124,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     aria-describedby="modal-modal-description"
                 >
                     <Box sx={modalStyle} >
-                        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
+                        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5, textOverflow: "clip", whiteSpace: "normal" }} >
                             Supprimer le contact : <span style={{ fontWeight: "bold" }}>{contact.businessName}</span> ?
                         </Typography>
                         <Box sx={{ display: "flex", justifyContent: "space-between" }} >

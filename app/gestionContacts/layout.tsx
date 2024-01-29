@@ -261,7 +261,8 @@ export default function ContactsLayout({
                             id="modal-modal-title"
                             variant="h6"
                             component="h2"
-                            sx={{ mb: 5 }}
+                            sx={{ mb: 5, overflow: "visible", textOverflow: "clip", 
+                            whiteSpace: "normal" }}
                         >
                             Attention, vous avez fait des changements non sauvegardés : êtes vous sûr de vouloir quitter ?
                         </Typography>

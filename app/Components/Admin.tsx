@@ -420,7 +420,7 @@ export default function Admin({ currentUserId }: AdminType) {
                     onClose={() => setOpenDeleteCatModal(false)}
                   >
                     <Box sx={modalStyle} >
-                      <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5 }} >
+                      <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5, textOverflow: "clip", whiteSpace: "normal" }} >
                         Supprimer la catégorie : <span style={{ fontWeight: "bold" }}>
                           {catToUpdateOrDelete.label}
                         </span> ?
