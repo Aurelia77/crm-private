@@ -53,7 +53,7 @@ export default function ContactsTablePage() {
   const updateContactInContactsAndDB = useContactsContext().updateContactInContactsAndDB
 
   const updateContactInContactsAndDBAndFilteredContacts = (id: string, keyAndValue: { key: string; value: string | number | boolean | Timestamp | File[] | null; }) => {
-    console.log("modif allContact :", id, keyAndValue)
+    //console.log("modif allContact :", id, keyAndValue)
 
     updateContactInContactsAndDB(id, keyAndValue)
     allContacts && setAllContacts(updatedContactsInLocalList(allContacts, id, keyAndValue))

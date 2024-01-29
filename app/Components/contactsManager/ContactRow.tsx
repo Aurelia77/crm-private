@@ -63,7 +63,11 @@ type ContactRowProps = {
 
 const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, currentUserId, getPriorityTextAndColor }: ContactRowProps) => {
 
-    const [localContactValue, setLocalContactValue] = React.useState<Contact>(contact);
+    console.log(contact.comments,contact.businessName)
+
+    //const [localContactValue, setLocalContactValue] = React.useState<Contact>(contact);
+    const [commentsValue, setCommentsValue] = React.useState<string>(contact.comments);
+    console.log("commentsValue : ", commentsValue)
 
     const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[] | null>(null);
 
@@ -104,8 +108,15 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
     const handleClickOpenCommentDialog = () => {
         setOpenCommentDialogue(true);
     };
-    const handleCloseCommentDialog = () => {
+    const handleSaveComments = () => {
+        console.log("SAVE")
         setOpenCommentDialogue(false);
+        handleUpdateContact(contact.id, { key: "comments", value: commentsValue })
+    };
+    const handleNotSaveComments = () => {
+        console.log("NOOOOOOOOOT SAVE")
+        setOpenCommentDialogue(false);
+        setCommentsValue(contact.comments)
     };
     const [openFilesDialogue, setOpenFilesDialogue] = React.useState(false);
     const handleClickOpenFilesDialog = () => {
@@ -589,7 +600,12 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                 </IconButton>
 
                 {/* Dialog pour modifier */}
-                <Dialog open={openCommentDialogue} onClose={handleCloseCommentDialog} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="lg" fullWidth
+                <Dialog 
+                    open={openCommentDialogue} 
+                    //onClose={handleSaveComments} 
+                    aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" 
+                    maxWidth="lg" 
+                    fullWidth
                     disableRestoreFocus // sinon le focus ne se fait pas sur le TextField
                 >
                     <DialogTitle id="alert-dialog-title">Commentaires pour {contact.businessName}</DialogTitle>
@@ -600,13 +616,18 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                             //label="Commentaires" 
                             type="comment" fullWidth variant="standard"
                             multiline
-                            value={contact.comments}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'comments')}
+                            value={commentsValue}
+                            // value={contact.comments}
+                            // onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'comments')}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCommentsValue(e.target.value)}
                             sx={{ textAlign: 'left' }}
                         />
                     </DialogContent>
                     <DialogActions>
-                        <Button variant="contained" color='primary' onClick={handleCloseCommentDialog}>Valider</Button>
+                        <Box sx={{ display: "flex", justifyContent: "space-between" }} >
+                            <Button variant="contained" color='secondary' onClick={handleNotSaveComments}>Annuler</Button>
+                            <Button variant="contained" color='primary' onClick={handleSaveComments}>Valider</Button>
+                        </Box>
                     </DialogActions>
                 </Dialog>
             </StyledTableCell>
@@ -806,7 +827,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                 </Tooltip>
                 <Modal
                     open={openDeleteModal}
-                    onClose={handleCloseDeleteModal}
+                    //onClose={handleCloseDeleteModal}
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >

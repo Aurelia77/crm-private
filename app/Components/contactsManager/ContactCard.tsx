@@ -886,7 +886,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     </Tooltip>
                                     <Modal
                                         open={openDeleteContactFileModal}
-                                        onClose={() => setOpenDeleteContactFileModal(false)}
+                                        //onClose={() => setOpenDeleteContactFileModal(false)}
                                         aria-labelledby="modal-modal-title"
                                         aria-describedby="modal-modal-description"
                                     >
@@ -1064,7 +1064,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
                                 <Modal
                                     open={openDeleteContactFilesModal}
-                                    onClose={() => setOpenDeleteContactFilesModal(false)}
+                                    //onClose={() => setOpenDeleteContactFilesModal(false)}
                                     aria-labelledby="modal-modal-title"
                                     aria-describedby="modal-modal-description"
                                 >
@@ -1104,6 +1104,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             >
                                 Contact <span style={{ fontWeight: "bold" }}>{contactToAddOrUpdate.businessName}</span> mis à jour !
                             </Typography>
+                            <Button variant="contained" color='primary' sx={{ color: "white" }} onClick={() => setOpenContactIsUpdatedModal(false)} >Ok</Button>
+
                         </Box>
                     </Modal>
                 </Box>
@@ -1123,7 +1125,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
                 <Modal
                     open={openDeleteContactModal}
-                    onClose={() => setOpenDeleteContactModal(false)}
+                    //onClose={() => setOpenDeleteContactModal(false)}
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >

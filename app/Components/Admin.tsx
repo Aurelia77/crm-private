@@ -417,7 +417,7 @@ export default function Admin({ currentUserId }: AdminType) {
                   </Button>
                   <Modal
                     open={openDeleteCatModal}
-                    onClose={() => setOpenDeleteCatModal(false)}
+                    //onClose={() => setOpenDeleteCatModal(false)}
                   >
                     <Box sx={modalStyle} >
                       <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5, textOverflow: "clip", whiteSpace: "normal" }} >

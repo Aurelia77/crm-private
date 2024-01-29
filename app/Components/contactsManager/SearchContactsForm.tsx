@@ -40,8 +40,8 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
 
     const [search, setSearch] = React.useState<SearchContactCriteria>(emptySearchCriteria);
 
-    console.log("search", search)
-    console.log("search Names", search.businessNames)
+    // console.log("search", search)
+    // console.log("search Names", search.businessNames)
 
     //console.log("search CAT Ids", search.businessCategoryIds)
 
