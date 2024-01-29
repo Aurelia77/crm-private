@@ -73,6 +73,9 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     //console.log("contact ContactCard : ", contact)
 
     const [contactToAddOrUpdate, setContactToAddOrUpdate] = React.useState<Contact>(contact)
+
+    console.log(contactToAddOrUpdate.filesSentRef)
+    
     const [contactFilesWithNames, setContactFilesWithNames] = React.useState<FileNameAndRefType[]>([])
 
     const [tabValue, setTabValue] = React.useState<number>(0);
@@ -249,9 +252,9 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
     React.useEffect(() => {
         const fetchFileNames = async () => {
-            const filesWithNames = await Promise.all(
+            const filesWithNames : any = await Promise.all(
                 contactToAddOrUpdate.filesSentRef.map(async (fileRef: string) => {
-                    const fileName = await getFileNameFromRef(fileRef);
+                    const fileName : any = await getFileNameFromRef(fileRef);
                     return { fileName, fileRef };
                 })
             );
@@ -260,9 +263,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         };
 
         fetchFileNames();
-
-
-
 
         // setContactFilesWithNames(contactToAddOrUpdate.filesSentRef.map((fileRef: string) => ({
         //     fileName: getFileNameFromRef(fileRef),
@@ -474,8 +474,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     <Button
                                         onClick={() => handleOpenFile(file)}
                                     >
-
-
                                         {/* {index + 1} - {fileRef}  */}
                                         {/* {index + 1} - {getFileNameFromRef(file)}  */}
                                         {index + 1} - {file.fileName} 
@@ -487,7 +485,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         <IconButton
                                             size="small"
                                             color="error"
-                                            onClick={() => removeFile(file.fileRef)}
+                                            onClick={() => setOpenDeleteContactFileModal(true)}  //removeFile(file.fileRef)}
                                         >
                                             <ClearIcon />
                                         </IconButton>
@@ -862,21 +860,22 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             //variant="caption" 
                             component="div"
                             sx={{ color: "text.secondary" }}
-                        >
-                            {contactToAddOrUpdate.filesSentRef.map((fileRef, index) => (
+                        >                           
+                            {contactFilesWithNames.map((file, index) => (
+                            // {contactToAddOrUpdate.filesSentRef.map((fileRef, index) => (
                                 <Box key={index} sx={{ display: "flex", alignItems: "center" }} >
                                     <ArrowRightIcon sx={{ color: "text.secondary" }} />
                                     <Button
-                                        onClick={() => handleOpenFile(fileRef)}
+                                        onClick={() => handleOpenFile(file.fileRef)}
                                     >
-                                        {index + 1} - {fileRef}<br />
+                                        {index + 1} - {file.fileName}<br />
                                         {/* {index + 1} - {getFileNameFromRef(fileRef)}<br /> */}
                                     </Button>
                                     <Tooltip arrow title="Désassocier ce fichier du contact">
                                         <IconButton
                                             size="small"
                                             color="error"
-                                            onClick={() => setOpenDeleteContactFileModal(true)}  
+                                            onClick={() => setOpenDeleteContactFileModal(true)}  //removeFile(file.fileRef)}
                                         >
                                             <ClearIcon />
                                         </IconButton>
@@ -894,13 +893,13 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                                 component="h2"
                                                 sx={{ mb: 5 }}
                                             >
-                                                Supprimer le fichier associé : <span style={{ fontWeight: "bold" }}>{getFileNameFromRef(fileRef)}</span> ?
+                                                Supprimer le fichier associé : <span style={{ fontWeight: "bold" }}>{(file.fileName)}</span> ?
                                             </Typography>
                                             <Box sx={{ display: "flex", justifyContent: "space-between" }} >
                                                 <Button
                                                     variant="contained"
                                                     color='warning'
-                                                    onClick={() => removeFile(fileRef)}
+                                                    onClick={() => removeFile(file.fileRef)}
                                                     sx={{ marginRight: "15px" }}
                                                 >
                                                     Oui !
