@@ -78,6 +78,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     
     const [contactFilesWithNames, setContactFilesWithNames] = React.useState<FileNameAndRefType[]>([])
 
+    console.log("contactFilesWithNames", contactFilesWithNames)
+
     const [tabValue, setTabValue] = React.useState<number>(0);
     const [logoChoosen, setIsLogoChoosen] = React.useState(false);  
     
@@ -95,9 +97,10 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     const [filesFirebaseArray, setFilesFirebaseArray] = React.useState<FileNameAndRefType[]>([])
     const [firebaseFileSelected, setFirebaseFileSelected] = React.useState<FileNameAndRefType>({ fileName: "", fileRef: "" })
 
-    console.log("firebaseFileSelected", firebaseFileSelected)
+    //console.log("firebaseFileSelected", firebaseFileSelected)
 
     const [newFileName, setNewFileName] = React.useState<string | null>(null);
+    console.log("newFileName", newFileName)
 
     const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[] | null>(null);
 
@@ -200,7 +203,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
             },
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    addFileOnFirebaseDB(currentUserId, { fileName: file.name, fileRef: downloadURL })
+                    addFileOnFirebaseDB(currentUserId, { fileName: newFileName || "", fileRef: downloadURL })
+                    // addFileOnFirebaseDB(currentUserId, { fileName: file.name, fileRef: downloadURL })
 
                     //console.log("downloadURL", downloadURL)
 
@@ -1022,11 +1026,11 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                             <Button
                                                 color="pink"
                                                 type="submit"
-                                                variant="contained" startIcon={<CloudUploadIcon />}
+                                                variant="contained" 
+                                                startIcon={<CloudUploadIcon />}
                                             >
                                                 2- Télécharger/ajouter le fichier
                                             </Button>
-
                                         </Box>
                                     </Box>
                                     <Box>
