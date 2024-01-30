@@ -333,7 +333,10 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
             <StyledTableCell component="td" scope="row" >
                 <Typography sx={{
                     color: getPriorityTextAndColor(contact.priority).color,
-                    overflow: "visible", whiteSpace: 'normal' // ne pas utilisé l'ellipsis appliqué à tous les composants typographys ici
+                    overflow: "visible", whiteSpace: 'normal', // ne pas utilisé l'ellipsis appliqué à tous les composants typographys ici
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",gap:1
                 }} >
                     {contact.isClient
                         ? <HandshakeOutlinedIcon color='success' fontSize='large' />
@@ -403,7 +406,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                 </Tooltip>
                 <Tooltip arrow title="Tél standard">
                     {/* !!!!! Si on met SX au lieu de STYLE => ne met pas en gris !!! mais le reste marche */}
-                    <Typography style={{ color: 'gray', fontSize: "0.8em" }} >
+                    <Typography style={{ color: 'gray', fontSize: "0.8em", marginTop: "10px" }} >
                         {contact.businessPhone || <span style={{ color: 'gray', fontSize: "0.8em", }}>... </span>}
                         {/* idem */}
                         {/* {contact.businessPhone.length === 0
@@ -540,7 +543,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                 </Tooltip>
 
                 <Tooltip arrow title="Adresse">
-                    <Typography style={{ color: 'gray', fontSize: "0.8em" }} >
+                    <Typography style={{ color: 'gray', fontSize: "0.8em", marginTop: "10px" }} >
                         {contact.businessAddress || <span style={{ color: 'gray', fontSize: "0.8em", }}>...</span>}
                     </Typography>
                     {/* <TextField id="standard-basic"
