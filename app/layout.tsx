@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body >
         <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => (
-          <div style={{ margin:5 }} >
+          <div style={{ margin:7 }} >
             <h1>Une erreur s'est produite</h1>
             <pre style={{ whiteSpace: "pre-wrap" }} >{error.message}</pre>
             <button onClick={resetErrorBoundary}>Réessayer</button>

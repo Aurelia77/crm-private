@@ -336,7 +336,8 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                     overflow: "visible", whiteSpace: 'normal', // ne pas utilisé l'ellipsis appliqué à tous les composants typographys ici
                     display: "flex",
                     flexDirection: "row",
-                    alignItems: "center",gap:1
+                    alignItems: "center",
+                    gap:1
                 }} >
                     {contact.isClient
                         ? <HandshakeOutlinedIcon color='success' fontSize='large' />

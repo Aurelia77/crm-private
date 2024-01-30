@@ -173,7 +173,7 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
 
     const [page, setPage] = React.useState(0);
     //const [dense, setDense] = React.useState(false);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rowsPerPage, setRowsPerPage] = React.useState(7);
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof Contact>('businessName');
 
@@ -253,11 +253,15 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
                 // On change le texte pour le mettre en français 
                 labelRowsPerPage="Lignes par page :"
                 labelDisplayedRows={({ from, to, count }) => `${from}-${to} sur ${count}`}
-                // getItemAriaLabel={(type) => {
-                //     if (type === 'previous') return 'Page précédente';
-                //     if (type === 'next') return 'Page suivante';
-                //     return '';
-                // }}
+                getItemAriaLabel={(type) => {
+                    if (type === 'previous') return 'Page précédente';
+                    if (type === 'next') return 'Page suivante';
+                    if (type === 'first') return 'Aller à la première page';
+                    if (type === 'last') return 'Aller à la dernière page';
+                    return '';
+                }}
+                showFirstButton
+                showLastButton
             />
             {/* <FormControlLabel
                 control={<Switch 

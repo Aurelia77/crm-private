@@ -142,8 +142,9 @@ export default function ContactsTablePage() {
           contact.businessName.toLowerCase().includes(contactsSearchCriteria.businessNames.toLowerCase())
           // si searchIsClient est null, on ne filtre pas sur ce critère
           && (searchIsClient === null || contact.isClient === searchIsClient)          
-          // Si aucune recherche sur la VILLE on ne fait rien   
-          && (JSON.stringify(searchOnCity) === JSON.stringify(['']) ||  searchOnCity.some((city) => contact.businessCity.toLowerCase() === city.toLowerCase()))                 
+          //&& (JSON.stringify(searchOnCity) === JSON.stringify(['']) ||  searchOnCity.some((city) => contact.businessCity.toLowerCase() === city.toLowerCase())) 
+          // Si aucune recherche sur la VILLE on ne fait rien et si recherche = "Vide" on recherche les villes = "" 
+          && (JSON.stringify(searchOnCity) === JSON.stringify(['']) || searchOnCity.includes('-Vide(s)') && contact.businessCity === '' || searchOnCity.some((city) => contact.businessCity.toLowerCase() === city.toLowerCase()))  
           // Si aucune recherche sur la CATEGORIE on ne fait rien   
           && (JSON.stringify(searchOnCategory) === JSON.stringify(['']) || searchOnCategory.some((cat) => contact.businessCategoryId === cat))               
           // Si aucune recherche sur le TYPE on ne fait rien

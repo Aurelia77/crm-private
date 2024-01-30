@@ -41,7 +41,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
     const [search, setSearch] = React.useState<SearchContactCriteria>(emptySearchCriteria);
 
     // console.log("search", search)
-    // console.log("search Names", search.businessNames)
+    console.log("search Villes", search.businessCities)
 
     //console.log("search CAT Ids", search.businessCategoryIds)
 
@@ -69,6 +69,9 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
     //console.log("allDifferentsBusinessCategoryValues", allDifferentsBusinessCategoryIds)
 
     const [allDifferentsBusinessCitiesValues, setAllDifferentsBusinessCitiesValues] = React.useState<{ value: string, count: number }[]>([]);
+
+    console.log("different Cities", allDifferentsBusinessCitiesValues)
+
     const [allDifferentsContactTypesValues, setAllDifferentsContactTypesValues] = React.useState<{ value: ContactTypeType, count: number }[]>([]);
 
     //console.log("allDifferentsContactTypesValues", allDifferentsContactTypesValues)
@@ -326,17 +329,32 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             multiple={true}
                             value={search.businessCities}
                             onChange={(e) => handleMultipleChangeSelect(e, "businessCities")}
-                            input={<OutlinedInput label="Villes"         // ici le label est utilisé pour l'accessibilité et non pour l'affichage.                            
+                            input={<OutlinedInput label="Ville(s)"         // ici le label est utilisé pour l'accessibilité et non pour l'affichage.                            
                             />}                            
                            renderValue={(selected) => selected.join(', ')}
                             MenuProps={MenuSelectProps}
                         >
+                             {/* <MenuItem key="0" value="0">
+                                {contacts.length === 0
+                                    ? <ListItemText primary="Aucun contact à chercher" />
+                                    : contacts.some(contact => contact.businessCity === "") && <>
+                                        <Checkbox checked={search.businessCities.includes("")} />
+                                        <ListItemText primary={`Vide (${contacts.filter(contact => contact.businessCity === "").length})`} />
+                                    </>
+                                }
+                            </MenuItem> */}
+
                             {contacts.length === 0 && <MenuItem key="0" value="0">
                                 <ListItemText primary="Aucun contact à chercher" />
                             </MenuItem>
                             }
                             {allDifferentsBusinessCitiesValues.map((city, index) => (
-                                <MenuItem key={city.value} value={city.value} sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }} >
+                                city.value === ""
+                                    ? <MenuItem key={0} value="-Vide(s)" sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }} >
+                                        <Checkbox checked={search.businessCities.indexOf(city.value) > -1} />
+                                        <ListItemText primary={`-Vide(s) (${city.count})`} />
+                                    </MenuItem>
+                                    : <MenuItem key={city.value} value={city.value} sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }} >
                                     <Checkbox checked={search.businessCities.indexOf(city.value) > -1} />
                                     <ListItemText primary={`${city.value} (${city.count})`} />
                                 </MenuItem>
