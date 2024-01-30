@@ -209,7 +209,13 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
             <StyledTableCell
                 component="td"
                 scope="row"
-            >
+                sx={{
+                    backgroundColor: contact.contactType === "Partenaire"
+                        ? muiTheme.palette.secondary.light
+                        : ""
+                }}
+                title={contact.contactType === "Partenaire" ? "C'est un partenaire" : ""}
+            >                
                 <Switch
                     checked={contact.isClient}
                     onChange={() => handleUpdateContact(contact.id, { key: "isClient", value: !contact.isClient })}
