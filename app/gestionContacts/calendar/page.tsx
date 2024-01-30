@@ -36,6 +36,10 @@ export default function CalendarPage() {
     const redirectToContact = (contactId: string) => {
         router.push(`/gestionContacts/contact/${contactId}`)
         //redirect(`/gestionContacts/contact/${contactId}`) // marche pas
+
+        // Ouvre dans nouvel onglet
+        // const url = `/gestionContacts/contact/${id}`;
+        // window.open(url, '_blank');
     }
 
     return (

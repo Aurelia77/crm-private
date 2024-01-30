@@ -31,19 +31,19 @@ export default function CalendarScheduler({ contacts, setContacts, redirectToCon
   const calendarRef = React.useRef(null);
 
   const muiTheme = useTheme(); 
-  const [shouldRedirect, setShouldRedirect] = React.useState<boolean>(false)
+  //const [shouldRedirect, setShouldRedirect] = React.useState<boolean>(false)
 
-  console.log("shouldRedirect : ", shouldRedirect)
+  //console.log("shouldRedirect : ", shouldRedirect)
 
 
   //const navigate = useNavigate();
 
-  React.useEffect(() => {
-    if (shouldRedirect) {
-      setShouldRedirect(false)
-      redirect('/')
-    }
-  }, [shouldRedirect])
+  // React.useEffect(() => {
+  //   if (shouldRedirect) {
+  //     setShouldRedirect(false)
+  //     redirect('/')
+  //   }
+  // }, [shouldRedirect])
 
 
   const hightPriorityColor = muiTheme.palette.primary.main
@@ -117,17 +117,29 @@ export default function CalendarScheduler({ contacts, setContacts, redirectToCon
         ...event,
         color: getPriorityColor(event.contact.priority) ?? "black",
         //onClick: () => redirectToContact(event.contact.id)  // marche pas
+
+        // Pour pouvoir voir le lien en passant la souris ou faire clic droit : ouvrir dans nouvel onglet
+        url: `/gestionContacts/contact/${event.contact.id}`,
+        eventContent: function (arg : any) {
+          let anchor = document.createElement('a');
+          anchor.href = arg.event.url;
+          anchor.target = '_blank';
+          anchor.innerText = arg.event.title;
+          arg.el.appendChild(anchor);
+          return { html: '' };
+        }
       })),    
 
-      eventClick: function (info) {
-        console.log("info", info)
-        console.log("info.event", info.event)
-        console.log("info.event.extendedProps", info.event.extendedProps)
-        console.log("info.event.extendedProps.contact", info.event.extendedProps.contact)
-        console.log("info.event.extendedProps.contact.id", info.event.extendedProps.contact.id)
-        redirectToContact(info.event.extendedProps.contact.id)
-        //redirect(`/gestionContacts/contact/${info.event.extendedProps.contact.id}`)
-      },
+      // Fonctionne mais on pouvait pas voir le lien en passant la souris ou faire clic droit : ouvrir dans nouvel onglet
+      // eventClick: function (info) {
+      //   console.log("info", info)
+      //   console.log("info.event", info.event)
+      //   console.log("info.event.extendedProps", info.event.extendedProps)
+      //   console.log("info.event.extendedProps.contact", info.event.extendedProps.contact)
+      //   console.log("info.event.extendedProps.contact.id", info.event.extendedProps.contact.id)
+      //   redirectToContact(info.event.extendedProps.contact.id)
+      //   //redirect(`/gestionContacts/contact/${info.event.extendedProps.contact.id}`)
+      // },
 
       eventDrop: function (dropInfo) {
         const { event } = dropInfo;

@@ -459,7 +459,9 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                         {contact.directorName
                             ? <Box display="flex"
                                 //flexDirection="row" 
-                                alignItems="center" justifyContent="center" gap={0.5} ><ArrowCircleUpIcon color='primary' fontSize="small" /> {contact.directorName}</Box>
+                                alignItems="center" 
+                                // justifyContent="center" 
+                                gap={0.5} ><ArrowCircleUpIcon color='primary' fontSize="small" /> {contact.directorName}</Box>
                             : <span style={{ color: 'gray', fontSize: "0.8em", }}>... </span>}
                     </Typography>
                     {/* <TextField id="standard-basic"

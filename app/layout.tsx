@@ -8,6 +8,7 @@ import { ErrorBoundary } from 'react-error-boundary'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ReactQueryProvider from './Components/providers/ReactQueryProvider';
+import { Typography } from '@mui/material';
 
 
 export default function RootLayout({
@@ -20,8 +21,9 @@ export default function RootLayout({
     <html lang="en">
       <body >
         <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => (
-          <div>
+          <div style={{ margin:5 }} >
             <h1>Une erreur s'est produite</h1>
+            <pre style={{ whiteSpace: "pre-wrap" }} >{error.message}</pre>
             <button onClick={resetErrorBoundary}>Réessayer</button>
           </div>
         )}>
