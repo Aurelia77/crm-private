@@ -49,6 +49,35 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 //import {Link} from 'react-router-dom';
 
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // import styles
+
+const modules = {
+    toolbar: [
+        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+        ['blockquote', 'code-block'],
+
+        [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
+        [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
+        //[{ 'direction': 'rtl' }],                         // text direction
+
+        [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+        [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+        [{ 'font': [] }],
+        //[{ 'font': ['comic-sans-ms', 'arial', 'courier-new', 'georgia', 'helvetica', 'lucida'] }],
+
+        [{ 'align': [] }],
+
+        ['clean'],                                         // remove formatting button
+
+        ['link', 'image', 'video']                         // link and image, video
+    ],
+};
+
 
 type ContactRowProps = {
     contact: Contact
@@ -215,7 +244,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                         : ""
                 }}
                 title={contact.contactType === "Partenaire" ? "C'est un partenaire" : ""}
-            >                
+            >
                 <Switch
                     checked={contact.isClient}
                     onChange={() => handleUpdateContact(contact.id, { key: "isClient", value: !contact.isClient })}
@@ -343,7 +372,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                     display: "flex",
                     flexDirection: "row",
                     alignItems: "center",
-                    gap:1
+                    gap: 1
                 }} >
                     {contact.isClient
                         ? <HandshakeOutlinedIcon color='success' fontSize='large' />
@@ -469,7 +498,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                         {contact.directorName
                             ? <Box display="flex"
                                 //flexDirection="row" 
-                                alignItems="center" 
+                                alignItems="center"
                                 // justifyContent="center" 
                                 gap={0.5} ><ArrowCircleUpIcon color='primary' fontSize="small" /> {contact.directorName}</Box>
                             : <span style={{ color: 'gray', fontSize: "0.8em", }}>... </span>}
@@ -615,7 +644,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                     </Typography>
                 </IconButton>
 
-                {/* Dialog pour modifier */}
+                {/* Dialog pour modifier comments */}
                 <Dialog
                     open={openCommentDialogue}
                     //onClose={handleSaveComments} 
@@ -628,7 +657,13 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                     <DialogContent
                         dividers
                     >
-                        <TextField id="alert-dialog-description" autoFocus margin="dense"
+                        <ReactQuill
+                            modules={modules}
+                            value={commentsValue}
+                            onChange={setCommentsValue}
+                        />
+
+                        {/* <TextField id="alert-dialog-description" autoFocus margin="dense"
                             //label="Commentaires" 
                             type="comment" fullWidth variant="standard"
                             multiline
@@ -637,7 +672,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                             // onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChangeText(e, 'comments')}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCommentsValue(e.target.value)}
                             sx={{ textAlign: 'left' }}
-                        />
+                        /> */}
                     </DialogContent>
                     <DialogActions sx={{ display: "flex", justifyContent: "space-between" }}>
                         <Button variant="contained" color='secondary' onClick={handleNotSaveComments}>Annuler</Button>
