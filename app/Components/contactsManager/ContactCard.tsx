@@ -56,6 +56,34 @@ import { truncate } from 'fs';
 import { useNavigate, useLocation, useBlocker } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query'
 
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; 
+
+const modules = {
+    toolbar: [
+        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+        ['blockquote', 'code-block'],
+
+        [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
+        [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
+        //[{ 'direction': 'rtl' }],                         // text direction
+
+        [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+        [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+        [{ 'font': [] }],
+        //[{ 'font': ['comic-sans-ms', 'arial', 'courier-new', 'georgia', 'helvetica', 'lucida'] }],
+
+        [{ 'align': [] }],
+
+        ['clean'],                                         // remove formatting button
+
+        ['link', 'image', 'video']                         // link and image, video
+    ],
+};
 
 type ContactCardProps = {
     contact: Contact
@@ -166,6 +194,9 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
     const handleChangeText = (attribut: keyof Contact) => (event: React.ChangeEvent<HTMLInputElement>) => {
         setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: event.target.value })
+    }
+    const handleChangeComment = (attribut: keyof Contact) => (content: string) => {
+        setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: content });
     }
     const handleChangeSelect = (event: SelectChangeEvent, attribut: keyof Contact) => {
         const type: string = event.target.value as string  
@@ -726,7 +757,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     {/* ///////// NOM Contact, POSITION, VILLE et ADRESSE ///////// */}
                     <Box
                         sx={{
-                            width: contactToAddOrUpdate.comments.length > 0 ? "48%" : "86%",
+                            width: "48%",
+                            // width: contactToAddOrUpdate.comments.length > 0 ? "48%" : "76%",
                             display: 'flex', justifyContent: "space-between", gap: "4%"
                         }}
                     >
@@ -834,7 +866,20 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     </Box>
 
                     {/* ///////// COMMENTAIRES ///////// */}
-                    <TextField
+                    <ReactQuill
+                        style={{
+                            width: "48%",
+                            // width: contactToAddOrUpdate.comments.length > 0 ? "48%" : "20%",
+                            overflow: 'auto',
+                            maxHeight: "40vh",
+                            boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',
+                            padding: '1rem'
+                        }}
+                        modules={modules}
+                        value={contactToAddOrUpdate.comments}
+                        onChange={handleChangeComment("comments")}
+                    />
+                    {/* <TextField
                         sx={{
                             width: contactToAddOrUpdate.comments.length > 0 ? "48%" : "10%",
                             overflow: 'auto',
@@ -850,7 +895,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         InputProps={{
                             disableUnderline: true
                         }}
-                    />
+                    /> */}
                 </Box>
 
 

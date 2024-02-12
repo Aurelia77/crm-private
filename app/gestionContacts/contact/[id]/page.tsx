@@ -60,7 +60,12 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { useAuthUserContext } from '@/app/context/UseAuthContextProvider'
 import { useContactsContext } from '@/app/context/UseContactsContextProvider';
 import { getContactInfoInDatabaseFromId } from '@/app/utils/firebase';
-import ContactCard from '@/app/Components/contactsManager/ContactCard';
+//import ContactCard from '@/app/Components/contactsManager/ContactCard';
+
+// Deployement VERCEL : erreur "document is not defined" causée par l'utilisation de la bibliothèque react-quill, qui utilise l'objet document du navigateur, qui n'est pas disponible lors du rendu côté serveur (SSR) ou lors de la génération de pages statiques (SSG) avec Next.js. => Pour résoudre ce problème, utiliser l'API next/dynamic pour charger dynamiquement le composant qui utilise react-quill avec l'option { ssr: false }. Cela garantit que le composant n'est rendu que côté client, où l'objet document est disponible.
+import dynamic from 'next/dynamic';
+
+const ContactCard = dynamic(() => import('@/app/Components/contactsManager/ContactCard'), { ssr: false });
 
 // const getUser = (userId: string) =>
 //   fetch(`/api/users/${userId}`)

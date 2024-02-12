@@ -7,6 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { StyledTableCell } from '../../utils/StyledComponentsAndUtilities';
+//import ContactRow from './ContactRow';
 import { Box, FormControlLabel, Switch, TableCell, TextField, Tooltip, Typography } from '@mui/material';
 import { Timestamp } from 'firebase/firestore';
 import Paper from '@mui/material/Paper';
