@@ -7,7 +7,7 @@ import { addContactOnFirebaseAndReload } from '../../utils/firebase'
 import { emptyContact } from '../../utils/toolbox'
 import { useGetPriorityTextAndColor } from '../../utils/toolbox'
 import NewContactSearchForm from '../../Components/contactsManager/NewContactSearchForm'
-import ContactCard from '../../Components/contactsManager/ContactCard'
+//import ContactCard from '../../Components/contactsManager/ContactCard'
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { TabPanel } from '../../utils/StyledComponentsAndUtilities'
@@ -18,6 +18,11 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { useRouter } from 'next/router';
 
+
+// Deployement VERCEL : erreur "document is not defined" causée par l'utilisation de la bibliothèque react-quill, qui utilise l'objet document du navigateur, qui n'est pas disponible lors du rendu côté serveur (SSR) ou lors de la génération de pages statiques (SSG) avec Next.js. => Pour résoudre ce problème, utiliser l'API next/dynamic pour charger dynamiquement le composant qui utilise react-quill avec l'option { ssr: false }. Cela garantit que le composant n'est rendu que côté client, où l'objet document est disponible.
+import dynamic from 'next/dynamic';
+
+const ContactCard = dynamic(() => import('@/app/Components/contactsManager/ContactCard'), { ssr: false });
 
 export default function NewContactPage() {
 
