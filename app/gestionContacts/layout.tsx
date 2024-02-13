@@ -27,7 +27,6 @@ import PersonIcon from '@mui/icons-material/Person';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import SettingsIcon from '@mui/icons-material/Settings';
-import CalendarScheduler from '../Components/contactsManager/CalendarScheduler';
 import { TabPanel } from '../utils/StyledComponentsAndUtilities';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useTheme } from '@mui/material/styles';
@@ -108,9 +107,6 @@ export default function ContactsLayout({
         updatDataWholeContactOnFirebase(contactToUpdate)
     }
 
-   
-
-
     const handleNotSaveContactInfo = () => {
         setIsWarningModalOpen(false)
         setAreContactChangesSaved(true)
@@ -124,12 +120,6 @@ export default function ContactsLayout({
             redirect(newPathname)
         }
     }, [shouldRedirect])
-
-   
-
-   
-
-
 
     return (
         <Box sx={{

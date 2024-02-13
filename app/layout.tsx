@@ -9,6 +9,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import ReactQueryProvider from './Components/providers/ReactQueryProvider';
 import { Typography } from '@mui/material';
+import "dayjs/locale/fr";
 
 
 export default function RootLayout({
@@ -31,7 +32,7 @@ export default function RootLayout({
             <UserAuthContextProvider>
               <ReactQueryProvider>
                 {/* The general recommendation is to declare the LocalizationProvider once, wrapping your entire application. Then, you don't need to repeat the boilerplate code for every Date and Time Picker in your application. */}
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='fr' >
                   {children}
                 </LocalizationProvider>
               </ReactQueryProvider>
