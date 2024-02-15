@@ -45,8 +45,7 @@ export default function Contacts() {
                     ?
                     <Box sx={{
                         display: "flex", justifyContent: "space-around",
-                        margin: "20px",
-                        padding: "20px",
+                        margin: "100px auto",
                     }}>
                         <SignIn />
                         <SignUp />
