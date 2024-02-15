@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { addFakeDataWithCat, addLaurianeDataWithCat, addLaurianeDataWithCatx50, addCategoriesOnFirebaseAndReload, getFilesFromDatabase, getCategoriesFromDatabase, storage, addFileOnFirebaseDB, addCategorieOnFirebase, updateCategorieOnFirebase, updateFileOnFirebase, deleteCategorieOnFirebase, deleteAllDatasOnFirebaseAndReload, handleOpenFile, getAllFirebaseUserDatasAndSave } from '../utils/firebase'
+import { addFakeDataWithCat, addLaurianeDataWithCat, addLaurianeDataWithCatx50, addCategoriesOnFirebaseAndReload, getFilesFromDatabase, getCategoriesFromDatabase, storage, addFileOnFirebaseDB, addCategorieOnFirebase, updateCategorieOnFirebase, updateFileOnFirebase, deleteCategorieOnFirebase, deleteAllDatasOnFirebaseAndReload, deleteAllMyCatsOnFirebase, handleOpenFile, getAllFirebaseUserDatasAndSave } from '../utils/firebase'
 import { Alert, Box, Divider, ListItemText, Modal, Paper, TextField, Typography } from '@mui/material'
 import { Button, FormControl, InputLabel, MenuItem, Select, Input } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -456,7 +456,9 @@ export default function Admin({ currentUserId }: AdminType) {
           <Box sx={{ display: "flex", justifyContent: "space-around", }} >
             <Button variant="contained" color='error' sx={{ width: "300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUserId)
               }>Supprimer tous mes contacts</Button>
-            {/* <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer TOUS les contacts de l'appli !!!</Button> */}
+            <Button variant="contained" color='warning' sx={{ width: "300px" }} onClick={() => deleteAllMyCatsOnFirebase(currentUserId)
+              }>Supprimer toutes mes catégories</Button>
+            {/* !!!!!!!SUPPRIME TOUT!!!!!!!!! <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer TOUS les contacts de l'appli !!!</Button> */}
           </Box>
         </Box>
       </Box>

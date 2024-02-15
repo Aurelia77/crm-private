@@ -333,6 +333,23 @@ const deleteAllDatasOnFirebaseAndReload = (currentUserId: any = null,) => {
     window.location.reload()
   })
 }
+const deleteAllMyCatsOnFirebase = (currentUserId: any = null,) => {
+  const catsCollection = collection(fireStoreDb, "categories");
+  const q = currentUserId
+    ? query(catsCollection, where("userId", "==", currentUserId))
+    : query(catsCollection);
+
+  getDocs(q).then((querySnapshot) => {
+
+    const deletePromises = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
+    return Promise.all(deletePromises);
+
+  })
+  // .then(() => {
+  //   console.log("fin de la suppression")
+  //   window.location.reload()
+  // })
+}
 
 const deleteDataOnFirebaseAndReload = (contactId: string) => {
   const q = query(collection(fireStoreDb, "contacts"), where("id", "==", contactId));
@@ -404,6 +421,7 @@ export {
   updateCategorieOnFirebase,
   updateFileOnFirebase,
   deleteAllDatasOnFirebaseAndReload,
+  deleteAllMyCatsOnFirebase,
   deleteDataOnFirebaseAndReload,
   deleteCategorieOnFirebase,
   handleOpenFile,
