@@ -187,6 +187,12 @@ export default function Admin({ currentUserId }: AdminType) {
     document.body.removeChild(link);
   }  
 
+  const deleteMyCats = () => {
+    deleteAllMyCatsOnFirebase(currentUserId)
+    setCategoriesList([])
+  }
+
+
   return (
     currentUserId
       ? <Box>
@@ -456,7 +462,7 @@ export default function Admin({ currentUserId }: AdminType) {
           <Box sx={{ display: "flex", justifyContent: "space-around", }} >
             <Button variant="contained" color='error' sx={{ width: "300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUserId)
               }>Supprimer tous mes contacts</Button>
-            <Button variant="contained" color='warning' sx={{ width: "300px" }} onClick={() => deleteAllMyCatsOnFirebase(currentUserId)
+            <Button variant="contained" color='warning' sx={{ width: "300px" }} onClick={() => deleteMyCats()
               }>Supprimer toutes mes catégories</Button>
             {/* !!!!!!!SUPPRIME TOUT!!!!!!!!! <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer TOUS les contacts de l'appli !!!</Button> */}
           </Box>
