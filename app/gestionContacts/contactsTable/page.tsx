@@ -32,7 +32,7 @@ export default function ContactsTablePage() {
 
   const muiTheme = useTheme()
 
-  
+
 
   //const searchParams = useSearchParams();
   //const allContacts = JSON.parse(searchParams.get("allContacts") || "[]");
@@ -58,7 +58,7 @@ export default function ContactsTablePage() {
     updateContactInContactsAndDB(id, keyAndValue)
     allContacts && setAllContacts(updatedContactsInLocalList(allContacts, id, keyAndValue))
     //filteredContacts && setAllContacts(updatedContactsInLocalList(filteredContacts, id, keyAndValue))
-    
+
   }
 
 
@@ -76,7 +76,7 @@ export default function ContactsTablePage() {
   //   }
   // }, [data]);
 
-  
+
   // console.log("isLoading : ", isLoading)
   // console.log("data : ", data)
 
@@ -87,13 +87,13 @@ export default function ContactsTablePage() {
 
   React.useEffect(() => {
     currentUser && getUserContactsFromDatabase(currentUser.uid).then((contactsList) => {
-        setAllContacts(contactsList);
-        //setFilteredContacts(contactsList);
-        //setAlerts(countContactsByAlertDates(contactsList))
-        setLoading(false);
+      setAllContacts(contactsList);
+      //setFilteredContacts(contactsList);
+      //setAlerts(countContactsByAlertDates(contactsList))
+      setLoading(false);
     })
-}, [currentUser])
- 
+  }, [currentUser])
+
 
   const [alerts, setAlerts] = React.useState<Alerts>({ nbContactsWithDatePassed: 0, nbContactsDateSoon: 0 })
 
@@ -132,7 +132,7 @@ export default function ContactsTablePage() {
         : ['']
       const searchOnCategory = contactsSearchCriteria.businessCategoryIds.length > 0
         ? contactsSearchCriteria.businessCategoryIds
-        : ['']     
+        : ['']
       const searchOnType = contactsSearchCriteria.contactTypes.length > 0
         ? contactsSearchCriteria.contactTypes
         : ['']
@@ -141,14 +141,14 @@ export default function ContactsTablePage() {
         return (
           contact.businessName.toLowerCase().includes(contactsSearchCriteria.businessNames.toLowerCase())
           // si searchIsClient est null, on ne filtre pas sur ce critère
-          && (searchIsClient === null || contact.isClient === searchIsClient)          
+          && (searchIsClient === null || contact.isClient === searchIsClient)
           //&& (JSON.stringify(searchOnCity) === JSON.stringify(['']) ||  searchOnCity.some((city) => contact.businessCity.toLowerCase() === city.toLowerCase())) 
           // Si aucune recherche sur la VILLE on ne fait rien et si recherche = "-Vide(s)" on recherche les villes = "" 
-          && (JSON.stringify(searchOnCity) === JSON.stringify(['']) || searchOnCity.includes('-Vide(s)') && contact.businessCity === '' || searchOnCity.some((city) => contact.businessCity.toLowerCase() === city.toLowerCase()))  
+          && (JSON.stringify(searchOnCity) === JSON.stringify(['']) || searchOnCity.includes('-Vide(s)') && contact.businessCity === '' || searchOnCity.some((city) => contact.businessCity.toLowerCase() === city.toLowerCase()))
           // Si aucune recherche sur la CATEGORIE on ne fait rien   
-          && (JSON.stringify(searchOnCategory) === JSON.stringify(['']) || searchOnCategory.some((cat) => contact.businessCategoryId === cat))               
+          && (JSON.stringify(searchOnCategory) === JSON.stringify(['']) || searchOnCategory.some((cat) => contact.businessCategoryId === cat))
           // Si aucune recherche sur le TYPE on ne fait rien
-           && (JSON.stringify(searchOnType) === JSON.stringify(['']) || searchOnType.some((type) => {
+          && (JSON.stringify(searchOnType) === JSON.stringify(['']) || searchOnType.some((type) => {
             return contact.contactType === type
           }))
         )
@@ -157,80 +157,90 @@ export default function ContactsTablePage() {
 
 
       // BESOIN DU ELSE ??????????????????????????????????????????????? OUI !!!!!!!! PK ???????? => qd on fait un modif
-    } 
+    }
     else {
       setFilteredContacts(allContacts)
     }
-  }, [contactsSearchCriteria, allContacts, 
+  }, [contactsSearchCriteria, allContacts,
     //emptySearchCriteria
   ])
 
-  return ( 
+  console.log(window.location.href)
+
+  return (
     isLoading
       ? <Container sx={{ ml: "50%", mt: "20%" }} >
         <CircularProgress color='secondary' />
       </Container>
       // : isError
       //   ? <Typography>Une erreur s'est produite</Typography>
-        : currentUser
-          ? <Box width="100%"
-          >
-            <SearchContactsForm
-              contacts={allContacts || []}
-              currentUserId={currentUser.uid}
-              emptySearchCriteria={emptySearchCriteria}
-              onSearchChange={setContactsSearchCriteria}
-            />
+      : currentUser
+        ? <Box width="100%"
+        >
 
-            {(filteredContacts && allContacts) && <>
-              <Box sx={{ display: "flex", alignItems: "center", margin: "13px 0 7px 15px", }}
-              >{allContacts.length > 0
-                ? <Typography variant="h5">
-                  {!isSearchCriteriaEmpty && <Tooltip title="Résultat de recherche">
-                    {/* On enveloppe le bouton (Fab) dans un <span> pour que le Tooltip fonctionne (Fab ne fonctionne pas sur un bouton désactivé) */}
-                    <span>
-                      <Fab disabled size="small" color="primary" sx={{
-                        mr: 2
-                      }} >
-                        <SearchIcon />
-                      </Fab>
-                    </span>
-                  </Tooltip>
-                  }
-                  {filteredContacts.length} contacts
-                  {filteredContacts.length > 0 && <Typography variant="h5" component="span" color="warning.main" sx={{ px: 2 }}>
-                    {alerts.nbContactsWithDatePassed} relance(s) passée(s)
-                  </Typography>}
-                  {filteredContacts.length > 0 && <Typography variant="h5" component="span" color="primary.main">
-                    et {alerts.nbContactsDateSoon} relance(s) à faire dans les 7 jours.
-                  </Typography>}
-                </Typography>
+          <Typography>
+            {typeof window !== 'undefined' && window.location.href}
+          </Typography>
 
-                : <Typography variant="h5" color="error.main">
-                  Aucun contact pour l'instant, veuillez en ajouter ici :
-                  <Link
-                    href="/gestionContacts/newContact"
-                  //to="/gestionContacts/newContact" 
-                  >
-                    <Button variant="contained" color="primary"
-                      //onClick={() => {redirect('/gestionContacts/newContact')}}
-                      sx={{ ml: 2 }}
-                    >
-                      Nouveau contact
-                    </Button>
-                  </Link>
-                </Typography>
+
+
+
+          <SearchContactsForm
+            contacts={allContacts || []}
+            currentUserId={currentUser.uid}
+            emptySearchCriteria={emptySearchCriteria}
+            onSearchChange={setContactsSearchCriteria}
+          />
+
+          {(filteredContacts && allContacts) && <>
+            <Box sx={{ display: "flex", alignItems: "center", margin: "13px 0 7px 15px", }}
+            >{allContacts.length > 0
+              ? <Typography variant="h5">
+                {!isSearchCriteriaEmpty && <Tooltip title="Résultat de recherche">
+                  {/* On enveloppe le bouton (Fab) dans un <span> pour que le Tooltip fonctionne (Fab ne fonctionne pas sur un bouton désactivé) */}
+                  <span>
+                    <Fab disabled size="small" color="primary" sx={{
+                      mr: 2
+                    }} >
+                      <SearchIcon />
+                    </Fab>
+                  </span>
+                </Tooltip>
                 }
-              </Box>
-              {filteredContacts.length > 0 && <ContactsTable
-                contacts={filteredContacts}
-                currentUserId={currentUser ? currentUser.uid : ""}
-                handleUpdateContact={updateContactInContactsAndDBAndFilteredContacts}
-                handleDeleteContact={deleteDataOnFirebaseAndReload}
-                getPriorityTextAndColor={getPriorityTextAndColor}
-              />}
-            </>}
-          </Box >
-          : redirect('/')
+                {filteredContacts.length} contacts
+                {filteredContacts.length > 0 && <Typography variant="h5" component="span" color="warning.main" sx={{ px: 2 }}>
+                  {alerts.nbContactsWithDatePassed} relance(s) passée(s)
+                </Typography>}
+                {filteredContacts.length > 0 && <Typography variant="h5" component="span" color="primary.main">
+                  et {alerts.nbContactsDateSoon} relance(s) à faire dans les 7 jours.
+                </Typography>}
+              </Typography>
+
+              : <Typography variant="h5" color="error.main">
+                Aucun contact pour l'instant, veuillez en ajouter ici :
+                <Link
+                  href="/gestionContacts/newContact"
+                //to="/gestionContacts/newContact" 
+                >
+                  <Button variant="contained" color="primary"
+                    //onClick={() => {redirect('/gestionContacts/newContact')}}
+                    sx={{ ml: 2 }}
+                  >
+                    Nouveau contact
+                  </Button>
+                </Link>
+              </Typography>
+              }
+            </Box>
+            {filteredContacts.length > 0 && <ContactsTable
+              contacts={filteredContacts}
+              currentUserId={currentUser ? currentUser.uid : ""}
+              handleUpdateContact={updateContactInContactsAndDBAndFilteredContacts}
+              handleDeleteContact={deleteDataOnFirebaseAndReload}
+              getPriorityTextAndColor={getPriorityTextAndColor}
+            />}
+          </>}
+        </Box >
+        : redirect('/')
   )
 }

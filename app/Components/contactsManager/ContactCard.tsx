@@ -866,7 +866,11 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     </Box>
 
                     {/* ///////// COMMENTAIRES ///////// */}
+                    {/* <label htmlFor="comments-editor" style={{ display: 'block', marginBottom: '1rem' }}>
+                        Commentaire
+                    </label> */}
                     <ReactQuill
+                        id="comments-editor"
                         style={{
                             width: "48%",
                             // width: contactToAddOrUpdate.comments.length > 0 ? "48%" : "20%",

@@ -26,7 +26,7 @@ const contacts : Contact[] = [
         tag: ["prospect", "évènementiel"],
         dateOfFirstCall: new Date("2021-10-31"),  
         dateOfLastCall: new Date("2022-05-01"),
-        dateOfNextCall: new Date("2023-10-31"),
+        dateOfNextCall: new Date("2024-10-31"),
         comments: "Ont l'air pas sympa \n mais j'ai entendu qu'il fallait leur parler longtemps pour les mettre en confiance. S'en rappeler ! Car parfois il faut insister etc... j'écris pour avoir une longue phrase...!!!",
         userId: "",
     },
