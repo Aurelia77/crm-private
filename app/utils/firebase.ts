@@ -14,29 +14,42 @@ import contactsLaurianeNameAndCatLabel from '../data/contactsLaurianeNomEtCat'
 
 
 // LAURIANE Seulement
-const firebaseConfig = {
+const firebaseConfig1 = {
   apiKey: "AIzaSyB6NMs-i0R146R2qEVCTm9NgNSWtbZOEaI",
   authDomain: "crm-lauriane-c8084.firebaseapp.com",
-  databaseURL: "https://crm-lauriane-c8084-default-rtdb.europe-west1.firebasedatabase.app",
+  //databaseURL: "https://crm-lauriane-c8084-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "crm-lauriane-c8084",
   storageBucket: "crm-lauriane-c8084.appspot.com",
   messagingSenderId: "882348983292",
   appId: "1:882348983292:web:80587c355b2aae72702879",
+  measurementId: "" // Google Analytics
 };
 
 // Les autres
 const firebaseConfig2 = {
-  apiKey: "AIzaSyB6NMs-i0R146R2qEVCTm9NgNSWtbZOEaI",
-  authDomain: "crm-lauriane-c8084.firebaseapp.com",
-  databaseURL: "https://crm-lauriane-c8084-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "crm-lauriane-c8084",
-  storageBucket: "crm-lauriane-c8084.appspot.com",
-  messagingSenderId: "882348983292",
-  appId: "1:882348983292:web:80587c355b2aae72702879",
+  apiKey: "AIzaSyCI_m13J4ob7IZfriHztJQYrTKFDhWlVIk",
+  authDomain: "public-crm-47497.firebaseapp.com",
+  //databaseURL: "???", // Realtime Database ?
+  projectId: "public-crm-47497",
+  storageBucket: "public-crm-47497.appspot.com",
+  messagingSenderId: "41900211158",
+  appId: "1:41900211158:web:cf1198ce3ce9d9a0670277",
+  measurementId: "G-L9VC72KE8K" // Google Analytics
 };
+
 
 typeof window !== 'undefined' && console.log(window.location.hostname)
 typeof window !== 'undefined' && console.log(window.location.href)
+
+let firebaseConfig = firebaseConfig2
+
+if (typeof window !== 'undefined') {
+  const hostname = window.location.hostname;
+
+  if (hostname === "prospection-freya.vercel.app") {
+    firebaseConfig = firebaseConfig1
+  } 
+}
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
