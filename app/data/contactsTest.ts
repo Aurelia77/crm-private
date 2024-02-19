@@ -27,7 +27,8 @@ const contacts : Contact[] = [
         dateOfFirstCall: new Date("2023-06-30"),  
         dateOfLastCall: new Date("2024-01-05"),
         dateOfNextCall: new Date("2024-03-01"),
-        comments: "Ont l'air pas sympa, mais très indécis \n on m'a dit de les relancer souvent pour qu'ils finissent par dire oui. \n",
+        comments: `Ont l'air pas sympa, mais très indécis
+        on m'a dit de les relancer souvent pour qu'ils finissent par dire oui.`,
         userId: "",
     },
     {
@@ -56,7 +57,9 @@ const contacts : Contact[] = [
         dateOfFirstCall: new Date("2023-10-10"),
         dateOfLastCall: new Date("2023-10-24"),
         dateOfNextCall: new Date("2024-02-29"),
-        comments: "2023-10-10 : Appel mais pas de réponse. Il faut rappeler dans 2 semaines. \n 2023-10-24 : Je leur ai parlé longuement. Ils ont l'air très intéressés par mes prestations. Vont en parler au responsable et me recontactent bientôt.\n A voir si pas de rappel dans 1 semaine, les recontacter ! \n",
+        comments: `2023-10-10 : Appel mais pas de réponse. Il faut rappeler dans 2 semaines. 
+        2023-10-24 : Je leur ai parlé longuement. Ils ont l'air très intéressés par mes prestations. Vont en parler au responsable et me recontactent bientôt.
+        A voir si pas de rappel dans 1 semaine, les recontacter ! `,
         userId: "",
     },
     {
@@ -130,7 +133,7 @@ const contacts : Contact[] = [
         businessPhone: "06.12.15.12.15",
         businessEmail: "",
         businessAddress: "5 rue de la paix",
-        businessWebsite : "https://www.pierreetvacances.com/fr", 
+        businessWebsite : "", 
         businessCity: "Marseille",
         contactName: "Jean Green",
         contactPhone: "06.12.34.56.78",
@@ -143,7 +146,7 @@ const contacts : Contact[] = [
         dateOfFirstCall: new Date("2023-05-01"),
         dateOfLastCall: new Date("2023-05-01"),
         dateOfNextCall: new Date("2024-03-03"),
-        comments: "Super !!! Prestation faites chez eux et ils sont ravis. Ils veulent me recommander à leurs clients. ",
+        comments: "Super !!! Prestation faite chez eux et ils sont ravis. Ils veulent me recommander à leurs clients. ",
         userId: "",
     }, 
     {
@@ -191,14 +194,14 @@ const contacts : Contact[] = [
         businessCity: "Hyères",
         contactName: "Mélanie la maquilleuse",
         contactPhone: "06.12.34.56.78",
-        contactEmail: "dupond2-pierre&vacances@gmail.com",
+        contactEmail: "melanie@glow.com",
         contactPosition: "",
         hasBeenCalled: 0,
         hasBeenSentEmailOrMeetUp: 0,
         filesSentRef: [],
         tag: ["camping", "client"],
-        dateOfFirstCall: new Date("2023-05-01"),
-        dateOfLastCall: new Date("2023-08-01"),
+        dateOfFirstCall: null,
+        dateOfLastCall: null,
         dateOfNextCall: new Date("2024-03-04"),
         comments: "",
         userId: "",
