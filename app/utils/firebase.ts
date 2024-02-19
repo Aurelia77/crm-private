@@ -12,6 +12,7 @@ import laurianeDatax54 from '../data/contactsLaurianex50'
 import { contactCategories, emptyContact } from './toolbox'
 import contactsLaurianeNameAndCatLabel from '../data/contactsLaurianeNomEtCat'
 
+
 // LAURIANE Seulement
 const firebaseConfig = {
   apiKey: "AIzaSyB6NMs-i0R146R2qEVCTm9NgNSWtbZOEaI",
@@ -22,6 +23,20 @@ const firebaseConfig = {
   messagingSenderId: "882348983292",
   appId: "1:882348983292:web:80587c355b2aae72702879",
 };
+
+// Les autres
+const firebaseConfig2 = {
+  apiKey: "AIzaSyB6NMs-i0R146R2qEVCTm9NgNSWtbZOEaI",
+  authDomain: "crm-lauriane-c8084.firebaseapp.com",
+  databaseURL: "https://crm-lauriane-c8084-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "crm-lauriane-c8084",
+  storageBucket: "crm-lauriane-c8084.appspot.com",
+  messagingSenderId: "882348983292",
+  appId: "1:882348983292:web:80587c355b2aae72702879",
+};
+
+typeof window !== 'undefined' && console.log(window.location.hostname)
+typeof window !== 'undefined' && console.log(window.location.href)
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

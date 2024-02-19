@@ -165,7 +165,7 @@ export default function ContactsTablePage() {
     //emptySearchCriteria
   ])
 
-  console.log(window.location.href)
+  typeof window !== 'undefined' && console.log(window.location.href)
 
   return (
     isLoading
