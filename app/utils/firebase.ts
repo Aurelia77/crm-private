@@ -13,43 +13,32 @@ import { contactCategories, emptyContact } from './toolbox'
 import contactsLaurianeNameAndCatLabel from '../data/contactsLaurianeNomEtCat'
 
 
-// LAURIANE Seulement
-const firebaseConfig1 = {
-  apiKey: "AIzaSyB6NMs-i0R146R2qEVCTm9NgNSWtbZOEaI",
-  authDomain: "crm-lauriane-c8084.firebaseapp.com",
-  //databaseURL: "https://crm-lauriane-c8084-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "crm-lauriane-c8084",
-  storageBucket: "crm-lauriane-c8084.appspot.com",
-  messagingSenderId: "882348983292",
-  appId: "1:882348983292:web:80587c355b2aae72702879",
-  measurementId: "" // Google Analytics
-};
 
-// Les autres
-const firebaseConfig2 = {
-  apiKey: "AIzaSyCI_m13J4ob7IZfriHztJQYrTKFDhWlVIk",
-  authDomain: "public-crm-47497.firebaseapp.com",
+// // LAURIANE Seulement
+const firebaseConfig = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY_L,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN_L,
   //databaseURL: "???", // Realtime Database ?
-  projectId: "public-crm-47497",
-  storageBucket: "public-crm-47497.appspot.com",
-  messagingSenderId: "41900211158",
-  appId: "1:41900211158:web:cf1198ce3ce9d9a0670277",
-  measurementId: "G-L9VC72KE8K" // Google Analytics
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID_L,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET_L,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID_L,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID_L,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID_L // Google Analytics
+  //databaseURL: "https://crm-lauriane-c8084-default-rtdb.europe-west1.firebasedatabase.app", 
 };
 
+// // Les autres
+// const firebaseConfig = {  
+//   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+//   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+//   //databaseURL: "???", // Realtime Database ?
+//   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+//   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+//   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+//   appId: process.env.REACT_APP_FIREBASE_APP_ID,
+//   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID // Google Analytics
+// };
 
-typeof window !== 'undefined' && console.log(window.location.hostname)
-typeof window !== 'undefined' && console.log(window.location.href)
-
-let firebaseConfig = firebaseConfig2
-
-if (typeof window !== 'undefined') {
-  const hostname = window.location.hostname;
-
-  if (hostname === "prospection-freya.vercel.app") {
-    firebaseConfig = firebaseConfig1
-  } 
-}
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -57,8 +46,8 @@ const app = initializeApp(firebaseConfig);
 // Avec FireStore
 const fireStoreDb = getFirestore(app);
 
-// Ou Avec RealTime Database(pas utilisée ici => car me mettait tous les contacts 2 fois !!!)
-const realtimeDb = getDatabase(app);
+// Ou Avec RealTime Database(pas utilisée ici => car me mettait tous les contacts 2 fois !!!) (utilise databaseURL de firebaseConfig)
+//const realtimeDb = getDatabase(app);
 
 // Initialize Firebase Authentication and get a reference to the service
 const auth = getAuth(app);
@@ -427,7 +416,7 @@ const getAllFirebaseUserDatasAndSave = async (currentUserId: any) => {
 
 export {
   fireStoreDb,
-  realtimeDb,
+  //realtimeDb,
   auth,
   storage,
   addFakeDataWithCat,

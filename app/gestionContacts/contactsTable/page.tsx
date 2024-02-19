@@ -165,8 +165,6 @@ export default function ContactsTablePage() {
     //emptySearchCriteria
   ])
 
-  typeof window !== 'undefined' && console.log(window.location.href)
-
   return (
     isLoading
       ? <Container sx={{ ml: "50%", mt: "20%" }} >
@@ -177,14 +175,6 @@ export default function ContactsTablePage() {
       : currentUser
         ? <Box width="100%"
         >
-
-          <Typography>
-            {typeof window !== 'undefined' && window.location.href}
-          </Typography>
-
-
-
-
           <SearchContactsForm
             contacts={allContacts || []}
             currentUserId={currentUser.uid}
