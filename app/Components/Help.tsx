@@ -64,7 +64,7 @@ export default function Help() {
                             <Typography
                                 sx={{ textOverflow: "clip", whiteSpace: "normal" }} 
                             >
-                                Dans l'onglet LISTE DES CONTACTS <Diversity3Icon color="primary" /> vous pouvez <span style={{ fontWeight:"bold", fontSize:"1.2em" }}>voir tous les contacts</span> que vous avez créés et modifier directement dans le tableau certains champs (tout sauf les textes, logo et fichiers). Ils sont tous modifiables lors de la vue d'un contact, qui s'ouvre en cliquant sur son logo dans le tableau.
+                                Dans l'onglet LISTE DES CONTACTS <Diversity3Icon color="primary" /> vous pouvez <span style={{ fontWeight:"bold", fontSize:"1.2em" }}>voir tous les contacts</span> que vous avez créés et modifier directement dans le tableau certains champs (tous sauf les textes, logo et fichiers). Ils sont tous modifiables lors de la vue d'un contact, qui s'ouvre en cliquant sur son logo dans le tableau.
                             </Typography>
                         }
                     />
@@ -87,7 +87,7 @@ export default function Help() {
                                 sx={{ textOverflow: "clip", whiteSpace: "normal" }} 
                             >
                                 Pour <span style={{ fontWeight:"bold", fontSize:"1.2em" }}>ajouter des catégories et des fichiers</span> qui seront ensuite disponibles pour chaque contact, c'est dans l'onglet ADMIN <SettingsIcon color="primary" />.<br/>
-                                Vous pouvez renommer les fichiers et catégories, et supprimer les catégories.
+                                Vous pouvez aussi renommer les fichiers et catégories, et supprimer les catégories.
                             </Typography>
                         } 
                     />

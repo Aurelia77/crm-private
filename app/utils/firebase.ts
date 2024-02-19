@@ -7,10 +7,10 @@ import { Timestamp } from 'firebase/firestore';
 import { addDoc, collection, query, where, getDocs, onSnapshot, QuerySnapshot, deleteDoc, updateDoc, doc } from "firebase/firestore";
 import { uid } from 'uid';
 import fakeContactsData from '../data/contactsTest'
-import laurianeData from '../data/contactsLaurianeTOUS'
-import laurianeDatax54 from '../data/contactsLaurianex50'
+//import laurianeData from '../data/contactsLaurianeTOUS'
+//import laurianeDatax54 from '../data/contactsLaurianex50'
 import { contactCategories, emptyContact } from './toolbox'
-import contactsLaurianeNameAndCatLabel from '../data/contactsLaurianeNomEtCat'
+//import contactsLaurianeNameAndCatLabel from '../data/contactsLaurianeNomEtCat'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -69,7 +69,7 @@ const fakeContactsNameAndCatLabel = [
   },
 ]
 
-const addCatToFakeContactsAndReload = async (currentUserId: any, fakeContactsData: Contact[], fakeContactsNameAndCatLabel: any) => {
+const addCatToFakeContactsAndReload = async (currentUserId: string | undefined, fakeContactsData: Contact[], fakeContactsNameAndCatLabel: any) => {
 
   console.log("***fakeContactsNameAndCatLabel", fakeContactsNameAndCatLabel)
 
@@ -101,20 +101,20 @@ const addCatToFakeContactsAndReload = async (currentUserId: any, fakeContactsDat
     })
     .catch((error) => { console.error("Error reloading page: ", error); });
 }
-const addFakeDataWithCat = async (currentUserId: any) => {
+const addFakeDataWithCat = async (currentUserId: string | undefined) => {
   await addFakeDataOnFirebase(currentUserId, fakeContactsData)
   addCatToFakeContactsAndReload(currentUserId, fakeContactsData, fakeContactsNameAndCatLabel)
 }
-const addLaurianeDataWithCat = async (currentUserId: any) => {
-  await addFakeDataOnFirebase(currentUserId, laurianeData)
-  addCatToFakeContactsAndReload(currentUserId, laurianeData, contactsLaurianeNameAndCatLabel)
-}
-const addLaurianeDataWithCatx50 = async (currentUserId: any) => {
-  await addFakeDataOnFirebase(currentUserId, laurianeDatax54)
-  addCatToFakeContactsAndReload(currentUserId, laurianeDatax54, contactsLaurianeNameAndCatLabel)
-}
+// const addLaurianeDataWithCat = async (currentUserId: string | undefined) => {
+//   await addFakeDataOnFirebase(currentUserId, laurianeData)
+//   addCatToFakeContactsAndReload(currentUserId, laurianeData, contactsLaurianeNameAndCatLabel)
+// }
+// const addLaurianeDataWithCatx50 = async (currentUserId: string | undefined) => {
+//   await addFakeDataOnFirebase(currentUserId, laurianeDatax54)
+//   addCatToFakeContactsAndReload(currentUserId, laurianeDatax54, contactsLaurianeNameAndCatLabel)
+// }
 
-const getUserContactsFromDatabase = async (currentUserId: any) => {
+const getUserContactsFromDatabase = async (currentUserId: string | undefined) => {
   let contactsArr: Contact[] = []
   const contactsCollectionRef = collection(fireStoreDb, "contacts");
   const q = query(contactsCollectionRef, where("userId", "==", currentUserId ?? ""));
@@ -158,7 +158,7 @@ const getFileNameFromRef = async (fileRef: string) => {
 
 
 
-const getFilesFromDatabase = async (currentUserId: any) => {
+const getFilesFromDatabase = async (currentUserId: string | undefined) => {
   let filesArr: FileNameAndRefType[] = []
   const filesCollectionRef = collection(fireStoreDb, "files");
   const q = query(filesCollectionRef, where("userId", "==", currentUserId))
@@ -172,7 +172,7 @@ const getFilesFromDatabase = async (currentUserId: any) => {
   return filesArr
 }
 
-const getCategoriesFromDatabase = async (currentUserId: any) => {
+const getCategoriesFromDatabase = async (currentUserId: string | undefined) => {
   let catsArr: any[] = []
   const catsCollectionRef = collection(fireStoreDb, "categories");
   const q = query(catsCollectionRef, where("userId", "==", currentUserId))
@@ -187,7 +187,7 @@ const getCategoriesFromDatabase = async (currentUserId: any) => {
 
 
 // Bien mettre ASYNC / AWAIT sinon return catId sera exécuté avant que getDocs(q) ait terminé
-const getCatIdFromLabel = async (currentUserId: any, catLabel: string) => {
+const getCatIdFromLabel = async (currentUserId: string | undefined, catLabel: string) => {
   const filesCollectionRef = collection(fireStoreDb, "categories");
   const q = query(filesCollectionRef, where("userId", "==", currentUserId), where("label", "==", catLabel))
 
@@ -214,7 +214,7 @@ const getCatLabelFromId = async (catId: string) => {
     : "NON DEFINIE"
 }
 
-const addFakeDataOnFirebaseAndReload = (currentUserId: any, fakeContactsData: Contact[]) => {
+const addFakeDataOnFirebaseAndReload = (currentUserId: string | undefined, fakeContactsData: Contact[]) => {
   const promises = fakeContactsData.map((contact: Contact) => {
     return addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid(), userId: currentUserId })
       .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
@@ -225,7 +225,7 @@ const addFakeDataOnFirebaseAndReload = (currentUserId: any, fakeContactsData: Co
     .catch((error) => { console.error("Error reloading page: ", error); });
 }
 
-const addFakeDataOnFirebase = (currentUserId: any, fakeContactsData: Contact[]) => {
+const addFakeDataOnFirebase = (currentUserId: string | undefined, fakeContactsData: Contact[]) => {
   const promises = fakeContactsData.map((contact: Contact) => {
     return addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid(), userId: currentUserId })
       .then((docRef) => { console.log("***Document written with ID: ", docRef.id); })
@@ -235,7 +235,7 @@ const addFakeDataOnFirebase = (currentUserId: any, fakeContactsData: Contact[]) 
 }
 
 
-const addContactOnFirebaseAndReload = async (currentUserId: any, contact: Contact) => {
+const addContactOnFirebaseAndReload = async (currentUserId: string | undefined, contact: Contact) => {
   try {
     const docRef = await addDoc(collection(fireStoreDb, "contacts"), { ...contact, userId: currentUserId });
     console.log("Document written with ID: ", docRef.id);
@@ -245,7 +245,7 @@ const addContactOnFirebaseAndReload = async (currentUserId: any, contact: Contac
   window.location.reload()
 }
 
-const addFileOnFirebaseDB = async (currentUserId: any, file: FileNameAndRefType) => {
+const addFileOnFirebaseDB = async (currentUserId: string | undefined, file: FileNameAndRefType) => {
   try {
     const docRef = await addDoc(collection(fireStoreDb, "files"), { ...file, userId: currentUserId });
     console.log("File written with ID: ", docRef.id);
@@ -254,7 +254,7 @@ const addFileOnFirebaseDB = async (currentUserId: any, file: FileNameAndRefType)
   }
 }
 
-const addCategorieOnFirebase = (currentUserId: any, category: ContactCategorieType) => {
+const addCategorieOnFirebase = (currentUserId: string | undefined, category: ContactCategorieType) => {
   console.log("add categorie", category)
   // Il faut bien mettre un RETURN ici sinon qd on appelle cette fonction dans addCategoriesOnFirebaseAndReload ça n'attend pas la fin du chargement
   return addDoc(collection(fireStoreDb, "categories"), { id: uid(), label: category.label, userId: currentUserId })
@@ -262,12 +262,21 @@ const addCategorieOnFirebase = (currentUserId: any, category: ContactCategorieTy
     .catch((error) => { console.error("Error adding document: ", error); });
 }
 
-const addCategoriesOnFirebaseAndReload = (currentUserId: any) => {
+const addCategoriesOnFirebaseAndReload = (currentUserId: string | undefined) => {
   const promises = contactCategories.map((cat: ContactCategorieType) => {
     return addCategorieOnFirebase(currentUserId, cat)
   })
   Promise.all(promises)
     .then(() => { window.location.reload() })
+    .catch((error) => { console.error("Error reloading page: ", error); });
+}
+
+const addCategoriesOnFirebase = (currentUserId: string | undefined) => {
+  const promises = contactCategories.map((cat: ContactCategorieType) => {
+    return addCategorieOnFirebase(currentUserId, cat)
+  })
+  Promise.all(promises)
+    .then(() => { console.log("Catégories ajoutées !") })
     .catch((error) => { console.error("Error reloading page: ", error); });
 }
 
@@ -390,7 +399,7 @@ const handleOpenFile = async (file: any) => {
 };
 
 
-const getAllFirebaseUserDatasAndSave = async (currentUserId: any) => {
+const getAllFirebaseUserDatasAndSave = async (currentUserId: string | undefined) => {
   const contacts = await getUserContactsFromDatabase(currentUserId)
   const files = await getFilesFromDatabase(currentUserId)
   const categories = await getCategoriesFromDatabase(currentUserId)
@@ -404,8 +413,8 @@ export {
   auth,
   storage,
   addFakeDataWithCat,
-  addLaurianeDataWithCat,
-  addLaurianeDataWithCatx50,
+  //addLaurianeDataWithCat,
+  //addLaurianeDataWithCatx50,
   getUserContactsFromDatabase,
   getContactInfoInDatabaseFromId,
   getFileNameFromRef,
@@ -416,6 +425,7 @@ export {
   addContactOnFirebaseAndReload,
   addFileOnFirebaseDB,
   addCategoriesOnFirebaseAndReload,
+  addCategoriesOnFirebase,
   addCategorieOnFirebase,
   updatDataOnFirebase,
   updatDataWholeContactOnFirebase,
@@ -428,5 +438,5 @@ export {
   handleOpenFile,
   getCatLabelFromId,
   getCatIdFromLabel,
-  getAllFirebaseUserDatasAndSave
+  getAllFirebaseUserDatasAndSave,
 }

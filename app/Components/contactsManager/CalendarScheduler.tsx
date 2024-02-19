@@ -77,10 +77,7 @@ export default function CalendarScheduler({ contacts, setContacts, redirectToCon
       start: formattedDate,
       end: formattedDate,
     })
-  })
-
-
-   
+  })   
 
   React.useEffect(() => {
     if (!calendarRef.current) return;
@@ -172,10 +169,6 @@ export default function CalendarScheduler({ contacts, setContacts, redirectToCon
         //   calendar.changeView(currentView.type, currentDate);
         // }, 0);
       },
-
- 
-
-
     });
 
     calendar.render();
@@ -190,7 +183,10 @@ export default function CalendarScheduler({ contacts, setContacts, redirectToCon
       <Typography sx={{ p: 0.3, textAlign: "center", borderRadius: "10px", backgroundColor: noPriorityColor, color: 'white', width: "20%" }}>Aucune</Typography>
     </Box>
 
-   
+    <Typography sx={{ textAlign: "center", mt: "2%" }}>
+      Pour modifier la date de relance d'un contact, faites glisser l'événement sur le calendrier
+    </Typography>
+
     <Box id="calendar" ref={calendarRef} sx={{ width: "calc(100vw - 250px)", margin: "auto", marginTop: "3%", backgroundColor: muiTheme.palette.lightCyan.light }}
     ></Box>
 

@@ -1,7 +1,9 @@
 'use client'
 
 import React from 'react'
-import { addFakeDataWithCat, addLaurianeDataWithCat, addLaurianeDataWithCatx50, addCategoriesOnFirebaseAndReload, getFilesFromDatabase, getCategoriesFromDatabase, storage, addFileOnFirebaseDB, addCategorieOnFirebase, updateCategorieOnFirebase, updateFileOnFirebase, deleteCategorieOnFirebase, deleteAllDatasOnFirebaseAndReload, deleteAllMyCatsOnFirebase, handleOpenFile, getAllFirebaseUserDatasAndSave } from '../utils/firebase'
+import { addFakeDataWithCat, 
+  //addLaurianeDataWithCat, addLaurianeDataWithCatx50, 
+  addCategoriesOnFirebaseAndReload, addCategoriesOnFirebase, getFilesFromDatabase, getCategoriesFromDatabase, storage, addFileOnFirebaseDB, addCategorieOnFirebase, updateCategorieOnFirebase, updateFileOnFirebase, deleteCategorieOnFirebase, deleteAllDatasOnFirebaseAndReload, deleteAllMyCatsOnFirebase, handleOpenFile, getAllFirebaseUserDatasAndSave } from '../utils/firebase'
 import { Alert, Box, Divider, ListItemText, Modal, Paper, TextField, Typography } from '@mui/material'
 import { Button, FormControl, InputLabel, MenuItem, Select, Input } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -10,7 +12,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import List from '@mui/material/List';
 import { useTheme } from '@mui/material/styles';
 import { uid } from 'uid';
-import { modalStyle } from '../utils/toolbox'
+import { modalStyle, contactCategories } from '../utils/toolbox'
 import { useQuery, useMutation, QueryClient, useQueryClient } from '@tanstack/react-query';
 import { redirect } from 'next/navigation'
 
@@ -190,6 +192,11 @@ export default function Admin({ currentUserId }: AdminType) {
   const deleteMyCats = () => {
     deleteAllMyCatsOnFirebase(currentUserId)
     setCategoriesList([])
+  }
+
+  const addCategoriesOnFirebaseAndState = (currentUserId: string | undefined) => {
+    addCategoriesOnFirebase(currentUserId);
+    setCategoriesList(contactCategories);
   }
 
 
@@ -452,7 +459,12 @@ export default function Admin({ currentUserId }: AdminType) {
               marginBottom: "50px"
             }} >Pour Version TEST</Typography>
           <Box sx={{ display: "flex", justifyContent: "space-around", marginBottom: "20px" }} >
-            <Button variant="contained" color='success' onClick={() => addCategoriesOnFirebaseAndReload(currentUserId)}>1-Ajouter Catégories</Button>
+            <Button 
+              variant="contained" 
+              color='success' 
+              // onClick={() => {addCategoriesOnFirebaseAndReload(currentUserId)}}>
+              onClick={() => {addCategoriesOnFirebaseAndState(currentUserId)}}>
+              1-Ajouter Catégories</Button>
             <Button variant="contained" color='ochre' onClick={() => addFakeDataWithCat(currentUserId)}>2-Ajouter Contacts Test (x7)</Button>
             {/* <Button variant="contained" color='warning' onClick={() => addLaurianeDataWithCat(currentUserId)}>2-Ajouter Contacts LAURIANE (x 307)</Button>
             <Button variant="contained" color='info' onClick={() => addLaurianeDataWithCatx50(currentUserId)}>2-Ajouter Contacts LAURIANE (x 50)</Button> */}

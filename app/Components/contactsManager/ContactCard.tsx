@@ -705,6 +705,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
                                 {/* ///////// RELANCE */}
                                 <Box sx={{
+                                    display: "flex",
+                                    flexDirection: "column",
                                     width: "25%",
                                     border: "solid 5px darkRed",
                                     borderRadius: "10px",

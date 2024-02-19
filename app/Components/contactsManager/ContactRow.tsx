@@ -485,7 +485,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                         }}
                     /> */}
                 </Tooltip>
-                <Tooltip arrow title="Contact entreprise" placement='bottom'>
+                <Tooltip arrow title="Poste occupé" placement='bottom'>
                     <Typography style={{ color: 'gray', fontSize: "0.8em" }} >
                         {contact.contactPosition || <span style={{ color: 'gray', fontSize: "0.8em", }}>... </span>}
                     </Typography>

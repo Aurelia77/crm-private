@@ -68,16 +68,14 @@ export default function NewContactPage() {
           onChange={(e, newValue) => setTabNewContactValue(newValue)}
           aria-label="Horizontal tabs"
         >
-          <Tab key={0} label="Recherche INSEE"
-          />
-          <Tab key={1} label="Ajout à partir de zéro"
-          />
-        </Tabs>
+          <Tab key={0} label="Ajout à partir de zéro" />
+          <Tab key={1} label="Recherche INSEE" />
+        </Tabs>       
 
-        {/* ///////// Recherche INSEE ///////// */}
-        <TabPanel key="0" value={tabNewContactValue} index={0}  >
-          <NewContactSearchForm
-            emptyContact={emptyContact}
+        {/* ///////// Recherche de ZERO ///////// */}
+        <TabPanel key="0" value={tabNewContactValue} index={0} >
+          <ContactCard
+            contact={emptyContact}
             currentUserId={currentUser.uid}
             getPriorityTextAndColor={getPriorityTextAndColor}
             setAreContactChangesSaved={setAreContactChangesSaved}
@@ -85,10 +83,10 @@ export default function NewContactPage() {
           />
         </TabPanel>
 
-        {/* ///////// Recherche de ZERO ///////// */}
-        <TabPanel key="1" value={tabNewContactValue} index={1} >
-          <ContactCard
-            contact={emptyContact}
+         {/* ///////// Recherche INSEE ///////// */}
+         <TabPanel key="1" value={tabNewContactValue} index={1}  >
+          <NewContactSearchForm
+            emptyContact={emptyContact}
             currentUserId={currentUser.uid}
             getPriorityTextAndColor={getPriorityTextAndColor}
             setAreContactChangesSaved={setAreContactChangesSaved}

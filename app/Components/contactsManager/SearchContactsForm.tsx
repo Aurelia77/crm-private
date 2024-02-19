@@ -228,7 +228,7 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                     }}>
                     Recherche dans mes contacts
                 </Typography>
-                <Tooltip title="Supprimer la recherche">
+                <Tooltip title="Supprimer la recherche et afficher TOUS mes contacts">
                     <Fab
                         size="small"
                         color="error"
