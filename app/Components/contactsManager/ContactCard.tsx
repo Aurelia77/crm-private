@@ -100,14 +100,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
 
     //console.log("contact ContactCard : ", contact)
 
-    const [contactToAddOrUpdate, setContactToAddOrUpdate] = React.useState<Contact>(contact)
-
-    console.log(contactToAddOrUpdate.filesSentRef)
-    
+    const [contactToAddOrUpdate, setContactToAddOrUpdate] = React.useState<Contact>(contact)    
     const [contactFilesWithNames, setContactFilesWithNames] = React.useState<FileNameAndRefType[]>([])
-
-    console.log("contactFilesWithNames", contactFilesWithNames)
-
     const [tabValue, setTabValue] = React.useState<number>(0);
     const [logoChoosen, setIsLogoChoosen] = React.useState(false);  
     
@@ -128,7 +122,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     //console.log("firebaseFileSelected", firebaseFileSelected)
 
     const [newFileName, setNewFileName] = React.useState<string | null>(null);
-    console.log("newFileName", newFileName)
 
     const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[] | null>(null);
 
@@ -163,9 +156,9 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         setOpenContactIsUpdatedModal(true)
     } 
 
-    React.useEffect(() => {
-        setContactToAddOrUpdate(contact)
-    },[contact])
+    // React.useEffect(() => {
+    //     setContactToAddOrUpdate(contact)
+    // },[contact])
 
 
 
@@ -184,20 +177,26 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         })
     }, [currentUserId]);
 
-
+  
     React.useEffect(() => {
-        //console.log("****Comparaison des contacts")
-        //JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && console.log("****CHANGE")
+        console.log("****Comparaison des contacts")
+        console.log("contactToAddOrUpdate === contact",JSON.stringify(contact) === JSON.stringify(contactToAddOrUpdate))
+        JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && console.log("****CHANGE")
+
         JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && setAreContactChangesSaved(false)
     }, [contactToAddOrUpdate, contact, setAreContactChangesSaved])
    
 
-    const handleChangeText = (attribut: keyof Contact) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChangeText = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, attribut: keyof Contact) => {
         setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: event.target.value })
     }
-    const handleChangeComment = (attribut: keyof Contact) => (content: string) => {
-        setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: content });
-    }
+    // const handleChangeComment = (attribut: keyof Contact) => (content: string) => {
+    //     setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: content });
+    // }
+    const handleChangeCommentReactQuill = (content: string) => {
+        setContactToAddOrUpdate({ ...contactToAddOrUpdate, comments: content });
+    } 
+
     const handleChangeSelect = (event: SelectChangeEvent, attribut: keyof Contact) => {
         const type: string = event.target.value as string  
         setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: type })
@@ -280,10 +279,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     const handleChangeNumber = (number: number | null, attribut: string) => {
         setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: number })
     }
-
-
-    
-
 
     React.useEffect(() => {
         const fetchFileNames = async () => {
@@ -440,7 +435,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                 }} >
                     {/* ///////// CAT */}
                     <FormControl sx={{ width: "auto", backgroundColor: muiTheme.palette.primary.main, borderRadius: "50px" }} >
-                        <InputLabel id="checkbox-type-label" sx={{ marginLeft: '20px' }} >Catégorie</InputLabel>
+                        <InputLabel id="checkbox-type-label" sx={{ marginLeft: '20px', fontSize: "1.3rem" }} >Catégorie</InputLabel>
                       {categoriesList &&  <Select
                             sx={{
                                 color: 'white',
@@ -475,7 +470,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         width: "auto", backgroundColor: muiTheme.palette.purple.dark,
                         borderRadius: "50px"
                     }} >
-                        <InputLabel id="checkbox-type-label" sx={{ marginLeft: '20px' }}>Type</InputLabel>
+                        <InputLabel id="checkbox-type-label" sx={{ marginLeft: '20px', fontSize: "1.3rem" }}>Type</InputLabel>
                         <Select
                             sx={{
                                 color: 'white',
@@ -596,15 +591,18 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             <Box>
                                 <TextField
                                     sx={{ width: "100%" }}
-                                    required
+                                    //required
                                     id="outlined-basic"
                                     //label="Nom"
                                     value={contactToAddOrUpdate.businessName}
+                                    label={contactToAddOrUpdate.businessName ? "" : "Nom du contact"}
+                                    InputLabelProps={{
+                                        style: { fontSize: "1.5rem", marginLeft: "40%" },
+                                    }}
+                                    //onChange={(event) => setContactToAddOrUpdate({ ...contactToAddOrUpdate, businessName: event.target.value }) }
 
+                                    onChange={(e) => handleChangeText(e, "businessName")}
 
-                                    onChange={(event) => setContactToAddOrUpdate({ ...contactToAddOrUpdate, businessName: event.target.value }) }
-
-                                    //onChange={handleChangeText("businessName")}
                                     inputProps={{
                                         style: {
                                             //color: muiTheme.palette.primary.dark, 
@@ -768,34 +766,34 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             <TextField
                                 id="outlined-basic" label="Nom DIRIGEANT"
                                 value={contactToAddOrUpdate.directorName}
-                                onChange={handleChangeText("directorName")}
+                                onChange={(e) => handleChangeText(e, "directorName")}
                             />
                             <TextField
                                 id="outlined-basic"
                                 label="Nom Contact DIRECT"
                                 value={contactToAddOrUpdate.contactName}
-                                onChange={handleChangeText("contactName")}
+                                onChange={(e) => handleChangeText(e, "contactName")}
                                 sx={{ backgroundColor: muiTheme.palette.pink.main }}
                             />
                             <TextField
                                 id="outlined-basic"
                                 label="Poste occupé"
                                 value={contactToAddOrUpdate.contactPosition}
-                                onChange={handleChangeText("contactPosition")}
+                                onChange={(e) => handleChangeText(e, "contactPosition")}
                                 sx={{ backgroundColor: muiTheme.palette.pink.main }}
                             />
                             <TextField
                                 id="outlined-basic"
                                 label="Téléphone DIRECT"
                                 value={contactToAddOrUpdate.contactPhone}
-                                onChange={handleChangeText("contactPhone")}
+                                onChange={(e) => handleChangeText(e, "contactPhone")}
                                 sx={{ backgroundColor: muiTheme.palette.pink.main }}
                             />
                             <TextField
                                 id="outlined-basic"
                                 label="Email DIRECT"
                                 value={contactToAddOrUpdate.contactEmail}
-                                onChange={handleChangeText("contactEmail")}
+                                onChange={(e) => handleChangeText(e, "contactEmail")}
                                 sx={{ backgroundColor: muiTheme.palette.pink.main }}
                                 InputProps={{
                                     startAdornment: contactToAddOrUpdate.contactEmail && <Link href={`mailto:${contactToAddOrUpdate.contactEmail}`} underline="none" //color="inherit"                                       
@@ -816,19 +814,19 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 id="outlined-basic"
                                 label="Ville"
                                 value={contactToAddOrUpdate.businessCity}
-                                onChange={handleChangeText("businessCity")}
+                                onChange={(e) => handleChangeText(e, "businessCity")}
                             />
                             <TextField
                                 id="outlined-basic"
                                 label="Adresse"
                                 value={contactToAddOrUpdate.businessAddress}
-                                onChange={handleChangeText("businessAddress")}
+                                onChange={(e) => handleChangeText(e, "businessAddress")}
                             />
                             <TextField
                                 id="outlined-basic"
                                 label="Site WEB"
                                 value={contactToAddOrUpdate.businessWebsite}
-                                onChange={handleChangeText("businessWebsite")}
+                                onChange={(e) => handleChangeText(e, "businessWebsite")}
                                 InputProps={{
                                     startAdornment: contactToAddOrUpdate.businessWebsite && <Link
                                         href={contactToAddOrUpdate.businessWebsite}
@@ -846,13 +844,13 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 id="outlined-basic"
                                 label="Téléphone STANDARD"
                                 value={contactToAddOrUpdate.businessPhone}
-                                onChange={handleChangeText("businessPhone")}
+                                onChange={(e) => handleChangeText(e, "businessPhone")}
                             />
                             <TextField
                                 id="outlined-basic"
                                 label="Email ENTREPRISE"
                                 value={contactToAddOrUpdate.businessEmail}
-                                onChange={handleChangeText("businessEmail")}
+                                onChange={(e) => handleChangeText(e, "businessEmail")}
                                 InputProps={{
                                     startAdornment: contactToAddOrUpdate.businessEmail && <Link href={`mailto:${contactToAddOrUpdate.businessEmail}`} underline="none" 
                                         target="_blank"
@@ -883,7 +881,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         }}
                         modules={modules}
                         value={contactToAddOrUpdate.comments}
-                        onChange={handleChangeComment("comments")}
+                        onChange={(content: string) => handleChangeCommentReactQuill(content)}
                     />
                     {/* <TextField
                         sx={{
@@ -897,7 +895,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         id="outlined-basic"
                         label="Commentaires"
                         value={contactToAddOrUpdate.comments}
-                        onChange={handleChangeText("comments")}
+                        onChange={(e) => handleChangeText(e, "comments")}
                         InputProps={{
                             disableUnderline: true
                         }}

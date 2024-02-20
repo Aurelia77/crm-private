@@ -155,9 +155,6 @@ const getFileNameFromRef = async (fileRef: string) => {
   return fileName
 }
 
-
-
-
 const getFilesFromDatabase = async (currentUserId: string | undefined) => {
   let filesArr: FileNameAndRefType[] = []
   const filesCollectionRef = collection(fireStoreDb, "files");
@@ -165,8 +162,13 @@ const getFilesFromDatabase = async (currentUserId: string | undefined) => {
 
   const querySnapshot = await getDocs(q)
 
+  // Seulement les fichiers (pas les logo !)
+  const fileRefPath = `https://firebasestorage.googleapis.com/v0/b/${process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET}/o/filesSent`
+
   querySnapshot.forEach((doc) => {
-    filesArr.push(doc.data() as FileNameAndRefType)
+    if (doc.data().fileRef.startsWith(fileRefPath)) {
+      filesArr.push(doc.data() as FileNameAndRefType)
+    }
   });
 
   return filesArr

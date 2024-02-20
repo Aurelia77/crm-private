@@ -24,6 +24,9 @@ type AdminType = {
 export default function Admin({ currentUserId }: AdminType) {
 
   const [filesList, setFilesList] = React.useState<FileNameAndRefType[] | null>(null);
+
+console.log("filesList", filesList)
+
   const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[] | null>(null);
   const [newFileName, setNewFileName] = React.useState<string | null>(null);
   const [newCatName, setNewCatName] = React.useState<string>("");
@@ -457,7 +460,7 @@ export default function Admin({ currentUserId }: AdminType) {
           padding: "10px", border: "solid 3px blue", borderRadius: "10px", marginTop: "100px", width: "calc(100vw - 200px)"
         }}>
           <Box sx={{ display: "flex", justifyContent: "space-around", marginBottom: "20px" }} >
-            {/* <Button 
+            <Button 
               variant="contained" 
               color='success' 
               // onClick={() => {addCategoriesOnFirebaseAndReload(currentUserId)}}>
@@ -466,7 +469,7 @@ export default function Admin({ currentUserId }: AdminType) {
             </Button>
             <Button variant="contained" color='ochre' onClick={() => addFakeDataWithCat(currentUserId)}>
               2-Ajouter Contacts Test (x7)
-            </Button> */}
+            </Button>
 
             {/* <Button variant="contained" color='warning' onClick={() => addLaurianeDataWithCat(currentUserId)}>2-Ajouter Contacts LAURIANE (x 307)</Button>
             <Button variant="contained" color='info' onClick={() => addLaurianeDataWithCatx50(currentUserId)}>2-Ajouter Contacts LAURIANE (x 50)</Button> */}

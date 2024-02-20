@@ -61,6 +61,9 @@ export default function ContactsLayout({
 
     const [allContacts, setAllContacts] = React.useState<Contact[]>([])
     const [areContactChangesSaved, setAreContactChangesSaved] = React.useState(true)
+
+    console.log("!!!areContactChangesSaved : ", areContactChangesSaved)
+
     const [newPathname, setNewPathname] = React.useState("")
     const [shouldRedirect, setShouldRedirect] = React.useState<boolean>(false)
     const [isWarningModalOpen, setIsWarningModalOpen] = React.useState<boolean>(false);

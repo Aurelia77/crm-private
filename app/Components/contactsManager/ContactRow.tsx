@@ -97,7 +97,7 @@ type ContactRowProps = {
 
 const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, currentUserId, getPriorityTextAndColor }: ContactRowProps) => {
 
-    console.log(contact.hasBeenCalled)
+    //console.log(contact.hasBeenCalled)
 
     //const [localContactValue, setLocalContactValue] = React.useState<Contact>(contact);
     const [commentsValue, setCommentsValue] = React.useState<string>(contact.comments);
