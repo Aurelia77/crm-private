@@ -97,7 +97,7 @@ type ContactRowProps = {
 
 const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, currentUserId, getPriorityTextAndColor }: ContactRowProps) => {
 
-    //console.log(contact.comments,contact.businessName)
+    console.log(contact.hasBeenCalled)
 
     //const [localContactValue, setLocalContactValue] = React.useState<Contact>(contact);
     const [commentsValue, setCommentsValue] = React.useState<string>(contact.comments);
@@ -381,7 +381,7 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
                 }} >
                     {contact.isClient
                         ? <HandshakeOutlinedIcon color='success' fontSize='large' />
-                        : <PsychologyAltIcon sx={{ color: muiTheme.palette.gray.main, }} fontSize='large' />}
+                        : <PsychologyAltIcon sx={{ color: muiTheme.palette.gray.dark, }} fontSize='large' />}
                     {contact.businessName}
                 </Typography>
                 {/* <TextField 
