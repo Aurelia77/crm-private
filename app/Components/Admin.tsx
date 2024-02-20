@@ -452,20 +452,18 @@ export default function Admin({ currentUserId }: AdminType) {
         <Box sx={{
           padding: "10px", border: "solid 3px blue", borderRadius: "10px", marginTop: "100px", width: "calc(100vw - 200px)"
         }}>
-          <Typography
-            component="div"
-            textAlign="center"
-            style={{
-              marginBottom: "50px"
-            }} >Pour Version TEST</Typography>
           <Box sx={{ display: "flex", justifyContent: "space-around", marginBottom: "20px" }} >
-            <Button 
+            {/* <Button 
               variant="contained" 
               color='success' 
               // onClick={() => {addCategoriesOnFirebaseAndReload(currentUserId)}}>
               onClick={() => {addCategoriesOnFirebaseAndState(currentUserId)}}>
-              1-Ajouter Catégories</Button>
-            <Button variant="contained" color='ochre' onClick={() => addFakeDataWithCat(currentUserId)}>2-Ajouter Contacts Test (x7)</Button>
+              1-Ajouter Catégories
+            </Button>
+            <Button variant="contained" color='ochre' onClick={() => addFakeDataWithCat(currentUserId)}>
+              2-Ajouter Contacts Test (x7)
+            </Button> */}
+
             {/* <Button variant="contained" color='warning' onClick={() => addLaurianeDataWithCat(currentUserId)}>2-Ajouter Contacts LAURIANE (x 307)</Button>
             <Button variant="contained" color='info' onClick={() => addLaurianeDataWithCatx50(currentUserId)}>2-Ajouter Contacts LAURIANE (x 50)</Button> */}
             <Button variant="contained" onClick={saveAllAndOpenFile}>Sauvegarder TOUTES mes données</Button>

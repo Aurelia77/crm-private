@@ -47,7 +47,7 @@ export default function CalendarScheduler({ contacts, setContacts, redirectToCon
 
 
   const hightPriorityColor = muiTheme.palette.primary.main
-  const mediumPriorityColor = muiTheme.palette.gray.main
+  const mediumPriorityColor = muiTheme.palette.gray.dark
   const lowPriorityColor = muiTheme.palette.error.main
   const noPriorityColor = "black"
 
@@ -175,17 +175,28 @@ export default function CalendarScheduler({ contacts, setContacts, redirectToCon
   }, [events]);
 
   return <Box>
-
-    <Box sx={{ display: "flex", justifyContent: "space-between", width: "60%", ml: "40%" }}>
-      <Typography sx={{ p: 0.3, textAlign: "center", borderRadius: "10px", backgroundColor: hightPriorityColor, color: 'white', width: "20%" }}>Priorité Haute (3)</Typography>
-      <Typography sx={{ p: 0.3, textAlign: "center", borderRadius: "10px", backgroundColor: mediumPriorityColor, width: "20%" }}>Priorité Moyenne (2)</Typography>
-      <Typography sx={{ p: 0.3, textAlign: "center", borderRadius: "10px", backgroundColor: lowPriorityColor, color: 'white', width: "20%" }}>Priorité Basse (1)</Typography>
-      <Typography sx={{ p: 0.3, textAlign: "center", borderRadius: "10px", backgroundColor: noPriorityColor, color: 'white', width: "20%" }}>Aucune</Typography>
+    <Box className="flex justify-center">
+      <Typography className='w-[20%]'>
+        Pour modifier la date de relance d'un contact, faites glisser l'événement sur le calendrier
+      </Typography>
+      <Typography className='w-[20%]'>
+        Un clic sur un contact pour le visualiser !
+      </Typography>
+      <Box sx={{ display: "flex", justifyContent: "space-between", width: "50%" }}>
+        <Typography sx={{ p: 0.3, textAlign: "center", borderRadius: "10px", backgroundColor: hightPriorityColor, color: 'white', width: "20%" }}>
+          Priorité Haute
+        </Typography>
+        <Typography sx={{ p: 0.3, textAlign: "center", borderRadius: "10px", backgroundColor: mediumPriorityColor, width: "20%" }}>
+          Priorité Moyenne
+        </Typography>
+        <Typography sx={{ p: 0.3, textAlign: "center", borderRadius: "10px", backgroundColor: lowPriorityColor, color: 'white', width: "20%" }}>
+          Priorité Basse
+        </Typography>
+        <Typography sx={{ p: 0.3, textAlign: "center", borderRadius: "10px", backgroundColor: noPriorityColor, color: 'white', width: "20%" }}>
+          Aucune
+        </Typography>
+      </Box>
     </Box>
-
-    <Typography sx={{ textAlign: "center", mt: "2%" }}>
-      Pour modifier la date de relance d'un contact, faites glisser l'événement sur le calendrier
-    </Typography>
 
     <Box id="calendar" ref={calendarRef} sx={{ width: "calc(100vw - 250px)", margin: "auto", marginTop: "3%", backgroundColor: muiTheme.palette.lightCyan.light }}
     ></Box>

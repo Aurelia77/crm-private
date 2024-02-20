@@ -26,7 +26,7 @@ const contacts : Contact[] = [
         tag: ["camping", "client"],
         dateOfFirstCall: new Date("2023-10-10"),
         dateOfLastCall: new Date("2023-10-24"),
-        dateOfNextCall: new Date("2024-02-29"),
+        dateOfNextCall: new Date("2024-02-27"),
         comments: `2023-10-10 : Appel mais pas de réponse. Il faut rappeler dans 2 semaines. 
         2023-10-24 : Je leur ai parlé longuement. Ils ont l'air très intéressés par mes prestations. Vont en parler au responsable et me recontactent bientôt.
         A voir si pas de rappel dans 1 semaine, les recontacter ! `,
@@ -174,7 +174,7 @@ const contacts : Contact[] = [
         tag: ["client", "partenaire"],
         dateOfFirstCall: new Date("2023-10-11"),
         dateOfLastCall: null,
-        dateOfNextCall: new Date("2024-02-28"),
+        dateOfNextCall: new Date("2024-02-20"),
         comments: "Très gentils, Nous envisageons de conclure un partenariat. A recontacter dans 1 mois pour voir où ils en sont.",
         userId: "",
     }, 
