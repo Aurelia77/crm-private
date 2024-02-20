@@ -157,6 +157,10 @@ export default function Admin({ currentUserId }: AdminType) {
       }).catch((error) => {
         setAlertCatText("Impossible de supprimer cette catégorie => Un ou plusieurs contact(s) y est (sont) associé(s). Veuillez d'abord modifier/supprimer leur catégorie.");
         console.log(error)
+
+        setTimeout(() => {
+          setAlertCatText("");
+        }, 5000);
       })
     setAlertCatText("");
     setCatToUpdateOrDelete({ id: "", label: "" });
