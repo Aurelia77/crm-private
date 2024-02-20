@@ -175,14 +175,14 @@ export default function CalendarScheduler({ contacts, setContacts, redirectToCon
   }, [events]);
 
   return <Box>
-    <Box className="flex justify-center">
-      <Typography className='w-[20%]'>
+    <Box >
+      <Typography >
         Pour modifier la date de relance d'un contact, faites glisser l'événement sur le calendrier
       </Typography>
-      <Typography className='w-[20%]'>
+      <Typography  >
         Un clic sur un contact pour le visualiser !
       </Typography>
-      <Box sx={{ display: "flex", justifyContent: "space-between", width: "50%" }}>
+      <Box sx={{ display: "flex", justifyContent: "space-around", marginTop:"20px" }}>
         <Typography sx={{ p: 0.3, textAlign: "center", borderRadius: "10px", backgroundColor: hightPriorityColor, color: 'white', width: "20%" }}>
           Priorité Haute
         </Typography>
