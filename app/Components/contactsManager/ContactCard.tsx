@@ -946,7 +946,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                                 component="h2"
                                                 sx={{ mb: 5, textOverflow: "clip", whiteSpace: "normal" }}
                                             >
-                                                Supprimer le fichier associé : <span style={{ fontWeight: "bold" }}>{(file.fileName)}</span> ?
+                                                Désassocier du contact le fichier : <span style={{ fontWeight: "bold" }}>{(file.fileName)}</span> ?
                                             </Typography>
                                             <Box sx={{ display: "flex", justifyContent: "space-between" }} >
                                                 <Button

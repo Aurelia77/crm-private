@@ -460,7 +460,7 @@ console.log("filesList", filesList)
           padding: "10px", border: "solid 3px blue", borderRadius: "10px", marginTop: "100px", width: "calc(100vw - 200px)"
         }}>
           <Box sx={{ display: "flex", justifyContent: "space-around", marginBottom: "20px" }} >
-            <Button 
+            {/* <Button 
               variant="contained" 
               color='success' 
               // onClick={() => {addCategoriesOnFirebaseAndReload(currentUserId)}}>
@@ -469,7 +469,7 @@ console.log("filesList", filesList)
             </Button>
             <Button variant="contained" color='ochre' onClick={() => addFakeDataWithCat(currentUserId)}>
               2-Ajouter Contacts Test (x7)
-            </Button>
+            </Button> */}
 
             {/* <Button variant="contained" color='warning' onClick={() => addLaurianeDataWithCat(currentUserId)}>2-Ajouter Contacts LAURIANE (x 307)</Button>
             <Button variant="contained" color='info' onClick={() => addLaurianeDataWithCatx50(currentUserId)}>2-Ajouter Contacts LAURIANE (x 50)</Button> */}
