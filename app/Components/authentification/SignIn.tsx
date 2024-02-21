@@ -1,5 +1,5 @@
 import React from 'react'
-import { auth } from '../../utils/firebase'
+import { auth } from '@/app/utils/firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { Button, FormControl, TextField, Paper, Typography } from '@mui/material'
 

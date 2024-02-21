@@ -1,68 +1,35 @@
 'use client'
-
-import { Box } from '@mui/material'
 import React from 'react'
-import { useAuthUserContext } from '../../context/UseAuthContextProvider'
-import { addContactOnFirebaseAndReload } from '../../utils/firebase'
-import { emptyContact } from '../../utils/toolbox'
-import { useGetPriorityTextAndColor } from '../../utils/toolbox'
-import NewContactSearchForm from '../../Components/contactsManager/NewContactSearchForm'
-//import ContactCard from '../../Components/contactsManager/ContactCard'
+// UTILS
+import { useGetPriorityTextAndColor, emptyContact } from '@/app/utils/toolbox'
+import { addContactOnFirebaseAndReload } from '@/app/utils/firebase'
+import { TabPanel } from '@/app/utils/StyledComponentsAndUtilities'
+// CONTEXTS
+import { useAuthUserContext } from '@/app/context/UseAuthContextProvider'
+import { useContactsContext } from '@/app/context/UseContactsContextProvider';
+// COMPONENT
+import NewContactSearchForm from '@/app/Components/contactsManager/NewContactSearchForm'
+// MUI
+import { Box } from '@mui/material'
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { TabPanel } from '../../utils/StyledComponentsAndUtilities'
-import { useContactsContext } from '@/app/context/UseContactsContextProvider';
+// NEXT
 import { redirect } from 'next/navigation';
-import Modal from '@mui/material/Modal';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import { useRouter } from 'next/router';
-
-
-// Deployement VERCEL : erreur "document is not defined" causée par l'utilisation de la bibliothèque react-quill, qui utilise l'objet document du navigateur, qui n'est pas disponible lors du rendu côté serveur (SSR) ou lors de la génération de pages statiques (SSG) avec Next.js. => Pour résoudre ce problème, utiliser l'API next/dynamic pour charger dynamiquement le composant qui utilise react-quill avec l'option { ssr: false }. Cela garantit que le composant n'est rendu que côté client, où l'objet document est disponible.
+// Deployement VERCEL : erreur "document is not defined" => on import DYNAMIC pour que le composant ContactCard soit rendu que côté client, où l'objet document est disponible. ('use client' ne fonctionne pas)
 import dynamic from 'next/dynamic';
-
 const ContactCard = dynamic(() => import('@/app/Components/contactsManager/ContactCard'), { ssr: false });
 
 export default function NewContactPage() {
+  const [tabNewContactValue, setTabNewContactValue] = React.useState(0);
 
   const { currentUser } = useAuthUserContext()
-  const getPriorityTextAndColor = useGetPriorityTextAndColor()
-
-  const [tabNewContactValue, setTabNewContactValue] = React.useState(0);
-  // const [tabValueWithoutSavingInfoChanges, setTabValueWithoutSavingInfoChanges] = React.useState(0);
-  // const [openWarningModal, setOpenWarningModal] = React.useState(false);
-
   const setAreContactChangesSaved = useContactsContext().setAreContactChangesSaved
 
-  // A VOIR !!
-  // const router = useRouter();   // Si Warning: Cannot update a component (`HotReload`) while rendering a different component (`NewContactPage`).
-
-  // React.useEffect(() => {
-  //   const handleRouteChange = (url: string) => {
-  //     if (hasContactInfoChanged) {
-  //       setOpenWarningModal(true);
-  //       router.events.off('routeChangeStart', handleRouteChange);
-  //     }
-  //   };
-
-  //   router.events.on('routeChangeStart', handleRouteChange);
-
-  //   return () => {
-  //     router.events.off('routeChangeStart', handleRouteChange);
-  //   };
-  // }, [hasContactInfoChanged, router.events])
-
-
-  // const handleNotSaveContactInfo = () => {
-  //   setOpenWarningModal(false)
-  //   //setTabValue(tabValueWithoutSavingInfoChanges)
-  //   setAreContactChangesSaved(false)
-  // }
+  const getPriorityTextAndColor = useGetPriorityTextAndColor()
 
   return (
     currentUser
-      ? <Box>        
+      ? <Box>
         <Tabs
           value={tabNewContactValue}
           onChange={(e, newValue) => setTabNewContactValue(newValue)}
@@ -70,7 +37,7 @@ export default function NewContactPage() {
         >
           <Tab key={0} label="Ajout à partir de zéro" />
           <Tab key={1} label="Recherche INSEE" />
-        </Tabs>       
+        </Tabs>
 
         {/* ///////// Recherche de ZERO ///////// */}
         <TabPanel key="0" value={tabNewContactValue} index={0} >
@@ -83,8 +50,8 @@ export default function NewContactPage() {
           />
         </TabPanel>
 
-         {/* ///////// Recherche INSEE ///////// */}
-         <TabPanel key="1" value={tabNewContactValue} index={1}  >
+        {/* ///////// Recherche INSEE ///////// */}
+        <TabPanel key="1" value={tabNewContactValue} index={1}  >
           <NewContactSearchForm
             emptyContact={emptyContact}
             currentUserId={currentUser.uid}

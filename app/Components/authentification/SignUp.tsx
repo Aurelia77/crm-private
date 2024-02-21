@@ -1,6 +1,6 @@
 import React from 'react'
+import { useAuthUserContext } from '@/app/context/UseAuthContextProvider'
 import { Button, FormControl, Paper, TextField, Typography } from '@mui/material'
-import { useAuthUserContext } from '../../context/UseAuthContextProvider'
 
 const SignUp = () => {
     const { error, signUp, currentUser } = useAuthUserContext()

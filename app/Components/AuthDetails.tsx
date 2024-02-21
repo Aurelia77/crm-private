@@ -1,5 +1,4 @@
 import React from 'react'
-
 import { auth } from '@/app/utils/firebase'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { Box, IconButton, Tooltip, Typography } from '@mui/material'
@@ -7,13 +6,6 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 export default function AuthDetails() {
     const [authUserInfo, setAuthUserInfo] = React.useState<any>(null)
-
-    React.useEffect(() => {
-        const listen = onAuthStateChanged(auth, (user) => {
-            user ? setAuthUserInfo(user) : setAuthUserInfo(null)
-        })
-        return () => listen()
-    }, [])
 
     const userSignOut = () => {
         signOut(auth).then(() => {
@@ -23,6 +15,13 @@ export default function AuthDetails() {
         });
     }
 
+    React.useEffect(() => {
+        const listen = onAuthStateChanged(auth, (user) => {
+            user ? setAuthUserInfo(user) : setAuthUserInfo(null)
+        })
+        return () => listen()
+    }, [])   
+
     return (
         <Box>
             {authUserInfo
@@ -31,8 +30,9 @@ export default function AuthDetails() {
                         variant="h6"
                         color="primary"
                         sx={{ ml: 2 }}
-                    >{authUserInfo.email}</Typography>
-
+                    >
+                        {authUserInfo.email}
+                    </Typography>
                     <Tooltip title="Déconnexion" placement="left">
                         <IconButton onClick={userSignOut} color="error" >
                             <ExitToAppIcon />

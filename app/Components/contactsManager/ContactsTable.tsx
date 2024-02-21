@@ -3,7 +3,7 @@ import * as React from 'react';
 import { StyledTableCell } from '@/app/utils/StyledComponentsAndUtilities';
 // FIREBASE
 import { Timestamp } from 'firebase/firestore';
-// MUI Components
+// MUI
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TablePagination from '@mui/material/TablePagination';
@@ -26,8 +26,7 @@ import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import GradeIcon from '@mui/icons-material/Grade';
-
-// Deployement VERCEL : erreur "document is not defined" à cause utilisation bibliothèque react-quill, qui utilise l'objet document du nav : pas dispo lors du rendu côté serveur avec Next.js. => utiliser l'API next/dynamic pour charger dynamiquement le composant qui utilise react-quill => composant rendu que côté client, où l'objet document est disponible.
+// Deployement VERCEL : erreur "document is not defined" à cause utilisation bibliothèque react-quill dans ContactRow, qui utilise l'objet document du nav : pas dispo lors du rendu côté serveur avec Next.js. => utiliser l'API next/dynamic pour charger dynamiquement le composant qui utilise react-quill => composant ContactRow rendu que côté client, où l'objet document est disponible. (l'ajout de 'use client' ne fonctionne pas)
 import dynamic from 'next/dynamic';
 const ContactRow = dynamic(() => import('./ContactRow'), { ssr: false });
 

@@ -1,7 +1,7 @@
 
 
 import React from 'react'
-// MUI Coponents
+// MUI
 import { TextField, Stack,  FormControl, ListItem, List } from '@mui/material'
 import { ListItemButton, ListItemText } from '@mui/material';
 import Box from '@mui/material/Box';
@@ -11,8 +11,9 @@ import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
 import LocationCityRoundedIcon from '@mui/icons-material/LocationCityRounded';
 import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
 import Typography from '@mui/material/Typography';
-
+// NEXT
 import Image from 'next/image';
+// Deployement VERCEL : erreur "document is not defined" => on import DYNAMIC pour que le composant ContactCard soit rendu que côté client, où l'objet document est disponible. ('use client' ne fonctionne pas)
 import dynamic from 'next/dynamic';
 const ContactCard = dynamic(() => import('@/app/Components/contactsManager/ContactCard'), { ssr: false });
 
@@ -46,7 +47,7 @@ export default function NewContactSearchForm({
         CP: '**',
         businessActivity: '**',
     }
-    
+
     const [query, setQuery] = React.useState<Query>(emptyQuery)
     const [resultInseeSearch, setResultInseeSearch] = React.useState<any>([])
     // Juste ce qu'on a besoin de resultInseeSearch

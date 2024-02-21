@@ -2,7 +2,7 @@ import React from 'react'
 // UTILS
 import { getUniqueSortedValues } from '@/app/utils/toolbox';
 import { getCategoriesFromDatabase, getCatLabelFromId } from '@/app/utils/firebase'
-// MUI Components
+// MUI
 import { FormControl, InputLabel, TextField, Typography, MenuItem, Checkbox, FormControlLabel, OutlinedInput, ListItemText, Box, Paper } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useTheme } from '@mui/material/styles';

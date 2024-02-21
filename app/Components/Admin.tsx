@@ -1,12 +1,12 @@
 'use client'
 import React from 'react'
 // UTILS
-import { modalStyle, contactCategories } from '../utils/toolbox'
-import {addCategoriesOnFirebase, getFilesFromDatabase, getCategoriesFromDatabase, storage, addFileOnFirebaseDB, addCategorieOnFirebase, updateCategorieOnFirebase, updateFileOnFirebase, deleteCategorieOnFirebase, deleteAllDatasOnFirebaseAndReload, deleteAllMyCatsOnFirebase, handleOpenFile, getAllFirebaseUserDatasAndSave
+import { modalStyle } from '@/app/utils/toolbox'
+import {getFilesFromDatabase, getCategoriesFromDatabase, storage, addFileOnFirebaseDB, addCategorieOnFirebase, updateCategorieOnFirebase, updateFileOnFirebase, deleteCategorieOnFirebase, deleteAllDatasOnFirebaseAndReload, deleteAllMyCatsOnFirebase, handleOpenFile, getAllFirebaseUserDatasAndSave
 } from '@/app/utils/firebase'
 // FIREBASE
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-// MUI Components
+// MUI
 import { Alert, Box, Divider, ListItemText, Modal, TextField, Typography } from '@mui/material'
 import { Button, FormControl, Input } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -14,8 +14,8 @@ import LinearProgress from '@mui/material/LinearProgress';
 import List from '@mui/material/List';
 import { useTheme } from '@mui/material/styles';
 
-import { uid } from 'uid';
 import { redirect } from 'next/navigation'
+import { uid } from 'uid';
 
 type AdminType = {
   currentUserId: string | undefined
@@ -178,7 +178,7 @@ export default function Admin({ currentUserId }: AdminType) {
       ? <Box>
         <Box sx={{ maxWidth: "1500px", margin: "auto" }} >
           {filesList && <Box mx={5} mb={2} >
-            <Typography variant="h6">Mes fichiers ({filesList.length}) <span style={{ color: 'gray', fontSize: "0.8em" }}>(1 clic pour modifier, 2 clics pour visualiser)</span>
+            <Typography variant="h6">Mes fichiers ({filesList.length}) <span style={{ color: 'gray', fontSize: "0.8em" }}>(1 clic pour modifier, 2 clics pour voir le fichier)</span>
             </Typography>
             <Box sx={{ display: "flex", justifyContent: "space-between", gap: "2%", mt: 2, }} >
               <List

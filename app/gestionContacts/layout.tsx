@@ -1,77 +1,46 @@
 'use client'
 
 import * as React from 'react';
-
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { Container, Tooltip, Paper, Modal, styled, TabProps } from '@mui/material';
-import { TextField, Select, MenuItem, Autocomplete, ListItem, List, ListItemIcon, InputLabel, Tabs, Tab, Box as CustomBox } from '@mui/material'
-import { Fab } from '@mui/material'
-import NewContactSearchForm from '../Components/contactsManager/NewContactSearchForm';
-import ContactCard from '../Components/contactsManager/ContactCard';
-import ContactsTable from '../Components/contactsManager/ContactsTable';
-import AuthDetails from './../Components/AuthDetails';
-import SearchContactsForm from '../Components/contactsManager/SearchContactsForm';
-import Admin from './../Components/Admin';
-import Help from './../Components/Help';
-import SearchIcon from '@mui/icons-material/Search';
-
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import { TABS_WIDTH, modalStyle } from './../utils/toolbox'
-import { countContactsByAlertDates, updatedContactsInLocalList, updatedContactsInLocalListWithWholeContact } from './../utils/toolbox';
+// UTILS
+import { TABS_WIDTH, modalStyle, updatedContactsInLocalList, updatedContactsInLocalListWithWholeContact } from '@/app/utils/toolbox'
+// CONTEXTS
+import { useAuthUserContext } from '@/app/context/UseAuthContextProvider'
+import ContactsContext from '@/app/context/UseContactsContextProvider';
+// FIREBASE
+import { updatDataOnFirebase, updatDataWholeContactOnFirebase, deleteDataOnFirebaseAndReload } from '@/app/utils/firebase'
 import { Timestamp } from 'firebase/firestore';
-
+// COMPONENTS
+import AuthDetails from '@/app/Components/AuthDetails';
+// MUI
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import { Tooltip, Modal } from '@mui/material';
+import { ListItem, List, ListItemIcon, Box } from '@mui/material'
 import Diversity3Icon from '@mui/icons-material/Diversity3';
 import PersonIcon from '@mui/icons-material/Person';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { TabPanel } from '../utils/StyledComponentsAndUtilities';
-import CircularProgress from '@mui/material/CircularProgress';
-import { useTheme } from '@mui/material/styles';
-
-import { useAuthUserContext } from './../context/UseAuthContextProvider'
-import ContactsContext from './../context/UseContactsContextProvider';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+// NEXT
 import Link from 'next/link';
 //import { Link } from 'react-router-dom' // to au lieu de href, recharche même le layout ! Et ici me met une erreur : Cannot update a component (`HotReload`) while rendering a different component (`Link`)
-
-//import { useRouter } from 'next/router';
-import { useRouter, usePathname } from 'next/navigation';
+import {  usePathname } from 'next/navigation';
 import { redirect } from 'next/navigation';
-import { addContactOnFirebaseAndReload, deleteAllDatasOnFirebaseAndReload, updatDataOnFirebase, updatDataWholeContactOnFirebase, deleteDataOnFirebaseAndReload, getUserContactsFromDatabase } from './../utils/firebase'
-import ReactQueryProvider from '../Components/providers/ReactQueryProvider';
-
-import { useQuery } from '@tanstack/react-query';
-
-import { useNavigate, useLocation } from 'react-router-dom';
-
 
 export default function ContactsLayout({
     children,
 }: {
     children: React.ReactNode
-}) {
-    const { currentUser } = useAuthUserContext()
-
-    //const ContactsContext = React.createContext("")
-
-    const muiTheme = useTheme()
-    const pathname = usePathname()
-
+}) {    
     const [allContacts, setAllContacts] = React.useState<Contact[]>([])
     const [areContactChangesSaved, setAreContactChangesSaved] = React.useState(true)
-
-    console.log("!!!areContactChangesSaved : ", areContactChangesSaved)
-
     const [newPathname, setNewPathname] = React.useState("")
     const [shouldRedirect, setShouldRedirect] = React.useState<boolean>(false)
     const [isWarningModalOpen, setIsWarningModalOpen] = React.useState<boolean>(false);
-    // const [contactToDisplay, setContactToDisplay] = React.useState<Contact>(emptyContact)
-    // const [selectedContactId, setSelectedContactId] = React.useState<string>("")
-    // const [loading, setLoading] = React.useState(true)
     const [tabValue, setTabValue] = React.useState(0);
-    //const [tabCalendarValue, setTabCalendarValue] = React.useState(0);
+    
+    const pathname = usePathname()
 
     const titles = [
         { label: "Liste des contacts", icon: <Diversity3Icon />, href: "/gestionContacts/contactsTable" },
@@ -80,33 +49,15 @@ export default function ContactsLayout({
         { label: "Vu d'un contact (cliquez sur un logo dans la liste des contacts)", icon: <PersonIcon />, href: "/" },
         { label: "Admin", icon: <SettingsIcon />, href: "/gestionContacts/admin" },
         { label: "Aide", icon: <HelpOutlineIcon />, href: "/gestionContacts/help" },
-        // { label: "Liste des contacts2 (virtualisée)", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTableVirtualized2" },
-        // { label: "Liste des contacts3 (virtualisée)", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTableVirtualized3" },
-        // { label: "Liste des contacts4 (virtualisée)", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTableVirtualized4" },
-        // { label: "Liste des contacts5 (virtualisée)", icon: <Diversity3Icon color="error" />, href: "/gestionContacts/contactsTableVirtualized5" },
     ]
 
-
-    // const displayContactCardToUpdate = (contact: Contact) => {
-    //     setContactToDisplay(contact)
-    //     setTabValue(3)  // On reste sur le même onglet                                     // Voir ce que ça fait si on enlève ça
-    // }
-
     const updateContactInContactsAndDB = (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
-        //console.log("keyAndValue : ", keyAndValue)
-
         setAllContacts(updatedContactsInLocalList(allContacts, id, keyAndValue))
-        //localStorage.setItem('allContacts', JSON.stringify(updatedContactsInLocalList(allContacts, id, keyAndValue)))
-        //setFilteredContacts(updatedContactsInLocalList(filteredContacts, id, keyAndValue))
         updatDataOnFirebase(id, keyAndValue)
     }
 
     const updateWholeContactInContactsAndDB = (contactToUpdate: Contact) => {
         setAllContacts(updatedContactsInLocalListWithWholeContact(allContacts, contactToUpdate))
-        //localStorage.setItem('allContacts', JSON.stringify(updatedContactsInLocalListWithWholeContact(allContacts, contactToUpdate)))
-
-        // Je l'ai enlevé (01/2024) mais voir si besoin car de toutes façon filterContacts est calculé à partir de allContacts
-        //setFilteredContacts(updatedContactsInLocalListWithWholeContact(allContacts, contactToUpdate))
         updatDataWholeContactOnFirebase(contactToUpdate)
     }
 
@@ -137,7 +88,6 @@ export default function ContactsLayout({
                 <Box
                     sx={{
                         flexGrow: 1,
-                        //bgcolor: 'background.paper', 
                         display: 'flex',
                         height: '100vh',
                     }}
@@ -152,12 +102,11 @@ export default function ContactsLayout({
                             alignItems: 'center',
                         }}
                     >
-                        {titles.map((title, index) => (
-                            // passHref est utilisé pour passer l'attribut href à son enfant
+                        {titles.map((title, index) => (                            
                             <Link
                                 key={index}
                                 href={title.href}
-                                passHref
+                                passHref    // utilisé pour passer l'attribut href à son enfant
                                 onClick={(e) => {
                                     if (!areContactChangesSaved) {
                                         setNewPathname(title.href)
@@ -185,48 +134,9 @@ export default function ContactsLayout({
                         ))}
                     </List>
 
-                    {/* <Tabs
-                        orientation="vertical"
-                        value={tabValue}
-                        // onChange={(e, newValue) => onChangeTabValue(newValue)}
-                        onChange={(e, newValue) => setTabValue(newValue)}
-                        aria-label="Vertical tabs"
-                        sx={{ borderRight: 1, borderColor: 'divider', width: TABS_WIDTH }}
-                    >
-                        {titles.map((title, index) => (
-                            <Tab
-                                key={index}
-                                //href={title.href}     // Le href recharge le layout, pas le routeur !
-                                onClick={() => router.push(title.href)}
-                                title={title.label}
-                                icon={title.icon}
-                                value={index}
-                                sx={{ margin: '10px 0 10px 0' }}
-                                disabled={index === 3}
-                            />
-
-                        // Si j'utilise next/LINK j'ai une erreur : Warning: React does not recognize the `fullWidth` prop on a DOM element et avec le LINK de react-router : ERREUR !
-                        // <Link 
-                        //     href={title.href} 
-                        //     key={index}
-                        // >
-                        //     <Tab
-                        //         title={title.label}
-                        //         icon={title.icon}
-                        //         value={index}
-                        //         sx={{ margin: '10px 0 10px 0' }}
-                        //         disabled={index === 3}
-                        //     />
-                        // </Link>
-                      
-                        ))}                        
-                    </Tabs> */}
-
                     <Box
                         width={`calc(100vw - ${TABS_WIDTH}px)`}
-                    //width= '100%'
                     >
-                        {/* <ReactQueryProvider> */}
                         <ContactsContext.Provider
                             value={{
                                 updateContactInContactsAndDB: updateContactInContactsAndDB,
@@ -238,10 +148,6 @@ export default function ContactsLayout({
                         >
                             {children}
                         </ContactsContext.Provider>
-                        {/* </ReactQueryProvider> */}
-                        {/* <ContactsContextProvider>
-                                {children}
-                            </ContactsContextProvider> */}
                     </Box>
                 </Box>
 
@@ -254,8 +160,10 @@ export default function ContactsLayout({
                             id="modal-modal-title"
                             variant="h6"
                             component="h2"
-                            sx={{ mb: 5, overflow: "visible", textOverflow: "clip", 
-                            whiteSpace: "normal" }}
+                            sx={{
+                                mb: 5, overflow: "visible", textOverflow: "clip",
+                                whiteSpace: "normal"
+                            }}
                         >
                             Attention, vous avez fait des changements non sauvegardés : êtes vous sûr de vouloir quitter ?
                         </Typography>
@@ -273,7 +181,6 @@ export default function ContactsLayout({
                     </Box>
                 </Modal>
             </Box>
-
         </Box>
     )
 }

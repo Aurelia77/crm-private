@@ -1,6 +1,5 @@
 'use client'
 import React from 'react'
-
 // UTILS
 import { contactTypes, commentsOptions, isDatePassed, isDateSoon, modalStyle } from '@/app/utils/toolbox'
 import { storage, addFileOnFirebaseDB, getCategoriesFromDatabase, getFileNameFromRef, handleOpenFile, getFilesFromDatabase } from '@/app/utils/firebase'
@@ -8,7 +7,7 @@ import { StyledRating, StyledRatingStars, IconContainer, customIcons, useRightMa
 // FIREBASE
 import { Timestamp } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-// MUI Components
+// MUI
 import Card from '@mui/material/Card';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';

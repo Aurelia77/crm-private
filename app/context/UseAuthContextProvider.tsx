@@ -1,6 +1,8 @@
-import * as React from 'react';
+import React from 'react';
+// UTILS
+import { auth, fireStoreDb } from "@/app/utils/firebase";
+// FIREBASE
 import { AuthErrorCodes, createUserWithEmailAndPassword, onAuthStateChanged, User } from "firebase/auth";
-import { auth, fireStoreDb } from "../utils/firebase";
 import { addDoc, collection } from "firebase/firestore";
 
 const UserContext = React.createContext<{
@@ -21,7 +23,6 @@ const errorMessages: { [key: string]: string } = {
     [AuthErrorCodes.WEAK_PASSWORD]: 'Le mot de passe doit faire au minimum 6 caractères.',
 };
 
-
 export default function UserAuthContextProvider({ children }: { children: React.ReactNode }) {
     const [errorTimeoutId, setErrorTimeoutId] = React.useState<NodeJS.Timeout | null>(null);
     const [error, setError] = React.useState<string>("")
@@ -39,7 +40,6 @@ export default function UserAuthContextProvider({ children }: { children: React.
         })
     }, [currentUser])
 
-
     // Au démontage du composant, on supprime le timeout
     React.useEffect(() => {
         return () => {
@@ -48,7 +48,6 @@ export default function UserAuthContextProvider({ children }: { children: React.
             }
         };
     }, [errorTimeoutId]);
-
 
     const signUp = async (email: string, password: string, fullName: string) => {
         setError("");
@@ -60,9 +59,6 @@ export default function UserAuthContextProvider({ children }: { children: React.
                         fullName,
                         userId: result.user.uid,
                     });
-
-                    //alert('Nouvel utilisateur créé !')
-                    console.log("Document écrit avec ID: ", docRef.id);
                 } catch (e) {
                     console.error("Erreur dans ajout document : ", e);
                 }

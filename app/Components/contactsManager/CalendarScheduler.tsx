@@ -1,4 +1,7 @@
 import React from 'react'
+// FIREBASE
+import { Timestamp } from 'firebase/firestore';
+// FULLCALENDAR
 import { Calendar } from '@fullcalendar/core';
 import adaptivePlugin from '@fullcalendar/adaptive';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -6,11 +9,12 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import listPlugin from '@fullcalendar/list';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import multiMonthPlugin from '@fullcalendar/multimonth'
-import { Box, Typography } from '@mui/material';
-import dayjs from 'dayjs';
-import { useTheme } from '@mui/material/styles';
-import { Timestamp } from 'firebase/firestore';
 import frLocale from '@fullcalendar/core/locales/fr'
+// MUI
+import { Box, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+
+import dayjs from 'dayjs';
 
 type CalendarProps = {
   contacts: Contact[];

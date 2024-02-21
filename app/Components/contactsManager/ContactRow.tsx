@@ -5,7 +5,7 @@ import { getCategoriesFromDatabase, getFileNameFromRef, handleOpenFile } from '@
 import { StyledTableRow, StyledTableCell, StyledRating, StyledRatingStars, customIcons, IconContainer, useRightMailIcon, useIconUtilities, useHandleClickHasBeenCalledAndHasBeenSentEmailOrMeetUp } from '@/app/utils/StyledComponentsAndUtilities';
 // FIREBASE
 import { Timestamp } from 'firebase/firestore';
-// MUI Components
+// MUI
 import Tooltip from '@mui/material/Tooltip';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
