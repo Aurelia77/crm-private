@@ -3,7 +3,6 @@ import { Button, FormControl, Paper, TextField, Typography } from '@mui/material
 import { useAuthUserContext } from '../../context/UseAuthContextProvider'
 
 const SignUp = () => {
-
     const { error, signUp, currentUser } = useAuthUserContext()
     const [frontError, setFrontError] = React.useState<any>("")
     const [backError, setBackError] = React.useState<any>("")
@@ -34,10 +33,10 @@ const SignUp = () => {
         const { name, email, password, confirmPassword } = authUserInfoSignUp
 
         if (password === "" || confirmPassword === "" || email === "" || name === "") {
-            return setFrontError("Veuillez remplir tous les champs")     
+            return setFrontError("Veuillez remplir tous les champs")
         } else if (password !== confirmPassword) {
             return setFrontError("Les mots de passe ne correspondent pas")
-        } else if (password.length < 6 || confirmPassword.length < 6) { 
+        } else if (password.length < 6 || confirmPassword.length < 6) {
             return setFrontError("Le mot de passe doit contenir au moins 6 caractères")
         } else {
             signUp(email, password, name)
@@ -59,7 +58,7 @@ const SignUp = () => {
                     type="email"
                     label="Email"
                     name="email"
-                    value={authUserInfoSignUp.email} onChange={authUserInfoSignUpHandler} 
+                    value={authUserInfoSignUp.email} onChange={authUserInfoSignUpHandler}
                 />
                 <TextField
                     type="password"
@@ -89,7 +88,7 @@ const SignUp = () => {
                 >
                     Valider
                 </Button>
-            </FormControl>          
+            </FormControl>
         </Paper>
     )
 }

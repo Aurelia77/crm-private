@@ -1,24 +1,19 @@
 
 
-import React, { ChangeEvent } from 'react'
-import { TextField, Stack, Button, FormControl, InputLabel, Select, MenuItem, Autocomplete, Chip, ListItem, List, Container } from '@mui/material'
-import { ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import React from 'react'
+// MUI Coponents
+import { TextField, Stack,  FormControl, ListItem, List } from '@mui/material'
+import { ListItemButton, ListItemText } from '@mui/material';
 import Box from '@mui/material/Box';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import BusinessIcon from '@mui/icons-material/Business';
 import DialpadRoundedIcon from '@mui/icons-material/DialpadRounded';
 import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
 import LocationCityRoundedIcon from '@mui/icons-material/LocationCityRounded';
 import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
 import Typography from '@mui/material/Typography';
+
 import Image from 'next/image';
-
-//import ContactCard from './ContactCard'
-
-
-// Deployement VERCEL : erreur "document is not defined" causée par l'utilisation de la bibliothèque react-quill, qui utilise l'objet document du navigateur, qui n'est pas disponible lors du rendu côté serveur (SSR) ou lors de la génération de pages statiques (SSG) avec Next.js. => Pour résoudre ce problème, utiliser l'API next/dynamic pour charger dynamiquement le composant qui utilise react-quill avec l'option { ssr: false }. Cela garantit que le composant n'est rendu que côté client, où l'objet document est disponible.
 import dynamic from 'next/dynamic';
-
 const ContactCard = dynamic(() => import('@/app/Components/contactsManager/ContactCard'), { ssr: false });
 
 type DomainAndLogo = {
@@ -42,9 +37,6 @@ export default function NewContactSearchForm({
     getPriorityTextAndColor,
     setAreContactChangesSaved
 }: NewContactSearchForm) {
-    const token = '613dca81-d71e-3b02-ac1a-b2170d2084c6'
-    const nbResultInsee = 50
-    const apiAccessUrl = `https://api.insee.fr/entreprises/sirene/V3/siret?nombre=${nbResultInsee}&q=`
 
     // On crée cet objet car un ou plusieurs champs sont vides (au début ET quand on supprime les données saisies => le requête est faite avec des **)
     const emptyQuery: Query = { // ** : recherche sur une partie du mot (le SIRET, lui, doit être exact)
@@ -54,6 +46,7 @@ export default function NewContactSearchForm({
         CP: '**',
         businessActivity: '**',
     }
+    
     const [query, setQuery] = React.useState<Query>(emptyQuery)
     const [resultInseeSearch, setResultInseeSearch] = React.useState<any>([])
     // Juste ce qu'on a besoin de resultInseeSearch
@@ -62,13 +55,17 @@ export default function NewContactSearchForm({
     const [resultInseeSearchDomainAndLogo, setResultInseeSearchDomainAndLogo] = React.useState<DomainAndLogo[]>([])
     const [infosContact, setInfosContact] = React.useState<Contact | {}>({})
 
-    console.log("infosContact : ", infosContact)
-
-
+    
+    const token = '613dca81-d71e-3b02-ac1a-b2170d2084c6'
+    const nbResultInsee = 50
+    const apiAccessUrl = `https://api.insee.fr/entreprises/sirene/V3/siret?nombre=${nbResultInsee}&q=`    
     const isFormEmpty = () => JSON.stringify(query) === JSON.stringify(emptyQuery)
     const isSearchOnSiret = () => query.siret !== ''
     const thereIsListToDisplay = () => !isSearchOnSiret() && resultInseeSearch.length > 0
 
+    const handleOnClickBusiness = (business: Contact) => {
+        setInfosContact(business)
+    }
 
     React.useEffect(() => {
         const multiCriteriaSearch = "denominationUniteLegale:" + query.name + " AND libelleCommuneEtablissement:" + query.city + " AND codePostalEtablissement:" + query.CP + " AND activitePrincipaleUniteLegale:" + query.businessActivity
@@ -93,15 +90,12 @@ export default function NewContactSearchForm({
         /*eslint-disable-next-line react-hooks/exhaustive-deps*/
         [query])
 
-
     React.useEffect(() => {
-
         let tempTabResultInseeSearchToKeep: Contact[] = []
         let urls: any[] = []
 
-        resultInseeSearch.forEach((business: any, index: number) => {  
-            urls.push({ id: business.siret, url: `https://autocomplete.clearbit.com/v1/companies/suggest?query=${business.uniteLegale.denominationUniteLegale}` })         
-
+        resultInseeSearch.forEach((business: any, index: number) => {
+            urls.push({ id: business.siret, url: `https://autocomplete.clearbit.com/v1/companies/suggest?query=${business.uniteLegale.denominationUniteLegale}` })
 
             tempTabResultInseeSearchToKeep.push({
                 ...emptyContact,
@@ -125,41 +119,28 @@ export default function NewContactSearchForm({
                 })
                 setResultInseeSearchDomainAndLogo(ccc)
             }).catch(error => console.log('error', error))
-
         setResultInseeSearchToKeep(tempTabResultInseeSearchToKeep)
-             
     }, [resultInseeSearch])
 
-
     React.useEffect(() => {
-
         let tempTabResultInseeSearchToKeep3: Contact[] = []
         let tempsElement: Contact
 
-      
         resultInseeSearchToKeep.forEach((element: any, index: number) => {
             tempsElement = resultInseeSearchDomainAndLogo[index] === undefined ? { ...element } : { ...element, logo: resultInseeSearchDomainAndLogo[index].logo, businessWebsite: resultInseeSearchDomainAndLogo[index].domain }
-
             tempTabResultInseeSearchToKeep3.push(tempsElement)
-        });     
+        });
         setResultInseeSearchToKeepPlusDomainAndLogo(tempTabResultInseeSearchToKeep3)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [resultInseeSearchDomainAndLogo]) // resultInseeSearchToKeep ???
-
+    }, [resultInseeSearchDomainAndLogo]) 
 
     React.useEffect(() => {
         resultInseeSearchToKeepPlusDomainAndLogo.length === 1 ? setInfosContact(resultInseeSearchToKeepPlusDomainAndLogo[0]) : setInfosContact({})
     }, [resultInseeSearchToKeepPlusDomainAndLogo])
-
-
-    const handleOnClickBusiness = (business: Contact) => {
-        console.log("setInfo", business)
-        setInfosContact(business)
-    }
-
+   
     return (
         <React.Fragment>
-            <Stack  justifyContent="flex-start" direction="row"  >
+            <Stack justifyContent="flex-start" direction="row"  >
                 {/* ////////////////// RECHERCHE ////////////////// */}
                 <FormControl
                     variant='filled'
@@ -185,7 +166,7 @@ export default function NewContactSearchForm({
                             />
                         </Box>
                     </Stack>
-                    <p>Si recherche par SIRET le reste n'est pas pris en compte<br/>
+                    <p>Si recherche par SIRET le reste n'est pas pris en compte<br />
                         (enlever le SIRET pour qu'elle se fasse sur le reste)
                     </p>
                     <Box
@@ -200,13 +181,13 @@ export default function NewContactSearchForm({
                     <Box sx={{
                         width: Object.entries(infosContact).length > 0 ? "20%" : "80%",
                     }}
-                        bgcolor={'pink.light'} 
+                        bgcolor={'pink.light'}
                     >
                         <Typography variant="h6" sx={{ p: 2, bgcolor: 'background.default' }}>
-                        {resultInseeSearchToKeepPlusDomainAndLogo.length === nbResultInsee
-                            ? "Plus de " + nbResultInsee + " résultats, veuillez affiner votre recherche"
-                            : resultInseeSearchToKeepPlusDomainAndLogo.length + " résultats" 
-                        }
+                            {resultInseeSearchToKeepPlusDomainAndLogo.length === nbResultInsee
+                                ? "Plus de " + nbResultInsee + " résultats, veuillez affiner votre recherche"
+                                : resultInseeSearchToKeepPlusDomainAndLogo.length + " résultats"
+                            }
                         </Typography>
                         <List
                             sx={{
@@ -235,7 +216,7 @@ export default function NewContactSearchForm({
                                         }}
                                         >{business.businessName}
                                             <span style={{ color: 'gray', fontSize: '0.8em' }}> ({business.businessCity})</span>
-                                        </ListItemText>                                       
+                                        </ListItemText>
                                     </ListItemButton>
                                 </ListItem>
                             ))}
@@ -245,14 +226,14 @@ export default function NewContactSearchForm({
 
                 {/* ////////////////// Affichage d'UN CONTACT ////////////////// */}
                 {Object.entries(infosContact).length > 0 &&
-                    <Box width="60%" >                      
+                    <Box width="60%" >
                         <ContactCard
                             contact={infosContact as Contact}
                             currentUserId={currentUserId}
                             addContact={addContact}
                             getPriorityTextAndColor={getPriorityTextAndColor}
                             setAreContactChangesSaved={setAreContactChangesSaved}
-                        /> 
+                        />
                     </Box>
                 }
             </Stack>

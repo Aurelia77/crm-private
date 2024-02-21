@@ -3,7 +3,6 @@ import { auth } from '../../utils/firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { Button, FormControl, TextField, Paper, Typography } from '@mui/material'
 
-
 const SignIn = () => {
     const [error, setError] = React.useState<string>("")
     const [authUserInfoSignIn, setAuthUserInfoSignIn] = React.useState<any>({
@@ -24,7 +23,7 @@ const SignIn = () => {
 
     return (
         <Paper sx={{ padding: "40px" }} elevation={5} >
-            {error && <Typography color="error">{error}</Typography> }
+            {error && <Typography color="error">{error}</Typography>}
 
             <FormControl>
                 <Typography
@@ -35,7 +34,6 @@ const SignIn = () => {
                 >
                     Connexion
                 </Typography>
-
                 <TextField
                     type="email"
                     label="Email"
@@ -54,7 +52,9 @@ const SignIn = () => {
                     color="primary"
                     sx={{ marginTop: "25px" }}
                     onClick={signIn}
-                >Connexion</Button>
+                >
+                    Connexion
+                </Button>
             </FormControl>
         </Paper>
     )

@@ -1,17 +1,17 @@
 import * as React from 'react';
-
+// UTILS
+import { StyledTableCell } from '@/app/utils/StyledComponentsAndUtilities';
+// FIREBASE
+import { Timestamp } from 'firebase/firestore';
+// MUI Components
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TablePagination from '@mui/material/TablePagination';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { StyledTableCell } from '../../utils/StyledComponentsAndUtilities';
-//import ContactRow from './ContactRow';
-import { Box, FormControlLabel, Switch, TableCell, TextField, Tooltip, Typography } from '@mui/material';
-import { Timestamp } from 'firebase/firestore';
+import { Box, Tooltip } from '@mui/material';
 import Paper from '@mui/material/Paper';
-import { useTheme } from '@mui/material/styles';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { visuallyHidden } from '@mui/utils';
 import CallRoundedIcon from '@mui/icons-material/CallRounded';
@@ -27,54 +27,68 @@ import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import GradeIcon from '@mui/icons-material/Grade';
 
-// Deployement VERCEL : erreur "document is not defined" causée par l'utilisation de la bibliothèque react-quill, qui utilise l'objet document du navigateur, qui n'est pas disponible lors du rendu côté serveur (SSR) ou lors de la génération de pages statiques (SSG) avec Next.js. => Pour résoudre ce problème, utiliser l'API next/dynamic pour charger dynamiquement le composant qui utilise react-quill avec l'option { ssr: false }. Cela garantit que le composant n'est rendu que côté client, où l'objet document est disponible.
+// Deployement VERCEL : erreur "document is not defined" à cause utilisation bibliothèque react-quill, qui utilise l'objet document du nav : pas dispo lors du rendu côté serveur avec Next.js. => utiliser l'API next/dynamic pour charger dynamiquement le composant qui utilise react-quill => composant rendu que côté client, où l'objet document est disponible.
 import dynamic from 'next/dynamic';
-
 const ContactRow = dynamic(() => import('./ContactRow'), { ssr: false });
 
 interface Column {
-    id: keyof Contact   // | "supprimer"
+    id: keyof Contact
     label: string | JSX.Element
     minWidth?: number | string
-    //align?: 'right'
     format?: (value: number) => string
 }
 
 const headCells: readonly Column[] = [
     { id: 'isClient', label: <Tooltip title="Client ou Prospect ?"><HandshakeOutlinedIcon /></Tooltip>, minWidth: "2em", },
     { id: 'businessCategoryId', label: 'Catégorie', minWidth: "8em", },
-    {
-        id: 'dateOfNextCall', label: <Box sx={{ display: 'flex', alignItems: 'center', }}
-        ><AccessAlarmRoundedIcon fontSize='large' sx={{ marginRight: "20px" }} />Relance</Box>, minWidth: "9em",
-    },
+    { id: 'dateOfNextCall', label: <Box sx={{ display: 'flex', alignItems: 'center', }}>
+        <AccessAlarmRoundedIcon fontSize='large' sx={{ marginRight: "20px" }} />
+        Relance
+    </Box>, minWidth: "9em"},
     { id: 'logo', label: 'Logo', minWidth: "4em", },
     { id: 'businessName', label: 'Nom', minWidth: "10em", },
-    { id: 'priority', label: <Tooltip title="Priorité"><GradeIcon /></Tooltip>, minWidth: "2em", },
+    { id: 'priority', label: <Tooltip title="Priorité">
+        <GradeIcon />
+    </Tooltip>, minWidth: "2em", },
     { id: 'contactPhone', label: <CallRoundedIcon fontSize='large' />, minWidth: "10em", },
     { id: 'contactName', label: <AccountCircleRoundedIcon fontSize='large' />, minWidth: "10em", },
     { id: 'contactEmail', label: <MailIcon fontSize='large' />, minWidth: "10em", },
     { id: 'businessCity', label: 'Ville', minWidth: "10em", },
-    { id: 'hasBeenCalled', label: <Tooltip title="Contact appelé ?"><Box><CallRoundedIcon fontSize='large' /><QuestionMarkIcon /></Box></Tooltip>, minWidth: "5em", },
-    { id: 'hasBeenSentEmailOrMeetUp', label: <Tooltip title="Contact joint par mail ou rencontré ?"><Box><MailIcon /><HandshakeTwoToneIcon /><QuestionMarkIcon /></Box></Tooltip>, minWidth: "6em", },
-    { id: 'comments', label: <Tooltip title="Commentaires"><CommentRoundedIcon fontSize='large' /></Tooltip>, minWidth: "5em", },
-    { id: 'interestGauge', label: <Tooltip title="Niveau d'intéressement"><FavoriteRoundedIcon fontSize='large' /></Tooltip>, minWidth: "5em", },
-    { id: 'filesSentRef', label: <Tooltip title="Fichier(s) associés"><AttachFileRoundedIcon fontSize='large' /></Tooltip>, minWidth: "10em", },
+    { id: 'hasBeenCalled', label: <Tooltip title="Contact appelé ?">
+        <Box>
+            <CallRoundedIcon fontSize='large' /><QuestionMarkIcon />
+        </Box>
+    </Tooltip>, minWidth: "5em", },
+    { id: 'hasBeenSentEmailOrMeetUp', label: <Tooltip title="Contact joint par mail ou rencontré ?">
+        <Box>
+            <MailIcon />
+            <HandshakeTwoToneIcon />
+            <QuestionMarkIcon />
+        </Box>
+    </Tooltip>, minWidth: "6em", },
+    { id: 'comments', label: <Tooltip title="Commentaires">
+        <CommentRoundedIcon fontSize='large' />
+    </Tooltip>, minWidth: "5em", },
+    { id: 'interestGauge', label: <Tooltip title="Niveau d'intéressement">
+        <FavoriteRoundedIcon fontSize='large' />
+    </Tooltip>, minWidth: "5em", },
+    { id: 'filesSentRef', label: <Tooltip title="Fichier(s) associés">
+        <AttachFileRoundedIcon fontSize='large' />
+    </Tooltip>, minWidth: "10em", },
     { id: 'dateOfFirstCall', label: 'Premier appel', minWidth: "9em", },
     { id: 'dateOfLastCall', label: 'Dernier appel', minWidth: "9em", },
     { id: 'contactType', label: 'Type', minWidth: "7em", },
 ];
 
+// Pour le tri des colonnes
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-
     if (typeof orderBy === 'string' && orderBy.includes('date')) {
-    
         // On ne veut pas les date null en premier donc : Si la date est null, on la considère comme étant infiniment grande
         const dateA = a[orderBy] ? (a[orderBy] as Timestamp).toDate().getTime() : Infinity;
         const dateB = b[orderBy] ? (b[orderBy] as Timestamp).toDate().getTime() : Infinity;
 
         return dateB - dateA;
     }
-
     if (b[orderBy] < a[orderBy]) {
         return -1;
     }
@@ -97,6 +111,7 @@ function getComparator<Key extends keyof any>(
         ? (a, b) => descendingComparator(a, b, orderBy)
         : (a, b) => -descendingComparator(a, b, orderBy);
 }
+
 function stableSort(array: Contact[], comparator: (a: any, b: any) => number) {
     const stabilizedThis = array.map((el, index) => [el, index] as [any, number]);
     stabilizedThis.sort((a, b) => {
@@ -114,6 +129,7 @@ interface SortableTableHeaderProps {
     order: Order;
     orderBy: string;
 }
+
 function SortableTableHeader(props: SortableTableHeaderProps) {
     const {
         order, orderBy,
@@ -160,7 +176,6 @@ function SortableTableHeader(props: SortableTableHeaderProps) {
     );
 }
 
-
 type ContactsTableProps = {
     contacts: Contact[],
     currentUserId: string,
@@ -168,15 +183,10 @@ type ContactsTableProps = {
     handleDeleteContact: (id: string) => void
     getPriorityTextAndColor: (priority: number | null) => { text: string, color: string }
 }
+
 const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDeleteContact, getPriorityTextAndColor }: ContactsTableProps) => {
-
-    //console.log("filteredContacts : ", contacts)
-    
-    // A garder si on veut utiliser un contact sélectionné
     //const [selectedContactId, setSelectedContactId] = React.useState("");
-
     const [page, setPage] = React.useState(0);
-    //const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(7);
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof Contact>('businessName');
@@ -188,7 +198,7 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };   
+    };
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -199,14 +209,6 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
         setPage(0);
     };
 
-    // const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     setDense(event.target.checked);
-    // };
-
-    // Avoid a layout jump when reaching the last page with empty rows.
-    // const emptyRows =
-    //     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - contacts.length) : 0;
-
     const visibleRows = React.useMemo(
         () =>
             stableSort(contacts, getComparator(order, orderBy)).slice(
@@ -214,8 +216,8 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
                 page * rowsPerPage + rowsPerPage,
             ),
         [order, orderBy, page, rowsPerPage, contacts],
-    ); 
-   
+    );
+
     return (
         <Paper sx={{ width: '100%', }} elevation={3} >
             <TableContainer
@@ -238,11 +240,6 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
                                 getPriorityTextAndColor={getPriorityTextAndColor}
                             />
                         ))}
-                        {/* {emptyRows > 0 && (
-                            <TableRow style={{ height: 53 * emptyRows }}>
-                                <TableCell colSpan={6} />
-                            </TableRow>
-                        )} */}
                     </TableBody>
                 </Table>
             </TableContainer>
@@ -267,14 +264,7 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
                 showFirstButton
                 showLastButton
             />
-            {/* <FormControlLabel
-                control={<Switch 
-                    checked={dense} 
-                    onChange={handleChangeDense} />}
-                label="Dense padding"
-            /> */}
         </Paper>
-
     );
 }
 

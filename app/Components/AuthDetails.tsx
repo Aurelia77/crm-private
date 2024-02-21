@@ -1,8 +1,8 @@
 import React from 'react'
-import { auth } from './../utils/firebase'
+
+import { auth } from '@/app/utils/firebase'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
-import { Sign } from 'crypto'
-import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material'
+import { Box, IconButton, Tooltip, Typography } from '@mui/material'
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 export default function AuthDetails() {
@@ -17,8 +17,6 @@ export default function AuthDetails() {
 
     const userSignOut = () => {
         signOut(auth).then(() => {
-            //console.log("Déconnexion réussie")
-            // on redirige vers la page d'accueil
             window.location.href = "/"
         }).catch((error) => {
             console.log("Déconnexion échouée", error)

@@ -7,16 +7,10 @@ import listPlugin from '@fullcalendar/list';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import multiMonthPlugin from '@fullcalendar/multimonth'
 import { Box, Typography } from '@mui/material';
-import { title } from 'process';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { useTheme } from '@mui/material/styles';
 import { Timestamp } from 'firebase/firestore';
 import frLocale from '@fullcalendar/core/locales/fr'
-
-import Fade from '@mui/material/Fade';
-import { redirect } from 'next/navigation';
-import { useNavigate } from 'react-router-dom';
-
 
 type CalendarProps = {
   contacts: Contact[];
@@ -25,27 +19,10 @@ type CalendarProps = {
   redirectToContact: (contactId: string) => void;
 };
 
-
 export default function CalendarScheduler({ contacts, setContacts, redirectToContact, updateContactInContactsAndDB }: CalendarProps) {
 
   const calendarRef = React.useRef(null);
-
-  const muiTheme = useTheme(); 
-  //const [shouldRedirect, setShouldRedirect] = React.useState<boolean>(false)
-
-  //console.log("shouldRedirect : ", shouldRedirect)
-
-
-  //const navigate = useNavigate();
-
-  // React.useEffect(() => {
-  //   if (shouldRedirect) {
-  //     setShouldRedirect(false)
-  //     redirect('/')
-  //   }
-  // }, [shouldRedirect])
-
-
+  const muiTheme = useTheme();
   const hightPriorityColor = muiTheme.palette.primary.main
   const mediumPriorityColor = muiTheme.palette.gray.dark
   const lowPriorityColor = muiTheme.palette.error.main
@@ -77,7 +54,7 @@ export default function CalendarScheduler({ contacts, setContacts, redirectToCon
       start: formattedDate,
       end: formattedDate,
     })
-  })   
+  })
 
   React.useEffect(() => {
     if (!calendarRef.current) return;
@@ -92,7 +69,7 @@ export default function CalendarScheduler({ contacts, setContacts, redirectToCon
           duration: { months: 6 }
         },
       },
-      selectable: true, 
+      selectable: true,
       buttonText: {
         resourceTimelineDay: 'Jour',
         timeGridWeek: 'Semaine',
@@ -100,16 +77,16 @@ export default function CalendarScheduler({ contacts, setContacts, redirectToCon
         //yearGrid: 'Année',
         listWeek: 'Liste semaine',
         multiMonthSixMonth: '6 mois'
-      },    
-      editable: true, 
+      },
+      editable: true,
       aspectRatio: 1.8,
-      scrollTime: '00:00', 
+      scrollTime: '00:00',
       headerToolbar: {
         left: 'today prev,next',
         center: 'title',
         right: 'multiMonthSixMonth,resourceTimelineDay,dayGridMonth,listWeek'
-      },   
-      
+      },
+
       events: events.map(event => ({
         ...event,
         color: getPriorityColor(event.contact.priority) ?? "black",
@@ -117,7 +94,7 @@ export default function CalendarScheduler({ contacts, setContacts, redirectToCon
 
         // Pour pouvoir voir le lien en passant la souris ou faire clic droit : ouvrir dans nouvel onglet
         url: `/gestionContacts/contact/${event.contact.id}`,
-        eventContent: function (arg : any) {
+        eventContent: function (arg: any) {
           let anchor = document.createElement('a');
           anchor.href = arg.event.url;
           anchor.target = '_blank';
@@ -125,7 +102,7 @@ export default function CalendarScheduler({ contacts, setContacts, redirectToCon
           arg.el.appendChild(anchor);
           return { html: '' };
         }
-      })),    
+      })),
 
       // Fonctionne mais on pouvait pas voir le lien en passant la souris ou faire clic droit : ouvrir dans nouvel onglet
       // eventClick: function (info) {
@@ -140,22 +117,13 @@ export default function CalendarScheduler({ contacts, setContacts, redirectToCon
 
       eventDrop: function (dropInfo) {
         const { event } = dropInfo;
-        //console.log(event)
         const start = event.start;
         const end = event.end;
-
         const contact = event.extendedProps.contact;
 
         // Mettez à jour l'événement avec les nouvelles dates de début et de fin
-        start && console.log("Event dropped to " + start.toLocaleString());
-        end && console.log("Event dropped to " + end.toLocaleString());
-
         start && updateContactInContactsAndDB(contact.id, { key: "dateOfNextCall", value: Timestamp.fromDate(start) })
-
         start && setContacts(contacts.map(c => c.id === contact.id ? { ...c, dateOfNextCall: Timestamp.fromDate(start) } : c));
-
-        //setContacts([...contacts, {...contact, dateOfNextCall: Timestamp.fromDate(start)}])
-
 
         // // J'essaie de faire que quand on modifie un event, ça reste sur la VUE et la DATE !!! Mais ça revient comme au début !
         // // Sauvegardez la date et la vue actuelles
@@ -170,7 +138,6 @@ export default function CalendarScheduler({ contacts, setContacts, redirectToCon
         // }, 0);
       },
     });
-
     calendar.render();
   }, [events]);
 
@@ -182,7 +149,7 @@ export default function CalendarScheduler({ contacts, setContacts, redirectToCon
       <Typography  >
         Un clic sur un contact pour le visualiser !
       </Typography>
-      <Box sx={{ display: "flex", justifyContent: "space-around", marginTop:"20px" }}>
+      <Box sx={{ display: "flex", justifyContent: "space-around", marginTop: "20px" }}>
         <Typography sx={{ p: 0.3, textAlign: "center", borderRadius: "10px", backgroundColor: hightPriorityColor, color: 'white', width: "20%" }}>
           Priorité Haute
         </Typography>
@@ -202,8 +169,6 @@ export default function CalendarScheduler({ contacts, setContacts, redirectToCon
     ></Box>
 
   </Box>
-
-
 };
 
 

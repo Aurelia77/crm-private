@@ -1,32 +1,28 @@
 'use client'
-
 import React from 'react'
-import { addFakeDataWithCat, 
-  //addLaurianeDataWithCat, addLaurianeDataWithCatx50, 
-  addCategoriesOnFirebaseAndReload, addCategoriesOnFirebase, getFilesFromDatabase, getCategoriesFromDatabase, storage, addFileOnFirebaseDB, addCategorieOnFirebase, updateCategorieOnFirebase, updateFileOnFirebase, deleteCategorieOnFirebase, deleteAllDatasOnFirebaseAndReload, deleteAllMyCatsOnFirebase, handleOpenFile, getAllFirebaseUserDatasAndSave } from '../utils/firebase'
-import { Alert, Box, Divider, ListItemText, Modal, Paper, TextField, Typography } from '@mui/material'
-import { Button, FormControl, InputLabel, MenuItem, Select, Input } from '@mui/material'
+// UTILS
+import { modalStyle, contactCategories } from '../utils/toolbox'
+import {addCategoriesOnFirebase, getFilesFromDatabase, getCategoriesFromDatabase, storage, addFileOnFirebaseDB, addCategorieOnFirebase, updateCategorieOnFirebase, updateFileOnFirebase, deleteCategorieOnFirebase, deleteAllDatasOnFirebaseAndReload, deleteAllMyCatsOnFirebase, handleOpenFile, getAllFirebaseUserDatasAndSave
+} from '@/app/utils/firebase'
+// FIREBASE
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+// MUI Components
+import { Alert, Box, Divider, ListItemText, Modal, TextField, Typography } from '@mui/material'
+import { Button, FormControl, Input } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import LinearProgress from '@mui/material/LinearProgress';
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import List from '@mui/material/List';
 import { useTheme } from '@mui/material/styles';
-import { uid } from 'uid';
-import { modalStyle, contactCategories } from '../utils/toolbox'
-import { useQuery, useMutation, QueryClient, useQueryClient } from '@tanstack/react-query';
-import { redirect } from 'next/navigation'
 
+import { uid } from 'uid';
+import { redirect } from 'next/navigation'
 
 type AdminType = {
   currentUserId: string | undefined
 }
 
 export default function Admin({ currentUserId }: AdminType) {
-
   const [filesList, setFilesList] = React.useState<FileNameAndRefType[] | null>(null);
-
-console.log("filesList", filesList)
-
   const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[] | null>(null);
   const [newFileName, setNewFileName] = React.useState<string | null>(null);
   const [newCatName, setNewCatName] = React.useState<string>("");
@@ -37,42 +33,12 @@ console.log("filesList", filesList)
   const [alertFileText, setAlertFileText] = React.useState("");
   const [alertCatText, setAlertCatText] = React.useState("");
 
-
   const muiTheme = useTheme();
 
-  // const { data: contact, isLoading, isError } = useQuery({
-  //   queryKey: ['contacts', contactId],
-  //   queryFn: () => getContactInfoInDatabaseFromId(contactIdStr),
-  //   enabled: contactIdStr !== undefined,
-  // });
-
-
-  React.useEffect(() => {
-    getFilesFromDatabase(currentUserId).then((files: FileNameAndRefType[]) => {
-      setFilesList(files);
-    });
-
-    getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
-      console.log("categories", categories)
-
-      const newCategoriesList = categories.map(category => ({
-        id: category.id,
-        label: category.label
-      }));
-      setCategoriesList(newCategoriesList);
-    })
-
-  }, [currentUserId]);
-
-  React.useEffect(() => {
-    newCatName && setAlertCatText("")
-
-  }, [newCatName])
-
   const handleChangeInputFile = (e: any) => {
-    console.log(e.target.files[0])
     setNewFileName(e.target.files[0].name)
   }
+
   const handleSubmitFiles = (e: any, attribut: string) => {
     e.preventDefault()
 
@@ -112,7 +78,6 @@ console.log("filesList", filesList)
   }
 
   const handleUpdateFile = () => {
-    console.log("fileToUpdate", fileToUpdateOrDelete)
     if (fileToUpdateOrDelete.fileName === "") {
       setAlertFileText("Le nom du fichier doit contenir au moins un caractère !")
       return
@@ -134,13 +99,10 @@ console.log("filesList", filesList)
 
     addCategorieOnFirebase(currentUserId, newCatWithUpperCase)
     categoriesList && setCategoriesList([...categoriesList, { ...newCatWithUpperCase }]);
-    // setCategoriesList([...categoriesList, newCatWithUpperCase].sort((a, b) => a.localeCompare(b)));
     setNewCatName("");
   }
 
   const handleUpdateCat = () => {
-    console.log("catToUpdate", catToUpdateOrDelete)
-
     if (catToUpdateOrDelete.label === "") {
       setAlertCatText("Le nom de la catégorie doit contenir au moins un caractère !")
       return
@@ -152,8 +114,6 @@ console.log("filesList", filesList)
   }
 
   const handleDeleteCat = () => {
-    console.log("catToUpdate", catToUpdateOrDelete)
-
     deleteCategorieOnFirebase(catToUpdateOrDelete.id)
       .then(() => {
         categoriesList && setCategoriesList([...categoriesList.filter(cat => cat.id !== catToUpdateOrDelete.id)]);
@@ -180,32 +140,38 @@ console.log("filesList", filesList)
   }
 
   const saveAllAndOpenFile = async () => {
-    const url = await saveAll();
-    console.log("url", url)
-
-    // Créer un élément de lien
-    const link = document.createElement('a');
+    const url = await saveAll();    
+    const link = document.createElement('a'); // Crée un élément de lien
     link.href = url;
     link.download = 'data.json'; // Nom du fichier à télécharger
-
-    // Ajouter le lien au document et le cliquer pour déclencher le téléchargement
-    document.body.appendChild(link);
+    
+    document.body.appendChild(link);// Ajoute le lien au document et le cliquer pour déclencher le téléchargement
     link.click();
-
-    // Supprimer le lien du document
-    document.body.removeChild(link);
-  }  
+    
+    document.body.removeChild(link);// Supprime le lien du document
+  }
 
   const deleteMyCats = () => {
     deleteAllMyCatsOnFirebase(currentUserId)
     setCategoriesList([])
   }
 
-  const addCategoriesOnFirebaseAndState = (currentUserId: string | undefined) => {
-    addCategoriesOnFirebase(currentUserId);
-    setCategoriesList(contactCategories);
-  }
+  React.useEffect(() => {
+    getFilesFromDatabase(currentUserId).then((files: FileNameAndRefType[]) => {
+      setFilesList(files);
+    });
+    getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
+      const newCategoriesList = categories.map(category => ({
+        id: category.id,
+        label: category.label
+      }));
+      setCategoriesList(newCategoriesList);
+    })
+  }, [currentUserId]);
 
+  React.useEffect(() => {
+    newCatName && setAlertCatText("")
+  }, [newCatName]) 
 
   return (
     currentUserId
@@ -232,22 +198,22 @@ console.log("filesList", filesList)
                     }}
                   >Aucun fichier pour l'instant</ListItemText>
                   : filesList
-                  .sort((a, b) => a.fileName.localeCompare(b.fileName))
-                  .map((file, index) => (
-                    <ListItemText
-                      key={index}
-                      onDoubleClick={() => handleOpenFile(file.fileRef)}
-                      onClick={() => setFileToUpdateOrDelete({ fileName: file.fileName, fileRef: file.fileRef })}
-                      sx={{
-                        cursor: "pointer",
-                        backgroundColor: index % 2 === 0 ? muiTheme.palette.lightCyan.light : '',
-                        color: index % 2 === 1 ? muiTheme.palette.primary.dark : '',
-                        pl: 1,
-                      }}
-                    >
-                      {file.fileName}
-                    </ListItemText>
-                  ))}
+                    .sort((a, b) => a.fileName.localeCompare(b.fileName))
+                    .map((file, index) => (
+                      <ListItemText
+                        key={index}
+                        onDoubleClick={() => handleOpenFile(file.fileRef)}
+                        onClick={() => setFileToUpdateOrDelete({ fileName: file.fileName, fileRef: file.fileRef })}
+                        sx={{
+                          cursor: "pointer",
+                          backgroundColor: index % 2 === 0 ? muiTheme.palette.lightCyan.light : '',
+                          color: index % 2 === 1 ? muiTheme.palette.primary.dark : '',
+                          pl: 1,
+                        }}
+                      >
+                        {file.fileName}
+                      </ListItemText>
+                    ))}
               </List>
 
               <Box sx={{ width: "48%" }} >
@@ -328,10 +294,9 @@ console.log("filesList", filesList)
 
           <Divider />
 
-          {categoriesList && <Box
-            m={5}
-          >
-            <Typography variant="h6">Mes catégories ({categoriesList.length}) {categoriesList.length > 0 && <span style={{ color: 'gray', fontSize: "0.8em" }}>(cliquer pour modifier)</span>}
+          {categoriesList && <Box m={5} >
+            <Typography variant="h6">
+              Mes catégories ({categoriesList.length}) {categoriesList.length > 0 && <span style={{ color: 'gray', fontSize: "0.8em" }}>(cliquer pour modifier)</span>}
             </Typography>
             <Box sx={{ display: "flex", justifyContent: "space-between", gap: "2%", mt: 2, }} >
               <List
@@ -349,23 +314,25 @@ console.log("filesList", filesList)
                       color: "grey",
                       pl: 1,
                     }}
-                  >Aucune catégorie pour l'instant</ListItemText>
+                  >
+                    Aucune catégorie pour l'instant
+                  </ListItemText>
                   : categoriesList
-                  .sort((a, b) => a.label.localeCompare(b.label))
-                  .map((cat, index) => (
-                    <ListItemText
-                      key={index}
-                      sx={{
-                        cursor: "pointer",
-                        backgroundColor: index % 2 === 0 ? muiTheme.palette.lightCyan.light : '',
-                        color: index % 2 === 1 ? muiTheme.palette.primary.dark : '',
-                        pl: 1,
-                      }}
-                      onClick={() => setCatToUpdateOrDelete(cat)}
-                    >
-                      {cat.label}
-                    </ListItemText>
-                  ))}
+                    .sort((a, b) => a.label.localeCompare(b.label))
+                    .map((cat, index) => (
+                      <ListItemText
+                        key={index}
+                        sx={{
+                          cursor: "pointer",
+                          backgroundColor: index % 2 === 0 ? muiTheme.palette.lightCyan.light : '',
+                          color: index % 2 === 1 ? muiTheme.palette.primary.dark : '',
+                          pl: 1,
+                        }}
+                        onClick={() => setCatToUpdateOrDelete(cat)}
+                      >
+                        {cat.label}
+                      </ListItemText>
+                    ))}
               </List>
 
               <Box sx={{ width: "48%" }}  >
@@ -375,8 +342,8 @@ console.log("filesList", filesList)
                     flexDirection: "row",
                     justifyContent: "space-between",
                     gap: "2%",
-                    //alignItems: ""
-                  }} >
+                  }} 
+                >
                   <TextField
                     value={newCatName}
                     autoComplete="off"
@@ -437,7 +404,7 @@ console.log("filesList", filesList)
                   </Button>
                   <Modal
                     open={openDeleteCatModal}
-                    //onClose={() => setOpenDeleteCatModal(false)}
+                  //onClose={() => setOpenDeleteCatModal(false)}
                   >
                     <Box sx={modalStyle} >
                       <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 5, textOverflow: "clip", whiteSpace: "normal" }} >
@@ -456,32 +423,22 @@ console.log("filesList", filesList)
             </Box>
           </Box>}
         </Box>
+
         <Box sx={{
           padding: "10px", border: "solid 3px blue", borderRadius: "10px", marginTop: "100px", width: "calc(100vw - 200px)"
         }}>
           <Box sx={{ display: "flex", justifyContent: "space-around", marginBottom: "20px" }} >
-            {/* <Button 
-              variant="contained" 
-              color='success' 
-              // onClick={() => {addCategoriesOnFirebaseAndReload(currentUserId)}}>
-              onClick={() => {addCategoriesOnFirebaseAndState(currentUserId)}}>
-              1-Ajouter Catégories
-            </Button>
-            <Button variant="contained" color='ochre' onClick={() => addFakeDataWithCat(currentUserId)}>
-              2-Ajouter Contacts Test (x7)
-            </Button> */}
-
-            {/* <Button variant="contained" color='warning' onClick={() => addLaurianeDataWithCat(currentUserId)}>2-Ajouter Contacts LAURIANE (x 307)</Button>
-            <Button variant="contained" color='info' onClick={() => addLaurianeDataWithCatx50(currentUserId)}>2-Ajouter Contacts LAURIANE (x 50)</Button> */}
             <Button variant="contained" onClick={saveAllAndOpenFile}>Sauvegarder TOUTES mes données</Button>
-            {/* <a href={url} download="data.json">Télécharger les données</a> */}
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-around", }} >
             <Button variant="contained" color='error' sx={{ width: "300px" }} onClick={() => deleteAllDatasOnFirebaseAndReload(currentUserId)
-              }>Supprimer tous mes contacts</Button>
+            }>
+              Supprimer tous mes contacts
+            </Button>
             <Button variant="contained" color='warning' sx={{ width: "300px" }} onClick={() => deleteMyCats()
-              }>Supprimer toutes mes catégories</Button>
-            {/* !!!!!!!SUPPRIME TOUT!!!!!!!!! <Button variant="contained" color='warning' onClick={() => deleteAllDatasOnFirebaseAndReload()}>Supprimer TOUS les contacts de l'appli !!!</Button> */}
+            }>
+              Supprimer toutes mes catégories
+            </Button>
           </Box>
         </Box>
       </Box>

@@ -1,4 +1,4 @@
-import { ThemeProvider, createTheme, PaletteOptions } from "@mui/material/styles";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { cyan, grey, pink, yellow, deepOrange, lightGreen, green, teal, lime, purple } from "@mui/material/colors";
 
 // Pour ajouter une nouvelle couleur à la palette
@@ -31,11 +31,10 @@ declare module '@mui/material/Button' {
 
 export default function MuiProviders({ children }: { children: React.ReactNode }) {
     const muiTheme = createTheme({    // Tout ce qu'on ne redéfinit pas reste par défaut
-        palette: {
-            // Généralement PRIMARY = bleu et SECONDARY = rose
+        palette: { // Généralement PRIMARY = bleu et SECONDARY = rose
             primary: cyan,
             secondary: deepOrange,
-            success: green, 
+            success: green,
             ochre: {
                 main: '#E3D026',
                 light: '#E9DB5D',
@@ -76,7 +75,6 @@ export default function MuiProviders({ children }: { children: React.ReactNode }
                     },
                 }
             },
-
             MuiTextField: {
                 defaultProps: {
                     variant: "standard",
@@ -85,14 +83,14 @@ export default function MuiProviders({ children }: { children: React.ReactNode }
                     }
                 },
                 styleOverrides: {
-                    "root": {    
+                    "root": {
                         "& .MuiInputBase-input": {
                             overflow: "hidden",
                             textOverflow: "ellipsis",   // Ajout de 3 ... à la fin du texte si il est trop long
                         },
                     },
                 }
-            },          
+            },
             MuiButton: {
                 defaultProps: {
                     style: {
@@ -101,25 +99,21 @@ export default function MuiProviders({ children }: { children: React.ReactNode }
                 },
             },
         },
-           });
+    });
 
-  
     muiTheme.typography.h3 = {
-        [muiTheme.breakpoints.up('xs')]: {   
+        [muiTheme.breakpoints.up('xs')]: {
             fontSize: '1.8rem',
             display: 'none'
         },
-        [muiTheme.breakpoints.up('sm')]: { 
+        [muiTheme.breakpoints.up('sm')]: {
             fontSize: '2rem',
             overflow: 'auto',   // ajoute un scroll si on voit pas tout
             display: 'inline'
         },
-        [muiTheme.breakpoints.up('md')]: {      // md = 900px
+        [muiTheme.breakpoints.up('md')]: { 
             fontSize: '2.4rem',
-        },
-        // [muiTheme.breakpoints.up('lg')]: {
-        //   fontSize: '3rem',
-        // },  
+        }, 
     };
     return (
         <ThemeProvider theme={muiTheme}>

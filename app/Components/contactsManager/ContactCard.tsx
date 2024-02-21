@@ -1,37 +1,28 @@
 'use client'
-
 import React from 'react'
 
+// UTILS
+import { contactTypes, commentsOptions, isDatePassed, isDateSoon, modalStyle } from '@/app/utils/toolbox'
+import { storage, addFileOnFirebaseDB, getCategoriesFromDatabase, getFileNameFromRef, handleOpenFile, getFilesFromDatabase } from '@/app/utils/firebase'
+import { StyledRating, StyledRatingStars, IconContainer, customIcons, useRightMailIcon, useIconUtilities, useHandleClickHasBeenCalledAndHasBeenSentEmailOrMeetUp, TabPanel } from '@/app/utils/StyledComponentsAndUtilities';
+// FIREBASE
+import { Timestamp } from 'firebase/firestore';
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+// MUI Components
 import Card from '@mui/material/Card';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import Divider from '@mui/material/Divider';
-import Switch from '@mui/material/Switch';
-import Edit from '@mui/icons-material/Edit';
-import LocationOn from '@mui/icons-material/LocationOn';
-import { grey } from '@mui/material/colors';
-import Image from 'next/image'
-import { TextField, Stack, Button, FormControl, InputLabel, MenuItem, Autocomplete, Chip, ListItem, List, OutlinedInput, Checkbox, ListItemText, FormControlLabel, Tooltip, Modal, Rating, Link, InputAdornment, Alert } from '@mui/material'
+import { TextField, Button, FormControl, InputLabel, MenuItem, Tooltip, Modal, Link, Alert } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { contactTypes, emptyContact } from '../../utils/toolbox'
-import dayjs, { Dayjs } from 'dayjs';       // npm install dayjs
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import ClearIcon from '@mui/icons-material/Clear';
-import { Timestamp } from 'firebase/firestore';
 import { useTheme } from '@mui/material/styles';
-import { storage, addFileOnFirebaseDB, getCategoriesFromDatabase, getFileNameFromRef } from '../../utils/firebase'
-
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import LinearProgress from '@mui/material/LinearProgress';
 import { Input } from '@mui/material';
-import { handleOpenFile } from '../../utils/firebase'
 import { Tab, Tabs } from '@mui/material';
-import { TabPanel } from '../../utils/StyledComponentsAndUtilities';
-import { getFilesFromDatabase } from '../../utils/firebase'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddIcon from '@mui/icons-material/Add';
@@ -39,51 +30,13 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import MailIcon from '@mui/icons-material/Mail';
-import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
 import LanguageIcon from '@mui/icons-material/Language';
-import PsychologyAlt from '@mui/icons-material/PsychologyAlt';
-import { StyledRating, StyledRatingStars, IconContainer, customIcons, useRightMailIcon, useIconUtilities, useHandleClickHasBeenCalledAndHasBeenSentEmailOrMeetUp  } from '@/app/utils/StyledComponentsAndUtilities';
-
 import SettingsIcon from '@mui/icons-material/Settings';
 import CallRoundedIcon from '@mui/icons-material/CallRounded';
 
-import Zoom from '@mui/material/Zoom';
-
-import { isDatePassed, isDateSoon, modalStyle } from '../../utils/toolbox'
-import { truncate } from 'fs';
-import { useNavigate, useLocation, useBlocker } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query'
-
+import dayjs, { Dayjs } from 'dayjs'; 
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; 
-
-const modules = {
-    toolbar: [
-        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-        ['blockquote', 'code-block'],
-
-        [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
-        [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
-        //[{ 'direction': 'rtl' }],                         // text direction
-
-        [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-
-        [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-        [{ 'font': [] }],
-        //[{ 'font': ['comic-sans-ms', 'arial', 'courier-new', 'georgia', 'helvetica', 'lucida'] }],
-
-        [{ 'align': [] }],
-
-        ['clean'],                                         // remove formatting button
-
-        ['link', 'image', 'video']                         // link and image, video
-    ],
-};
+import 'react-quill/dist/quill.snow.css';
 
 type ContactCardProps = {
     contact: Contact
@@ -98,47 +51,29 @@ type ContactCardProps = {
 export default function ContactCard({ contact, currentUserId, getPriorityTextAndColor, setAreContactChangesSaved, handleDeleteContact, addContact, updateContact,
 }: ContactCardProps) {
 
-    //console.log("contact ContactCard : ", contact)
-
-    const [contactToAddOrUpdate, setContactToAddOrUpdate] = React.useState<Contact>(contact)    
+    const [contactToAddOrUpdate, setContactToAddOrUpdate] = React.useState<Contact>(contact)
     const [contactFilesWithNames, setContactFilesWithNames] = React.useState<FileNameAndRefType[]>([])
     const [tabValue, setTabValue] = React.useState<number>(0);
-    const [logoChoosen, setIsLogoChoosen] = React.useState(false);  
-    
-    // console.log("contactToAddOrUpdate : ", contactToAddOrUpdate)
-    // console.log("hasBeenCalled : ", contactToAddOrUpdate.hasBeenCalled)
-    // console.log("hasBeenSentEmailOrMeetUp : ", contactToAddOrUpdate.hasBeenSentEmailOrMeetUp)
-
-
-    const muiTheme = useTheme();
-
-    const inputFileRef = React.useRef<HTMLInputElement>(null);
-
+    const [logoChoosen, setIsLogoChoosen] = React.useState(false);
     const [progresspercentLogo, setProgresspercentLogo] = React.useState(0);
     const [progresspercentFile, setProgresspercentFile] = React.useState(0);
     const [filesFirebaseArray, setFilesFirebaseArray] = React.useState<FileNameAndRefType[]>([])
     const [firebaseFileSelected, setFirebaseFileSelected] = React.useState<FileNameAndRefType>({ fileName: "", fileRef: "" })
-
-    //console.log("firebaseFileSelected", firebaseFileSelected)
-
     const [newFileName, setNewFileName] = React.useState<string | null>(null);
-
     const [categoriesList, setCategoriesList] = React.useState<ContactCategorieType[] | null>(null);
-
     const [openDeleteContactModal, setOpenDeleteContactModal] = React.useState(false);
     const [openDeleteContactFileModal, setOpenDeleteContactFileModal] = React.useState(false);
     const [openDeleteContactFilesModal, setOpenDeleteContactFilesModal] = React.useState(false);
     const [openContactIsUpdatedModal, setOpenContactIsUpdatedModal] = React.useState(false);
-
     const [alertFileText, setAlertFileText] = React.useState("");
 
-   
+    const inputFileRef = React.useRef<HTMLInputElement>(null);
 
-    const RightMailIcon = useRightMailIcon();    
-    const { getPhoneIconColor, getEmailIconColor, getEmailIconText, getPhoneIconText } = useIconUtilities(); 
-    
+    const RightMailIcon = useRightMailIcon();
+    const { getPhoneIconColor, getEmailIconColor, getEmailIconText, getPhoneIconText } = useIconUtilities();
     const { handleClickHasBeenCalled, handleClickhasBeenSentEmailOrMeetUp } = useHandleClickHasBeenCalledAndHasBeenSentEmailOrMeetUp(contactToAddOrUpdate, undefined, setContactToAddOrUpdate);
-
+    const muiTheme = useTheme();
+    
     const handleClickDeleteContact = () => {
         handleDeleteContact && handleDeleteContact(contact.id)
     }
@@ -146,7 +81,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     const handleChangeExistingFile = (e: any) => {
         const selectedFileRef = e.target.value;
         const selectedFile = filesFirebaseArray.find(file => file.fileRef === selectedFileRef);
-
         setFirebaseFileSelected({ fileName: selectedFile?.fileName ?? "", fileRef: selectedFileRef })
     }
 
@@ -154,57 +88,25 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         setAreContactChangesSaved(true)
         updateContact && updateContact(contactToAddOrUpdate)
         setOpenContactIsUpdatedModal(true)
-    } 
-
-    // React.useEffect(() => {
-    //     setContactToAddOrUpdate(contact)
-    // },[contact])
-
-
-
-    React.useEffect(() => {
-
-        getFilesFromDatabase(currentUserId).then((filesList) => {
-            setFilesFirebaseArray(filesList)
-        });
-
-        getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
-            const newCategoriesList = categories.map(category => ({
-                id: category.id,
-                label: category.label
-            }));
-            setCategoriesList(newCategoriesList);
-        })
-    }, [currentUserId]);
-
-  
-    React.useEffect(() => {
-        console.log("****Comparaison des contacts")
-        console.log("contactToAddOrUpdate === contact",JSON.stringify(contact) === JSON.stringify(contactToAddOrUpdate))
-        JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && console.log("****CHANGE")
-
-        JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && setAreContactChangesSaved(false)
-    }, [contactToAddOrUpdate, contact, setAreContactChangesSaved])
-   
+    }
 
     const handleChangeText = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, attribut: keyof Contact) => {
         setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: event.target.value })
     }
-    // const handleChangeComment = (attribut: keyof Contact) => (content: string) => {
-    //     setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: content });
-    // }
+
     const handleChangeCommentReactQuill = (content: string) => {
         setContactToAddOrUpdate({ ...contactToAddOrUpdate, comments: content });
-    } 
+    }
 
     const handleChangeSelect = (event: SelectChangeEvent, attribut: keyof Contact) => {
-        const type: string = event.target.value as string  
+        const type: string = event.target.value as string
         setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: type })
-    };
+    }
+
     const handleChangeInputFile = (e: any) => {
-        console.log(e.target.files[0])
         setNewFileName(e.target.files[0].name)
     }
+
     const handleSubmitFiles = (e: any, attribut: string) => {
         e.preventDefault()
 
@@ -215,11 +117,11 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
         setAlertFileText("")
 
         const file = e.target.elements[0].files[0]
+        if (!file) return
 
-        if (!file) return;
-        const storageRef = ref(storage, `${attribut}/${file.name}`);
+        const storageRef = ref(storage, `${attribut}/${file.name}`)
 
-        const uploadTask = uploadBytesResumable(storageRef, file);
+        const uploadTask = uploadBytesResumable(storageRef, file)
 
         uploadTask.on("state_changed",
             (snapshot) => {
@@ -234,18 +136,13 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                     addFileOnFirebaseDB(currentUserId, { fileName: newFileName || "", fileRef: downloadURL })
-                    // addFileOnFirebaseDB(currentUserId, { fileName: file.name, fileRef: downloadURL })
-
-                    //console.log("downloadURL", downloadURL)
 
                     if (attribut === "logo") {
                         setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: downloadURL })
                         setIsLogoChoosen(false)
                         setProgresspercentLogo(0)
                     } else {
-                        //setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: [...contactToAddOrUpdate.filesSentRef, { fileName: newFileName, fileRef: downloadURL }] })
                         setContactToAddOrUpdate({ ...contactToAddOrUpdate, [attribut]: contactToAddOrUpdate.filesSentRef.concat(downloadURL) })
-
                         setProgresspercentFile(0)
                         setNewFileName(null);
                     }
@@ -260,18 +157,11 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     }
 
     const handleAddSelectFirebaseFileToContact = () => {
-
-        console.log(contactToAddOrUpdate.filesSentRef)
-        console.log(contactToAddOrUpdate.filesSentRef.concat(firebaseFileSelected.fileRef))
-
         setContactToAddOrUpdate({ ...contactToAddOrUpdate, filesSentRef: contactToAddOrUpdate.filesSentRef.concat(firebaseFileSelected.fileRef) })
-
         setFirebaseFileSelected({ fileName: "", fileRef: "" })
     }
 
     const removeFile = (fileRef: string) => {
-        // console.log(file.fileRef)
-        // console.log(file.fileName)
         setContactToAddOrUpdate({ ...contactToAddOrUpdate, filesSentRef: contactToAddOrUpdate.filesSentRef.filter((oneFile: string) => oneFile !== fileRef) })
         setOpenDeleteContactFileModal(false)
     }
@@ -281,64 +171,34 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
     }
 
     React.useEffect(() => {
+        getFilesFromDatabase(currentUserId).then((filesList) => {
+            setFilesFirebaseArray(filesList)
+        });
+        getCategoriesFromDatabase(currentUserId).then((categories: ContactCategorieType[]) => {
+            const newCategoriesList = categories.map(category => ({
+                id: category.id,
+                label: category.label
+            }));
+            setCategoriesList(newCategoriesList);
+        })
+    }, [currentUserId]);
+
+    React.useEffect(() => {
+        JSON.stringify(contact) !== JSON.stringify(contactToAddOrUpdate) && setAreContactChangesSaved(false)
+    }, [contactToAddOrUpdate, contact, setAreContactChangesSaved])
+
+    React.useEffect(() => {
         const fetchFileNames = async () => {
-            const filesWithNames : any = await Promise.all(
+            const filesWithNames: any = await Promise.all(
                 contactToAddOrUpdate.filesSentRef.map(async (fileRef: string) => {
-                    const fileName : any = await getFileNameFromRef(fileRef);
+                    const fileName: any = await getFileNameFromRef(fileRef);
                     return { fileName, fileRef };
                 })
             );
-
             setContactFilesWithNames(filesWithNames);
         };
-
         fetchFileNames();
-
-        // setContactFilesWithNames(contactToAddOrUpdate.filesSentRef.map((fileRef: string) => ({
-        //     fileName: getFileNameFromRef(fileRef),
-        //     fileRef: fileRef
-        // })))
     }, [contactToAddOrUpdate.filesSentRef])
-     
-
-
-    // const location = useLocation();
-    // console.log("location : ", location)
-    // console.log("location.pathname : ", location.pathname)
-
-    // React.useEffect(() => {
-    //     // execute on location change
-    //     console.log('Location changed!', location.pathname);
-    //     alert("!!!!!!!!!")
-    // }, [location]);
-
-    // const [hasUnsavedChanges, setHasUnsavedChanges] = React.useState(false);
-    // const navigate = useNavigate();
-    // const location = useLocation();
-
-    // const handleNavigation = (path: any) => {
-    //     if (
-    //         //hasUnsavedChanges && 
-    //         !window.confirm('Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir quitter cette page ?')) {
-    //         return;
-    //     }
-
-    //     navigate(path);
-    // };
-
-    // React.useEffect(() => {
-    //     // execute on location change
-    //     console.log('Location changed!', location.pathname);
-    //     //if (hasUnsavedChanges) {
-    //         handleNavigation(location.pathname);
-    //         //alert("Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir quitter cette page ?");
-    //     //}
-    // }, [location, ]);
-
-
-
-
-
 
     return (
         <Card key={contact.id} elevation={3}
@@ -347,9 +207,9 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                 position: "relative",
                 padding: "2% 4%",
                 bgcolor: getPriorityTextAndColor(contactToAddOrUpdate.priority).bgColor,
-                height: "100%", 
-            }}     
-        >            
+                height: "100%",
+            }}
+        >
             <Box
                 sx={{
                     display: 'flex',
@@ -371,7 +231,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     >
                         <Tooltip arrow title={`${contactToAddOrUpdate.isClient ? "Client" : "Prospect"} (Cliquer pour changer)`}>
                             {contactToAddOrUpdate.isClient
-                                ? <HandshakeOutlinedIcon color='success' //fontSize='large' 
+                                ? <HandshakeOutlinedIcon color='success' 
                                     sx={{ width: 60, height: 60 }}
                                 />
                                 : <PsychologyAltIcon
@@ -379,12 +239,10 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         color: muiTheme.palette.gray.main,
                                         width: 60, height: 60,
                                     }}
-                                //fontSize='large' 
                                 />
                             }
                         </Tooltip>
                     </Box>
-                    
 
                     {/* ////////////// SMILEYS */}
                     <Box
@@ -397,7 +255,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             sx={{
                                 position: 'relative',
                             }}
-                        >                            
+                        >
                             <StyledRating
                                 sx={{
                                     alignItems: 'center',
@@ -416,8 +274,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         sx={{
                             width: "auto"
                         }}
-                    >          
-                        <Box>                           
+                    >
+                        <Box>
                             <StyledRatingStars
                                 sx={{ fontSize: '3rem' }}
                                 value={contactToAddOrUpdate.priority ?? 0}
@@ -436,7 +294,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     {/* ///////// CAT */}
                     <FormControl sx={{ width: "auto", backgroundColor: muiTheme.palette.primary.main, borderRadius: "50px" }} >
                         <InputLabel id="checkbox-type-label" sx={{ marginLeft: '20px', fontSize: "1.3rem" }} >Catégorie</InputLabel>
-                      {categoriesList &&  <Select
+                        {categoriesList && <Select
                             sx={{
                                 color: 'white',
                                 textAlign: 'center',
@@ -482,7 +340,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             value={contactToAddOrUpdate.contactType}
                             onChange={(e) => handleChangeSelect(e, "contactType")}
                             variant="standard"
-                            disableUnderline={true} 
+                            disableUnderline={true}
                         >
                             {contactTypes.map((type) => (
                                 <MenuItem key={type} value={type}>{type}</MenuItem>
@@ -497,25 +355,19 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             component="div"
                             sx={{ color: "text.secondary" }}
                         >
-                            {/* {contactToAddOrUpdate.filesSentRef.map((fileRef, index) => ( */}
                             {contactFilesWithNames.map((file, index) => (
                                 <Box key={index} sx={{ display: "flex", alignItems: "center" }} >
                                     <ArrowRightIcon sx={{ color: "text.secondary" }} />
                                     <Button
                                         onClick={() => handleOpenFile(file)}
                                     >
-                                        {/* {index + 1} - {fileRef}  */}
-                                        {/* {index + 1} - {getFileNameFromRef(file)}  */}
-                                        {index + 1} - {file.fileName} 
-
-
-                                        {/* <br /> */}
+                                        {index + 1} - {file.fileName}
                                     </Button>
                                     <Tooltip title="Désassocier ce fichier du contact">
                                         <IconButton
                                             size="small"
                                             color="error"
-                                            onClick={() => setOpenDeleteContactFileModal(true)}  //removeFile(file.fileRef)}
+                                            onClick={() => setOpenDeleteContactFileModal(true)} 
                                         >
                                             <ClearIcon />
                                         </IconButton>
@@ -526,13 +378,11 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     </Box>
                 </Box>
 
-
                 {/* ///////// LOGO et NOM + dates + Boutons TELECHARGEMENT fichier LOGO et SMILEYS  ///////// */}
                 <Box>
                     {/* ///////// LOGO et NOM + dates  ///////// */}
                     <Box sx={{
                         display: 'flex', justifyContent: "space-between"
-                        //alignItems: 'center', gap: 2, 
                     }}>
                         {/* ///////// LOGO  */}
                         <Box sx={{ width: "15%", mb: "auto", aspectRatio: "1/1" }} >
@@ -575,37 +425,32 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                             <LinearProgress variant="determinate" value={progresspercentLogo} sx={{ marginTop: "10px" }} />
                                         </Box>
                                     }
-
                                 </form>
 
                                 {contactToAddOrUpdate.logo && <Button variant="contained" color="error" sx={{
                                     margin: "auto"
-                                }} onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, logo: "" })} >Supprimer logo</Button>}
+                                }} onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, logo: "" })} >
+                                    Supprimer logo
+                                </Button>}
                             </Box>
                         </Box>
 
                         {/* ///////// NOM, tel, mail et DATES */}
                         <Box sx={{ width: "80%" }} >
-
                             {/* ///////// NOM, tel, mail */}
                             <Box>
                                 <TextField
                                     sx={{ width: "100%" }}
                                     //required
                                     id="outlined-basic"
-                                    //label="Nom"
                                     value={contactToAddOrUpdate.businessName}
                                     label={contactToAddOrUpdate.businessName ? "" : "Nom du contact"}
                                     InputLabelProps={{
                                         style: { fontSize: "1.5rem", marginLeft: "40%" },
                                     }}
-                                    //onChange={(event) => setContactToAddOrUpdate({ ...contactToAddOrUpdate, businessName: event.target.value }) }
-
                                     onChange={(e) => handleChangeText(e, "businessName")}
-
                                     inputProps={{
                                         style: {
-                                            //color: muiTheme.palette.primary.dark, 
                                             color: getPriorityTextAndColor(contactToAddOrUpdate.priority).color,
                                             fontSize: "2.5em",
                                             fontWeight: "bold",
@@ -616,10 +461,9 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     InputProps={{
                                         startAdornment: contactToAddOrUpdate.businessName.length === 0 && <span style={{ fontSize: "2.5em", marginLeft: "40%" }}>... </span>,
                                         disableUnderline: true
-                                        //contactToAddOrUpdate.businessName.length > 0,
                                     }}
                                 />
-                                <Box sx={{display: "flex", justifyContent: "space-around", mt: 2 }} >
+                                <Box sx={{ display: "flex", justifyContent: "space-around", mt: 2 }} >
                                     <Avatar
                                         sx={{ bgcolor: getPhoneIconColor(contactToAddOrUpdate.hasBeenCalled), border: `4px solid ${getPhoneIconColor(contactToAddOrUpdate.hasBeenCalled)}`, }}
                                     >
@@ -648,7 +492,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 </Box>
                             </Box>
 
-
                             {/* ///////// DATES ///////// */}
                             <Box sx={{ display: 'flex', justifyContent: "space-around", mt: 8 }} >
                                 {/* ///////// 1er APPEL */}
@@ -656,11 +499,10 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     <Box sx={{
                                         display: "flex",
                                         justifyContent: "space-between",
-                                        //marginBottom: "10px"
                                     }}>
                                         <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}>PREMIER appel</Typography>
                                         <Tooltip title="Supprimer la date" placement='top' >
-                                            <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
+                                            <IconButton color="primary" sx={{ padding: 0 }} // Car les boutons ont automatiquement un padding
                                                 onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, dateOfFirstCall: null })} >
                                                 <ClearIcon />
                                             </IconButton>
@@ -685,7 +527,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     }}>
                                         <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}>DERNIER appel</Typography>
                                         <Tooltip title="Supprimer la date" placement='top' >
-                                            <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
+                                            <IconButton color="primary" sx={{ padding: 0 }} 
                                                 onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, dateOfLastCall: null })} >
                                                 <ClearIcon />
                                             </IconButton>
@@ -709,7 +551,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     border: "solid 5px darkRed",
                                     borderRadius: "10px",
                                     p: 1,
-                                    //padding:0,
                                     backgroundColor: isDatePassed(contactToAddOrUpdate.dateOfNextCall)
                                         ? muiTheme.palette.warning.light
                                         : isDateSoon(contactToAddOrUpdate.dateOfNextCall)
@@ -721,11 +562,10 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         display: "flex",
                                         justifyContent: "space-between",
                                         marginBottom: "10px",
-                                    }}> {/* Sinon on pouvait mettre un float:right sur le bouton ci-dessous */}
-                                        {/* <NotificationsNoneOutlinedIcon sx={{ color: pink[800] }} /> */}
+                                    }}> 
                                         <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, color: "darkRed", fontWeight: "bold" }}>RELANCE</Typography>
                                         <Tooltip title="Supprimer la date" placement='top' >
-                                            <IconButton color="primary" sx={{ padding: 0 }}       // Car les boutons ont automatiquement un padding
+                                            <IconButton color="primary" sx={{ padding: 0 }} 
                                                 onClick={() => setContactToAddOrUpdate({ ...contactToAddOrUpdate, dateOfNextCall: null })} >
                                                 <ClearIcon />
                                             </IconButton>
@@ -757,9 +597,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     {/* ///////// NOM Contact, POSITION, VILLE et ADRESSE ///////// */}
                     <Box
                         sx={{
-                            width: "48%",
-                            // width: contactToAddOrUpdate.comments.length > 0 ? "48%" : "76%",
-                            display: 'flex', justifyContent: "space-between", gap: "4%"
+                            width: "48%", display: 'flex', justifyContent: "space-between", gap: "4%"
                         }}
                     >
                         <Box sx={{ display: 'flex', flexDirection: "column", justifyContent: "space-between", gap: "15px", width: "48%" }} >
@@ -796,7 +634,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 onChange={(e) => handleChangeText(e, "contactEmail")}
                                 sx={{ backgroundColor: muiTheme.palette.pink.main }}
                                 InputProps={{
-                                    startAdornment: contactToAddOrUpdate.contactEmail && <Link href={`mailto:${contactToAddOrUpdate.contactEmail}`} underline="none" //color="inherit"                                       
+                                    startAdornment: contactToAddOrUpdate.contactEmail && <Link href={`mailto:${contactToAddOrUpdate.contactEmail}`} underline="none" 
                                         target="_blank"
                                         sx={{
                                             mr: 1,
@@ -831,10 +669,8 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     startAdornment: contactToAddOrUpdate.businessWebsite && <Link
                                         href={contactToAddOrUpdate.businessWebsite}
                                         target="_blank"
-                                        underline="none" 
-                                        sx={{
-                                            mr: 1,
-                                        }}
+                                        underline="none"
+                                        sx={{ mr: 1 }}
                                     >
                                         <LanguageIcon style={{ color: muiTheme.palette.gray.dark }} />
                                     </Link>
@@ -852,11 +688,9 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                 value={contactToAddOrUpdate.businessEmail}
                                 onChange={(e) => handleChangeText(e, "businessEmail")}
                                 InputProps={{
-                                    startAdornment: contactToAddOrUpdate.businessEmail && <Link href={`mailto:${contactToAddOrUpdate.businessEmail}`} underline="none" 
+                                    startAdornment: contactToAddOrUpdate.businessEmail && <Link href={`mailto:${contactToAddOrUpdate.businessEmail}`} underline="none"
                                         target="_blank"
-                                        sx={{
-                                            mr: 1,
-                                        }}
+                                        sx={{ mr: 1 }}
                                     >
                                         <MailIcon color="secondary" />
                                     </Link>
@@ -866,9 +700,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     </Box>
 
                     {/* ///////// COMMENTAIRES ///////// */}
-                    {/* <label htmlFor="comments-editor" style={{ display: 'block', marginBottom: '1rem' }}>
-                        Commentaire
-                    </label> */}
                     <ReactQuill
                         id="comments-editor"
                         style={{
@@ -879,56 +710,34 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',
                             padding: '1rem'
                         }}
-                        modules={modules}
+                        modules={commentsOptions}
                         value={contactToAddOrUpdate.comments}
                         onChange={(content: string) => handleChangeCommentReactQuill(content)}
                     />
-                    {/* <TextField
-                        sx={{
-                            width: contactToAddOrUpdate.comments.length > 0 ? "48%" : "10%",
-                            overflow: 'auto',
-                            maxHeight: "40vh",
-                            boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',
-                            p: 1
-                        }}
-                        multiline
-                        id="outlined-basic"
-                        label="Commentaires"
-                        value={contactToAddOrUpdate.comments}
-                        onChange={(e) => handleChangeText(e, "comments")}
-                        InputProps={{
-                            disableUnderline: true
-                        }}
-                    /> */}
                 </Box>
-
 
                 {/* ///////// FICHIERS + BOUTON MAJ ou AJOUTER ///////// */}
                 <Box sx={{ display: 'flex', justifyContent: "space-between", gap: "4%" }} >
-
                     {/* ///////// FICHIERS ///////// */}
                     <Box sx={{ width: "70%" }}>
                         <Typography variant="h6">Fichiers associés au contact ({contactToAddOrUpdate.filesSentRef.length})</Typography>
                         <Typography
-                            //variant="caption" 
                             component="div"
                             sx={{ color: "text.secondary" }}
-                        >                           
+                        >
                             {contactFilesWithNames.map((file, index) => (
-                            // {contactToAddOrUpdate.filesSentRef.map((fileRef, index) => (
                                 <Box key={index} sx={{ display: "flex", alignItems: "center" }} >
                                     <ArrowRightIcon sx={{ color: "text.secondary" }} />
                                     <Button
                                         onClick={() => handleOpenFile(file.fileRef)}
                                     >
                                         {index + 1} - {file.fileName}<br />
-                                        {/* {index + 1} - {getFileNameFromRef(fileRef)}<br /> */}
                                     </Button>
                                     <Tooltip arrow title="Désassocier ce fichier du contact">
                                         <IconButton
                                             size="small"
                                             color="error"
-                                            onClick={() => setOpenDeleteContactFileModal(true)}  //removeFile(file.fileRef)}
+                                            onClick={() => setOpenDeleteContactFileModal(true)} 
                                         >
                                             <ClearIcon />
                                         </IconButton>
@@ -962,13 +771,11 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                         </Box>
                                     </Modal>
                                 </Box>
-
                             ))}
                         </Typography>
-                       
 
                         <Tabs
-                            sx={{ marginTop: "30px" }}                           
+                            sx={{ marginTop: "30px" }}
                             value={tabValue}
                             onChange={(e, newValue: number) => setTabValue(newValue)}
                         >
@@ -993,12 +800,11 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     ? <InputLabel id="type-label">Choisir un fichier existant</InputLabel>
                                     : <InputLabel id="type-label">Aucun fichier pour l'instant, veuillez en ajouter (onglet de droite : AJOUT NOUVEAU FICHIER) ou dans l'onglet ADMIN <SettingsIcon /></InputLabel>
                                 }
-
                                 <Select
                                     id="type-label"
                                     value={firebaseFileSelected.fileRef}
                                     onChange={handleChangeExistingFile}
-                                >                                   
+                                >
                                     {filesFirebaseArray.map((file, index) => (
                                         <MenuItem
                                             key={file.fileRef}
@@ -1007,7 +813,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                                 backgroundColor: index % 2 === 0 ? muiTheme.palette.lightCyan.light : '',
                                                 color: index % 2 === 1 ? muiTheme.palette.primary.dark : '',
                                             }}
-                                        >                                            
+                                        >
                                             {file.fileName}
                                         </MenuItem>
                                     ))}
@@ -1075,7 +881,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                             <Button
                                                 color="pink"
                                                 type="submit"
-                                                variant="contained" 
+                                                variant="contained"
                                                 startIcon={<CloudUploadIcon />}
                                             >
                                                 2- Télécharger/ajouter le fichier
@@ -1110,7 +916,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                                     onClick={() => setOpenDeleteContactFilesModal(true)} >
                                     Supprimer tous les fichiers associés
                                 </Button>
-
                                 <Modal
                                     open={openDeleteContactFilesModal}
                                     //onClose={() => setOpenDeleteContactFilesModal(false)}
@@ -1138,14 +943,17 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                         }
                     </Box>
 
-                    {addContact && <Button variant="contained" color='secondary' sx={{ width: '30%', height: "200px", mt: 3, }} onClick={() => addContact(contactToAddOrUpdate)} >Ajouter comme contact</Button>}
-                    {updateContact && <Button variant="contained" sx={{ width: '30%', height: "200px", mt: 3 }} onClick={handleWholeUpdateContact}>Mettre à jour le contact</Button>}
+                    {addContact && <Button variant="contained" color='secondary' sx={{ width: '30%', height: "200px", mt: 3, }} onClick={() => addContact(contactToAddOrUpdate)} >
+                        Ajouter comme contact
+                    </Button>}
+                    {updateContact && <Button variant="contained" sx={{ width: '30%', height: "200px", mt: 3 }} onClick={handleWholeUpdateContact}>
+                        Mettre à jour le contact
+                    </Button>}
                     <Modal
                         open={openContactIsUpdatedModal}
                         onClose={() => setOpenContactIsUpdatedModal(false)}
                     >
                         <Box sx={{ ...modalStyle, display: 'flex', flexDirection: 'column' }} >
-                        {/* <Box sx={modalStyle} > */}
                             <Typography
                                 id="modal-modal-title"
                                 variant="h6"
@@ -1154,7 +962,7 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                             >
                                 Contact <span style={{ fontWeight: "bold" }}>{contactToAddOrUpdate.businessName}</span> mis à jour !
                             </Typography>
-                            <Button variant="contained" color='primary' sx={{ color: "white", alignSelf: 'flex-end'  }} onClick={() => setOpenContactIsUpdatedModal(false)} >Ok</Button> 
+                            <Button variant="contained" color='primary' sx={{ color: "white", alignSelf: 'flex-end' }} onClick={() => setOpenContactIsUpdatedModal(false)} >Ok</Button>
                         </Box>
                     </Modal>
                 </Box>
@@ -1171,7 +979,6 @@ export default function ContactCard({ contact, currentUserId, getPriorityTextAnd
                     <DeleteForeverIcon />
                     Supprimer le contact
                 </Button>
-
                 <Modal
                     open={openDeleteContactModal}
                     //onClose={() => setOpenDeleteContactModal(false)}
