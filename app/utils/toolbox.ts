@@ -1,13 +1,12 @@
 import { Timestamp } from 'firebase/firestore';
-import { uid } from 'uid';
 import { useTheme } from '@mui/material/styles';
-
+import { uid } from 'uid';
 
 const emptyContact: Contact = {
     id: uid(),
     isClient: false,
-    priority: null, 
-    contactType : "NON DEFINI", 
+    priority: null,
+    contactType: "NON DEFINI",
     logo: '',
     businessName: '',
     denominationUsuelleEtablissement: [],
@@ -35,138 +34,32 @@ const emptyContact: Contact = {
     userId: ''
 }
 
-const contactCategories: ContactCategorieType[] = [
-    {
-        id: "",
-        label: "Camping",
-    },
-    {
-        id: "",
-        label: "Hôtel",
-    },
-    {
-        id: "",
-        label: "Conciergerie",
-    },
-    {
-        id: "",
-        label: "Agence Event",
-    },
-    {
-        id: "",
-        label: "Agence Artistique",
-    },
-    {
-        id: "",
-        label: "Mairie",
-    },
-    {
-        id: "",
-        label: "Lieu de réception",
-    },
-    {
-        id: "",
-        label: "Wedding Planer",
-    },
-    {
-        id: "",
-        label: "Restaurant Plage",
-    },
-    {
-        id: "",
-        label: "Piscine Municipale",
-    },
-    {
-        id: "",
-        label: "Yacht",
-    },
-    {
-        id: "",
-        label: "Plage Privée",
-    },
-    {
-        id: "",
-        label: "Agence Location Villa Luxe",
-    },
-    {
-        id: "",
-        label: "Aquarium",
-    },
-    {
-        id: "",
-        label: "Centre de Loisirs",
-    },
-    {
-        id: "",
-        label: "Centre de Plongée",
-    },
-    {
-        id: "",
-        label: "Agence Communication Audio Visuel",
-    },
-    {
-        id: "",
-        label: "Autre",
-    },
-    {
-        id: "",
-        label: "Mairie / médiathèque",
-    },
-    {
-        id: "",
-        label: "Journal / magazine",
-    },
-    {
-        id: "",
-        label: "piscine vitrée",
-    },
-    {
-        id: "",
-        label: "TV",
-    },
-    {
-        id: "",
-        label: "Maquilleuse",
-    },
-    {
-        id: "",
-        label: "Photographe",
-    },
-    {
-        id: "",
-        label: "Vidéate",
-    },
-    {
-        id: "",
-        label: "Evénementiel",
-    },
-]
-
-
 const contactTypes: ContactTypeType[] = ["NON DEFINI", "Entreprise", "Particulier", "Partenaire"];
 
 const timeStampObjToTimeStamp = (timeStampObj: Timestamp): number => {
     if (timeStampObj) {
         return Date.parse(timeStampObj.toDate().toString())
     }
-    return 0   
+    return 0
 }
+
 const timeStampToTimeStampObj = (timeStamp: any) => {
-    if (timeStamp) {      
-        return Timestamp.fromDate(new Date (timeStamp))
-    }   
+    if (timeStamp) {
+        return Timestamp.fromDate(new Date(timeStamp))
+    }
 }
 
 const isDateTimeStampObjPassed = (timeStamp: Timestamp) => {
     const timeStampNow = new Date().getTime()
 
-    return timeStamp && (timeStampObjToTimeStamp(timeStamp) < timeStampNow) 
+    return timeStamp && (timeStampObjToTimeStamp(timeStamp) < timeStampNow)
 }
+
 const isDateTimeStampObjBeforeAWeek = (timeStamp: Timestamp) => {
     const timeStampNow = new Date().getTime()
     const timeStampInAWeek = timeStampNow + 7 * 24 * 60 * 60 * 1000
 
-    return timeStamp && (timeStampObjToTimeStamp(timeStamp) > timeStampNow) &&  (timeStampObjToTimeStamp(timeStamp) < timeStampInAWeek)   
+    return timeStamp && (timeStampObjToTimeStamp(timeStamp) > timeStampNow) && (timeStampObjToTimeStamp(timeStamp) < timeStampInAWeek)
 }
 
 const countContactsByAlertDates = (contactsTab: Contact[]): Alerts => {
@@ -177,7 +70,7 @@ const countContactsByAlertDates = (contactsTab: Contact[]): Alerts => {
         if (contact.dateOfNextCall) {
             isDateTimeStampObjPassed(contact.dateOfNextCall) && nbContactsWithDatePassed++
             isDateTimeStampObjBeforeAWeek(contact.dateOfNextCall) && nbContactsWithDateSoon++
-        }              
+        }
     })
     return { nbContactsWithDatePassed, nbContactsDateSoon: nbContactsWithDateSoon }
 }
@@ -189,34 +82,23 @@ const updatedContactsInLocalList = (contacts: Contact[], id: string, keyAndValue
     })
     return tempUpdatedContacts
 }
+
 const updatedContactsInLocalListWithWholeContact = (contacts: Contact[], contactToUpdate: Contact): Contact[] => {
     let tempUpdatedContacts: Contact[] = contacts.map(contact => {
         return contact.id === contactToUpdate.id ? contactToUpdate : contact
-    })    
+    })
     return tempUpdatedContacts
 }
 
 const getUniqueSortedValues = (contacts: Contact[], key: keyof Contact, caseSensitive: boolean = true) => {
     const allValues = caseSensitive
         ? contacts.map(contact => contact[key].trim())
-        : contacts.map(contact => contact[key].trim().toUpperCase())
-
-    // // On élimine les doublons
-    // const uniqueValues : string[] = allValues.filter((value, index, self) => self.indexOf(value) === index);
-    // // On les classe par ordre alphabétique
-    // uniqueValues.sort((a, b) => {
-    //     if (a < b) return -1
-    //     if (a > b) return 1
-    //     return 0;
-    // })
-
-    // On ajoute le nombre de chaque occurence
+        : contacts.map(contact => contact[key].trim().toUpperCase())   
     // On compte les occurrences de chaque valeur
     const counts: { [key: string]: number } = {};
     allValues.forEach(value => {
         counts[value] = (counts[value] || 0) + 1;
     });
-
     // On élimine les doublons et on les classe par ordre alphabétique
     const uniqueValues: { value: string, count: number }[] = Object.keys(counts).sort().map(value => ({
         value,
@@ -226,11 +108,11 @@ const getUniqueSortedValues = (contacts: Contact[], key: keyof Contact, caseSens
     return uniqueValues
 }
 
-
 const isDatePassed = (timeStampObj: Timestamp) => {
     const nowTimestamp = new Date().getTime()
     return timeStampObj && timeStampObjToTimeStamp(timeStampObj) < nowTimestamp
 }
+
 const isDateSoon = (timeStampObj: Timestamp | null) => {
     if (timeStampObj) {
         const date = timeStampObj?.toDate().toString()
@@ -256,7 +138,7 @@ function stringToColor(string: string) {
         color += `00${value.toString(16)}`.slice(-2);
     }
     return color;
-}   
+}
 
 function stringAvatar(name: string, logo: string) {
     const words = name.trim().split(' ');
@@ -265,14 +147,13 @@ function stringAvatar(name: string, logo: string) {
         ? `${words[0][0]}${words[1][0]}`
         : words[0][0];
 
-
     return {
         sx: {
             backgroundColor: logo ? '' : stringToColor(name),
             width: 70,
             height: 70,
             //margin: "auto",
-            cursor: "pointer" 
+            cursor: "pointer"
         },
         children: initials,
     };
@@ -280,7 +161,7 @@ function stringAvatar(name: string, logo: string) {
 
 const TABS_WIDTH = 100
 
- // Je ne peux pas mettre getPriorityTextAndColor ici car pour utiliser les thème on a besoin de useTheme qui est un hook => a utilisé seulement dans un composant ou un hook perso => donc je créé un hook perso
+// Je ne peux pas mettre getPriorityTextAndColor ici car pour utiliser les thème on a besoin de useTheme qui est un hook => a utilisé seulement dans un composant ou un hook perso => donc je créé un hook perso
 const useGetPriorityTextAndColor = () => {
     const muiTheme = useTheme();
 
@@ -315,15 +196,15 @@ const modalStyle = {
     position: 'absolute' as 'absolute',
     top: '50%',
     left: '50%',
-    transform: 'translate(-50%, -50%)',     // ???
+    transform: 'translate(-50%, -50%)', 
     width: 400,
     bgcolor: 'white',
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
-  };
+};
 
-  const commentsOptions = {
+const commentsOptions = {
     toolbar: [
         ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
         ['blockquote', 'code-block'],
@@ -343,9 +224,8 @@ const modalStyle = {
     ],
 };
 
-export { 
+export {
     emptyContact,
-    contactCategories, 
     contactTypes,
     timeStampObjToTimeStamp,
     timeStampToTimeStampObj,
@@ -363,4 +243,4 @@ export {
     useGetPriorityTextAndColor,
     modalStyle,
     commentsOptions
- }
+}

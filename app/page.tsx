@@ -1,35 +1,18 @@
 'use client'
-
 import React from 'react'
 
-import Box from '@mui/material/Box';
 import SignIn from './Components/authentification/SignIn';
 import SignUp from './Components/authentification/SignUp';
-import { useAuthUserContext } from './context/UseAuthContextProvider'
-import { useRouter, redirect } from 'next/navigation';        // et non 'next/router' depuis Next 12
-import { CircularProgress, Container } from '@mui/material';
 
+import { useAuthUserContext } from './context/UseAuthContextProvider'
+
+import { CircularProgress, Container } from '@mui/material';
+import Box from '@mui/material/Box';
+
+import { useRouter, redirect } from 'next/navigation';   // et non 'next/router' depuis Next 12
 
 export default function Contacts() {
-    const { currentUser, isLoading } = useAuthUserContext()
-
-
-    const router = useRouter();
-
-
-
-    // Si on met pas le REDIRECT tout en bas
-    // React.useEffect(() => {
-    //     if (currentUser) {
-    //         redirect('/gestionContacts/contactsTable');
-    //     }
-    // }, [currentUser]);
-
-    // if (currentUser) {
-    //     return null;
-    // }
-
-    
+    const { currentUser, isLoading } = useAuthUserContext()    
 
     return (
         <Box sx={{
@@ -41,7 +24,6 @@ export default function Contacts() {
                 </Container>
 
                 : !currentUser
-                    // {/* ///////// CONNEXION / INSCRIPTION ///////// */}
                     ?
                     <Box sx={{
                         display: "flex", justifyContent: "space-around",
@@ -51,7 +33,6 @@ export default function Contacts() {
                         <SignUp />
                     </Box>
 
-                    // {/* // /////////////////////// ONGLETS (Tabs) ///////////////////////*/}
                     : redirect('/gestionContacts/contactsTable')
             }
         </Box>

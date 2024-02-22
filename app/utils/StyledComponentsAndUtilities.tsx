@@ -1,25 +1,21 @@
+import { Timestamp } from 'firebase/firestore';
+// MUI
 import { styled } from '@mui/material/styles';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { Timestamp } from 'firebase/firestore';
-
 import Rating, { IconContainerProps } from '@mui/material/Rating';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAltOutlined';
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
-
-
 import MailIcon from '@mui/icons-material/Mail';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
-
 import { useTheme } from '@mui/material/styles';
-
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   border: '1px solid #CCC',
@@ -40,9 +36,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-
 const StyledTableRow = styled(TableRow)(({ theme }: any) => ({
-
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.gray.light,
   },
@@ -52,13 +46,13 @@ const StyledTableRow = styled(TableRow)(({ theme }: any) => ({
   "&.Mui-selected:hover": { background: theme.palette.lightCyan.main, },
 }));
 
-
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
   width?: string;
 }
+
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, width, ...other } = props;
 
@@ -80,23 +74,24 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-// Pour les ETOILES de la PRIORITY
+// ETOILES de la PRIORITY
 const StyledRatingStars = styled(Rating)(({ theme, color }) => ({
   '& .MuiRating-iconFilled': {
     color: color
   },
   '& .MuiRating-iconHover': {
-    color: color//theme.palette.primary.main, 
+    color: color
   },
 }));
 
-// Pour les smileys du RATING  
+// Smileys du RATING  
 const StyledRating = styled(Rating)(({ theme }) => ({
   '& .MuiRating-iconEmpty .MuiSvgIcon-root': {
     color: theme.palette.action.disabled,
     fontSize: '1.5rem'
   },
 }))
+
 const customIcons: {
   [index: string]: { icon: React.ReactElement; label: string; };
 } = {
@@ -125,16 +120,15 @@ const customIcons: {
     label: 'Very Satisfied',
   },
 };
+
 function IconContainer(props: IconContainerProps) {
   const { value, ...other } = props;
   return <span {...other}>{customIcons[value].icon}</span>;
 }
 
-
 // GESTION DES ICONES MAIL ET TELEPHONE
 // hasBeenCalled => 0="no" | 1="yes but no answer" | 2="yes and answered",
 // hasBeenSentEmailOrMeetUp =>  0="nothing" | 1="email sent" | 2="email sent and received" | 3="met up",
-
 const useRightMailIcon = () => {
   const muiTheme = useTheme();
 
@@ -152,7 +146,6 @@ const useRightMailIcon = () => {
 }
 
 const useIconUtilities = () => {
-
   const muiTheme = useTheme();
 
   const getPhoneIconColor = (hasBeenCalled: 0 | 1 | 2) => {
@@ -201,15 +194,14 @@ const useIconUtilities = () => {
         return "Pas appelé"
     }
   };
-
   return { getPhoneIconColor, getEmailIconColor, getEmailIconText, getPhoneIconText };
 }
 
 const useHandleClickHasBeenCalledAndHasBeenSentEmailOrMeetUp = (
-  contact: Contact, 
+  contact: Contact,
   handleUpdateContact?: (id: string, keyAndValue: { key: string; value: string | number | boolean | Timestamp | File[] | null; }) => void, // modif contact
   setContact?: React.Dispatch<React.SetStateAction<Contact>>, // modif juste pour le state
-  ) => {
+) => {
   const handleClickHasBeenCalled = () => {
     handleUpdateContact && handleUpdateContact(contact.id, {
       key: "hasBeenCalled", value: contact.hasBeenCalled === 0
@@ -249,7 +241,6 @@ const useHandleClickHasBeenCalledAndHasBeenSentEmailOrMeetUp = (
   }
   return { handleClickHasBeenCalled, handleClickhasBeenSentEmailOrMeetUp }
 }
-
 
 export {
   StyledTableCell,

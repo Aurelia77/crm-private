@@ -1,2 +1,2 @@
-// Actuellement, il n'y a pas de types TypeScript officiels pour react-quill. Mais react-quill est une bibliothèque JavaScript, donc on peut l'utiliser dans un projet TypeScript. => dire à TypeScript de l'ignorer en déclarant le module dans un fichier de déclaration de type (ici)
+// Pas de types TypeScript officiels pour react-quill => on dit à TypeScript de l'ignorer :
 declare module 'react-quill';

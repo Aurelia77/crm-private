@@ -1,16 +1,12 @@
 'use client'    // Pour pouvoir utiliser le contexte
-
 import './globals.css'
-
 import UserAuthContextProvider from './context/UseAuthContextProvider';
 import MuiProviders from './Components/providers/MuiProviders';
+import ReactQueryProvider from './Components/providers/ReactQueryProvider';
 import { ErrorBoundary } from 'react-error-boundary'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import ReactQueryProvider from './Components/providers/ReactQueryProvider';
-import { Typography } from '@mui/material';
 import "dayjs/locale/fr";
-
 
 export default function RootLayout({
   children,
@@ -31,7 +27,7 @@ export default function RootLayout({
           <MuiProviders>
             <UserAuthContextProvider>
               <ReactQueryProvider>
-                {/* The general recommendation is to declare the LocalizationProvider once, wrapping your entire application. Then, you don't need to repeat the boilerplate code for every Date and Time Picker in your application. */}
+                {/* Declare the LocalizationProvider once, wrapping your entire application */}
                 <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='fr' >
                   {children}
                 </LocalizationProvider>

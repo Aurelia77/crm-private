@@ -1,14 +1,10 @@
 
-// type BusinessCatType = "NON DEFINI" | "Camping" | "Hôtel" | "Conciergerie" | "Agence Event" | "Agence Artistique" | "Mairie" | "Lieu de réception" | "Wedding Planer" | "Restaurant Plage" | "Piscine Municipale" | "Yacht" | "Plage Privée" | "Agence Location Villa Luxe" | "Aquarium" | "Centre de Loisirs" | "Centre de Plongée" | "Agence Communication Audio Visuel" | "Autre" | "Mairie / médiathèque";
+type ContactTypeType = "NON DEFINI" | "Particulier" | "Entreprise" | "Partenaire";
 
-type ContactTypeType= "NON DEFINI" | "Particulier" | "Entreprise" | "Partenaire";
-
-type ContactCategorieType= {
+type ContactCategorieType = {
   id: string,
-  label: string // "NON DEFINI" | "Camping" | "Hôtel" | "Conciergerie" | "Agence Event" | "Agence Artistique" | "Mairie" | "Lieu de réception" | "Wedding Planer" | "Restaurant Plage" | "Piscine Municipale" | "Yacht" | "Plage Privée" | "Agence Location Villa Luxe" | "Aquarium" | "Centre de Loisirs" | "Centre de Plongée" | "Agence Communication Audio Visuel" | "Autre" | "Mairie / médiathèque" | "Journal / magazine" | "piscine vitrée" | "TV" | "Maquilleuse" | "Photographe" | "Vidéate" | "Evénementiel"
+  label: string
 }
-
-type CategorieType = "NON DEFINI" | "Camping" | "Hôtel" | "Conciergerie" | "Agence Event" | "Agence Artistique" | "Mairie" | "Lieu de réception" | "Wedding Planer" | "Restaurant Plage" | "Piscine Municipale" | "Yacht" | "Plage Privée" | "Agence Location Villa Luxe" | "Aquarium" | "Centre de Loisirs" | "Centre de Plongée" | "Agence Communication Audio Visuel" | "Autre" | "Mairie / médiathèque" | "Journal / magazine" | "piscine vitrée" | "TV" | "Maquilleuse" | "Photographe" | "Vidéate" | "Evénementiel"
 
 type NameAndCatType = {
   catLabel: CategorieType,
@@ -28,7 +24,7 @@ type Contact = {
   businessName: string,
   businessCategoryId: string,
   denominationUsuelleEtablissement: string[],
-  interestGauge: 1 | 2 | 3 | 4 | 5 | null, // 5=very interested  // Marche ps ???1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10, 
+  interestGauge: 1 | 2 | 3 | 4 | 5 | null, // 5=very interested
   businessActivity: string,
   businessAddress: string,
   businessWebsite: string,
@@ -43,8 +39,6 @@ type Contact = {
   hasBeenCalled: 0 | 1 | 2,       // 0="no" | 1="yes but no answer" | 2="yes and answered",
   hasBeenSentEmailOrMeetUp: 0 | 1 | 2 | 3,  // 0="nothing" | 1="email sent" | 2="email sent and received" | 3="met up",
   filesSentRef: string[],
-  //filesSent: File,
-  //filesSent: File[] | null,
   tag: string[],
   dateOfFirstCall: timestamp,
   dateOfLastCall: timestamp,
@@ -56,25 +50,16 @@ type Contact = {
 
 type Query = {
   name: string,
-  siret: string     // number | null, Pas un nombre car on veut garder si y'a un 0 devant 
+  siret: string  // Pas un nombre car on veut garder si 0 devant 
   city: string,
   CP: string,
   businessActivity: string,
 }
 
-type CodeNaf = {
-  id: string;
-  label: string;
-};
-
 type UserInfos = {
-  //id: string;
   name: string;
   email: string;
   password: string;
-  //picture: string;
-  //provider: string;
-  //isAdmin: boolean;
 };
 
 type Alerts = {
@@ -84,7 +69,7 @@ type Alerts = {
 
 type SearchContactCriteria = {
   isClient: "yes" | "no" | "all",
-  contactTypes : ContactTypeType[],
+  contactTypes: ContactTypeType[],
   businessNames: string,
   businessCities: string[],
   businessCategoryIds: string[],

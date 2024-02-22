@@ -7,8 +7,6 @@ import { addDoc, collection, query, where, getDocs, deleteDoc, updateDoc, doc } 
 
 import { uid } from 'uid';
 
-import { contactCategories, emptyContact } from './toolbox'
-
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -47,7 +45,7 @@ const getUserContactsFromDatabase = async (currentUserId: string | undefined) =>
 }
 
 const getContactInfoInDatabaseFromId = async (contactId: string) => {
-  let contact: Contact | null = null//= emptyContact
+  let contact: Contact | null = null
   const q = query(collection(fireStoreDb, "contacts"), where("id", "==", contactId));
   const querySnapshot = await getDocs(q);
 
@@ -57,7 +55,6 @@ const getContactInfoInDatabaseFromId = async (contactId: string) => {
 
   return contact
 }
-
 
 const getFileNameFromRef = async (fileRef: string) => {
   let fileName = ""
@@ -103,17 +100,18 @@ const getCategoriesFromDatabase = async (currentUserId: string | undefined) => {
   return catsArr
 }
 
-
-// Bien mettre ASYNC / AWAIT sinon return catId sera exécuté avant que getDocs(q) ait terminé
+// Bien mettre ASYNC / AWAIT sinon return catId=... sera exécuté avant que getDocs(q) ait terminé
 const getCatIdFromLabel = async (currentUserId: string | undefined, catLabel: string) => {
   const filesCollectionRef = collection(fireStoreDb, "categories");
   const q = query(filesCollectionRef, where("userId", "==", currentUserId), where("label", "==", catLabel))
 
   const querySnapshot = await getDocs(q);
   let catId = ''
+
   querySnapshot.forEach((doc) => {
     catId = doc.data().id
   })
+
   return catId
 }
 
@@ -131,27 +129,6 @@ const getCatLabelFromId = async (catId: string) => {
     ? label
     : "NON DEFINIE"
 }
-
-const addFakeDataOnFirebaseAndReload = (currentUserId: string | undefined, fakeContactsData: Contact[]) => {
-  const promises = fakeContactsData.map((contact: Contact) => {
-    return addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid(), userId: currentUserId })
-      .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
-      .catch((error) => { console.error("Error adding document: ", error); });
-  })
-  return Promise.all(promises)
-    .then(() => { window.location.reload() })
-    .catch((error) => { console.error("Error reloading page: ", error); });
-}
-
-const addFakeDataOnFirebase = (currentUserId: string | undefined, fakeContactsData: Contact[]) => {
-  const promises = fakeContactsData.map((contact: Contact) => {
-    return addDoc(collection(fireStoreDb, "contacts"), { ...contact, id: uid(), userId: currentUserId })
-      .then((docRef) => { console.log("Document written with ID: ", docRef.id); })
-      .catch((error) => { console.error("Error adding document: ", error); });
-  })
-  return Promise.all(promises);
-}
-
 
 const addContactOnFirebaseAndReload = async (currentUserId: string | undefined, contact: Contact) => {
   try {
@@ -179,28 +156,11 @@ const addCategorieOnFirebase = (currentUserId: string | undefined, category: Con
     .catch((error) => { console.error("Error adding document: ", error); });
 }
 
-const addCategoriesOnFirebaseAndReload = (currentUserId: string | undefined) => {
-  const promises = contactCategories.map((cat: ContactCategorieType) => {
-    return addCategorieOnFirebase(currentUserId, cat)
-  })
-  Promise.all(promises)
-    .then(() => { window.location.reload() })
-    .catch((error) => { console.error("Error reloading page: ", error); });
-}
-
-const addCategoriesOnFirebase = (currentUserId: string | undefined) => {
-  const promises = contactCategories.map((cat: ContactCategorieType) => {
-    return addCategorieOnFirebase(currentUserId, cat)
-  })
-  Promise.all(promises)
-    .then(() => { console.log("Catégories ajoutées !") })
-    .catch((error) => { console.error("Error reloading page: ", error); });
-}
-
 const updatDataOnFirebase = async (id: string, keyAndValue: { key: string, value: string | number | boolean | File[] | Timestamp | null }) => {
   const q = query(collection(fireStoreDb, "contacts"), where("id", "==", id));
 
   const querySnapshot = await getDocs(q);
+
   querySnapshot.forEach((doc) => {
     updateDoc(doc.ref, {
       [keyAndValue.key]: keyAndValue.value
@@ -213,7 +173,7 @@ const updatDataWholeContactOnFirebase = (contactToUpdate: Contact) => {
 
   getDocs(q).then((querySnapshot) => {
     querySnapshot.forEach((doc) => {
-      updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
+      updateDoc(doc.ref, {  // doc.ref : ref à chaque enregistrement dans FIREBASE
         ...contactToUpdate
       });
     })
@@ -225,7 +185,7 @@ const updateCategorieOnFirebase = (cat: ContactCategorieType) => {
 
   getDocs(q).then((querySnapshot) => {
     querySnapshot.forEach((doc) => {
-      updateDoc(doc.ref, {        // doc.ref est une ref à chaque enregistrement dans FIREBASE
+      updateDoc(doc.ref, {  
         label: cat.label
       });
     })
@@ -244,7 +204,7 @@ const updateFileOnFirebase = (file: FileNameAndRefType) => {
   })
 }
 
-const deleteAllDatasOnFirebaseAndReload = (currentUserId: any = null,) => {
+const deleteAllDatasOnFirebaseAndReload = (currentUserId: any,) => {
   const contactsCollection = collection(fireStoreDb, "contacts");
   const q = currentUserId
     ? query(contactsCollection, where("userId", "==", currentUserId))
@@ -260,17 +220,17 @@ const deleteAllDatasOnFirebaseAndReload = (currentUserId: any = null,) => {
     window.location.reload()
   })
 }
-const deleteAllMyCatsOnFirebase = (currentUserId: any = null,) => {
+
+const deleteAllMyCatsOnFirebase = (currentUserId: any,) => {
   const catsCollection = collection(fireStoreDb, "categories");
   const q = currentUserId
     ? query(catsCollection, where("userId", "==", currentUserId))
     : query(catsCollection);
 
   getDocs(q).then((querySnapshot) => {
-
     const deletePromises = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
-    return Promise.all(deletePromises);
 
+    return Promise.all(deletePromises);
   })
 }
 
@@ -289,7 +249,6 @@ const deleteCategorieOnFirebase = (catId: string) => {
   const q = query(collection(fireStoreDb, "contacts"), where("businessCategoryId", "==", catId));
 
   return getDocs(q).then((querySnapshot) => {
-
     if (!querySnapshot.empty) {
       throw new Error("Un contact est associé à cette catégorie.");
     } else {
@@ -324,12 +283,8 @@ export {
   getFileNameFromRef,
   getFilesFromDatabase,
   getCategoriesFromDatabase,
-  addFakeDataOnFirebaseAndReload,
-  addFakeDataOnFirebase,
   addContactOnFirebaseAndReload,
   addFileOnFirebaseDB,
-  addCategoriesOnFirebaseAndReload,
-  addCategoriesOnFirebase,
   addCategorieOnFirebase,
   updatDataOnFirebase,
   updatDataWholeContactOnFirebase,
