@@ -148,7 +148,7 @@ export default function CalendarScheduler({ contacts, setContacts, redirectToCon
   return <Box>
     <Box >
       <Typography >
-        Pour modifier la date de relance d'un contact, faites glisser l'événement sur le calendrier
+        Pour modifier la date de relance d'un contact, faites glisser-déposer son nom sur le calendrier.
       </Typography>
       <Typography  >
         Un clic sur un contact pour le visualiser !

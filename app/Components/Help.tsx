@@ -61,7 +61,7 @@ export default function Help() {
                             <Typography
                                 sx={{ textOverflow: "clip", whiteSpace: "normal" }}
                             >
-                                Dans l'onglet LISTE DES CONTACTS <Diversity3Icon color="primary" /> vous pouvez <span style={{ fontWeight: "bold", fontSize: "1.2em" }}>voir tous les contacts</span> que vous avez créés et modifier directement dans le tableau certains champs (tous sauf les textes, logo et fichiers). Ils sont tous modifiables lors de la vue d'un contact, qui s'ouvre en cliquant sur son logo dans le tableau.
+                                Dans l'onglet LISTE DES CONTACTS <Diversity3Icon color="primary" /> vous pouvez <span style={{ fontWeight: "bold", fontSize: "1.2em" }}>voir tous les contacts</span> que vous avez créés et modifier directement dans le tableau certains champs (tous sauf les textes, logo et fichiers). Ils sont tous modifiables sur la fiche d'un contact, qui s'ouvre en cliquant sur son logo dans le tableau.
                             </Typography>
                         }
                     />
@@ -83,8 +83,7 @@ export default function Help() {
                             <Typography
                                 sx={{ textOverflow: "clip", whiteSpace: "normal" }}
                             >
-                                Pour <span style={{ fontWeight: "bold", fontSize: "1.2em" }}>ajouter des catégories et des fichiers</span> qui seront ensuite disponibles pour chaque contact, c'est dans l'onglet ADMIN <SettingsIcon color="primary" />.<br />
-                                Vous pouvez aussi renommer les fichiers et catégories, et supprimer les catégories.
+                                Pour <span style={{ fontWeight: "bold", fontSize: "1.2em" }}>ajouter des catégories et des fichiers</span> qui seront ensuite disponibles pour chaque contact, c'est dans l'onglet ADMIN <SettingsIcon color="primary" />. Vous pouvez aussi renommer les fichiers et catégories, et supprimer les catégories.
                             </Typography>
                         }
                     />
@@ -95,7 +94,7 @@ export default function Help() {
                             <Typography
                                 sx={{ textOverflow: "clip", whiteSpace: "normal" }}
                             >
-                                Lors du clic sur le logo d'un contact dans le tableau, la VUE DU CONTACT s'ouvre <PersonIcon color="primary" /> et vous pouvez modifier toutes les informations du contact, par exemple ajouter/modifier le logo ou associer des fichiers à ce contact (fichiers qui existent déjà ou nouveaux fichiers, qui seront ensuite disponibles aussi pour les autres contacts).
+                                Lors du clic sur le logo d'un contact dans le tableau, la FICHE DU CONTACT s'ouvre <PersonIcon color="primary" /> et vous pouvez modifier toutes les informations du contact, par exemple ajouter/modifier le logo ou associer des fichiers à ce contact (fichiers qui existent déjà ou nouveaux fichiers, qui seront ensuite disponibles aussi pour les autres contacts).
                             </Typography>
                         }
                     />

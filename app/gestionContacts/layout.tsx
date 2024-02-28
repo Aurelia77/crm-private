@@ -46,7 +46,7 @@ export default function ContactsLayout({
         { label: "Liste des contacts", icon: <Diversity3Icon />, href: "/gestionContacts/contactsTable" },
         { label: "Calendrier", icon: <CalendarMonthIcon />, href: "/gestionContacts/calendar" },
         { label: "Nouveau contact", icon: <PersonAddIcon />, href: "/gestionContacts/newContact" },
-        { label: "Vu d'un contact (cliquez sur un logo dans la liste des contacts)", icon: <PersonIcon />, href: "/" },
+        { label: "Fiche contact (cliquez sur un logo dans la liste des contacts)", icon: <PersonIcon />, href: "/" },
         { label: "Admin", icon: <SettingsIcon />, href: "/gestionContacts/admin" },
         { label: "Aide", icon: <HelpOutlineIcon />, href: "/gestionContacts/help" },
     ]
