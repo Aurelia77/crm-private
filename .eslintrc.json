@@ -12,7 +12,7 @@
     "plugin:jest-dom/recommended"
   ],
 
-  // Pour ne pas avoir les erreurs ESLINT (pbm déployement Vercel) : https://nextjs.org/docs/pages/building-your-application/configuring/eslint#disabling-rules (car sinon erreur sur Vercel)
+  // Pour ne pas avoir les erreurs ESLINT (pbm déployement Vercel) : https://nextjs.org/docs/pages/building-your-application/configuring/eslint#disabling-rules (sinon erreur sur Vercel)
   "rules": {
     "react/no-unescaped-entities": "off",
     "@next/next/no-page-custom-font": "off"

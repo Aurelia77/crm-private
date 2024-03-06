@@ -1,0 +1,40 @@
+// // import * as functions from 'firebase-functions-test';
+// // import { expect } from 'chai';
+// // import { collection, getDocs } from "firebase/firestore";
+// // import { fireStoreDb } from '@/app/utils/firebase'; // import your Firestore instance
+
+// require('dotenv').config();
+
+// // const firebaseTest = require('firebase-functions-test')({
+// //     databaseURL: `https://${process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID}.firebaseio.com`,
+// //     storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+// //     projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+// // }, null);
+
+// const firebaseTest = require('firebase-functions-test')();
+
+
+// // import { getDocs, collection } from "firebase/firestore";
+// // import { fireStoreDb } from '@/app/utils/firebase'; 
+// // import { config } from 'dotenv';    // pnpm install 
+// // //Avec Jest, les variables d'environnement définies dans fichier .env ne sont pas automatiquement chargées. => les charger manuellement les variables d'environnement dans vos tests.
+// // //dotenv le module dotenv est utilisé pour charger les variables d'environnement à partir d'un fichier .env dans process.env. 
+// // config();
+
+// // // Your tests go here
+// // describe('Firebase Connection', () => {
+// //     it('should connect to Firebase', () => {
+// //         const testCollectionRef = collection(fireStoreDb, 'testCollection');
+
+// //         // If the collection reference exists, it means we've successfully connected to Firebase
+// //         expect(testCollectionRef).toBeDefined();
+// //     });
+// //     // it('should connect to Firebase and read data', async () => {
+// //     //     const testCollectionRef = collection(fireStoreDb, 'testCollection');
+        
+// //     //     const snapshot = await getDocs(testCollectionRef);
+
+// //     //     // If the snapshot exists, it means we've successfully connected to Firebase
+// //     //     expect(snapshot).toBeDefined();
+// //     // });
+// // });

@@ -62,6 +62,22 @@ const isDateTimeStampObjBeforeAWeek = (timeStamp: Timestamp) => {
     return timeStamp && (timeStampObjToTimeStamp(timeStamp) > timeStampNow) && (timeStampObjToTimeStamp(timeStamp) < timeStampInAWeek)
 }
 
+const isDatePassed = (timeStampObj: Timestamp) => {
+    const nowTimestamp = new Date().getTime()
+    return timeStampObj && timeStampObjToTimeStamp(timeStampObj) < nowTimestamp
+}
+
+const isDateSoon = (timeStampObj: Timestamp | null) => {
+    if (timeStampObj) {
+        const date = timeStampObj?.toDate().toString()
+        const timeStamp = Date.parse(date)
+        const nowTimestamp = Date.parse(new Date().toString())
+        const inAWeekTimeStamp = new Date().setDate(new Date().getDate() + 7)//.toString()           
+
+        return (timeStamp > nowTimestamp) && (timeStamp < inAWeekTimeStamp)
+    }
+}
+
 const countContactsByAlertDates = (contactsTab: Contact[]): Alerts => {
     let nbContactsWithDatePassed = 0
     let nbContactsWithDateSoon = 0
@@ -108,22 +124,6 @@ const getUniqueSortedValues = (contacts: Contact[], key: keyof Contact, caseSens
     return uniqueValues
 }
 
-const isDatePassed = (timeStampObj: Timestamp) => {
-    const nowTimestamp = new Date().getTime()
-    return timeStampObj && timeStampObjToTimeStamp(timeStampObj) < nowTimestamp
-}
-
-const isDateSoon = (timeStampObj: Timestamp | null) => {
-    if (timeStampObj) {
-        const date = timeStampObj?.toDate().toString()
-        const timeStamp = Date.parse(date)
-        const nowTimestamp = Date.parse(new Date().toString())
-        const inAWeekTimeStamp = new Date().setDate(new Date().getDate() + 7)//.toString()           
-
-        return (timeStamp > nowTimestamp) && (timeStamp < inAWeekTimeStamp)
-    }
-}
-
 function stringToColor(string: string) {
     let hash = 0;
     let i;
@@ -164,7 +164,6 @@ const TABS_WIDTH = 100
 // Je ne peux pas mettre getPriorityTextAndColor ici car pour utiliser les thème on a besoin de useTheme qui est un hook => a utilisé seulement dans un composant ou un hook perso => donc je créé un hook perso
 const useGetPriorityTextAndColor = () => {
     const muiTheme = useTheme();
-
     const getPriorityTextAndColor = (priority: number | null) => {
         switch (priority) {
             case 1: return {
