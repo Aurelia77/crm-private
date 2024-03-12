@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 import { getAuth } from "firebase/auth";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { Timestamp } from 'firebase/firestore';
@@ -21,6 +21,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 // Avec FireStore
 const fireStoreDb = getFirestore(app);
+
+// // Pour tester avec l'émulateur FIREBASE local (voir fichier firebase functions.test.ts)
+// if (location.hostname === "localhost") {
+//   connectFirestoreEmulator(fireStoreDb, "localhost", 8080);
+// }
 
 // Ou Avec RealTime Database(pas utilisée ici => car me mettait tous les contacts 2 fois !!!) (utilise databaseURL de firebaseConfig)
 //const realtimeDb = getDatabase(app);
@@ -275,6 +280,8 @@ const getAllFirebaseUserDatasAndSave = async (currentUserId: string | undefined)
 }
 
 export {
+  firebaseConfig,
+  app,
   fireStoreDb,
   auth,
   storage,

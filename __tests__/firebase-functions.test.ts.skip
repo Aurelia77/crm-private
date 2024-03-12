@@ -1,0 +1,16 @@
+// pnpm install @firebase/rules-unit-testing    // Pour tester les  interactions avec Firestore ou l'authentification Firebase.
+// ENLEVER ?????? car mieux ligne d'en dessous
+
+// pnpm install --save-dev @firebase/testing    // => Idem ? 
+// pnpm install firebase-functions-test   // Pour tester les fonctions Firestore
+
+// pnpm install --save-dev @firebase/rules-unit-testing
+// npm install firebase-tools   // installe les outils Firebase CLI
+// npx firebase login           // ouvre une page pour se connecter au compte google
+// npx firebase init            // initialise un nouveau projet Firebase => Firebase CLI nous guide à travers une série de questions pour configurer notre projet Firebase => ici choisir Firestore
+// npx firebase emulators:start (JAVA doit être installé : version >= 11)   // démarre les émulateurs Firebase pour les services sélectionnés lors de l'initialisation => permettent de tester votre application Firebase localement
+
+
+
+// require('dotenv').config(); // pour avoir accès aux variables d'environnement dans les tests
+// import { addContactOnFirebaseAndReload, getUserContactsFromDatabase } from '@/app/utils/firebase';
