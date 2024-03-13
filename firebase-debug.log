@@ -1,39 +1,39 @@
-[debug] [2024-03-12T18:23:35.952Z] ----------------------------------------------------------------------
-[debug] [2024-03-12T18:23:35.956Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Aurélia HEYMANN\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js emulators:start
-[debug] [2024-03-12T18:23:35.957Z] CLI Version:   13.4.1
-[debug] [2024-03-12T18:23:35.957Z] Platform:      win32
-[debug] [2024-03-12T18:23:35.957Z] Node Version:  v20.11.0
-[debug] [2024-03-12T18:23:35.958Z] Time:          Tue Mar 12 2024 19:23:35 GMT+0100 (heure normale d’Europe centrale)
-[debug] [2024-03-12T18:23:35.958Z] ----------------------------------------------------------------------
+[debug] [2024-03-13T10:15:20.122Z] ----------------------------------------------------------------------
+[debug] [2024-03-13T10:15:20.129Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Aurélia HEYMANN\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js emulators:start
+[debug] [2024-03-13T10:15:20.131Z] CLI Version:   13.4.1
+[debug] [2024-03-13T10:15:20.131Z] Platform:      win32
+[debug] [2024-03-13T10:15:20.132Z] Node Version:  v20.11.0
+[debug] [2024-03-13T10:15:20.132Z] Time:          Wed Mar 13 2024 11:15:20 GMT+0100 (heure normale d’Europe centrale)
+[debug] [2024-03-13T10:15:20.132Z] ----------------------------------------------------------------------
 [debug] 
-[debug] [2024-03-12T18:23:36.158Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2024-03-12T18:23:36.159Z] > authorizing via signed-in user (toffee777777@gmail.com)
-[debug] [2024-03-12T18:23:36.390Z] java version "11.0.22" 2024-01-16 LTS
-[debug] [2024-03-12T18:23:36.391Z] 
+[debug] [2024-03-13T10:15:20.433Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-03-13T10:15:20.434Z] > authorizing via signed-in user (toffee777777@gmail.com)
+[debug] [2024-03-13T10:15:20.768Z] java version "11.0.22" 2024-01-16 LTS
+[debug] [2024-03-13T10:15:20.769Z] 
 Java(TM) SE Runtime Environment 18.9 (build 11.0.22+9-LTS-219)
 Java HotSpot(TM) 64-Bit Server VM 18.9 (build 11.0.22+9-LTS-219, mixed mode)
 
-[debug] [2024-03-12T18:23:36.413Z] Parsed Java major version: 11
-[info] i  emulators: Starting emulators: firestore {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: firestore"}}
-[debug] [2024-03-12T18:23:36.437Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2024-03-12T18:23:36.438Z] [firestore] Firestore Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2024-03-12T18:23:36.438Z] [firestore.websocket] websocket server for firestore only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2024-03-13T10:15:20.791Z] Parsed Java major version: 11
+[info] i  emulators: Starting emulators: auth, firestore {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, firestore"}}
+[debug] [2024-03-13T10:15:20.848Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2024-03-13T10:15:20.849Z] [auth] Authentication Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2024-03-13T10:15:20.849Z] [firestore] Firestore Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2024-03-13T10:15:20.849Z] [firestore.websocket] websocket server for firestore only supports listening on one address (127.0.0.1). Not listening on ::1
 [warn] !  ui: Emulator UI unable to start on port 4000, starting on 4001 instead. {"metadata":{"emulator":{"name":"ui"},"message":"Emulator UI unable to start on port 4000, starting on 4001 instead."}}
-[debug] [2024-03-12T18:23:36.442Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8080}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4001},{"address":"::1","family":"IPv6","port":4001}]},"metadata":{"message":"assigned listening specs for emulators"}}
-[warn] !  emulators: It seems that you are running multiple instances of the emulator suite for project public-crm-47497. This may result in unexpected behavior. 
-[debug] [2024-03-12T18:23:36.451Z] [hub] writing locator at C:\Users\AURLIA~1\AppData\Local\Temp\hub-public-crm-47497.json
-[debug] [2024-03-12T18:23:36.471Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
-[debug] [2024-03-12T18:23:36.472Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
-[debug] [2024-03-12T18:23:36.473Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","C:\\Users\\Aurélia HEYMANN\\.cache\\firebase\\emulators\\cloud-firestore-emulator-v1.19.2.jar","--host","127.0.0.1","--port",8080,"--websocket_port",9150,"--project_id","public-crm-47497","--rules","C:\\Users\\Aurélia HEYMANN\\Aurélia\\2022 Informatique\\Formations\\2023-02-REACT(MikeCodeur)\\2023-05 NextJS\\Projets\\crm\\firestore.rules","--single_project_mode",true],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"C:\\\\Users\\\\Aurélia HEYMANN\\\\.cache\\\\firebase\\\\emulators\\\\cloud-firestore-emulator-v1.19.2.jar\",\"--host\",\"127.0.0.1\",\"--port\",8080,\"--websocket_port\",9150,\"--project_id\",\"public-crm-47497\",\"--rules\",\"C:\\\\Users\\\\Aurélia HEYMANN\\\\Aurélia\\\\2022 Informatique\\\\Formations\\\\2023-02-REACT(MikeCodeur)\\\\2023-05 NextJS\\\\Projets\\\\crm\\\\firestore.rules\",\"--single_project_mode\",true],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false}"}}
+[debug] [2024-03-13T10:15:20.853Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8080}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4001},{"address":"::1","family":"IPv6","port":4001}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[debug] [2024-03-13T10:15:20.865Z] [hub] writing locator at C:\Users\AURLIA~1\AppData\Local\Temp\hub-public-crm-47497.json
+[debug] [2024-03-13T10:15:20.891Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2024-03-13T10:15:20.892Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
+[debug] [2024-03-13T10:15:20.892Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","C:\\Users\\Aurélia HEYMANN\\.cache\\firebase\\emulators\\cloud-firestore-emulator-v1.19.2.jar","--host","127.0.0.1","--port",8080,"--websocket_port",9150,"--project_id","public-crm-47497","--rules","C:\\Users\\Aurélia HEYMANN\\Aurélia\\2022 Informatique\\Formations\\2023-02-REACT(MikeCodeur)\\2023-05 NextJS\\Projets\\crm\\firestore.rules","--single_project_mode",true],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"C:\\\\Users\\\\Aurélia HEYMANN\\\\.cache\\\\firebase\\\\emulators\\\\cloud-firestore-emulator-v1.19.2.jar\",\"--host\",\"127.0.0.1\",\"--port\",8080,\"--websocket_port\",9150,\"--project_id\",\"public-crm-47497\",\"--rules\",\"C:\\\\Users\\\\Aurélia HEYMANN\\\\Aurélia\\\\2022 Informatique\\\\Formations\\\\2023-02-REACT(MikeCodeur)\\\\2023-05 NextJS\\\\Projets\\\\crm\\\\firestore.rules\",\"--single_project_mode\",true],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false}"}}
 [info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to \u001b[1mfirestore-debug.log\u001b[22m"}}
 [info] +  firestore: Firestore Emulator UI websocket is running on 9150. {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator UI websocket is running on 9150."}}
-[debug] [2024-03-12T18:23:39.987Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: auto_download"}}
-[debug] [2024-03-12T18:23:39.990Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: port"}}
-[debug] [2024-03-12T18:23:39.990Z] Starting Emulator UI with command {"binary":"node","args":["C:\\Users\\Aurélia HEYMANN\\.cache\\firebase\\emulators\\ui-v1.11.7\\server\\server.js"],"optionalArgs":[],"joinArgs":false} {"metadata":{"emulator":{"name":"ui"},"message":"Starting Emulator UI with command {\"binary\":\"node\",\"args\":[\"C:\\\\Users\\\\Aurélia HEYMANN\\\\.cache\\\\firebase\\\\emulators\\\\ui-v1.11.7\\\\server\\\\server.js\"],\"optionalArgs\":[],\"joinArgs\":false}"}}
+[debug] [2024-03-13T10:15:55.064Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2024-03-13T10:15:55.066Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2024-03-13T10:15:55.066Z] Starting Emulator UI with command {"binary":"node","args":["C:\\Users\\Aurélia HEYMANN\\.cache\\firebase\\emulators\\ui-v1.11.7\\server\\server.js"],"optionalArgs":[],"joinArgs":false} {"metadata":{"emulator":{"name":"ui"},"message":"Starting Emulator UI with command {\"binary\":\"node\",\"args\":[\"C:\\\\Users\\\\Aurélia HEYMANN\\\\.cache\\\\firebase\\\\emulators\\\\ui-v1.11.7\\\\server\\\\server.js\"],\"optionalArgs\":[],\"joinArgs\":false}"}}
 [info] i  ui: Emulator UI logging to ui-debug.log {"metadata":{"emulator":{"name":"ui"},"message":"Emulator UI logging to \u001b[1mui-debug.log\u001b[22m"}}
-[debug] [2024-03-12T18:23:40.279Z] Web / API server started at 127.0.0.1:4001
+[debug] [2024-03-13T10:15:55.500Z] Web / API server started at 127.0.0.1:4001
  {"metadata":{"emulator":{"name":"ui"},"message":"Web / API server started at 127.0.0.1:4001\n"}}
-[debug] [2024-03-12T18:23:40.280Z] Web / API server started at ::1:4001
+[debug] [2024-03-13T10:15:55.502Z] Web / API server started at ::1:4001
  {"metadata":{"emulator":{"name":"ui"},"message":"Web / API server started at ::1:4001\n"}}
 [info] 
 ┌─────────────────────────────────────────────────────────────┐
@@ -41,13 +41,21 @@ Java HotSpot(TM) 64-Bit Server VM 18.9 (build 11.0.22+9-LTS-219, mixed mode)
 │ i  View Emulator UI at http://127.0.0.1:4001/               │
 └─────────────────────────────────────────────────────────────┘
 
-┌───────────┬────────────────┬─────────────────────────────────┐
-│ Emulator  │ Host:Port      │ View in Emulator UI             │
-├───────────┼────────────────┼─────────────────────────────────┤
-│ Firestore │ 127.0.0.1:8080 │ http://127.0.0.1:4001/firestore │
-└───────────┴────────────────┴─────────────────────────────────┘
+┌────────────────┬────────────────┬─────────────────────────────────┐
+│ Emulator       │ Host:Port      │ View in Emulator UI             │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Authentication │ 127.0.0.1:9099 │ http://127.0.0.1:4001/auth      │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Firestore      │ 127.0.0.1:8080 │ http://127.0.0.1:4001/firestore │
+└────────────────┴────────────────┴─────────────────────────────────┘
   Emulator Hub running at 127.0.0.1:4400
   Other reserved ports: 4500, 9150
 
 Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
  
+[info] i  firestore: Change detected, updating rules... 
+[debug] [2024-03-13T11:36:10.538Z] >>> [apiv2][query] PUT http://127.0.0.1:8080/emulator/v1/projects/public-crm-47497:securityRules [none]
+[debug] [2024-03-13T11:36:10.539Z] >>> [apiv2][body] PUT http://127.0.0.1:8080/emulator/v1/projects/public-crm-47497:securityRules {"ignore_errors":true,"rules":{"files":[{"name":"security.rules","content":"rules_version = '2';\n\nservice cloud.firestore {\n  match /databases/{database}/documents {\n\n    // This rule allows anyone with your Firestore database reference to view, edit,\n    // and delete all data in your Firestore database. It is useful for getting\n    // started, but it is configured to expire after 30 days because it\n    // leaves your app open to attackers. At that time, all client\n    // requests to your Firestore database will be denied.\n    //\n    // Make sure to write security rules for your app before that time, or else\n    // all client requests to your Firestore database will be denied until you Update\n    // your rules\n    match /{document=**} {\n      allow read, write: if request.time < timestamp.date(2044, 3, 20);\n    }\n  }\n}"}]}}
+[debug] [2024-03-13T11:36:10.595Z] <<< [apiv2][status] PUT http://127.0.0.1:8080/emulator/v1/projects/public-crm-47497:securityRules 200
+[debug] [2024-03-13T11:36:10.596Z] <<< [apiv2][body] PUT http://127.0.0.1:8080/emulator/v1/projects/public-crm-47497:securityRules {}
+[info] +  firestore: Rules updated. 

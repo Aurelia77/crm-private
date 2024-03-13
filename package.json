@@ -53,7 +53,6 @@
     "uid": "^2.0.2"
   },
   "devDependencies": {
-    "@firebase/testing": "^0.20.11",
     "@tanstack/eslint-plugin-query": "^5.17.7",
     "@testing-library/dom": "^9.3.3",
     "@testing-library/jest-dom": "^6.1.4",

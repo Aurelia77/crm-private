@@ -102,10 +102,10 @@ export default function MuiProviders({ children }: { children: React.ReactNode }
     });
 
     muiTheme.typography.h3 = {
-        [muiTheme.breakpoints.up('xs')]: {
-            fontSize: '1.8rem',
-            display: 'none'
-        },
+        // [muiTheme.breakpoints.up('xs')]: {
+        //     fontSize: '1.8rem',
+        //     display: 'none'
+        // },
         [muiTheme.breakpoints.up('sm')]: {
             fontSize: '2rem',
             overflow: 'auto',   // ajoute un scroll si on voit pas tout

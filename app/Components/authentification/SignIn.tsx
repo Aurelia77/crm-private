@@ -27,7 +27,6 @@ const SignIn = () => {
 
             <FormControl>
                 <Typography
-                    variant='h3'
                     component='h2'
                     color='primary'
                     sx={{ textShadow: "1px 1px 2px blue", marginBottom: "25px" }}

@@ -51,7 +51,12 @@ const SignUp = () => {
                 : (backError && <Typography color="error">{backError}</Typography>
                 )}
             <FormControl>
-                <Typography variant='h3' component='h2' color='secondary' sx={{ textShadow: "1px 1px 2px blue", marginBottom: "25px" }} >
+                <Typography
+                    variant='h3' 
+                    component='h2' 
+                    color='secondary' 
+                    sx={{ textShadow: "1px 1px 2px blue", marginBottom: "25px" }} 
+                >
                     Création de compte
                 </Typography>
                 <TextField

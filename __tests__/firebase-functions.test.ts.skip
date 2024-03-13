@@ -12,5 +12,123 @@
 
 
 
-// require('dotenv').config(); // pour avoir accès aux variables d'environnement dans les tests
+require('dotenv').config(); // pour avoir accès aux variables d'environnement dans les tests
 // import { addContactOnFirebaseAndReload, getUserContactsFromDatabase } from '@/app/utils/firebase';
+
+
+
+const firebase = require('firebase');
+require('firebase/firestore');
+
+firebase.initializeApp({
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+});
+
+
+
+
+const db = firebase.firestore();
+db.collection('users').doc('VxOsLkKyAPOg3lQwFuWn').get()
+    .then(doc => {
+        if (doc.exists) {
+            console.log('Document data:', doc.data());
+        } else {
+            console.log('No such document!');
+        }
+    })
+    .catch(error => {
+        console.log('Error getting document:', error);
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const fs = require('fs');
+// const {assertFails, assertSucceeds, initializeTestEnvironment, RulesTestEnvironment} = require('@firebase/rules-unit-testing');
+
+// let testEnv: any;
+
+// // Création et configuration d'un RulesTestEnvironment avec un appel à initializeTestEnvironment .
+// const getFirebase = async () => {
+//     return await initializeTestEnvironment({
+//         projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+//         firestore: {
+//             host: 'localhost',
+//             port: 8080,
+//             rules: fs.readFileSync('firestore.rules', 'utf8'),
+//         },
+//     });
+// }
+
+// describe("Users", () => {
+//     beforeEach(async () => {
+//         testEnv = await getFirebase();
+//     });
+
+//     it("Should able to see users", async () => {
+//         console.log('***Starting test');
+//         const userId = 'VxOsLkKyAPOg3lQwFuWn';
+//         const db = testEnv.authenticatedContext({ uid: userId }).firestore();
+//         const testDoc = db.collection('users').doc(userId);
+
+//         console.log('***Before get');
+//         await assertSucceeds(testDoc.get());
+//         console.log('***After get');
+//     }, 10000);
+
+//     // it("Should able to see users", async () => {
+//     //     const db = testEnv.authenticatedContext({ uid: 'user-id' }).firestore();
+//     //     const testDoc = db.collection('users').doc('VemfKnUdt5eaav2VDbAyWu8ssyo1');
+
+//     //     await assertSucceeds(testDoc.get());
+//     // });
+// })
+
+// // beforeAll(async () => {
+// //     testEnv = await initializeTestEnvironment({
+// //         projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+// //         firestore: {
+// //             rules: fs.readFileSync('firestore.rules', 'utf8'),
+// //         },
+// //     });
+// // });
+// // // Configuration des données de test sans déclencher de règles, à l'aide d'une méthode pratique qui vous permet de les contourner temporairement, RulesTestEnvironment.withSecurityRulesDisabled .
+
+
+
+// // // Configuration d'une suite de tests et de hooks avant/après par test avec des appels pour nettoyer les données de test et l'environnement, comme RulesTestEnvironment.cleanup() ou RulesTestEnvironment.clearFirestore() .
+// // // Implémentation de cas de test qui imitent les états d'authentification à l'aide de RulesTestEnvironment.authenticatedContext et RulesTestEnvironment.unauthenticatedContext .
+
+
+
+// // afterAll(async () => {
+// //     await testEnv.cleanup();
+// // });
+
+// // describe('Firestore rules', () => {
+// //     it('should deny read/write access to unauthenticated users', async () => {
+// //         const db = testEnv.unauthenticatedContext().firestore();
+// //         const testDoc = db.collection('users').doc('testDoc');
+
+// //         await assertFails(testDoc.get());
+// //         await assertFails(testDoc.set({ test: 'data' }));
+// //     });
+
+// //     it('should allow read/write access to authenticated users', async () => {
+// //         const db = testEnv.authenticatedContext({ uid: 'user-id' }).firestore();
+// //         //const db = testEnv.authenticatedContext('user-id').firestore();
+// //         const testDoc = db.collection('test').doc('testDoc');
+
+// //         await assertSucceeds(testDoc.get());
+// //         await assertSucceeds(testDoc.set({ test: 'data' }));
+// //     });
+// // });
