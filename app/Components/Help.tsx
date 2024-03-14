@@ -110,6 +110,17 @@ export default function Help() {
                         }
                     />
                 </ListItem>
+                <ListItem>
+                    <ListItemText
+                        primary={
+                            <Typography
+                                sx={{ textOverflow: "clip", whiteSpace: "normal" }}
+                            >
+                                <span style={{ fontSize: "1.2em", fontWeight: "bold", color: muiTheme.palette.gray.dark }}>En + :</span> Si vous ajouter "000" au début du nom d'un contact, la couleur de fond de son nom se colorera en rouge, pour vous rappeler qu'il ne doit plus être contacté.
+                            </Typography>
+                        }
+                    />
+                </ListItem>
             </List>
         </Paper>
     )

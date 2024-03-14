@@ -297,7 +297,16 @@ const ContactRow = ({ contact, handleUpdateContact, handleDeleteContact, current
             </StyledTableCell>
 
             {/* businessName */}
-            <StyledTableCell component="td" scope="row" >
+            <StyledTableCell 
+                component="td" 
+                scope="row" 
+                sx={{
+                    backgroundColor: contact.businessName.startsWith("000")
+                        ? "red"
+                        : ""
+                }}
+                title={contact.businessName.startsWith("000") ? "Ne plus contacter ! Voir les commentaires..." : ""}
+            >
                 <Typography sx={{
                     color: getPriorityTextAndColor(contact.priority).color,
                     overflow: "visible", whiteSpace: 'normal', // ne pas utiliser ici l'ellipsis appliqué à tous les composants typographys
