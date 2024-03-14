@@ -1,6 +1,8 @@
 import * as React from 'react';
 // UTILS
 import { StyledTableCell } from '@/app/utils/StyledComponentsAndUtilities';
+import { getCatLabelFromId } from '@/app/utils/firebase'
+
 // FIREBASE
 import { Timestamp } from 'firebase/firestore';
 // MUI
@@ -81,18 +83,47 @@ const headCells: readonly Column[] = [
 
 // Pour le tri des colonnes
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+
+    console.log(orderBy)
+
     if (typeof orderBy === 'string' && orderBy.includes('date')) {
         // On ne veut pas les date null en premier donc : Si la date est null, on la considère comme étant infiniment grande
         const dateA = a[orderBy] ? (a[orderBy] as Timestamp).toDate().getTime() : Infinity;
         const dateB = b[orderBy] ? (b[orderBy] as Timestamp).toDate().getTime() : Infinity;
 
         return dateB - dateA;
-    }
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
+    } 
+    // else if (typeof orderBy === 'string' && orderBy === 'businessCategoryId') {
+    //     const stringCatA = getCatLabelFromId(a[orderBy] as string);
+    //     const stringCatB = getCatLabelFromId(b[orderBy] as string);
+
+    //     console.log(stringCatA)
+    //     console.log(stringCatB)
+
+    //     if (stringCatB < stringCatA) {
+    //         return -1;
+    //     }
+    //     if (stringCatB > stringCatA) {
+    //         return 1;
+    //     }
+    // } 
+    else if (typeof a[orderBy] === 'string' && typeof b[orderBy] === 'string') {
+            const lowerA = (a[orderBy] as string).toLowerCase();
+            const lowerB = (b[orderBy] as string).toLowerCase();
+
+            if (lowerB < lowerA) {
+                return -1;
+            }
+            if (lowerB > lowerA) {
+                return 1;
+            }
+    } else {
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
     }
     return 0;
 }
@@ -133,10 +164,11 @@ function SortableTableHeader(props: SortableTableHeaderProps) {
     const {
         order, orderBy,
         onRequestSort } = props;
-    const createSortHandler =
-        (property: keyof Contact) => (event: React.MouseEvent<unknown>) => {
+    
+    const createSortHandler = (property: keyof Contact) => (event: React.MouseEvent<unknown>) => {
             onRequestSort(event, property);
-        };
+    };
+    
     return (
         <TableHead>
             <TableRow>
@@ -194,6 +226,7 @@ const ContactsTable = ({ contacts, currentUserId, handleUpdateContact, handleDel
         event: React.MouseEvent<unknown>,
         property: keyof Contact,
     ) => {
+
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
