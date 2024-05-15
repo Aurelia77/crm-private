@@ -84,8 +84,6 @@ const headCells: readonly Column[] = [
 // Pour le tri des colonnes
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
-    console.log(orderBy)
-
     if (typeof orderBy === 'string' && orderBy.includes('date')) {
         // On ne veut pas les date null en premier donc : Si la date est null, on la considère comme étant infiniment grande
         const dateA = a[orderBy] ? (a[orderBy] as Timestamp).toDate().getTime() : Infinity;
