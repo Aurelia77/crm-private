@@ -241,8 +241,8 @@ export default function SearchContactsForm({ contacts, currentUserId, emptySearc
                             }
                             {allDifferentsBusinessCitiesValues.map((city, index) => (
                                 city.value === ""
-                                    ? <MenuItem key={0} value="-Vide(s)" sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }} >
-                                        <Checkbox checked={search.businessCities.indexOf(city.value) > -1} />
+                                    ? <MenuItem key={0} value="" sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }} >
+                                        <Checkbox checked={search.businessCities.indexOf("") > -1} />
                                         <ListItemText primary={`-Vide(s) (${city.count})`} />
                                     </MenuItem>
                                     : <MenuItem key={city.value} value={city.value} sx={{ backgroundColor: index % 2 === 0 ? muiTheme.palette.gray.light : '' }} >

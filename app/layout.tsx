@@ -1,4 +1,5 @@
 'use client'    // Pour pouvoir utiliser le contexte
+// import { Analytics } from "@vercel/analytics/react"
 import './globals.css'
 import UserAuthContextProvider from './context/UseAuthContextProvider';
 import MuiProviders from './Components/providers/MuiProviders';
@@ -35,6 +36,7 @@ export default function RootLayout({
             </UserAuthContextProvider>
           </MuiProviders>
         </ErrorBoundary>
+        {/* <Analytics /> */}
       </body>
     </html>
   )
